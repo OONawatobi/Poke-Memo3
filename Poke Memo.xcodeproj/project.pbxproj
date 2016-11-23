@@ -1,0 +1,537 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		30DAD8881DE5C3040068FF45 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD8871DE5C3040068FF45 /* AppDelegate.swift */; };
+		30DAD88A1DE5C3040068FF45 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD8891DE5C3040068FF45 /* ViewController.swift */; };
+		30DAD88D1DE5C3040068FF45 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30DAD88B1DE5C3040068FF45 /* Main.storyboard */; };
+		30DAD88F1DE5C3040068FF45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30DAD88E1DE5C3040068FF45 /* Assets.xcassets */; };
+		30DAD8921DE5C3040068FF45 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30DAD8901DE5C3040068FF45 /* LaunchScreen.storyboard */; };
+		30DAD89D1DE5C3040068FF45 /* Poke_MemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD89C1DE5C3040068FF45 /* Poke_MemoTests.swift */; };
+		30DAD8A81DE5C3040068FF45 /* Poke_MemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD8A71DE5C3040068FF45 /* Poke_MemoUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		30DAD8991DE5C3040068FF45 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30DAD87C1DE5C3040068FF45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 30DAD8831DE5C3040068FF45;
+			remoteInfo = "Poke Memo";
+		};
+		30DAD8A41DE5C3040068FF45 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30DAD87C1DE5C3040068FF45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 30DAD8831DE5C3040068FF45;
+			remoteInfo = "Poke Memo";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		30DAD8841DE5C3040068FF45 /* Poke Memo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Poke Memo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30DAD8871DE5C3040068FF45 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		30DAD8891DE5C3040068FF45 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		30DAD88C1DE5C3040068FF45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		30DAD88E1DE5C3040068FF45 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		30DAD8911DE5C3040068FF45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		30DAD8931DE5C3040068FF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30DAD8981DE5C3040068FF45 /* Poke MemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Poke MemoTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30DAD89C1DE5C3040068FF45 /* Poke_MemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Poke_MemoTests.swift; sourceTree = "<group>"; };
+		30DAD89E1DE5C3040068FF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30DAD8A31DE5C3040068FF45 /* Poke MemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Poke MemoUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30DAD8A71DE5C3040068FF45 /* Poke_MemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Poke_MemoUITests.swift; sourceTree = "<group>"; };
+		30DAD8A91DE5C3040068FF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		30DAD8811DE5C3040068FF45 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30DAD8951DE5C3040068FF45 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30DAD8A01DE5C3040068FF45 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		30DAD87B1DE5C3040068FF45 = {
+			isa = PBXGroup;
+			children = (
+				30DAD8861DE5C3040068FF45 /* Poke Memo */,
+				30DAD89B1DE5C3040068FF45 /* Poke MemoTests */,
+				30DAD8A61DE5C3040068FF45 /* Poke MemoUITests */,
+				30DAD8851DE5C3040068FF45 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		30DAD8851DE5C3040068FF45 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				30DAD8841DE5C3040068FF45 /* Poke Memo.app */,
+				30DAD8981DE5C3040068FF45 /* Poke MemoTests.xctest */,
+				30DAD8A31DE5C3040068FF45 /* Poke MemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		30DAD8861DE5C3040068FF45 /* Poke Memo */ = {
+			isa = PBXGroup;
+			children = (
+				30DAD8871DE5C3040068FF45 /* AppDelegate.swift */,
+				30DAD8891DE5C3040068FF45 /* ViewController.swift */,
+				30DAD88B1DE5C3040068FF45 /* Main.storyboard */,
+				30DAD88E1DE5C3040068FF45 /* Assets.xcassets */,
+				30DAD8901DE5C3040068FF45 /* LaunchScreen.storyboard */,
+				30DAD8931DE5C3040068FF45 /* Info.plist */,
+			);
+			path = "Poke Memo";
+			sourceTree = "<group>";
+		};
+		30DAD89B1DE5C3040068FF45 /* Poke MemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				30DAD89C1DE5C3040068FF45 /* Poke_MemoTests.swift */,
+				30DAD89E1DE5C3040068FF45 /* Info.plist */,
+			);
+			path = "Poke MemoTests";
+			sourceTree = "<group>";
+		};
+		30DAD8A61DE5C3040068FF45 /* Poke MemoUITests */ = {
+			isa = PBXGroup;
+			children = (
+				30DAD8A71DE5C3040068FF45 /* Poke_MemoUITests.swift */,
+				30DAD8A91DE5C3040068FF45 /* Info.plist */,
+			);
+			path = "Poke MemoUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		30DAD8831DE5C3040068FF45 /* Poke Memo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30DAD8AC1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke Memo" */;
+			buildPhases = (
+				30DAD8801DE5C3040068FF45 /* Sources */,
+				30DAD8811DE5C3040068FF45 /* Frameworks */,
+				30DAD8821DE5C3040068FF45 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Poke Memo";
+			productName = "Poke Memo";
+			productReference = 30DAD8841DE5C3040068FF45 /* Poke Memo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		30DAD8971DE5C3040068FF45 /* Poke MemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30DAD8AF1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke MemoTests" */;
+			buildPhases = (
+				30DAD8941DE5C3040068FF45 /* Sources */,
+				30DAD8951DE5C3040068FF45 /* Frameworks */,
+				30DAD8961DE5C3040068FF45 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				30DAD89A1DE5C3040068FF45 /* PBXTargetDependency */,
+			);
+			name = "Poke MemoTests";
+			productName = "Poke MemoTests";
+			productReference = 30DAD8981DE5C3040068FF45 /* Poke MemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		30DAD8A21DE5C3040068FF45 /* Poke MemoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30DAD8B21DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke MemoUITests" */;
+			buildPhases = (
+				30DAD89F1DE5C3040068FF45 /* Sources */,
+				30DAD8A01DE5C3040068FF45 /* Frameworks */,
+				30DAD8A11DE5C3040068FF45 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				30DAD8A51DE5C3040068FF45 /* PBXTargetDependency */,
+			);
+			name = "Poke MemoUITests";
+			productName = "Poke MemoUITests";
+			productReference = 30DAD8A31DE5C3040068FF45 /* Poke MemoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		30DAD87C1DE5C3040068FF45 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0810;
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = mm289;
+				TargetAttributes = {
+					30DAD8831DE5C3040068FF45 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 4F3H93F24G;
+						ProvisioningStyle = Automatic;
+					};
+					30DAD8971DE5C3040068FF45 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 4F3H93F24G;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 30DAD8831DE5C3040068FF45;
+					};
+					30DAD8A21DE5C3040068FF45 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 4F3H93F24G;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 30DAD8831DE5C3040068FF45;
+					};
+				};
+			};
+			buildConfigurationList = 30DAD87F1DE5C3040068FF45 /* Build configuration list for PBXProject "Poke Memo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 30DAD87B1DE5C3040068FF45;
+			productRefGroup = 30DAD8851DE5C3040068FF45 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				30DAD8831DE5C3040068FF45 /* Poke Memo */,
+				30DAD8971DE5C3040068FF45 /* Poke MemoTests */,
+				30DAD8A21DE5C3040068FF45 /* Poke MemoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		30DAD8821DE5C3040068FF45 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30DAD8921DE5C3040068FF45 /* LaunchScreen.storyboard in Resources */,
+				30DAD88F1DE5C3040068FF45 /* Assets.xcassets in Resources */,
+				30DAD88D1DE5C3040068FF45 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30DAD8961DE5C3040068FF45 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30DAD8A11DE5C3040068FF45 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		30DAD8801DE5C3040068FF45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30DAD88A1DE5C3040068FF45 /* ViewController.swift in Sources */,
+				30DAD8881DE5C3040068FF45 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30DAD8941DE5C3040068FF45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30DAD89D1DE5C3040068FF45 /* Poke_MemoTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30DAD89F1DE5C3040068FF45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30DAD8A81DE5C3040068FF45 /* Poke_MemoUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		30DAD89A1DE5C3040068FF45 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 30DAD8831DE5C3040068FF45 /* Poke Memo */;
+			targetProxy = 30DAD8991DE5C3040068FF45 /* PBXContainerItemProxy */;
+		};
+		30DAD8A51DE5C3040068FF45 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 30DAD8831DE5C3040068FF45 /* Poke Memo */;
+			targetProxy = 30DAD8A41DE5C3040068FF45 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		30DAD88B1DE5C3040068FF45 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				30DAD88C1DE5C3040068FF45 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		30DAD8901DE5C3040068FF45 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				30DAD8911DE5C3040068FF45 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		30DAD8AA1DE5C3040068FF45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		30DAD8AB1DE5C3040068FF45 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		30DAD8AD1DE5C3040068FF45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 4F3H93F24G;
+				INFOPLIST_FILE = "Poke Memo/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mm289.Poke-Memo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		30DAD8AE1DE5C3040068FF45 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 4F3H93F24G;
+				INFOPLIST_FILE = "Poke Memo/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mm289.Poke-Memo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		30DAD8B01DE5C3040068FF45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 4F3H93F24G;
+				INFOPLIST_FILE = "Poke MemoTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mm289.Poke-MemoTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Poke Memo.app/Poke Memo";
+			};
+			name = Debug;
+		};
+		30DAD8B11DE5C3040068FF45 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 4F3H93F24G;
+				INFOPLIST_FILE = "Poke MemoTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mm289.Poke-MemoTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Poke Memo.app/Poke Memo";
+			};
+			name = Release;
+		};
+		30DAD8B31DE5C3040068FF45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 4F3H93F24G;
+				INFOPLIST_FILE = "Poke MemoUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mm289.Poke-MemoUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = "Poke Memo";
+			};
+			name = Debug;
+		};
+		30DAD8B41DE5C3040068FF45 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 4F3H93F24G;
+				INFOPLIST_FILE = "Poke MemoUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mm289.Poke-MemoUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = "Poke Memo";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		30DAD87F1DE5C3040068FF45 /* Build configuration list for PBXProject "Poke Memo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30DAD8AA1DE5C3040068FF45 /* Debug */,
+				30DAD8AB1DE5C3040068FF45 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		30DAD8AC1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke Memo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30DAD8AD1DE5C3040068FF45 /* Debug */,
+				30DAD8AE1DE5C3040068FF45 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		30DAD8AF1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke MemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30DAD8B01DE5C3040068FF45 /* Debug */,
+				30DAD8B11DE5C3040068FF45 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		30DAD8B21DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke MemoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30DAD8B31DE5C3040068FF45 /* Debug */,
+				30DAD8B41DE5C3040068FF45 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 30DAD87C1DE5C3040068FF45 /* Project object */;
+}
