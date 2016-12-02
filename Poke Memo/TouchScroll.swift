@@ -17,6 +17,10 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
     var rightFlag = false//右側エリアでタッチされた場合
     var startPointX: CGFloat!//タッチ開始X座標
     var shiftLeftFlag = false//左方向へのスワイプ発生
+    var pageView:[UIView]!
+    var iV:UIView!//IV:index
+    var aV:UIView!
+    var bV:UIView!
     
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
         let point = touches.first!.location(in: self)
@@ -44,7 +48,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
         print("touchbegan:rightFla= \(rightFlag)")
         for touch: UITouch in touches{
             let tag = touch.view!.tag
-            self.Delegate2?.modalChanged(TouchNumber: tag)
+            if tag != 0{self.Delegate2?.modalChanged(TouchNumber: tag)}
         }
     }
     
@@ -65,27 +69,74 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
     //タッチして離したときの処理
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("shiftLeftFlag = \(shiftLeftFlag)")
+    
         if shiftLeftFlag == true{
-            gotoNextPage()//Tshow_4thFrame()
+            //gotoNextPage()//Tshow_4thFrame()
         }
-        
+     
         print("touchended")
     }
     //--------- タッチイベント以外の関数------------
+
+/*
     func changePageNum(pn:Int){pageNum = pn}//カレントページを変更する
     //func pageImgsToMemo(pn:Int,fn:Int)//選択ページをフレームに読み込む
     
     func setMemoView(){//最新版1113
         print("*******************************")
+    // self:TouchView
+      //@@@@@@@@@@  pageIMGS() / TouchView    @@@@@@@@@@@@@@@@@@@
+
+        //UserDrfaultの頁数を調べる
+         let kn = UserDataNum()//保管してあるページ数
+        var num:Int = 1
+         if kn != 0{
+           let sa = kn - pageImgs.count + 1
+           if sa > 0{ num = sa }else{ num = 3 }
+              for n in 1...sa{
+                 createNewPageImg()
+              }
+           }
+         //imgsにページデータを読み込む
+           for i in 0..<kn{
+             readUserData(pn: i)
+           }
+    
+        //pageImgs[[UIImage]]を作成する：メモの内容(ページ別)：保存する時のオブジェクト
+        //INDEXページのpageImgs[0]の空要素を作成
+        iV = memoView.makePageWithTag(pn:0)
+        //必要なページ分のpageImgs[1〜]の空要素を作成(追加する）
+        aV = memoView.makePageWithTag(pn:1)
+        
+        bV = memoView.makePageWithTag(pn:2)
+        
+        //☓UserDrfaultの頁数が０の場合は２ページ　＋INDEXページ（合計[2])の３要素を作成
+        //☓UserDrfaultの保存データをpageImgs[]に読み込む
+         
+        //表示するページのpageView[30]を2個＋INDEXVie文を作成する（AV、BV,IV）
+         print("¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥")
+        
+        //pageView[IV,AV,BV]を作成する。
+        pageView.append(iV)
+        print("¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥2")
+         pageView.append(aV)
+         pageView.append(bV)
+        
+        //表示するページのpageView[0]/IVをmemoViewに追加(画面表示）する。
+         self.addSubview(pageView[1])
+    }
+ 
+
         //全行空白のページ１−３を追加
-        //if pageImgs != nil{  //[[]]{
-            
-            createNewPage()
-            createNewPage()
-            createNewPage()
-        //}
+        //@@ pageImgs[3]を新設する　※空の４ページ
+        
+        createNewPageImg()
+        createNewPageImg()
+        createNewPageImg()
+        createNewPageImg()
+        
         print("ページ数は：\(pageImgs.count - 1) 頁です。")
-        //pageImageの要素を入れる3つの箱を用意します。
+        //pageImageの要素を入れる4つの箱を用意します。※[0]はINDEXページ
         memoView.make3BlankMemo()
         //pageImageの更新(UserDrfaultの全頁）
         //UserDrfaultの頁数を調べる
@@ -94,7 +145,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
             let sa = kn - pageImgs.count + 1
             if sa > 0{
                 for n in 1...sa{
-                    createNewPage()
+                    createNewPageImg()
                 }
             }
             //imgsにページデータを読み込む
@@ -107,7 +158,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
         memoView.TpageImgsToMemo(pn: 1,fn:homeFrame)
         //showHomeFrame()
     }
-    
+ 
     func UserDataNum()->Int{//これから読み込むUserDataに存在するページ数を取得する
         //print(NSUserDefaults.standardUserDefaults().dictionaryRepresentation())
         
@@ -124,17 +175,19 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
         print("OK Google!: \(kn)")
         return kn
     }
-    func createNewPage(){ //新しいページを作成して末尾に追加する
+    func createNewPageImg(){ //新しいページを作成して末尾に追加する
         let bImage:UIImage = UIImage(named: "blankW.png")!
         var blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
         pageImgs.append(blankImgs)
     }
+    
     func readUserData(pn:Int){ //UserDataをpageImmgs[]に読み込む
         var rl = reloadToPage(pn: pn)
         if rl.count > 0 { //これがないと読み込みエラーが発生 初期ではrl.count= 0
             pageImgs[pn] = rl
         }
     }
+
     /* ページめくり動作 */
     func showImgs(pn:Int){ //指定のページを表示する
         memoView.TpageImgsToMemo(pn: pn,fn:homeFrame)//fn:フレーム番号
@@ -247,7 +300,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
                 
                 //第2frameに次の頁内容を入れる
                 var f3p = pageNum + 1
-                if pageImgs.count <= f3p{ createNewPage()}
+                if pageImgs.count <= f3p{ createNewPageImg()}
                 memoView.pageImgsToMemo(pn: f3p,fn:2)
                 
                 //表示frame を2に変更する (アニメーション）
@@ -285,7 +338,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
                 self.contentOffset = CGPoint(x:leafWidth*0,y: 0)
                 //第2frameに次の頁内容を入れる
                 var f3p = pageNum + 1
-                if pageImgs.count <= f3p{ createNewPage()}
+                if pageImgs.count <= f3p{ createNewPageImg()}
                 memoView.pageImgsToMemo(pn: f3p,fn:2)
                 //表示frame を2に変更する (アニメーション）
                 TouchScrollView.animate(withDuration: 0.2, animations: { () -> Void in
@@ -378,7 +431,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
         return imgs
     }
     
-    
+*/
 }
 //
 

@@ -34,6 +34,9 @@
                                         <rightBarButtonItems>
                                             <barButtonItem systemItem="compose" id="d15-nu-TSk">
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <connections>
+                                                    <action selector="Pallete:" destination="BYZ-38-t0r" id="FOY-yr-PlH"/>
+                                                </connections>
                                             </barButtonItem>
                                             <barButtonItem systemItem="bookmarks" id="oI5-jf-xra">
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

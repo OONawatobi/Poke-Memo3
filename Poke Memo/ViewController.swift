@@ -60,6 +60,8 @@ extension UIView {
 
 extension UIView {
     
+    
+    
     func GetImage() -> UIImage{
         
         // キャプチャする範囲を取得.
@@ -154,6 +156,45 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return resizedImage!
     }
+    
+    func addText(text:String)-> UIImage{
+        let text = text
+        
+        let font = UIFont.boldSystemFont(ofSize: 16)
+        let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
+        /*
+        //-------------------------------------------------
+        var hi = Int(self.size.width/100)
+        print("imageSize = \(self.size)")
+        print("hi = \(hi)")
+        var font:UIFont!
+        if hi>9 {
+            font = UIFont.boldSystemFont(ofSize: 128)
+        }else if hi>5{font = UIFont.boldSystemFont(ofSize: 64)
+        }else{font = UIFont.boldSystemFont(ofSize: 12)}
+        print("font = \(font)")
+        //--------------------------------------------------
+        */
+        UIGraphicsBeginImageContext(self.size);
+        
+        self.draw(in: imageRect)
+        
+        let textRect  = CGRect(x:5, y:5, width:self.size.width - 5, height:self.size.height - 5)
+        let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+        let textFontAttributes = [
+            NSFontAttributeName: font,
+            NSForegroundColorAttributeName: UIColor.lightGray,
+            NSParagraphStyleAttributeName: textStyle
+        ]
+        text.draw(in: textRect, withAttributes: textFontAttributes)
+        
+        let newImage = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext()
+        
+        return newImage!
+    }
+
 }
 
 //-----　grobal constance　--------
@@ -166,7 +207,7 @@ var isEditMode:Bool! = false//パレットが表示されている場合：true
 var penColorNum:Int = 1
 let homeFrame:Int = 2//表示用フレーム ⇒グローバル定数
 //-----ページ---------
-var pageImgs:[[UIImage]] = [[]]//メモの内容(ページ別)：保存する時のオブジェクト
+var pageImgs = [[UIImage]]()//メモの内容(ページ別)：保存する時のオブジェクト
 var pageNum:Int = 1//現在表示しているページの番号
 var frameNum:Int = 1//現在表示しているframe番号
 var maxPageNum:Int = 1//未使用
@@ -176,6 +217,7 @@ var beforeGyouNo:Int! = 1//一つ前の行番号
 var maxUsingGyouNo:Int! = 0//メモが記載されている一番下の行番号
 //-----メモ---------
 var memoView:MemoView! = nil//メモ本体
+var memo:[Memo2View]! = nil//メモ本体
 let topOffset:CGFloat = 20//メモ開始位置(上部スペース量）
 var leafWidth:CGFloat! = boundWidth - 20//?? ??
 let leafHeight:CGFloat = 45//メモ行の高さ
@@ -214,12 +256,20 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
     var scrollRect_P:CGRect!//パレットが表示されている時
     //var reloadedImage:UIImage!//ファイルから読み込んだイメージ：未使用　下記使用
     var reloads:[UIImage]!//ファイルから読み込んだイメージ配列
+    var editButton1:UIButton!
+    var editButton2:UIButton!
+    var editButton3:UIButton!
+    var editButton4:UIButton!
+    var editButton5:UIButton!
+    var editButton6:UIButton!
+    var editButton7:UIButton!
+    var editButton8:UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         
-        /* spaceViewを生成(透明：タッチ緩衝の為) */
+        /** spaceViewを生成(透明：タッチ緩衝の為) **/
         //underViewの下側
         spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - 44 - vHeight , width: boundWidth, height: 10))
         spaceView1.backgroundColor = UIColor.clear
@@ -227,19 +277,20 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
         spaceView2 = UIView(frame: CGRect(x: 0, y:boundHeight - 44 - vHeight - 40 - 20, width: boundWidth, height: 20))
         spaceView2.backgroundColor = UIColor.clear
         
-        /* underViewを生成. */
+        /** underViewを生成. **/
         //underFlag = false// 表示・非表示のためのフラグ
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
         underView.backgroundColor = UIColor.gray// underViewの背景を青色に設定
         underView.alpha = 0.5// 透明度を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 10)// 位置を中心に設定
-        /* upperViewを生成. */
+        /** upperViewを生成. **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
         upperView.backgroundColor = UIColor.gray
         upperView.alpha = 0.5// 透明度を設定
         upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 + 10)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
-        /* myToolViewViewを生成. */
+        
+        /** myToolViewViewを生成. **/
         myToolView.Delegate = self
         myToolView.frame =  CGRect(x: 0, y: 0, width: boundWidth, height: 40)// underViewを生成.
         myToolView.backgroundColor = UIColor.lightGray// underViewの背景を青色に設定
@@ -247,55 +298,67 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
         myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )// 位置を中心に設定
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         
-        //button1の追加
-        let editButton1 = UIButton(frame: CGRect(x:boundWidth - 40,y: 5, width:30, height:30))
-        editButton1.backgroundColor = UIColor.gray
-        editButton1.addTarget(self, action: "btn1_click:", for:.touchUpInside)
+        /** button1の追加 **/
+        editButton1 = UIButton(frame: CGRect(x:boundWidth - 60,y: 5, width:50, height:30))
+        editButton1.backgroundColor = UIColor.red  // タイトルを設定する(通常時)
         editButton1.setTitle("💠", for: UIControlState.normal)
+        // イベントを追加する
+        editButton1.addTarget(self, action: #selector(ViewController.btn1_click(sender:)), for: .touchUpInside)
         myToolView.addSubview(editButton1)
-        //button2の追加
-        let editButton2 = UIButton(frame: CGRect(x:50, y:5, width:30, height:30))
+        
+        /** button2の追加 **/
+        editButton2 = UIButton(frame: CGRect(x:10, y:5, width:30, height:30))
         editButton2.backgroundColor = UIColor.gray
-        editButton2.addTarget(self, action: Selector("btn2_click:"), for:.touchUpInside)
-        editButton2.setTitle("✎", for: UIControlState.normal)
+        editButton2.addTarget(self, action: #selector(ViewController.btn2_click(sender:)), for:.touchUpInside)
+        editButton2.setTitle("2", for: UIControlState.normal)
         myToolView.addSubview(editButton2)
-        //button3の追加
-        let editButton3 = UIButton(frame: CGRect(x:10, y:5, width:30, height:30))
+        /** button3の追加 **/
+        editButton3 = UIButton(frame: CGRect(x:60, y:5, width:30, height:30))
         editButton3.backgroundColor = UIColor.gray
-        editButton3.addTarget(self, action: Selector("btn3_click:"), for:.touchUpInside)
-        editButton3.setTitle("❤", for: UIControlState.normal)
+        editButton3.addTarget(self, action: #selector(ViewController.btn3_click(sender:)), for:.touchUpInside)
+        editButton3.setTitle("3", for: UIControlState.normal)
         myToolView.addSubview(editButton3)
+        /** button4の追加 **/
+        editButton4 = UIButton(frame: CGRect(x:110, y:5, width:30, height:30))
+        editButton4.backgroundColor = UIColor.gray
+        editButton4.addTarget(self, action: #selector(ViewController.btn4_click(sender:)), for:.touchUpInside)
+        editButton4.setTitle("4", for: UIControlState.normal)
+        myToolView.addSubview(editButton4)
         
         /* editViewを生成. */
         myEditView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 60))
         myEditView.backgroundColor = UIColor.red// underViewの背景を青色に設定
         myEditView.alpha = 0.5// 透明度を設定
         myEditView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40 - 30)// 位置を中心に設定
-        //button4の追加
-        let editButton4 = UIButton(frame: CGRect(x:boundWidth - 70, y:15, width:30, height:30))
-        editButton4.backgroundColor = UIColor.gray
-        //editButton4.addTarget(self, action: "btn4_click:", forControlEvents:.TouchUpInside)
-        //editButton4.setTitle("4", forState: UIControlState.Normal)
-        myEditView.addSubview(editButton4)
         //button5の追加
-        let editButton5 = UIButton(frame: CGRect(x:70, y:10, width:50,height: 40))
+        editButton5 = UIButton(frame: CGRect(x:70, y:10, width:50, height:40))
         editButton5.backgroundColor = UIColor.gray
-        //editButton5.addTarget(self, action: "btn5_click:", forControlEvents:.TouchUpInside)
-        //editButton5.setTitle("5", forState: UIControlState.Normal)
+        editButton5.addTarget(self, action: #selector(ViewController.btn5_click(sender:)), for:.touchUpInside)
+ 
+        editButton5.setTitle("5", for: UIControlState.normal)
         myEditView.addSubview(editButton5)
+ 
         //button6の追加
-        let editButton6 = UIButton(frame: CGRect(x:140, y:10, width:50, height:40))
+        editButton6 = UIButton(frame: CGRect(x:140, y:10, width:50, height:40))
         editButton6.backgroundColor = UIColor.gray
-        //editButton6.addTarget(self, action: "btn6_click:", forControlEvents:.TouchUpInside)
-        //editButton6.setTitle("6", forState: UIControlState.Normal)
+        editButton6.addTarget(self, action: #selector(ViewController.btn6_click(sender:)), for:.touchUpInside)
+
+        editButton6.setTitle("6", for: UIControlState.normal)
         myEditView.addSubview(editButton6)
         //button7の追加
-        let editButton7 = UIButton(frame: CGRect(x:210,y: 10,width: 50, height:40))
+        editButton7 = UIButton(frame: CGRect(x:210,y: 10,width: 50, height:40))
         editButton7.backgroundColor = UIColor.gray
-        //editButton.addTarget(self, action: "btn_click:", forControlEvents:.TouchUpInside)
-        //editButton.setTitle("7", forState: UIControlState.Normal)
+        editButton7.addTarget(self, action: #selector(ViewController.btn7_click(sender:)), for:.touchUpInside)
+
+        editButton7.setTitle("7", for: UIControlState.normal)
         myEditView.addSubview(editButton7)
-        //self.view.addSubview(myEditView)
+        //button8の追加
+        editButton8 = UIButton(frame: CGRect(x:280, y:10, width:50,height: 40))
+        editButton8.backgroundColor = UIColor.gray
+        editButton8.addTarget(self, action: #selector(ViewController.btn8_click(sender:)), for:.touchUpInside)
+ 
+        editButton8.setTitle("8", for: UIControlState.normal)
+        myEditView.addSubview(editButton8)
         
         /* ScrollViewを生成. */
         myScrollView.Delegate2 = self
@@ -309,29 +372,59 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
         myScrollView.bounces = false//スクロールをバウンドさせない
         self.view.addSubview(myScrollView)
         myScrollView.isUserInteractionEnabled = true
-        myScrollView.isPagingEnabled = false//離散スクロール
+        //myScrollView.isPagingEnabled = false//離散スクロール
         myScrollView.showsVerticalScrollIndicator = true
         myScrollView.showsHorizontalScrollIndicator = false// 横スクロールバー非表示
-        myScrollView.contentSize = CGSize(width:leafWidth*10 ,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
+        myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
         //myScrollView.directionalLockEnabled = true
         
-        /* Memo(ページ）ビューを作成・初期化する */
-        if memoView == nil{
+
+    //---- ページデータの読み込み・作成　-------------
+       //UserDrfaultの頁数を調べる
+        let kn = UserDataNum2()//保管してあるページ数
+       //pageImgs[]の初期化(必要なページ分だけで作る)
+        var num:Int = 0
+        if kn != 0{
+            let sa = kn - pageImgs.count + 1
+            if sa > 0{ num = sa }else{ num = 3 }
+            for _ in 1...num{
+              createNewPageImg2()
+            }
+           //imgsに保存データを読み込む
+            for i in 0..<kn{
+              readUserData2(pn: i)
+            }
+        }else{
+            for i in 0..<3{
+              createNewPageImg2()
+            }
+        }
+
+    //----- Memo(ページ）ビューを作成・初期化する -------
+        if memo == nil{
             
-            memoView = MemoView(frame: CGRect(x:0,y: 0,width:leafWidth*1,height: (leafHeight + leafMargin) * CGFloat(pageGyou) + topOffset))
+            //メモビューの初期化
+            let memoFrame = CGRect(x:0,y: 0,width:leafWidth*1,height: (leafHeight + leafMargin) * CGFloat(pageGyou) + topOffset)
+            let memo0 = Memo2View(frame: memoFrame)
+            let memo1 = Memo2View(frame: memoFrame)
+            let memo2 = Memo2View(frame: memoFrame)
+            memo = [memo0,memo1,memo2]
             //memoView.backgroundColor = UIColor.grayColor()
             //memoView.alpha = 0.5// 透明度を設定
-            // メモ表示内容の初期化
-            myScrollView.setMemoView()
-            
+        // メモ表示内容の初期化
+            memo[0].setMemo2View(pn: 0)//タグを付ける、メモの作成(indexページ)
+            memo[1].setMemo2View(pn: 1)//タグを付ける、メモの作成(第1ページ)
+            memo[2].setMemo2View(pn: 2)//タグを付ける、メモの作成(第2ページ)
             // ** memoView.userInteractionEnabled = true
-            myScrollView.addSubview(memoView)
+            pageNum = 2
+            myScrollView.addSubview((memo[pageNum]))
             self.view.addSubview(myScrollView)
-            myScrollView.contentOffset = CGPoint(x:leafWidth*0,y: 0)
+            myScrollView.contentOffset = CGPoint(x:0,y: 0)
             // myScrollView.showHomeFrame()
         }
-        
     }
+    
+    //  ======= End of viewDidLoad=======
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -394,7 +487,7 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
     
     @IBAction func reload(sender: AnyObject) {
         //myScrollView.Tshow_4thFrame()
-        myScrollView.gotoNextPage()
+        //myScrollView.gotoNextPage()
         /* リロードチェック用
          for idx in 1...100{
          reloads = memoView.saveImage2()
@@ -424,14 +517,16 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
     }
     
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
-    @IBAction func Second(sender: AnyObject) { // == Open Pallete ==
+    @IBAction func Pallete(_ sender: UIBarButtonItem) {
+    //}
+    //@IBAction func Second(sender: AnyObject) { // == Open Pallete ==
         
         if drawableView != nil {// パレットが表示されている時パレットを消す
-            myScrollView.upToImgs()//編集中のページ内容を更新する
+            //myScrollView.upToImgs()//編集中のページ内容を更新する
             drawableView!.removeFromSuperview()//　子viewを削除する??
             drawableView = nil
             myScrollView.frame = scrollRect
-            myScrollView.showHomeFrame()//スクロール再設定の後は必要！
+            //myScrollView.showHomeFrame()//スクロール再設定の後は必要！
             underBarDisp(disp: 0)//underViewを削除する
             isEditMode = false
             
@@ -452,11 +547,11 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
             
             // frameの値を設定する.
             myScrollView.frame = scrollRect_P
-            myScrollView.showHomeFrame()
+            //myScrollView.showHomeFrame()
             underBarDisp(disp: 1)//underViewを追加する
             //表示中のフレーム番号
-            let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
-            memoView.selectedNo(gyou: nowGyouNo,fn:fn)//選択行を表示
+            //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
+            //memoView.selectedNo(gyou: nowGyouNo,fn:fn)//選択行を表示
         }
     }
     
@@ -535,8 +630,8 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
             memoView.clearMemo(tag: nowGyouNo)
         }else{
             //myScrollView.Tshow_1beforeFrame()
-            myScrollView.showHomeFrame()
-            myScrollView.showBackPage()
+            //myScrollView.showHomeFrame()
+            //myScrollView.showBackPage()
         }
     }
     
@@ -561,23 +656,76 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
             
         }
     }
+    // ==  外部データ入出力関係  ==
+    func UserDataNum2()->Int{//これから読み込むUserDataに存在するページ数を取得する
+        //print(NSUserDefaults.standardUserDefaults().dictionaryRepresentation())
+        
+        let photoData = UserDefaults.standard
+        let dic: NSDictionary = photoData.dictionaryRepresentation() as NSDictionary
+        let keys = dic.allKeys
+        var kn = 0
+        for k in 0...20{
+            var key = "photos" + String(k + 1)
+            let found = keys.contains(where: { return $0 as! String == key })
+            if found == false { break}
+            kn = kn + 1
+        }
+        print("OK Google!: \(kn)")
+        return kn
+    }
+    
+    func createNewPageImg2(){ //新しいページを作成して末尾に追加する
+        let bImage:UIImage = UIImage(named: "blankW.png")!
+        var blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
+        pageImgs.append(blankImgs)
+    }
+    
+    func readUserData2(pn:Int){ //UserDataをpageImmgs[]に読み込む
+        var rl = reloadToPage2(pn: pn)
+        if rl.count > 0 { //これがないと読み込みエラーが発生 初期ではrl.count= 0
+            pageImgs[pn] = rl
+        }
+    }
+    
+    // UserDwfaultに保存のメモ画像をpageImgs:[]に読み込む
+    func reloadToPage2(pn:Int)->[UIImage] {
+        var imgs:[UIImage] = []
+        let photoData = UserDefaults.standard
+        // [UIImage] → [NSData]
+        //photoData.synchronize()
+        
+        let photosName:String = "photos" + String(pn)//保存名
+        //NSData から画像配列を取得する
+        
+        if photoData.object(forKey: photosName) != nil{
+            let images = photoData.object(forKey: photosName) as! [NSData]
+            
+            for k in 0...pageGyou - 1{
+                imgs.append(UIImage(data:images[k] as Data)!)
+            }
+        }
+        print("images[k]: \(imgs.count)")
+        return imgs
+    }
     
     /* -------------------　ボタン関数　-----------------------------*/
     
     func btn1_click(sender:UIButton){
-        //print("** btn1_click()")
+        print("** btn1_click()")
         if myEditFlag == false{
-            //myToolView.editButton1.setTitle("❖", forState: UIControlState.Normal)
+            editButton1.backgroundColor = UIColor.gray
+            editButton1.setTitle("⬇", for: UIControlState.normal)
             self.view.addSubview(myEditView)
             myEditFlag = true
         }else{
+            editButton1.backgroundColor = UIColor.red
+            editButton1.setTitle("💠", for: UIControlState.normal)
             myEditView.removeFromSuperview()
             myEditFlag = false
         }
     }
-    func btn2_click(sender:UIButton){}
-    
-    func btn3_click(sender:UIButton){
+    func btn2_click(sender:UIButton){
+        print("btn2_clicked!")
         if penColorNum == 1 {
             penColorNum = 2
         }else if penColorNum == 2{
@@ -587,22 +735,33 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
         }
     }
     
-    func btn4_click(sender:UIButton){}
+    func btn3_click(sender:UIButton){
+        print("btn3_clicked!")
+        drawableView.X_color = 0//ペンモード[黒色、赤色、青色]
+    }
     
+    func btn4_click(sender:UIButton){
+        drawableView.X_color = 1//消しゴムモード
+    }
+    func btn5_click(sender:UIButton){"btn5_clicked!"}
+    func btn6_click(sender:UIButton){"btn6_clicked!"}
+    func btn7_click(sender:UIButton){"btn7_clicked!"}
+    func btn8_click(sender:UIButton){"btn8_clicked!"}
     /* -------------------　プロトコル関数　-----------------------------*/
     func modalChanged(TouchNumber: Int) {// protocol ScrollViewDelegate
-        print("\(TouchNumber)")
-        frameNum = Int(myScrollView.contentOffset.x/leafWidth) + 1
-        print("frameNum: \(frameNum)")
-        if TouchNumber > (0 + 1)*100{
-            nowGyouNo = TouchNumber - (frameNum)*100
-            print("nowGyouNo: \(nowGyouNo)")
+        print("TouchNumber:\(TouchNumber)")
+        print("pageNum: \(pageNum)")
+        //frameNum = Int(myScrollView.contentOffset.x/leafWidth) + 1
+        //print("frameNum: \(frameNum)")
+        //if TouchNumber > (0 + 1)*100{
+            nowGyouNo = TouchNumber
+            print("nowGyouNo?: \(nowGyouNo)")
             if isEditMode == true{
                 //メモに書き出した内容をパレットに読み込む//20161024追加
-                let myMemo:UIImage = memoView.readMemo(tag: nowGyouNo)
+                let myMemo:UIImage = memo[pageNum].readMemo(tag: nowGyouNo)
                 //表示中のフレーム番号
                 let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
-                memoView.selectedNo(gyou: nowGyouNo,fn: fn)
+                memo[pageNum].selectedNo(tagN: nowGyouNo)
                 //パレット表示用にリサイズする(extension)
                 //====================================================
                 let reSize = CGSize(width: vWidth, height: vHeight)
@@ -611,11 +770,11 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
                 drawableView.backgroundColor = UIColor(patternImage: reMemo)
             }else{
                 //表示中のフレーム番号
-                let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
-                memoView.selectedNo(gyou: nowGyouNo,fn: fn)
+                //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
+                memo[pageNum].selectedNo(tagN:nowGyouNo)
             }
-        }
-        print("nowGyouNo: \(nowGyouNo)")
+        //}
+        //print("nowGyouNo: \(nowGyouNo)")
     }
     
     func dispPosChange(midX: CGFloat){// protocol UpperToolViewDelegate
