@@ -231,9 +231,9 @@ class DrawableView: UIView {
                  let reSize = CGSize(width: leafWidth, height: leafHeight)
                  let leafImage = myImage1.resize(reSize)
                  //========================================================*/
-                memo[pageNum].addMemo(img: myImage1,tag:nowGyouNo)
+                memo[fNum].addMemo(img: myImage1,tag:nowGyouNo)
                 //メモに書き出した内容をパレットに読み込む//20161024追加 変更：20161202
-                let myMemo:UIImage = memo[pageNum].readMemo(tag: nowGyouNo)
+                let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
                 self.backgroundColor = UIColor(patternImage:myMemo)// @ @ @ @
                 self.reAddSubView()//前フィルタ(subView)を付加する
                 lined = nil //20161024追加 @ @ @ @ @ 5

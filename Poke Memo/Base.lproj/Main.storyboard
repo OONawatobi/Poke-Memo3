@@ -30,6 +30,9 @@
                                     <navigationItem title="E.T.Memo" id="gaI-wz-R0b">
                                         <barButtonItem key="leftBarButtonItem" systemItem="pause" id="aWX-hW-h3T">
                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <connections>
+                                                <action selector="index:" destination="BYZ-38-t0r" id="lRA-V3-XVW"/>
+                                            </connections>
                                         </barButtonItem>
                                         <rightBarButtonItems>
                                             <barButtonItem systemItem="compose" id="d15-nu-TSk">
@@ -40,6 +43,9 @@
                                             </barButtonItem>
                                             <barButtonItem systemItem="bookmarks" id="oI5-jf-xra">
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <connections>
+                                                    <action selector="menu:" destination="BYZ-38-t0r" id="XE5-GX-lqK"/>
+                                                </connections>
                                             </barButtonItem>
                                         </rightBarButtonItems>
                                     </navigationItem>
@@ -49,20 +55,28 @@
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem title="Item" style="plain" systemItem="redo" id="MpA-rg-HAi"/>
+                                    <barButtonItem title="Item" style="plain" systemItem="redo" id="MpA-rg-HAi">
+                                        <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="O6e-WY-fYM"/>
                                     <barButtonItem title="Item" style="plain" systemItem="search" id="0pA-9X-3Vt">
-                                        <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="vgp-nw-Gan"/>
                                     <barButtonItem title="Item" systemItem="done" id="tuS-MX-nzQ">
-                                        <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                     </barButtonItem>
                                 </items>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="barTintColor" red="0.90588235289999997" green="0.90588235289999997" blue="0.90588235289999997" alpha="1" colorSpace="calibratedRGB"/>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
+                    <connections>
+                        <outlet property="naviBar" destination="ivu-cJ-hot" id="Ea4-v8-zeM"/>
+                        <outlet property="toolBar" destination="WDe-yS-lAl" id="TeK-ca-HvE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
