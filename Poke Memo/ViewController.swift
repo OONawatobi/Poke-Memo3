@@ -228,6 +228,7 @@ var drawableView: DrawableView! = nil//パレット画面
 let vHeight: CGFloat = 181 //手書きビューの高さ@@@@@@@@
 var vWidth:CGFloat! = leafWidth * vHeight/leafHeight//手書きビューの幅?? ??boundWidth*3
 var maxRightPosX:CGFloat! = 0//描画したｘ座標の最大値
+
 //------------------------------------------------------------------------
 
 protocol ScrollView2Delegate{//スクロールビューの操作(機能）
@@ -239,9 +240,10 @@ protocol ScrollView2Delegate{//スクロールビューの操作(機能）
 protocol UpperToolViewDelegate{//upperビューの操作(機能）
     func dispPosChange(midX: CGFloat)
 }
+
 //    =======  ViewController    ========
 
-class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate {
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate{
     
     let myScrollView = TouchScrollView()//UIScrollView()
     var spaceView1: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
@@ -267,6 +269,15 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
     var editButton9:UIButton!
     var editButton10:UIButton!
     
+    /* --- リストメニュー --- */
+    let mw:CGFloat = 200//メニューリストの幅
+    let mh:CGFloat = 300//メニューリストの高さ
+    var mv:UIView!
+    var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
+    var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
+    //++テーブルに表示するセル配列
+    var items: [String] = ["日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","　","各種設定","スタートガイドを見る","                   ▲ "]
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
@@ -449,6 +460,22 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
             myScrollView.contentOffset = CGPoint(x:0,y: 0)
             // myScrollView.showHomeFrame()
         }
+        //---------- リストメニュ−　---------
+        //++テーブルビュー初期化、関連付け
+        let w = boundWidth
+        tV.frame         =   CGRect(x:0, y:0, width:mw + 20 , height:mh)
+        smv = UIScrollView(frame: CGRect(x:w - mw - 10,y:65,width:mw + 20,height:mh - 0))
+        tV.backgroundColor = UIColor.white
+        smv.backgroundColor = UIColor.clear
+        tV.layer.cornerRadius = 8.0//角丸にする
+        tV.layer.borderColor = UIColor.gray.cgColor
+        tV.layer.borderWidth = 1
+        smv.contentSize = tV.frame.size
+        smv.contentOffset = CGPoint(x:0,y:mh)
+        smv.addSubview(tV)
+        tV.delegate      =   self
+        tV.dataSource    =   self
+        tV.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
     //  ======= End of viewDidLoad=======
@@ -460,7 +487,7 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
     
     @IBOutlet weak var naviBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
-    
+    @IBOutlet weak var menu2: UIBarButtonItem!
     //INDEXの表示・非表示
     var indexFlag = false
     var retNum:Int = 0
@@ -513,7 +540,25 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
     }
     
     @IBAction func menu(_ sender: UIBarButtonItem) {
-        
+        if listFlag == false{//リストが非表示の場合
+            view.addSubview(smv)
+            smv.contentOffset = CGPoint(x:0,y:self.mh )
+            UIScrollView.animate(withDuration: 0.3, animations: {
+                () -> Void in
+                self.smv.contentOffset = CGPoint(x:0,y:10)
+            })
+            listFlag = true
+        }else{//リストが表示の場合
+            UIScrollView.animate(withDuration: 0.3, animations: {
+                () -> Void in
+                self.smv.contentOffset = CGPoint(x:0,y:self.mh)
+            }){ (Bool) -> Void in  // アニメーション完了時の処理
+                self.smv.removeFromSuperview()
+            }
+            listFlag = false
+            
+        }
+
     }
  
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
@@ -623,6 +668,46 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
         }
         print("images[k]: \(imgs.count)")
         return imgs
+    }
+    //----- リストメニューtableView関連 ---------------
+    var listFlag = false
+    func tableView(_ tV: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return self.items.count
+    }
+    
+    func tableView(_ tV: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell:UITableViewCell = tV.dequeueReusableCell(withIdentifier: "cell")! as UITableViewCell
+        cell.textLabel?.text = self.items[indexPath.row]
+        return cell
+    }
+    
+    func tableView(_ tV: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        print("セルを選択しました！ #\(indexPath.row)!")
+        if indexPath.row == 6{
+           self.menu(self.menu2)
+            tV.deselectRow(at: indexPath as IndexPath, animated: true)
+        }else{
+            let t = items[indexPath.row]
+            
+            Common.dispAlert(target: self, title: t, message: "実行しますか？", completion:{
+                print("alert end @@@@")
+                tV.deselectRow(at: indexPath as IndexPath, animated: true)
+                //メニューを閉じる(アニメーション付）
+                //self.edit2(self.edit)
+                UIScrollView.animate(withDuration:0.5, animations: {
+                    () -> Void in
+                    self.smv.contentOffset = CGPoint(x:0,y:self.mh)
+                })
+                { (Bool) -> Void in  // アニメーション完了時の処理
+                    self.smv.removeFromSuperview()
+                }
+                self.listFlag = false
+                //---------------------------
+            })
+        }
     }
     
     /* -------------------　ボタン関数　-----------------------------*/
@@ -933,5 +1018,38 @@ class ViewController: UIViewController,UIScrollViewDelegate,ScrollView2Delegate,
     }
 
 
+}
+struct Common {
+    static func dispAlert(target:UIViewController,title:String,message:String,completion: (() -> Void)!)->Void{
+        
+        // ① UIAlertControllerクラスのインスタンスを生成
+        // タイトル, メッセージ, Alertのスタイルを指定する
+        // 第3引数のpreferredStyleでアラートの表示スタイルを指定する
+        let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle:  UIAlertControllerStyle.alert)
+        print("alert!!!")
+        // ② Actionの設定
+        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定する
+        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
+        // OKボタン
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("OK")
+            completion()})
+        // キャンセルボタン
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("Cancel")
+            completion()})
+        // キャンセルボタン
+        
+        // ③ UIAlertControllerにActionを追加
+        alert.addAction(cancelAction)
+        alert.addAction(defaultAction)
+        
+        // ④ Alertを表示
+        target.present(alert, animated: true, completion: nil)
+    }
 }
 
