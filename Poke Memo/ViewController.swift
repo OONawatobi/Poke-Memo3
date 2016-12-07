@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  Poke Memo
+//  Poke Memo⇒　E.T.Memo Happy Memo,Leaf Memo ⇒ Happy Note( Ver2)
 //
 //  Created by 青山 行夫 on 2016/11/23.
 //  Copyright © 2016年 mm289. All rights reserved.
@@ -204,6 +204,7 @@ let boundHeight = UIScreen.main.bounds.size.height
 var retina:Int = 2//レティナディスプレイ対応
 var infoPage:[(memoNo:Int,gyou:Int,maxUsingGyouNo:Int)]!//未使用
 var isEditMode:Bool! = false//パレットが表示されている場合：true
+
 var penColorNum:Int = 1
 let homeFrame:Int = 2//表示用フレーム ⇒グローバル定数
 //-----ページ---------
@@ -255,7 +256,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var underFlag: Bool!
     var myEditFlag:Bool! = false
     var scrollRect:CGRect!
-    var scrollRect_P:CGRect!//パレットが表示されている時
+    var scrollRect_P:CGRect!//パレットが表示されている時の表示サイズ
+
+    var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
+    var isIndexMode:Bool! = false//Indexの表示フラグ：true
+    //var indexFlag:Bool! = false//Indexの表示フラグ：true
     //var reloadedImage:UIImage!//ファイルから読み込んだイメージ：未使用　下記使用
     var reloads:[UIImage]!//ファイルから読み込んだイメージ配列
     var editButton1:UIButton!
@@ -408,7 +413,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myScrollView.showsHorizontalScrollIndicator = false// 横スクロールバー非表示
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
         //myScrollView.directionalLockEnabled = true
-        
+        //------------ スワイプ認識登録　------------
+        //右スワイプ
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: "swipeR")
+        rightSwipe.direction = .right
+        myScrollView.addGestureRecognizer(rightSwipe)
+        //左スワイプ
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: "swipeL")
+        leftSwipe.direction = .left
+        myScrollView.addGestureRecognizer(leftSwipe)
 
     //---- ページデータの読み込み・作成　-------------
        //UserDrfaultの頁数を調べる
@@ -470,12 +483,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tV.layer.cornerRadius = 8.0//角丸にする
         tV.layer.borderColor = UIColor.gray.cgColor
         tV.layer.borderWidth = 1
+        /*
+        // シャドウカラー
+        tV.layer.shadowColor = UIColor.black.cgColor/* 影の色 */
+        tV.layer.shadowOffset = CGSize(width:1,height: 1)       //  シャドウサイズ
+        tV.layer.shadowOpacity = 1.0        // 透明度
+        tV.layer.shadowRadius = 1        // 角度(距離）
+        */
+        
         smv.contentSize = tV.frame.size
         smv.contentOffset = CGPoint(x:0,y:mh)
         smv.addSubview(tV)
         tV.delegate      =   self
         tV.dataSource    =   self
         tV.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        
     }
     
     //  ======= End of viewDidLoad=======
@@ -489,9 +511,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var menu2: UIBarButtonItem!
     //INDEXの表示・非表示
-    var indexFlag = false
+ 
     var retNum:Int = 0
     @IBAction func index(_ sender: UIBarButtonItem) {
+        if isEditMode! { return }//パレットが表示中は実行しない
         //memo[0]-[2]に枠を追加する
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
@@ -499,7 +522,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         
         var opt = UIViewAnimationOptions.transitionFlipFromLeft
-        if indexFlag == false{//Indexページが非表示の場合
+        if isIndexMode == false{//Indexページが非表示の場合
             retNum = fNum
             opt = UIViewAnimationOptions.transitionFlipFromTop//transitionFlipFromRight
                         UIView.transition(
@@ -513,7 +536,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         memo[n].layer.borderWidth = 0
                     }
             })
-            indexFlag = true
+            isIndexMode = true
             fNum = 0
             
             print("retNum1: \(retNum)")
@@ -533,21 +556,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                 }
             )
-            indexFlag = false
+            isIndexMode = false
             print("retNum: \(retNum)")
             fNum = retNum
         }
     }
     
     @IBAction func menu(_ sender: UIBarButtonItem) {
-        if listFlag == false{//リストが非表示の場合
+        if isEditMode! { return }//パレットが表示中は実行しない
+        if isMenuMode == false{//リストが非表示の場合
             view.addSubview(smv)
             smv.contentOffset = CGPoint(x:0,y:self.mh )
             UIScrollView.animate(withDuration: 0.3, animations: {
                 () -> Void in
                 self.smv.contentOffset = CGPoint(x:0,y:10)
             })
-            listFlag = true
+            isMenuMode = true
         }else{//リストが表示の場合
             UIScrollView.animate(withDuration: 0.3, animations: {
                 () -> Void in
@@ -555,7 +579,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }){ (Bool) -> Void in  // アニメーション完了時の処理
                 self.smv.removeFromSuperview()
             }
-            listFlag = false
+            isMenuMode = false
             
         }
 
@@ -563,7 +587,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
  
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
-        
+        if isMenuMode! { return }//リストメニュー表示中は実行しない
+        if isIndexMode! { return }//index表示中は実行しない
         if drawableView != nil {// パレットが表示されている時パレットを消す
             //myScrollView.upToImgs()//編集中のページ内容を更新する
             drawableView!.removeFromSuperview()//　子viewを削除する??
@@ -670,7 +695,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return imgs
     }
     //----- リストメニューtableView関連 ---------------
-    var listFlag = false
+ 
     func tableView(_ tV: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return self.items.count
@@ -704,7 +729,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 { (Bool) -> Void in  // アニメーション完了時の処理
                     self.smv.removeFromSuperview()
                 }
-                self.listFlag = false
+                self.isMenuMode = false
                 //---------------------------
             })
         }
@@ -752,8 +777,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func btn7_click(sender:UIButton){
         print("btn7_clicked!")
-        if indexFlag { return }//Indexが表示中は実行しない
+    }
 
+    
+    func btn8_click(sender:UIButton){
+        //----------ページの右端に太線-------------------------
+        print("btn8_clicked!")
+    }
+    
+    func btn9_click(sender:UIButton){print("btn9_clicked!")}
+    func btn10_click(sender:UIButton){print("btn10_clicked!")}
+    
+   /* -------------------　スワイプ関数　-----------------------------*/
+    func swipeR(){
+        if isIndexMode! { return }//Indexが表示中は実行しない
+        if isEditMode! { return }//パレットが表示中は実行しない
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
@@ -774,14 +812,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     //memo[n].layer.borderColor = UIColor.clear.cgColor
                     memo[n].layer.borderWidth = 0
                 }
-            })
+        })
         fNum = f
     }
     
-    func btn8_click(sender:UIButton){
-        //----------ページの右端に太線-------------------------
-        print("btn8_clicked!")
-        if indexFlag { return }
+    func swipeL(){
+        if isIndexMode! { return }
+        if isEditMode! { return }//パレットが表示中は実行しない
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
@@ -809,8 +846,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //-----------------------------------------
                 //transitionCurlUp,
     }
-    func btn9_click(sender:UIButton){print("btn9_clicked!")}
-    func btn10_click(sender:UIButton){print("btn10_clicked!")}
+
     
     /* -------------------　プロトコル関数　-----------------------------*/
     func modalChanged(TouchNumber: Int) {// protocol ScrollViewDelegate
