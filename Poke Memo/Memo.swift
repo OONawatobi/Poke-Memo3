@@ -23,15 +23,38 @@ class Memo2View:UIView{
 //
     
     /* pageImageの要素画像をmemoViewにコピーします */
-    func setMemo2View(pn:Int){//最新版1201
-        makePageWithTag(pn:pn)//tag付の空メモページを作る
-       //pageImgs[指定ページ]の内容をメモページに取り込む
+    func setMemoFromImgs(pn:Int,imgs:[UIImage]){
+        //tag付の空メモページを作る
+        makePageWithTag(pn:pn)
+        
+        //pageImgs[指定ページ]の内容をメモページに取り込む
         for idx in 0..<pageGyou{
-            var tag = pn*100 + idx + 1
+            let tag = pn*100 + idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
             //print("bbbbbbbbbbb:\(pn)")
             
-            targetMemo.image = pageImgs[pn][idx]
+            targetMemo.image = imgs[idx]//???pageImgsを無くす??
+            //タグ番号を画像に合成する：試験用
+            targetMemo.image = targetMemo.image?.addText(text: String(tag))
+            if idx == 0 && pn == 0{
+                targetMemo.image = targetMemo.image?.addText(text: "INDEX")
+            }
+            //print("Viewtag : \(self.tag)")
+            //print("targetMemo.image = \(targetMemo.image?.size)")
+        }
+    }
+    
+    func setMemo2View(pn:Int){//最新版1201
+       //tag付の空メモページを作る
+        makePageWithTag(pn:pn)
+        
+       //pageImgs[指定ページ]の内容をメモページに取り込む
+        for idx in 0..<pageGyou{
+            let tag = pn*100 + idx + 1
+            let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+            //print("bbbbbbbbbbb:\(pn)")
+            
+            targetMemo.image = pageImgs[pn][idx]//???pageImgsを無くす??
             //タグ番号を画像に合成する：試験用
             targetMemo.image = targetMemo.image?.addText(text: String(tag))
             if idx == 0 && pn == 0{
@@ -80,15 +103,12 @@ class Memo2View:UIView{
         }
 
         //新しく選択した行の背景に色を付ける
-        //let tag = (frameNum*1)*100 + gyou//tag = 100 + 行番号
         print("newGyouNo:tag\(tag)")
         
         //↓エラー
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
         //targetMemo.changeBottomBorder(UIColor.magentaColor(), width:2 )
-        let myColor = UIColor.green
-        let selectedColor = myColor.withAlphaComponent(0.1)
-        targetMemo.backgroundColor = selectedColor
+        targetMemo.backgroundColor = UIColor.green.withAlphaComponent(0.1)
         //beforeGyouNo = tagN//選択した行を記憶する
  
     }
@@ -114,14 +134,13 @@ class Memo2View:UIView{
             
             //leafの枠の下線を灰色にする
             if idx == 0{
-                myLeaf.addBottomBorderWithColor(color: UIColor.lightGray, width: 1.5)
+                myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
             }else{
                 myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 1, type: .Down)
             }
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
             myLeaf.image = UIImage(named: "blankW.png")
-            //タグ番号を画像に追加する
             //print("myTag?:\(myTag)")
             myLeaf.isUserInteractionEnabled = true
             self.addSubview(myLeaf)
@@ -152,14 +171,14 @@ class Memo2View:UIView{
     /* 選択行の真下に空白のメモを一行追加する(Tag番号を付け替える) */
     func insertNewMemo(gyou:Int,maxGyou:Int){
         let tag = (pageNum)*100 + gyou//tag = 300 + 行番号
-        let maxTag = (pageNum)*100 + maxGyou
+       // let maxTag = (pageNum)*100 + maxGyou
         let myGyou = maxGyou - gyou
         
         if myGyou != 0{//最終行でない場合だけ処理する
             //メモ内容を１行づつ下にコピーする※但し、メモ末尾の内容は無くなる
             //対応1：1行を末尾に増やす。　対応2：次ページにコピーする
             for k in 1...myGyou{
-                var n = myGyou - k
+                let n = myGyou - k
                 let targetMemo:UIImageView = self.viewWithTag(tag + n) as! UIImageView
                 let targetMemo2:UIImageView = self.viewWithTag(tag + n + 1) as! UIImageView
                 targetMemo2.image = targetMemo.image

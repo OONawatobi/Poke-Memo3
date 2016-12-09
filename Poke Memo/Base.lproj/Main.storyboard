@@ -57,14 +57,23 @@
                                 <items>
                                     <barButtonItem title="Item" style="plain" systemItem="redo" id="MpA-rg-HAi">
                                         <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <connections>
+                                            <action selector="redo:" destination="BYZ-38-t0r" id="VNi-fV-UK8"/>
+                                        </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="O6e-WY-fYM"/>
                                     <barButtonItem title="Item" style="plain" systemItem="search" id="0pA-9X-3Vt">
                                         <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <connections>
+                                            <action selector="zoom:" destination="BYZ-38-t0r" id="HvZ-LX-Z3S"/>
+                                        </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="vgp-nw-Gan"/>
                                     <barButtonItem title="Item" systemItem="done" id="tuS-MX-nzQ">
                                         <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <connections>
+                                            <action selector="done:" destination="BYZ-38-t0r" id="KzW-8A-Rvj"/>
+                                        </connections>
                                     </barButtonItem>
                                 </items>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -74,9 +83,12 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
+                        <outlet property="done2" destination="tuS-MX-nzQ" id="50E-CC-VE6"/>
                         <outlet property="menu2" destination="oI5-jf-xra" id="UEC-lP-f0u"/>
                         <outlet property="naviBar" destination="ivu-cJ-hot" id="Ea4-v8-zeM"/>
+                        <outlet property="pallete2" destination="d15-nu-TSk" id="2Y1-9c-8Ab"/>
                         <outlet property="toolBar" destination="WDe-yS-lAl" id="TeK-ca-HvE"/>
+                        <outlet property="zoom2" destination="0pA-9X-3Vt" id="Fei-ke-lnG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

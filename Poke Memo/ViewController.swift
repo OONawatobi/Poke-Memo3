@@ -281,7 +281,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
-    var items: [String] = ["日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","　","各種設定","スタートガイドを見る","                   ▲ "]
+    var items: [String] = ["日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","------------------------　","各種設定","スタートガイドを見る","                   ▲ "]
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -400,9 +400,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myScrollView.Delegate2 = self
         myScrollView.Delegate3 = self
         //パレット表示されていない場合
-        scrollRect = CGRect(x:10, y:65  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 )
+        scrollRect = CGRect(x:10, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 )
         //パレット表示されている場合
-        scrollRect_P = CGRect(x:10,y: 65,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 44)
+        scrollRect_P = CGRect(x:10,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 44)
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -415,16 +415,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //myScrollView.directionalLockEnabled = true
         //------------ スワイプ認識登録　------------
         //右スワイプ
-        let rightSwipe = UISwipeGestureRecognizer(target: self, action: "swipeR")
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.swipeR))
         rightSwipe.direction = .right
         myScrollView.addGestureRecognizer(rightSwipe)
         //左スワイプ
-        let leftSwipe = UISwipeGestureRecognizer(target: self, action: "swipeL")
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.swipeL))
         leftSwipe.direction = .left
         myScrollView.addGestureRecognizer(leftSwipe)
 
     //---- ページデータの読み込み・作成　-------------
-       //UserDrfaultの頁数を調べる
+       
+        //UserDrfaultの頁数を調べる
         let kn = UserDataNum2()//保管してあるページ数
        //pageImgs[]の初期化(必要なページ分だけで作る)
         var num:Int = 0
@@ -436,11 +437,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
            //imgsに保存データを読み込む
             for i in 0..<kn{
-              readUserData2(pn: i)
+              //readUserData2(pn: i)
             }
         }else{
-            for i in 0..<3{
-              createNewPageImg2()
+            for _ in 0..<3{
+              createNewPageImg2()//pageImgs[]にappendする
             }
         }
 
@@ -452,7 +453,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let memo0 = Memo2View(frame: memoFrame)
             let memo1 = Memo2View(frame: memoFrame)
             let memo2 = Memo2View(frame: memoFrame)
-
             memo = [memo0,memo1,memo2]
          // メモページの背景色をつける:トランジション時だけ背景色に透明度をつける為
             for n in 0...2{
@@ -460,12 +460,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                let selectedColor = myColor.withAlphaComponent(0.5)
                memo[n].backgroundColor = selectedColor
             }
-           
-        // メモ表示内容の初期化
+            //Indexページだけ背景色をつける
+            memo[0].backgroundColor = UIColor.red.withAlphaComponent(0.1)
+            
+        // メモ表示内容の初期化　??pageImgs[][]を使用している
             memo[0].setMemo2View(pn: 0)//タグを付ける、メモの作成(indexページ)
-            memo[1].setMemo2View(pn: 1)//タグを付ける、メモの作成(第1ページ)
-            memo[2].setMemo2View(pn: 2)//タグを付ける、メモの作成(第2ページ)
-
+            //memo[1].setMemo2View(pn: 1)//タグを付ける、メモの作成(第1ページ)
+            //memo[2].setMemo2View(pn: 2)//タグを付ける、メモの作成(第2ページ)
+            //---------------------
+            var im = readPage(pn:1)
+            memo[1].setMemoFromImgs(pn:1,imgs:im)
+            im = readPage(pn:2)
+            memo[2].setMemoFromImgs(pn:2,imgs:im)
+            //-----------------------------------
             // ** memoView.userInteractionEnabled = true
             fNum = 1//⇒fNumに変更予定
             myScrollView.addSubview((memo[1]))
@@ -474,11 +481,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             // myScrollView.showHomeFrame()
         }
         //---------- リストメニュ−　---------
-        //++テーブルビュー初期化、関連付け
+        //テーブルビュー初期化、関連付け
         let w = boundWidth
         tV.frame         =   CGRect(x:0, y:0, width:mw + 20 , height:mh)
         smv = UIScrollView(frame: CGRect(x:w - mw - 10,y:65,width:mw + 20,height:mh - 0))
-        tV.backgroundColor = UIColor.white
         smv.backgroundColor = UIColor.clear
         tV.layer.cornerRadius = 8.0//角丸にする
         tV.layer.borderColor = UIColor.gray.cgColor
@@ -490,10 +496,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tV.layer.shadowOpacity = 1.0        // 透明度
         tV.layer.shadowRadius = 1        // 角度(距離）
         */
-        
+
         smv.contentSize = tV.frame.size
         smv.contentOffset = CGPoint(x:0,y:mh)
         smv.addSubview(tV)
+        //smv.addSubview(bgV)
+        
         tV.delegate      =   self
         tV.dataSource    =   self
         tV.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -510,8 +518,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var naviBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var menu2: UIBarButtonItem!
+    
+    @IBOutlet weak var pallete2: UIBarButtonItem!
+    @IBOutlet weak var done2: UIBarButtonItem!
+    
+    @IBOutlet weak var zoom2: UIBarButtonItem!
+    
     //INDEXの表示・非表示
- 
     var retNum:Int = 0
     @IBAction func index(_ sender: UIBarButtonItem) {
         if isEditMode! { return }//パレットが表示中は実行しない
@@ -604,7 +617,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //パレットビューを作成・初期化する
             
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
-            let sa = (vWidth - boundWidth)/2  //?? ??
+            //let sa = (vWidth - boundWidth)/2  //?? ??
             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
             drawableView.layer.position = leftEndPoint
             
@@ -624,6 +637,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
+    @IBAction func done(_ sender: UIBarButtonItem) {
+    }
+    
+    @IBAction func zoom(_ sender: UIBarButtonItem) {
+    }
+    
+    @IBAction func redo(_ sender: UIBarButtonItem) {
+    }
     //----------------- その他の関数　-------------------------r
     func underBarDisp(disp:Int){
         if disp == 1 {
@@ -644,7 +665,47 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     // ==  外部データ入出力関係  ==
-    func UserDataNum2()->Int{//これから読み込むUserDataに存在するページ数を取得する
+    
+    //外部のページデータを読み込む: photos”pn”[] ->[UIImage]
+    func readPage(pn:Int)->[UIImage]{
+        let retImgs = reloadToPage2(pn:pn)//UserDataをpageImmgs[]に読み込む
+        if retImgs.count > 0{ return retImgs }
+        else{ //外部データが無い場合は空白の目ページImgsを作成する
+            let bImage:UIImage = UIImage(named: "blankW.png")!//⬅4545.png
+            let blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
+            return blankImgs }
+    }
+    
+    //ページ内容を外部データに書き出す
+    func writePge(pn:Int,imgs:[UIImage]){
+        //UserDefaultに保存する
+        let photos = imgs
+        
+        // [UIImage] → [NSData]
+        let photoData: UserDefaults = UserDefaults.standard
+        let dataImages: [Data] = photos.map { (image) -> Data in
+            UIImagePNGRepresentation(image)!
+            }
+        let photosName:String = "photos" + String(pn)//保存名を決定
+        photoData.set(dataImages, forKey: photosName)
+        //photoData.synchronize()//必要かどうか？あると遅くなるのか？
+    }
+    
+    //外部のページデータを削除する(all:1の場合は全削除）
+    func delPage(pn:Int,all:Int){
+        if all == 1{
+        let appDomain:String = Bundle.main.bundleIdentifier!
+        UserDefaults.standard.removePersistentDomain(forName: appDomain)
+        }else if all == 0{
+        // 指定キーidの値のみを削除
+        let photosName:String = "photos" + String(pn)//保存名を決定
+        let userDefault = UserDefaults.standard
+        userDefault.removeObject(forKey: photosName)
+        }
+    }
+ 
+    //これから読み込むUserDataに存在するページ数を取得する
+    func UserDataNum2()->Int{
         //print(NSUserDefaults.standardUserDefaults().dictionaryRepresentation())
         
         let photoData = UserDefaults.standard
@@ -652,7 +713,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let keys = dic.allKeys
         var kn = 0
         for k in 0...20{
-            var key = "photos" + String(k + 1)
+            let key = "photos" + String(k + 1)
             let found = keys.contains(where: { return $0 as! String == key })
             if found == false { break}
             kn = kn + 1
@@ -661,14 +722,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return kn
     }
     
-    func createNewPageImg2(){ //新しいページを作成して末尾に追加する
-        let bImage:UIImage = UIImage(named: "blankW.png")!
-        var blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
+    //新しいページを作成して末尾に追加する
+    func createNewPageImg2(){
+        let bImage:UIImage = UIImage(named: "blankW.png")!//⬅4545.png
+        let blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
         pageImgs.append(blankImgs)
     }
     
-    func readUserData2(pn:Int){ //UserDataをpageImmgs[]に読み込む
-        var rl = reloadToPage2(pn: pn)
+    //UserDataをpageImmgs[]に読み込む
+    func readUserData2(pn:Int){
+        let rl = reloadToPage2(pn: pn)
         if rl.count > 0 { //これがないと読み込みエラーが発生 初期ではrl.count= 0
             pageImgs[pn] = rl
         }
@@ -694,6 +757,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("images[k]: \(imgs.count)")
         return imgs
     }
+    
     //----- リストメニューtableView関連 ---------------
  
     func tableView(_ tV: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -705,10 +769,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         let cell:UITableViewCell = tV.dequeueReusableCell(withIdentifier: "cell")! as UITableViewCell
         cell.textLabel?.text = self.items[indexPath.row]
+        cell.contentView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.08)
         return cell
     }
     
-    func tableView(_ tV: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tV: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         print("セルを選択しました！ #\(indexPath.row)!")
         if indexPath.row == 6{
@@ -797,11 +862,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[n].layer.borderWidth = 1
         }
         var f = 0
-        if fNum == 1{
-            f = 2}
-        else if fNum == 2{
-            f = 1
-        }
+        f = (fNum == 1) ? 2: 1
+        /*-------
+        var im = readPage(pn:pageNum - 1)
+        memo[f].setMemoFromImgs(pn:pageNum - 1,imgs:im)
+        //-------- */
+        //memo[f] =
         UIView.transition(
             from: memo[fNum],
             to: memo[f],
@@ -814,7 +880,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 }
         })
         fNum = f
-    }
+        /*--------
+        pageNum -= 1
+        if pageNum < 1{pageNum = 1}
+        //-------- */    }
     
     func swipeL(){
         if isIndexMode! { return }
@@ -824,13 +893,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[n].layer.borderWidth = 1
         }
 
-        //func swipeL()
         var f = 0
-        if fNum == 1{
-             f = 2}
-        else if fNum == 2{
-             f = 1
-        }
+        f = (fNum == 1) ? 2: 1//フレームのトグル
+        /*-------
+        var im = readPage(pn:pageNum + 1)
+        memo[f].setMemoFromImgs(pn:pageNum + 1,imgs:im)
+        //-------- */
             UIView.transition(
                 from: memo[fNum],
                 to: memo[f],
@@ -843,7 +911,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                 })
         fNum = f
-        //-----------------------------------------
+        /*-----------
+        pageNum += 1
+        //----------- */
                 //transitionCurlUp,
     }
 
@@ -859,7 +929,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //メモに書き出した内容をパレットに読み込む//20161024追加
                 let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
                 //表示中のフレーム番号
-                let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
+                //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
                 memo[fNum].selectedNo(tagN: nowGyouNo)
                 //パレット表示用にリサイズする(extension)
                 //====================================================
@@ -883,13 +953,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     /* ------------------------ デリゲート関数　-------------------------- */
     var scrollBeginingPoint: CGPoint!
     
-    func scrollViewWillBeginDragging(myScrollView: UIScrollView) {
+    private func scrollViewWillBeginDragging(myScrollView: UIScrollView) {
         scrollBeginingPoint = myScrollView.contentOffset;
         print("SSSSSS")
     }
     
     func scrollViewDidScroll(myScrollView: UIScrollView) {
-        var currentPoint = myScrollView.contentOffset
+        let currentPoint = myScrollView.contentOffset
         if(scrollBeginingPoint.y < currentPoint.y){
             print("下へスクロール")
         }else{
@@ -916,8 +986,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         modalChanged(TouchNumber: (pageNum)*100 + nowGyouNo)
         // 保存データを全削除
         //
-        let userDefault = UserDefaults.standard
-        var appDomain:String = Bundle.main.bundleIdentifier!
+        //let userDefault = UserDefaults.standard
+        let appDomain:String = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: appDomain)
         /*
          // 指定キーidの値のみを削除
@@ -984,7 +1054,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             if nowGyouNo < pageGyou {nowGyouNo = nowGyouNo + 1}
             //対象行を一行下げる
             //表示中のフレーム番号
-            let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
+            //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
             //??memoView.selectedNo(gyou: nowGyouNo,fn:fn)
             //print("-----------------------------------")
             //メモに書き出した内容をパレットに読み込む//20161024追加
@@ -1027,7 +1097,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //メモに書き出した内容をパレットに読み込む//20161024追加
             let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
             //表示中のフレーム番号
-            let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
+            //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
             //??memoView.selectedNo(gyou: nowGyouNo,fn:fn)
             //memoView.selectedNo(5,fn: 3)
             drawableView.backgroundColor = UIColor(patternImage: myMemo)
@@ -1041,7 +1111,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView.X_color = 0//ペン色：黒
             drawableView.refresh()
             //drawableView.flagRset()//@
-            let sa = (vWidth - boundWidth)/2  //?? ??
+            //let sa = (vWidth - boundWidth)/2  //?? ??
             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
             drawableView.layer.position = leftEndPoint
             myScrollView.frame = scrollRect_P
