@@ -602,9 +602,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
         if isMenuMode! { return }//リストメニュー表示中は実行しない
         if isIndexMode! { return }//index表示中は実行しない
+        //----------------------------------------------
         if drawableView != nil {// パレットが表示されている時パレットを消す
+            //編集中のページ内容を更新する
             //myScrollView.upToImgs()//編集中のページ内容を更新する
-            drawableView!.removeFromSuperview()//　子viewを削除する??
+            let im = memo[fNum].memoToImage(pn: pageNum)
+            writePge(pn: pageNum, imgs: im)
+            
+            //　子viewを削除する??
+            drawableView!.removeFromSuperview()
             drawableView = nil
             myScrollView.frame = scrollRect
             //myScrollView.showHomeFrame()//スクロール再設定の後は必要！
@@ -857,16 +863,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func swipeR(){
         if isIndexMode! { return }//Indexが表示中は実行しない
         if isEditMode! { return }//パレットが表示中は実行しない
+        if pageNum == 1{ return }//１ページが最終ページ
+        
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
         }
         var f = 0
         f = (fNum == 1) ? 2: 1
-        /*-------
+        //-------
         var im = readPage(pn:pageNum - 1)
         memo[f].setMemoFromImgs(pn:pageNum - 1,imgs:im)
-        //-------- */
+        //--------
         //memo[f] =
         UIView.transition(
             from: memo[fNum],
@@ -880,10 +888,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 }
         })
         fNum = f
-        /*--------
+        //--------
         pageNum -= 1
         if pageNum < 1{pageNum = 1}
-        //-------- */    }
+        //--------
+    }
     
     func swipeL(){
         if isIndexMode! { return }
@@ -895,10 +904,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
         var f = 0
         f = (fNum == 1) ? 2: 1//フレームのトグル
-        /*-------
+        //-------
         var im = readPage(pn:pageNum + 1)
         memo[f].setMemoFromImgs(pn:pageNum + 1,imgs:im)
-        //-------- */
+        //--------
             UIView.transition(
                 from: memo[fNum],
                 to: memo[f],
@@ -911,9 +920,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                 })
         fNum = f
-        /*-----------
+        //-----------
         pageNum += 1
-        //----------- */
+        //-----------------------------------------
                 //transitionCurlUp,
     }
 

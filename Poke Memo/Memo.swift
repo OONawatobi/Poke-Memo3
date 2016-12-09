@@ -124,7 +124,19 @@ class Memo2View:UIView{
     }
     
     //-p- pageImgs[[]]の指定ページからpageView(tag付)を作成・返す
+    //addSubviewしたviewを全削除する
+    func removeAllSubviews(parentView: UIView){
+        var subviews = parentView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+    }
+    
     func makePageWithTag(pn:Int){
+        //一旦、サブビューを削除する
+        removeAllSubviews(parentView: self)
+        self.removeFromSuperview()
+        
         let pagePosX = (leafWidth)/2 //フレームの中点ｘ座標
         for idx in 0..<pageGyou {
             let myLeaf = Leaf(frame: leafRect)//リーフの初期化
@@ -205,6 +217,19 @@ class Memo2View:UIView{
         //photoData.synchronize()//必要かどうか？あると遅くなるのか？
         
     }
+    
+    //* メモ(leaf)[m]からメモ画像:[UIImage]を作成する */
+    func memoToImage(pn:Int) ->[UIImage]{
+        var img:[UIImage] = []
+        //メモ行の画像を順にimg[]にコピーする
+        for idx in 0..<pageGyou{
+            let tag = pn*100 + idx + 1
+            let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+            img.append(targetMemo.image!)
+        }
+        return img
+    }
+    
     //* メモ(leaf)[m]をメモ画像:pageImgs[n]にUPする */
     func memoTopageImgsToMemo(pn:Int){
         //配列の画像を順にメモ行にコピーする
