@@ -36,9 +36,11 @@ class Memo2View:UIView{
             targetMemo.image = imgs[idx]//???pageImgsを無くす??
             //タグ番号を画像に合成する：試験用
             targetMemo.image = targetMemo.image?.addText(text: String(tag))
+            
             if idx == 0 && pn == 0{
                 targetMemo.image = targetMemo.image?.addText(text: "INDEX")
             }
+            
             //print("Viewtag : \(self.tag)")
             //print("targetMemo.image = \(targetMemo.image?.size)")
         }
@@ -57,9 +59,11 @@ class Memo2View:UIView{
             targetMemo.image = pageImgs[pn][idx]//???pageImgsを無くす??
             //タグ番号を画像に合成する：試験用
             targetMemo.image = targetMemo.image?.addText(text: String(tag))
+        /*
             if idx == 0 && pn == 0{
                 targetMemo.image = targetMemo.image?.addText(text: "INDEX")
             }
+        */
             //print("Viewtag : \(self.tag)")
             //print("targetMemo.image = \(targetMemo.image?.size)")
         }
@@ -107,9 +111,10 @@ class Memo2View:UIView{
         
         //↓エラー
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
-        //targetMemo.changeBottomBorder(UIColor.magentaColor(), width:2 )
-        targetMemo.backgroundColor = UIColor.green.withAlphaComponent(0.1)
-        //beforeGyouNo = tagN//選択した行を記憶する
+        let gColor = UIColor.green.withAlphaComponent(0.1)
+        let wColor = UIColor.white
+        var backColor = isIndexMode == true ? wColor : gColor
+        targetMemo.backgroundColor = backColor
  
     }
     
@@ -126,16 +131,16 @@ class Memo2View:UIView{
     //-p- pageImgs[[]]の指定ページからpageView(tag付)を作成・返す
     //addSubviewしたviewを全削除する
     func removeAllSubviews(parentView: UIView){
-        var subviews = parentView.subviews
+        let subviews = parentView.subviews
         for subview in subviews {
             subview.removeFromSuperview()
         }
     }
     
-    func makePageWithTag(pn:Int){
+    func makePageWithTag(pn:Int){//pn=0:indexページ
         //一旦、サブビューを削除する
         removeAllSubviews(parentView: self)
-        self.removeFromSuperview()
+        //self.removeFromSuperview()
         
         let pagePosX = (leafWidth)/2 //フレームの中点ｘ座標
         for idx in 0..<pageGyou {
@@ -145,7 +150,7 @@ class Memo2View:UIView{
             myLeaf.layer.position = CGPoint(x: pagePosX , y:yPos)
             
             //leafの枠の下線を灰色にする
-            if idx == 0{
+            if idx == 0 && pn>0{
                 myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
             }else{
                 myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 1, type: .Down)
@@ -256,5 +261,22 @@ class Memo2View:UIView{
             //print("targetMemo.image = \(targetMemo.image?.size)")
         }
         print("@@@@@@@@")
+    }
+    //----------------------------------------
+    var cursolMode:Bool! = false
+    func delCursol(){
+        //表示ページの全てのリーフの背景を透明にする
+        for subview in self.subviews {
+            subview.backgroundColor = UIColor.clear
+            subview.alpha = 1// 透明度を設定
+        }
+    }
+    func togglleCursol(){
+        if cursolMode == true{
+           delCursol()
+           cursolMode = false
+        }else{
+            
+        }
     }
 }

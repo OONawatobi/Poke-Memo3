@@ -204,6 +204,7 @@ let boundHeight = UIScreen.main.bounds.size.height
 var retina:Int = 2//レティナディスプレイ対応
 var infoPage:[(memoNo:Int,gyou:Int,maxUsingGyouNo:Int)]!//未使用
 var isEditMode:Bool! = false//パレットが表示されている場合：true
+var isIndexMode:Bool! = false//Indexの表示フラグ：true
 
 var penColorNum:Int = 1
 let homeFrame:Int = 2//表示用フレーム ⇒グローバル定数
@@ -214,7 +215,7 @@ var pageNum:Int = 1//現在表示しているページの番号
 var fNum:Int = 1//現在表示しているframe番号:0,1,2:[0]はindexページ
 var maxPageNum:Int = 1//未使用
 var pageGyou:Int = 30//メモページの行数
-var nowGyouNo:Int! = 1//編集中の行番号
+var nowGyouNo:Int! = 1//編集中の行番号(tag番号）
 var maxUsingGyouNo:Int! = 0//メモが記載されている一番下の行番号//現在、未使用
 //-----メモ---------
 //var memoView:MemoView! = nil//メモ本体
@@ -242,6 +243,42 @@ protocol UpperToolViewDelegate{//upperビューの操作(機能）
     func dispPosChange(midX: CGFloat)
 }
 
+struct Common {
+    static func dispAlert(target:UIViewController,title:String,message:String,completion: (() -> Void)!)->Void{
+        
+        // ① UIAlertControllerクラスのインスタンスを生成
+        // タイトル, メッセージ, Alertのスタイルを指定する
+        // 第3引数のpreferredStyleでアラートの表示スタイルを指定する
+        let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle:  UIAlertControllerStyle.alert)
+        print("alert!!!")
+        // ② Actionの設定
+        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定する
+        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
+        // OKボタン
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("OK")
+
+            completion()})
+        // キャンセルボタン
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("Cancel")
+            completion()})
+        // キャンセルボタン
+        
+        // ③ UIAlertControllerにActionを追加
+        alert.addAction(cancelAction)
+        alert.addAction(defaultAction)
+        
+        // ④ Alertを表示
+        target.present(alert, animated: true, completion: nil)
+    }
+}
+
+
 //    =======  ViewController    ========
 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate{
@@ -254,13 +291,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var myToolView = UpperToolView()//パレットの上のツールバー（パレットスクロール機能）
     var myEditView:UIView!//パレットの編集用ボタン表示エリア
     var underFlag: Bool!
-    var myEditFlag:Bool! = false
+    var myEditFlag:Bool! = false//パレット追加編集ツール表示フラグ
     var scrollRect:CGRect!
     var scrollRect_P:CGRect!//パレットが表示されている時の表示サイズ
 
     var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
-    var isIndexMode:Bool! = false//Indexの表示フラグ：true
+    //var isIndexMode:Bool! = false//Indexの表示フラグ：true
     //var indexFlag:Bool! = false//Indexの表示フラグ：true
+
     //var reloadedImage:UIImage!//ファイルから読み込んだイメージ：未使用　下記使用
     var reloads:[UIImage]!//ファイルから読み込んだイメージ配列
     var editButton1:UIButton!
@@ -275,13 +313,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var editButton10:UIButton!
     
     /* --- リストメニュー --- */
+    let ch:CGFloat = 40//セルの高さ
+    let cn:Int = 8//リストの数
     let mw:CGFloat = 200//メニューリストの幅
-    let mh:CGFloat = 300//メニューリストの高さ
+    var mh:CGFloat = 300//メニューリストの高さ
     var mv:UIView!
     var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
-    var items: [String] = ["日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","------------------------　","各種設定","スタートガイドを見る","                   ▲ "]
+    var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","------------------------　","各種設定","スタートガイドを見る","                   ▲ "]
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -398,7 +438,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         /* ScrollViewを生成. */
         myScrollView.Delegate2 = self
-        myScrollView.Delegate3 = self
+        //myScrollView.Delegate3 = self
         //パレット表示されていない場合
         scrollRect = CGRect(x:10, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 )
         //パレット表示されている場合
@@ -422,6 +462,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.swipeL))
         leftSwipe.direction = .left
         myScrollView.addGestureRecognizer(leftSwipe)
+        
+        //長押し認識登録
+        let longPush = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPress))
+        // 長押し-最低2秒間は長押しする.
+        longPush.minimumPressDuration = 1.2
+        myScrollView.addGestureRecognizer(longPush)
 
     //---- ページデータの読み込み・作成　-------------
        
@@ -436,7 +482,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               createNewPageImg2()
             }
            //imgsに保存データを読み込む
-            for i in 0..<kn{
+            for _ in 0..<kn{
               //readUserData2(pn: i)
             }
         }else{
@@ -468,10 +514,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //memo[1].setMemo2View(pn: 1)//タグを付ける、メモの作成(第1ページ)
             //memo[2].setMemo2View(pn: 2)//タグを付ける、メモの作成(第2ページ)
             //---------------------
-            var im = readPage(pn:1)
+            var im = readPage(pn:1)//１ページ目の外部データを読み込む
             memo[1].setMemoFromImgs(pn:1,imgs:im)
-            im = readPage(pn:2)
-            memo[2].setMemoFromImgs(pn:2,imgs:im)
+            //im = readPage(pn:2)
+            //memo[2].setMemoFromImgs(pn:2,imgs:im)
             //-----------------------------------
             // ** memoView.userInteractionEnabled = true
             fNum = 1//⇒fNumに変更予定
@@ -479,23 +525,27 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             self.view.addSubview(myScrollView)
             myScrollView.contentOffset = CGPoint(x:0,y: 0)
             // myScrollView.showHomeFrame()
+            naviBar.topItem?.title = String(pageNum) + " /30"
         }
         //---------- リストメニュ−　---------
         //テーブルビュー初期化、関連付け
+        mh = ch * CGFloat(cn)//メニューの高さ＝セルの高さ☓セル数
         let w = boundWidth
         tV.frame         =   CGRect(x:0, y:0, width:mw + 20 , height:mh)
         smv = UIScrollView(frame: CGRect(x:w - mw - 10,y:65,width:mw + 20,height:mh - 0))
         smv.backgroundColor = UIColor.clear
+        tV.separatorColor = UIColor.clear//セパレータ無し
+        tV.rowHeight = 40
         tV.layer.cornerRadius = 8.0//角丸にする
         tV.layer.borderColor = UIColor.gray.cgColor
         tV.layer.borderWidth = 1
-        /*
+    //
         // シャドウカラー
         tV.layer.shadowColor = UIColor.black.cgColor/* 影の色 */
         tV.layer.shadowOffset = CGSize(width:1,height: 1)       //  シャドウサイズ
         tV.layer.shadowOpacity = 1.0        // 透明度
         tV.layer.shadowRadius = 1        // 角度(距離）
-        */
+    //
 
         smv.contentSize = tV.frame.size
         smv.contentOffset = CGPoint(x:0,y:mh)
@@ -518,7 +568,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var naviBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var menu2: UIBarButtonItem!
-    
+    @IBOutlet weak var index2: UIBarButtonItem!
     @IBOutlet weak var pallete2: UIBarButtonItem!
     @IBOutlet weak var done2: UIBarButtonItem!
     
@@ -551,9 +601,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             })
             isIndexMode = true
             fNum = 0
-            
+            naviBar.topItem?.title = "--  INDEX  --"
+            memo[0].delCursol()
             print("retNum1: \(retNum)")
         }else{//Indexページが表示中の場合
+            print("index else**")
             //self.navigationController?.setToolbarHidden(true, animated: true)
             opt = UIViewAnimationOptions.transitionFlipFromBottom//transitionFlipFromLeft
             
@@ -572,6 +624,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             isIndexMode = false
             print("retNum: \(retNum)")
             fNum = retNum
+            naviBar.topItem?.title = String(pageNum) + " /30"
         }
     }
     
@@ -582,7 +635,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             smv.contentOffset = CGPoint(x:0,y:self.mh )
             UIScrollView.animate(withDuration: 0.3, animations: {
                 () -> Void in
-                self.smv.contentOffset = CGPoint(x:0,y:10)
+                self.smv.contentOffset = CGPoint(x:0,y:40)
             })
             isMenuMode = true
         }else{//リストが表示の場合
@@ -617,7 +670,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             underBarDisp(disp: 0)//underViewを削除する
             isEditMode = false
             self.toolBar.isHidden  = true//ツールバーを隠す
-            
+            //メモページのカーソルを削除する
+            memo[fNum].delCursol()
         }else{// パレットが表示されていない時パレットを表示する
             
             //パレットビューを作成・初期化する
@@ -637,10 +691,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             myScrollView.frame = scrollRect_P
             //myScrollView.showHomeFrame()
             underBarDisp(disp: 1)//underViewを追加する
-            //表示中のフレーム番号
-            //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
-            //memoView.selectedNo(gyou: nowGyouNo,fn:fn)//選択行を表示
+            
+            //１行目をパレットに呼び込む
+            modalChanged(TouchNumber: pageNum*100 + 1)
         }
+        
     }
     
     @IBAction func done(_ sender: UIBarButtonItem) {
@@ -670,6 +725,40 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
         }
     }
+    
+    //セルの長押し処理:長押しイベント処理
+    func longPress(){
+        print("longPush")
+        if myScrollView.isLongPushed == false{//チャタリング防止作
+            // ** [INDEXページ] **
+            if isIndexMode == true{
+              //飛び先ページを指定
+                //-------
+                let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号:0ページの為tag番号（一桁）がページ番号を現す。
+                let im = readPage(pn:nextNum!)//外部から取得する
+                fNum = 1
+                memo[fNum].setMemoFromImgs(pn:nextNum!,imgs:im)
+                retNum = fNum//表示するフレーム番号
+                //--------
+              //Indexボタンを押す
+                self.index(self.index2)
+              //ページ番号を更新する
+                pageNum = nextNum!
+                naviBar.topItem?.title = String(pageNum) + " /30"
+                //飛び先のtag番号を決定する
+                nowGyouNo = nextNum!*100 + 1
+            // ** [メモページ] **
+            }else{
+              //editボタンを押す
+              let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号
+              self.Pallete(self.pallete2)
+              print("isEdit: \(isEditMode)")
+              self.modalChanged(TouchNumber:nextNum!)
+              memo[fNum].togglleCursol()
+            }
+        }
+        myScrollView.isLongPushed = true//touchBeginsでfalseにリセットする
+    }
     // ==  外部データ入出力関係  ==
     
     //外部のページデータを読み込む: photos”pn”[] ->[UIImage]
@@ -698,11 +787,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     //外部のページデータを削除する(all:1の場合は全削除）
-    func delPage(pn:Int,all:Int){
-        if all == 1{
+    func delPage(pn:Int){
+        if pn == 0{
         let appDomain:String = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: appDomain)
-        }else if all == 0{
+        }else if pn<31{
         // 指定キーidの値のみを削除
         let photosName:String = "photos" + String(pn)//保存名を決定
         let userDefault = UserDefaults.standard
@@ -782,14 +871,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func tableView(_ tV: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         print("セルを選択しました！ #\(indexPath.row)!")
-        if indexPath.row == 6{
+        if indexPath.row == 0 || indexPath.row == 4{ return }
+        if indexPath.row == 7{
            self.menu(self.menu2)
             tV.deselectRow(at: indexPath as IndexPath, animated: true)
-        }else{
+        }
+        else{
             let t = items[indexPath.row]
             
             Common.dispAlert(target: self, title: t, message: "実行しますか？", completion:{
                 print("alert end @@@@")
+                
                 tV.deselectRow(at: indexPath as IndexPath, animated: true)
                 //メニューを閉じる(アニメーション付）
                 //self.edit2(self.edit)
@@ -799,6 +891,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 })
                 { (Bool) -> Void in  // アニメーション完了時の処理
                     self.smv.removeFromSuperview()
+                    //print("uuuuuuuuuuuu")
+                    //self.delPage(pn: nowGyouNo)
+                    //self.readPage(pn: pageNum)
                 }
                 self.isMenuMode = false
                 //---------------------------
@@ -854,6 +949,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func btn8_click(sender:UIButton){
         //----------ページの右端に太線-------------------------
         print("btn8_clicked!")
+        //現行ベージの内容を削除する
+        delPage(pn: pageNum)
+        
+        let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
+        memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
     }
     
     func btn9_click(sender:UIButton){print("btn9_clicked!")}
@@ -865,14 +965,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isEditMode! { return }//パレットが表示中は実行しない
         if pageNum == 1{ return }//１ページが最終ページ
         
-        for n in 0...2{
+        for n in 0...2{//ボーダーラインを付ける
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
         }
         var f = 0
         f = (fNum == 1) ? 2: 1
         //-------
-        var im = readPage(pn:pageNum - 1)
+        let im = readPage(pn:pageNum - 1)
         memo[f].setMemoFromImgs(pn:pageNum - 1,imgs:im)
         //--------
         //memo[f] =
@@ -882,7 +982,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             duration:0.8,
             options:UIViewAnimationOptions.transitionFlipFromLeft,
             completion:  { (Bool) -> Void in
-                for n in 0...2{
+                for n in 0...2{//ボーダーラインを消す
                     //memo[n].layer.borderColor = UIColor.clear.cgColor
                     memo[n].layer.borderWidth = 0
                 }
@@ -890,13 +990,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         fNum = f
         //--------
         pageNum -= 1
-        if pageNum < 1{pageNum = 1}
+        //if pageNum < 1{pageNum = 1}
+        naviBar.topItem?.title = String(pageNum) + " /30"
         //--------
     }
     
     func swipeL(){
         if isIndexMode! { return }
         if isEditMode! { return }//パレットが表示中は実行しない
+        if pageNum >= 30{ return }
+        
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
@@ -905,7 +1008,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var f = 0
         f = (fNum == 1) ? 2: 1//フレームのトグル
         //-------
-        var im = readPage(pn:pageNum + 1)
+        let im = readPage(pn:pageNum + 1)
         memo[f].setMemoFromImgs(pn:pageNum + 1,imgs:im)
         //--------
             UIView.transition(
@@ -922,6 +1025,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         fNum = f
         //-----------
         pageNum += 1
+        naviBar.topItem?.title = String(pageNum) + " /30"
         //-----------------------------------------
                 //transitionCurlUp,
     }
@@ -929,11 +1033,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     /* -------------------　プロトコル関数　-----------------------------*/
     func modalChanged(TouchNumber: Int) {// protocol ScrollViewDelegate
-        print("TouchNumber:\(TouchNumber)")
-        //print("pageNum: \(pageNum)")
+        print("TouchNumber:@\(TouchNumber)")
         print("fNum:\(fNum)")
             nowGyouNo = TouchNumber
             print("nowGyouNo?: \(nowGyouNo)")
+            //パレット表示中
             if isEditMode == true{
                 //メモに書き出した内容をパレットに読み込む//20161024追加
                 let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
@@ -946,13 +1050,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 let reMemo = myMemo.resize(size: reSize)
                 //====================================================
                 drawableView.backgroundColor = UIColor(patternImage: reMemo)
-            }else{
-                //表示中のフレーム番号
-                //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
+             //パレット非表示の場合
+            }else if isIndexMode == true{
                 memo[fNum].selectedNo(tagN:nowGyouNo)
-            }
-        //}
-        //print("nowGyouNo: \(nowGyouNo)")
+            }else{}
+        print("** nowGyouNo: \(nowGyouNo)")
     }
     
     func dispPosChange(midX: CGFloat){// protocol UpperToolViewDelegate
@@ -975,7 +1077,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("上へスクロール")
         }
     }
-  //---------------旧ボタン関数(未使用）-----------------------------------
+    
+    
+    
+  //------------------------------------------------------------------
+  //---------------旧ボタン関数(未使用）----------------------------------
     func insert(sender: AnyObject) {//xxxx,◾◾◾◾：メニュー
         memo[fNum].insertNewMemo(gyou: nowGyouNo,maxGyou:pageGyou)
         
@@ -987,12 +1093,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          memoView.frame = CGRectMake(0, 0,leafWidth, (leafHeight + leafMargin) * CGFloat(pageGyou) + topOffset)
          */
         
-        modalChanged(TouchNumber: (pageNum)*100 + nowGyouNo)
+        modalChanged(TouchNumber: nowGyouNo)
     }
     
     func delMemo(sender: AnyObject) {//xxxx,◾◾◾◾：メニュー
         memo[fNum].delSelectedMemo(gyou: nowGyouNo,maxGyou: pageGyou)
-        modalChanged(TouchNumber: (pageNum)*100 + nowGyouNo)
+        modalChanged(TouchNumber:  nowGyouNo)
         // 保存データを全削除
         //
         //let userDefault = UserDefaults.standard
@@ -1024,22 +1130,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func reload(sender: AnyObject) {//xxxx，◾◾◾◾：編集破棄の場合
         //myScrollView.Tshow_4thFrame()
         //myScrollView.gotoNextPage()
-        /* リロードチェック用
-         for idx in 1...100{
-         reloads = memoView.saveImage2()
-         memoView.reloadImage3()
-         print("idx:\(idx)")
-         print("reloads: \(reloads[0].size)")
-         }
-         modalChanged((frameNum*1)*100 + nowGyouNo)
-         */
-        
-        /*
-         if reloadedImage != nil{
-         memoView.reloadImage(reloadedImage)
-         modalChanged((frameNum*1)*100 + nowGyouNo)
-         }
-         */
+ 
     }
     
     func toLeft(sender: AnyObject) {//xxxx
@@ -1062,9 +1153,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             if nowGyouNo < pageGyou {nowGyouNo = nowGyouNo + 1}
             //対象行を一行下げる
-            //表示中のフレーム番号
-            //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
-            //??memoView.selectedNo(gyou: nowGyouNo,fn:fn)
+
             //print("-----------------------------------")
             //メモに書き出した内容をパレットに読み込む//20161024追加
             
@@ -1105,10 +1194,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             //メモに書き出した内容をパレットに読み込む//20161024追加
             let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
-            //表示中のフレーム番号
-            //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
-            //??memoView.selectedNo(gyou: nowGyouNo,fn:fn)
-            //memoView.selectedNo(5,fn: 3)
+
             drawableView.backgroundColor = UIColor(patternImage: myMemo)
             drawableView.X_color = 0//ペン色：黒
         }
@@ -1134,37 +1220,3 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
 
 }
-struct Common {
-    static func dispAlert(target:UIViewController,title:String,message:String,completion: (() -> Void)!)->Void{
-        
-        // ① UIAlertControllerクラスのインスタンスを生成
-        // タイトル, メッセージ, Alertのスタイルを指定する
-        // 第3引数のpreferredStyleでアラートの表示スタイルを指定する
-        let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle:  UIAlertControllerStyle.alert)
-        print("alert!!!")
-        // ② Actionの設定
-        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定する
-        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
-        // OKボタン
-        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
-            // ボタンが押された時の処理を書く（クロージャ実装）
-            (action: UIAlertAction!) -> Void in
-            print("OK")
-            completion()})
-        // キャンセルボタン
-        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
-            // ボタンが押された時の処理を書く（クロージャ実装）
-            (action: UIAlertAction!) -> Void in
-            print("Cancel")
-            completion()})
-        // キャンセルボタン
-        
-        // ③ UIAlertControllerにActionを追加
-        alert.addAction(cancelAction)
-        alert.addAction(defaultAction)
-        
-        // ④ Alertを表示
-        target.present(alert, animated: true, completion: nil)
-    }
-}
-

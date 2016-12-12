@@ -84,6 +84,7 @@
                     </view>
                     <connections>
                         <outlet property="done2" destination="tuS-MX-nzQ" id="50E-CC-VE6"/>
+                        <outlet property="index2" destination="aWX-hW-h3T" id="pQM-YV-Aas"/>
                         <outlet property="menu2" destination="oI5-jf-xra" id="UEC-lP-f0u"/>
                         <outlet property="naviBar" destination="ivu-cJ-hot" id="Ea4-v8-zeM"/>
                         <outlet property="pallete2" destination="d15-nu-TSk" id="2Y1-9c-8Ab"/>

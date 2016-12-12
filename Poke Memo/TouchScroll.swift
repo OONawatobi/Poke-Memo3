@@ -12,7 +12,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
     
     var Delegate2: ScrollView2Delegate!
     //UIScrollViewDelegate?//スクロールビューの操作を外部で処理（委託）する。
-    var Delegate3:UIScrollViewDelegate!
+    //var Delegate3:UIScrollViewDelegate!
     
     var rightFlag = false//右側エリアでタッチされた場合
     var startPointX: CGFloat!//タッチ開始X座標
@@ -21,12 +21,14 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
     var iV:UIView!//IV:index
     var aV:UIView!
     var bV:UIView!
+    var isLongPushed:Bool! = false//セルの長押し発生フラグ
+    //var selectedTag:Int = 0//タッチされたリーフのTag番号:nowGyouNoがあるので不要
     
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
         let point = touches.first!.location(in: self)
         startPointX = point.x
         var screenX:CGFloat = 0
-        
+        isLongPushed = false//長押しフラグをリセットする
         //
         //右側エリアに入っているか判定
         //let midX = CGRectGetMidX(self.frame) //==Viewの中心のX座標を取得
@@ -48,8 +50,12 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
         print("touchbegan:rightFla= \(rightFlag)")
         for touch: UITouch in touches{
             let tag = touch.view!.tag
-            if tag != 0{self.Delegate2?.modalChanged(TouchNumber: tag)}
+            if tag != 0{
+                self.Delegate2?.modalChanged(TouchNumber: tag)
+                //selectedTag = tag
+            }
         }
+        
     }
     
     //タッチして動かしたときの処理
@@ -75,6 +81,8 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
         }
      
         print("touchended")
+        //isLongPushed = false//長押しフラグをリセットする
+        
     }
 }
 
@@ -105,4 +113,6 @@ class UpperToolView: UIView {
         //if currentLine?.points.count > 1 {//lines.append(currentLine!)//Ver02}
         
     }
+    
+
 }

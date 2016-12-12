@@ -80,10 +80,6 @@ class DrawableView: UIView {
         //print("¥(myImageView.layer.position)")
     }
     
-    //func hatena(pen:UIImage){
-    //  myImageView.image = nil //pen
-    //}
-    
     func delSubView(){
         secondView.removeFromSuperview()
     }
@@ -134,7 +130,13 @@ class DrawableView: UIView {
         }
         
         currentLine?.points.append(point)
-        lined = nil// @ @ @ @ @ 2
+        //lined = nil// @ @ @ @ @ 2 20161212
+        
+        ////20161212:下記を追加する事でコードからセルタッチした場合のパレット背景が消えるのを防げる。理由は今は不明です。個々にある必要があるの？結局２度読みしている
+        //メモに書き出した内容をパレットに読み込む//20161024追加 変更：20161202
+        let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
+        self.backgroundColor = UIColor(patternImage:myMemo)// @ @ @ @
+
     }
     
     // タッチが動いた
@@ -149,7 +151,7 @@ class DrawableView: UIView {
             }
         }else if rightFlag == false{
             currentLine?.points.append(point)
-            self.setNeedsDisplay()
+            self.setNeedsDisplay() //draw()を呼び出す
         }
     }
     
@@ -213,36 +215,9 @@ class DrawableView: UIView {
         
         //画面を一旦初期化
         resetContext(context: context!)
-        // 描き終わったline @ @ @ @ @
-        //for line in lines {line.drawOnContext(context!)}// @ @ @ @ @ 4
         
-        // 描き終わったline
-        if  lined != nil {//(ペンアップの都度） @ @ @ @ @ 4
-            print("|||||||||||||||||||||||||||||||||||||||||||")
-            lined.drawOnContext(context: context!)// @ @ @ @ @ 4
-            
-            //パレットの内容をメモにコピーする(ペンアップの都度）※パレットのサイズ？
-            if isEditMode == true{
-                self.delSubView()//前フィルタ(subView)を取り除く
-                let resize = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)//
-                let myImage1:UIImage = self.GetImageWithResize(resize: resize)
-                //self.backgroundColor = UIColor(patternImage: myImage1)// @ @ @ @
-                /*========================================================
-                 let reSize = CGSize(width: leafWidth, height: leafHeight)
-                 let leafImage = myImage1.resize(reSize)
-                 //========================================================*/
-                memo[fNum].addMemo(img: myImage1,tag:nowGyouNo)
-                //メモに書き出した内容をパレットに読み込む//20161024追加 変更：20161202
-                let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
-                self.backgroundColor = UIColor(patternImage:myMemo)// @ @ @ @
-                self.reAddSubView()//前フィルタ(subView)を付加する
-                lined = nil //20161024追加 @ @ @ @ @ 5
-            }
-        } //@ @ @ @ @ 4
-        
-        // 描いてる途中のline
-        
-        if  currentLine != nil {
+        // 描いてる途中のline (下記の「書き終わったline」と順序をいれかえた20161212)
+        if  currentLine != nil { //touchEndedではnilを代入される
             //print("** DOKO ***")
             currentLine!.drawOnContext(context: context!)//@@
             self.setNeedsDisplay()// @ @ @ @ @
@@ -254,14 +229,44 @@ class DrawableView: UIView {
             self.backgroundColor = UIColor(patternImage: myImage2)//*****Ver02
             secondView.backgroundColor = UIColor(patternImage: myImg!)//前面フィルタに色を付ける
         }
+        
+        // 描き終わったline @ @ @ @ @
+        //for line in lines {line.drawOnContext(context!)}// @ @ @ @ @ 4
+        
+        // 描き終わったline
+        if  lined != nil {//(ペンアップの都度） @ @ @ @ @ 4
+            print("|||||||||||||||||||||||||||||||||||||||||||")
+            lined.drawOnContext(context: context!)// @ @ @ @ @ 4
+            //パレットの内容をメモにコピーする(ペンアップの都度）※パレットのサイズ？
+            if isEditMode == true{
+                self.delSubView()//前フィルタ(subView)を取り除く
+                let resize = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)//
+                let myImage1:UIImage = self.GetImageWithResize(resize: resize)
+                //self.backgroundColor = UIColor(patternImage: myImage1)// @ @ @ @
+                /*========================================================
+                 let reSize = CGSize(width: leafWidth, height: leafHeight)
+                 let leafImage = myImage1.resize(reSize)
+                 //========================================================*/
+                print("fNum:\(fNum) ,tag: \(nowGyouNo)")
+                
+                // メモにパレット内容を書き込む
+                memo[fNum].addMemo(img: myImage1,tag:nowGyouNo)
+                //メモに書き出した内容をパレットに読み込む//20161024追加 変更：20161202
+                let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
+                self.backgroundColor = UIColor(patternImage:myMemo)// @ @ @ @
+                self.reAddSubView()//前フィルタ(subView)を付加する
+                lined = nil //20161024追加 @ @ @ @ @ 5
+            }
+        } //@ @ @ @ @ 4
+      
     }
     
     func refresh() {
-        
         currentLine = nil
         lined = nil// @ @ @ @ @ 6
         self.backgroundColor = UIColor.clear
         //lines = []//**** 20160904追加
         self.setNeedsDisplay()
     }
+
 }
