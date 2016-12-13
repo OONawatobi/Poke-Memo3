@@ -4,7 +4,7 @@
 //
 //  Created by 青山 行夫 on 2016/11/23.
 //  Copyright © 2016年 mm289. All rights reserved.
-//
+// 20161212
 
 import UIKit
 
@@ -865,6 +865,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let cell:UITableViewCell = tV.dequeueReusableCell(withIdentifier: "cell")! as UITableViewCell
         cell.textLabel?.text = self.items[indexPath.row]
         cell.contentView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.08)
+        cell.textLabel!.font = UIFont(name: "Arial", size: 18)
         return cell
     }
     
