@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3002D4FF1DF85A7C0065D8C1 /* 4545.png in Resources */ = {isa = PBXBuildFile; fileRef = 3002D4FE1DF85A7C0065D8C1 /* 4545.png */; };
+		30419DEF1DFFC58D00D22C8A /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30419DEE1DFFC58D00D22C8A /* Canvas.swift */; };
 		30C2B17F1DEB1DB70069A5DF /* Pallete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2B17E1DEB1DB70069A5DF /* Pallete.swift */; };
 		30C2B1811DEB1DFF0069A5DF /* TouchScroll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2B1801DEB1DFF0069A5DF /* TouchScroll.swift */; };
 		30C2B1831DEB1E310069A5DF /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2B1821DEB1E310069A5DF /* Memo.swift */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		3002D4FE1DF85A7C0065D8C1 /* 4545.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4545.png; sourceTree = "<group>"; };
+		30419DEE1DFFC58D00D22C8A /* Canvas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
 		30C2B17E1DEB1DB70069A5DF /* Pallete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pallete.swift; sourceTree = "<group>"; };
 		30C2B1801DEB1DFF0069A5DF /* TouchScroll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchScroll.swift; sourceTree = "<group>"; };
 		30C2B1821DEB1E310069A5DF /* Memo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				30DAD8871DE5C3040068FF45 /* AppDelegate.swift */,
 				30DAD8891DE5C3040068FF45 /* ViewController.swift */,
 				30C2B17E1DEB1DB70069A5DF /* Pallete.swift */,
+				30419DEE1DFFC58D00D22C8A /* Canvas.swift */,
 				30C2B1801DEB1DFF0069A5DF /* TouchScroll.swift */,
 				30C2B1821DEB1E310069A5DF /* Memo.swift */,
 				30DAD88B1DE5C3040068FF45 /* Main.storyboard */,
@@ -332,6 +335,7 @@
 				30C2B1811DEB1DFF0069A5DF /* TouchScroll.swift in Sources */,
 				30DAD8881DE5C3040068FF45 /* AppDelegate.swift in Sources */,
 				30C2B1831DEB1E310069A5DF /* Memo.swift in Sources */,
+				30419DEF1DFFC58D00D22C8A /* Canvas.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

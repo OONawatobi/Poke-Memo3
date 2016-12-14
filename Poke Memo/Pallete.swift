@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DrawableView: UIView {
+class xDrawableView: UIView {
     
     var pen:UIImage!
     var secondView: UIView!//? UIView(secondView)を作成する

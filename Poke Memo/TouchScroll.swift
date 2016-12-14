@@ -102,10 +102,12 @@ class UpperToolView: UIView {
     // タッチが動いた
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         let point = touches.first!.location(in: self)
+        print("midX = \(midX)")
         deltaX = startX - point.x
-        deltaX = deltaX/1
-        let nextMidX = midX - deltaX
-        self.Delegate?.dispPosChange(midX: nextMidX)
+        deltaX = deltaX*2
+
+        let nextMidX = midX - deltaX//midX:start時のmidX?midX2とは別
+        self.Delegate?.dispPosChange(midX: nextMidX,deltaX:deltaX)
     }
     // タッチが終わった
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -114,5 +116,4 @@ class UpperToolView: UIView {
         
     }
     
-
 }

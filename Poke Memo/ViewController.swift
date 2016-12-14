@@ -4,7 +4,7 @@
 //
 //  Created by 青山 行夫 on 2016/11/23.
 //  Copyright © 2016年 mm289. All rights reserved.
-// 20161212
+// 20161213
 
 import UIKit
 
@@ -134,6 +134,7 @@ extension UIView {
             self.frame.size.width, height:width)
         self.layer.addSublayer(border)
     }
+
     public func changeBottomBorder(color: UIColor, width: CGFloat) {
         self.layer.sublayers = nil
         let border = CALayer()
@@ -221,14 +222,14 @@ var maxUsingGyouNo:Int! = 0//メモが記載されている一番下の行番号
 //var memoView:MemoView! = nil//メモ本体
 var memo:[Memo2View]! = nil//メモ本体
 let topOffset:CGFloat = 20//メモ開始位置(上部スペース量）
-var leafWidth:CGFloat! = boundWidth - 20//?? ??
+var leafWidth:CGFloat! = boundWidth - 10//?? ??
 let leafHeight:CGFloat = 45//メモ行の高さ
 let leafMargin:CGFloat = 4//メモ行間の隙間
-var memoLowerMargin:Int = 2// メモ末尾の表示マージン行数
+var memoLowerMargin:Int = 2// メモ末尾の表20示マージン行数
 //-----パレット------------
 var drawableView: DrawableView! = nil//パレット画面
 let vHeight: CGFloat = 181 //手書きビューの高さ@@@@@@@@
-var vWidth:CGFloat! = leafWidth * vHeight/leafHeight//手書きビューの幅?? ??boundWidth*3
+var vWidth:CGFloat! = leafWidth * vHeight/leafHeight
 var maxRightPosX:CGFloat! = 0//描画したｘ座標の最大値
 
 //------------------------------------------------------------------------
@@ -240,7 +241,7 @@ protocol ScrollView2Delegate{//スクロールビューの操作(機能）
 }
 
 protocol UpperToolViewDelegate{//upperビューの操作(機能）
-    func dispPosChange(midX: CGFloat)
+    func dispPosChange(midX: CGFloat,deltaX:CGFloat)
 }
 
 struct Common {
@@ -338,13 +339,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /** underViewを生成. **/
         //underFlag = false// 表示・非表示のためのフラグ
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
-        underView.backgroundColor = UIColor.gray// underViewの背景を青色に設定
-        underView.alpha = 0.5// 透明度を設定
+        underView.backgroundColor = UIColor.green// underViewの背景を青色に設定
+        underView.alpha = 0.12// 透明度を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 10)// 位置を中心に設定
         /** upperViewを生成. **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
-        upperView.backgroundColor = UIColor.gray
-        upperView.alpha = 0.5// 透明度を設定
+        upperView.backgroundColor = UIColor.green
+        upperView.alpha = 0.12// 透明度を設定
         upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 + 10)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
         
@@ -440,9 +441,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myScrollView.Delegate2 = self
         //myScrollView.Delegate3 = self
         //パレット表示されていない場合
-        scrollRect = CGRect(x:10, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 )
+        scrollRect = CGRect(x:(boundWidth - leafWidth)/2, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 )
         //パレット表示されている場合
-        scrollRect_P = CGRect(x:10,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 44)
+        scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 44)
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -514,7 +515,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //memo[1].setMemo2View(pn: 1)//タグを付ける、メモの作成(第1ページ)
             //memo[2].setMemo2View(pn: 2)//タグを付ける、メモの作成(第2ページ)
             //---------------------
-            var im = readPage(pn:1)//１ページ目の外部データを読み込む
+            let im = readPage(pn:1)//１ページ目の外部データを読み込む
             memo[1].setMemoFromImgs(pn:1,imgs:im)
             //im = readPage(pn:2)
             //memo[2].setMemoFromImgs(pn:2,imgs:im)
@@ -667,13 +668,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView = nil
             myScrollView.frame = scrollRect
             //myScrollView.showHomeFrame()//スクロール再設定の後は必要！
-            underBarDisp(disp: 0)//underViewを削除する
+            etcBarDisp(disp: 0)//underView等を削除する
             isEditMode = false
             self.toolBar.isHidden  = true//ツールバーを隠す
             //メモページのカーソルを削除する
             memo[fNum].delCursol()
         }else{// パレットが表示されていない時パレットを表示する
-            
             //パレットビューを作成・初期化する
             
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
@@ -690,7 +690,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             // frameの値を設定する.
             myScrollView.frame = scrollRect_P
             //myScrollView.showHomeFrame()
-            underBarDisp(disp: 1)//underViewを追加する
+            etcBarDisp(disp: 1)//underView等」を追加する
             
             //１行目をパレットに呼び込む
             modalChanged(TouchNumber: pageNum*100 + 1)
@@ -699,6 +699,29 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func done(_ sender: UIBarButtonItem) {
+        if isEditMode == true{
+             //drawableView.thirdView.backgroundColor = UIColor.clear//前フィルタの色を無色にする
+            drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
+            let resize = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)//
+            let myImage1:UIImage = drawableView.GetImageWithResize(resize: resize)
+            //self.backgroundColor = UIColor(patternImage: myImage1)// @ @ @ @
+            /*========================================================
+             let reSize = CGSize(width: leafWidth, height: leafHeight)
+             let leafImage = myImage1.resize(reSize)
+             //========================================================*/
+            print("fNum:\(fNum) ,tag: \(nowGyouNo)")
+            
+            // メモにパレット内容を書き込む
+            memo[fNum].addMemo(img: myImage1,tag:nowGyouNo)
+            //メモに書き出した内容をパレットに読み込む//20161024追加 変更：20161202
+            //let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
+            //self.backgroundColor = UIColor(patternImage:myMemo)// @ @ @ @
+            drawableView.reAddSubView()//前フィルタ(subView)を付加する
+            //drawableView.thirdView.backgroundColor = UIColor(patternImage: UIImage(named: "blank.png")!)
+            drawableView.addSubview(drawableView.thirdView)//3rdViewを追加する
+            //lined = nil //20161024追加 @ @ @ @ @ 5
+        }
+
     }
     
     @IBAction func zoom(_ sender: UIBarButtonItem) {
@@ -707,7 +730,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBAction func redo(_ sender: UIBarButtonItem) {
     }
     //----------------- その他の関数　-------------------------r
-    func underBarDisp(disp:Int){
+    func etcBarDisp(disp:Int){
         if disp == 1 {
             self.view.addSubview(underView)
             self.view.addSubview(upperView)
@@ -1045,12 +1068,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //表示中のフレーム番号
                 //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
                 memo[fNum].selectedNo(tagN: nowGyouNo)
+            //
                 //パレット表示用にリサイズする(extension)
                 //====================================================
                 let reSize = CGSize(width: vWidth, height: vHeight)
                 let reMemo = myMemo.resize(size: reSize)
                 //====================================================
+            //
                 drawableView.backgroundColor = UIColor(patternImage: reMemo)
+                //
+               drawableView.lastDrawImage = nil//21061213に追加
+                drawableView.secondView.backgroundColor = UIColor.clear
              //パレット非表示の場合
             }else if isIndexMode == true{
                 memo[fNum].selectedNo(tagN:nowGyouNo)
@@ -1058,9 +1086,26 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("** nowGyouNo: \(nowGyouNo)")
     }
     
-    func dispPosChange(midX: CGFloat){// protocol UpperToolViewDelegate
+    func dispPosChange(midX: CGFloat,deltaX:CGFloat){// protocol UpperToolViewDelegate
         //print("midX: \(midX)")
-        drawableView.layer.position = CGPoint(x: midX, y:boundHeight - vHeight/2 - 44)
+        var midX2 = midX
+        let topX:CGFloat = vWidth/2
+        let lastX:CGFloat = boundWidth - vWidth/2
+        let dir = deltaX>=0 ? 1 : 0 //0:右へシフト,1:左へシフト
+        //先頭へシフトする場合
+        if dir == 0{
+           if drawableView.frame.midX >= topX{//Viewの中心のX座標
+             drawableView.layer.position = CGPoint(x: topX, y:boundHeight - vHeight/2 - 44)
+           }
+        //末尾にシフト
+        }else if dir == 1{
+            if drawableView.frame.midX < lastX{//Viewの中心のX座標
+                drawableView.layer.position = CGPoint(x: lastX, y:boundHeight - vHeight/2 - 44)
+            }
+        }
+        if midX > topX{ midX2 = topX}
+        if midX < lastX{ midX2 = lastX}
+        drawableView.layer.position = CGPoint(x: midX2, y:boundHeight - vHeight/2 - 44)
     }
     /* ------------------------ デリゲート関数　-------------------------- */
     var scrollBeginingPoint: CGPoint!
@@ -1205,7 +1250,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isEditMode == true{
             //let myWidth = self.view.frame.width//画面の幅
             drawableView.X_color = 0//ペン色：黒
-            drawableView.refresh()
+            //drawableView.refresh()
             //drawableView.flagRset()//@
             //let sa = (vWidth - boundWidth)/2  //?? ??
             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)

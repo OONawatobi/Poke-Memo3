@@ -113,7 +113,7 @@ class Memo2View:UIView{
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
         let gColor = UIColor.green.withAlphaComponent(0.1)
         let wColor = UIColor.white
-        var backColor = isIndexMode == true ? wColor : gColor
+        let backColor = isIndexMode == true ? wColor : gColor
         targetMemo.backgroundColor = backColor
  
     }
