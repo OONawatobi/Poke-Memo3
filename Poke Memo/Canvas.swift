@@ -35,7 +35,7 @@ class DrawableView: UIView {
         // thirdViewの初期化
         thirdView = UIView(frame: secondView.frame)
         thirdView.backgroundColor = UIColor(patternImage: myImg!)
-        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.15), width: 10)
+        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.10), width: 15)
         self.addSubview(thirdView)
         thirdView.isUserInteractionEnabled = false //イベントの透過
     }
@@ -49,11 +49,12 @@ class DrawableView: UIView {
     //--------------------　描画プログラム　---------------------------------/
     var rightFlag:Bool = false
     let rightArea:CGFloat = 20//右側エリア境界位置
-    var centerFlag:Bool = false
-    let centerArea:CGFloat = UIScreen.main.bounds.size.width/2//中央エリア境界位置
+    //var centerFlag:Bool = false
+    //let centerArea:CGFloat = UIScreen.main.bounds.size.width/2//中央エリア境界位置
     var shiftLeftFlag:Bool = false
+    var shiftDownFlag:Bool = false
     var X_color = 0//?
-    var startPoint:CGPoint!//タッチ開始点
+    //var startPoint:CGPoint!//タッチ開始点
     
     // タッチされた
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
@@ -67,30 +68,75 @@ class DrawableView: UIView {
         bezierPath.move(to:currentPoint)
         lastPoint = currentPoint//++++++++++
        // undoStack = lastDrawImage
- 
+        
+        //右側エリアに入っているか判定
+        let midX = self.frame.midX //Viewの中心のX座標を取得
+        let screenX = currentPoint.x + midX - vWidth/2// 画面座標に変換
+        rightFlag =  screenX > (boundWidth - rightArea) ? true:false
+        print("screenX:\(screenX)")
     }
     
     // タッチが動いた
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("touchesMoved")
-
         let currentPoint = touches.first!.location(in:self)//  @ self:UIView @
-        if bezierPath == nil { return }
-        //中間点を作成
+        
+       //通常モード
+       if rightFlag == false{
+         if bezierPath == nil { return }
+          //中間点を作成
         let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
-            bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
-    
+        bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
         drawLine(path:bezierPath)
         lastPoint = currentPoint
+       }else{
+        
+       //右端エリアにタッチされた場合
+        print(" is rightArea!!")
+        //左自動シフトの判定
+        let dX = lastPoint.x - currentPoint.x
+        print(" is rightArea!!")
+        let dY = lastPoint.y - currentPoint.y
+        let dY2 = abs(dY)
+        print(" is rightArea!!")
+        if dX>20 && dY2<10{ shiftLeftFlag = true }//y軸方向の変化量が少ない時だけ実行する
+       //下側へのシフト判定
+        if dY < -50 && dX < 6{ shiftDownFlag = true }
+        print("dx = \(dX), dY = \(dY)")
+        
+       }
+        print("shiftLeftFlag = \(shiftLeftFlag)")
     }
     
     // タッチが終わった
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if rightFlag == false{
+         let currentPoint = touches.first!.location(in:self)
 
-        let currentPoint = touches.first!.location(in:self)
-        if bezierPath == nil { return }
-        bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
-        drawLine(path: bezierPath)
+         //posxの最大値を更新する
+         mxTemp = max(mxTemp,currentPoint.x)
+         print("mx: \(mxTemp)")
+
+         if bezierPath == nil { return }
+           bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
+           drawLine(path: bezierPath)
+            
+        }else if shiftLeftFlag == true{
+        // 左方向へのシフトを実施する:画面の５分の１だけ左側に表示する
+            var dsX = vWidth/2 - mxTemp + boundWidth/5
+            //右端制限
+            dsX = dsX < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):dsX
+            //左端制限
+            dsX = dsX > vWidth/2 ? vWidth/2:dsX
+            self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
+        }else if shiftDownFlag == true{
+            print("downFlag: \(shiftDownFlag)")
+        }
+        
+        //右側エリアフラグのリセット
+        shiftLeftFlag = false
+        shiftDownFlag = false
+        
     }
 
     func resetContext(context: CGContext) {

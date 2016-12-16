@@ -159,11 +159,11 @@ class xDrawableView: UIView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         let point = touches.first!.location(in: self)
         print("endPoint=  \(point)")
-        print("maxRightPosX = \(maxRightPosX)")
+        print("maxRightPosX = \(maxPosX)")
         
         // CGFloat型の大きい方を返す?エラー対応：一旦Doubleに変換
-        maxRightPosX = CGFloat(max(Double(point.x), Double(maxRightPosX)))
-        print("MaxRightPosX = \(maxRightPosX)")
+        maxPosX = CGFloat(max(Double(point.x), Double(maxPosX)))
+        print("MaxRightPosX = \(maxPosX)")
         
         // 2点以上のlineしか保存する必要なし
         if (currentLine?.points.count)! > 1 {

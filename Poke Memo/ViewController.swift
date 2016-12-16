@@ -116,6 +116,14 @@ extension UIView {
         border2.frame = CGRect(x:self.frame.size.width - width, y:0,width:width,
                                height:self.frame.size.height)
         self.layer.addSublayer(border2)
+        //センターにも縦線を引く　20161216追加
+        let border3 = CALayer()
+        border3.backgroundColor = color.cgColor
+        border3.frame = CGRect(x:self.frame.size.width/2, y:0,width:width,
+                               height:self.frame.size.height)
+        self.layer.addSublayer(border3)
+        
+        
     }
     public func addHorizonBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
@@ -230,7 +238,12 @@ var memoLowerMargin:Int = 2// メモ末尾の表20示マージン行数
 var drawableView: DrawableView! = nil//パレット画面
 let vHeight: CGFloat = 181 //手書きビューの高さ@@@@@@@@
 var vWidth:CGFloat! = leafWidth * vHeight/leafHeight
-var maxRightPosX:CGFloat! = 0//描画したｘ座標の最大値
+var maxPosX:CGFloat! = 0//描画したｘ座標の最大値
+var mx  = [String: CGFloat]()
+var mxTemp:CGFloat!//mxの一時保存（メモに書き出すときにmxにコピーする）
+//var maxPosX = [[CGFloat]]()
+//var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
+
 
 //------------------------------------------------------------------------
 
@@ -312,7 +325,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var editButton8:UIButton!
     var editButton9:UIButton!
     var editButton10:UIButton!
-    
+  
     /* --- リストメニュー --- */
     let ch:CGFloat = 40//セルの高さ
     let cn:Int = 8//リストの数
@@ -527,6 +540,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             myScrollView.contentOffset = CGPoint(x:0,y: 0)
             // myScrollView.showHomeFrame()
             naviBar.topItem?.title = String(pageNum) + " /30"
+            
+            //mx[]の初期化,[0]は予約：将来図形モードを付加した場合等(セル高さ情報）
+            for p in 1...30{
+                for g in 0...30{
+                    let s = String(p*100 + g)
+                    mx[s] = 0
+                }
+            }
+            
+
         }
         //---------- リストメニュ−　---------
         //テーブルビュー初期化、関連付け
@@ -713,6 +736,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             // メモにパレット内容を書き込む
             memo[fNum].addMemo(img: myImage1,tag:nowGyouNo)
+            // 最大文字位置を保存する
+            mx[String(nowGyouNo)] = mxTemp
             //メモに書き出した内容をパレットに読み込む//20161024追加 変更：20161202
             //let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
             //self.backgroundColor = UIColor(patternImage:myMemo)// @ @ @ @
@@ -1061,6 +1086,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("fNum:\(fNum)")
             nowGyouNo = TouchNumber
             print("nowGyouNo?: \(nowGyouNo)")
+        //対象行のTag番号のleafViewのmaxPosXをmxTempにコピーする。
+        mxTemp = mx[String(nowGyouNo)]
+
             //パレット表示中
             if isEditMode == true{
                 //メモに書き出した内容をパレットに読み込む//20161024追加
@@ -1068,6 +1096,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //表示中のフレーム番号
                 //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
                 memo[fNum].selectedNo(tagN: nowGyouNo)
+                //パレットの表示位置をリセットする
+                drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - 44 - vHeight/2)
+                
             //
                 //パレット表示用にリサイズする(extension)
                 //====================================================
