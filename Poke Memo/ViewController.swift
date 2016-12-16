@@ -257,6 +257,10 @@ protocol UpperToolViewDelegate{//upperビューの操作(機能）
     func dispPosChange(midX: CGFloat,deltaX:CGFloat)
 }
 
+protocol DrawableViewDelegate{//パレットビューの操作(機能）
+    func selectNextGyou()
+}
+
 struct Common {
     static func dispAlert(target:UIViewController,title:String,message:String,completion: (() -> Void)!)->Void{
         
@@ -295,7 +299,7 @@ struct Common {
 
 //    =======  ViewController    ========
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate{
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate{
     
     let myScrollView = TouchScrollView()//UIScrollView()
     var spaceView1: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
@@ -480,7 +484,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //長押し認識登録
         let longPush = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPress))
         // 長押し-最低2秒間は長押しする.
-        longPush.minimumPressDuration = 1.2
+        longPush.minimumPressDuration = 1.0
         myScrollView.addGestureRecognizer(longPush)
 
     //---- ページデータの読み込み・作成　-------------
@@ -700,6 +704,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //パレットビューを作成・初期化する
             
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
+            drawableView.Delegate = self
             //let sa = (vWidth - boundWidth)/2  //?? ??
             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
             drawableView.layer.position = leftEndPoint
@@ -1155,7 +1160,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
-    
+    func selectNextGyou() {
+        print("selectNextGyou")
+        done(done2)// okボタンを押す
+        if nowGyouNo%100 < 30{
+           modalChanged(TouchNumber:nowGyouNo + 1)
+        }
+    }
+
     
   //------------------------------------------------------------------
   //---------------旧ボタン関数(未使用）----------------------------------

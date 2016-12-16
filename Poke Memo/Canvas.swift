@@ -9,6 +9,7 @@
 import UIKit
 
 class DrawableView: UIView {
+    var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
     var lastDrawImage: UIImage!
     var lastPoint:CGPoint!//++++++++
@@ -131,6 +132,7 @@ class DrawableView: UIView {
             self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
         }else if shiftDownFlag == true{
             print("downFlag: \(shiftDownFlag)")
+            self.Delegate?.selectNextGyou()
         }
         
         //右側エリアフラグのリセット
