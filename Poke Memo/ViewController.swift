@@ -60,9 +60,7 @@ extension UIView {
 }
 
 extension UIView {
-    
-    
-    
+  
     func GetImage() -> UIImage{
         
         // キャプチャする範囲を取得.
@@ -261,41 +259,6 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
     func selectNextGyou()
 }
 
-struct Common {
-    static func dispAlert(target:UIViewController,title:String,message:String,completion: (() -> Void)!)->Void{
-        
-        // ① UIAlertControllerクラスのインスタンスを生成
-        // タイトル, メッセージ, Alertのスタイルを指定する
-        // 第3引数のpreferredStyleでアラートの表示スタイルを指定する
-        let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle:  UIAlertControllerStyle.alert)
-        print("alert!!!")
-        // ② Actionの設定
-        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定する
-        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
-        // OKボタン
-        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
-            // ボタンが押された時の処理を書く（クロージャ実装）
-            (action: UIAlertAction!) -> Void in
-            print("OK")
-
-            completion()})
-        // キャンセルボタン
-        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
-            // ボタンが押された時の処理を書く（クロージャ実装）
-            (action: UIAlertAction!) -> Void in
-            print("Cancel")
-            completion()})
-        // キャンセルボタン
-        
-        // ③ UIAlertControllerにActionを追加
-        alert.addAction(cancelAction)
-        alert.addAction(defaultAction)
-        
-        // ④ Alertを表示
-        target.present(alert, animated: true, completion: nil)
-    }
-}
-
 
 //    =======  ViewController    ========
 
@@ -339,7 +302,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
-    var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","------------------------　","各種設定","スタートガイドを見る","                   ▲ "]
+    var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","------------------------　","各種設定","スタートガイドを見る","                ▲ "]
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -923,37 +886,56 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func tableView(_ tV: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         print("セルを選択しました！ #\(indexPath.row)!")
-        if indexPath.row == 0 || indexPath.row == 4{ return }
-        if indexPath.row == 7{
-           self.menu(self.menu2)
-            tV.deselectRow(at: indexPath as IndexPath, animated: true)
-        }
-        else{
-            let t = items[indexPath.row]
-            
-            Common.dispAlert(target: self, title: t, message: "実行しますか？", completion:{
-                print("alert end @@@@")
-                
-                tV.deselectRow(at: indexPath as IndexPath, animated: true)
-                //メニューを閉じる(アニメーション付）
-                //self.edit2(self.edit)
-                UIScrollView.animate(withDuration:0.5, animations: {
-                    () -> Void in
-                    self.smv.contentOffset = CGPoint(x:0,y:self.mh)
-                })
-                { (Bool) -> Void in  // アニメーション完了時の処理
-                    self.smv.removeFromSuperview()
-                    //print("uuuuuuuuuuuu")
-                    //self.delPage(pn: nowGyouNo)
-                    //self.readPage(pn: pageNum)
-                }
-                self.isMenuMode = false
-                //---------------------------
+        let num = indexPath.row
+        let itm = items[num]
+        let msg = "実行してもいいですか？"
+        //--------------------------
+        if num != 7{
+
+        let alert: UIAlertController = UIAlertController(title: itm, message: msg, preferredStyle:  UIAlertControllerStyle.alert)
+
+        // OKボタン
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            // ボタンが押された時の処理（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+
+            switch num {
+            case 1:self.fc1()
+            case 2:self.fc2()
+            case 3:self.fc3()
+            case 5:self.fc5()
+            case 6:self.fc6()
+                   break
+            default: break
+            }
+           })
+      
+        // キャンセルボタン
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in print("Cancel")
             })
-        }
+
+        alert.addAction(cancelAction)// ③ UIAlertControllerにActionを追加
+        alert.addAction(defaultAction)
+        self.present(alert, animated: true, completion: nil)// ④ Alertを表示
+        }//----------↖
+        
+        tV.deselectRow(at: indexPath as IndexPath, animated: true)//カーソルを消す
+        self.menu(self.menu2)//メニューボタンを押す
     }
+    /* リストメニュー選択時の処理 */
+    func fc1(){print("test1!!!!!")}
+    func fc2(){print("test2!!!!!")}
+    func fc3(){
+        print("test3!!!!!")
+        //現行ベージの内容を削除する
+        delPage(pn: pageNum)
+        let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
+        memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)    }
+    func fc5(){print("test5!!!!!")}
+    func fc6(){print("test6!!!!!")}
     
     /* -------------------　ボタン関数　-----------------------------*/
     
@@ -1084,6 +1066,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //transitionCurlUp,
     }
 
+
+    
     
     /* -------------------　プロトコル関数　-----------------------------*/
     func modalChanged(TouchNumber: Int) {// protocol ScrollViewDelegate
