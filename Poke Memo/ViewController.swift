@@ -82,8 +82,9 @@ extension UIView {
         return capturedImage
     }
     
+    
     func GetImageWithResize(resize:CGRect) -> UIImage{
-        
+    //func UIGraphicsBeginImageContextWithOptions(_ size: CGSize, _ opaque: Bool, _ scale: CGFloat)
         // キャプチャする範囲を取得.
         let rect = self.bounds
         
@@ -152,11 +153,28 @@ extension UIView {
     
 }
 extension UIImage {
+        
+    // 画質を担保したままResizeするクラスメソッド.
+    func ResizeUIImage(width : CGFloat, height : CGFloat)-> UIImage!{
+            
+        let size = CGSize(width: width, height: height)
+            
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        //var context = UIGraphicsGetCurrentContext()
+            
+        self.draw(in: CGRect(x:0,y:0,width:size.width,height:size.height))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        
+        UIGraphicsEndImageContext()
+        
+        return image
+    }
     
     func resize(size: CGSize) -> UIImage {
         let widthRatio = size.width / self.size.width
         let heightRatio = size.height / self.size.height
-        let ratio = (widthRatio < heightRatio) ? widthRatio : heightRatio
+        //let ratio = (widthRatio < heightRatio) ? widthRatio : heightRatio
+        let ratio = heightRatio
         let resizedSize = CGSize(width: (self.size.width * ratio), height: (self.size.height * ratio))
         UIGraphicsBeginImageContext(resizedSize)
         draw(in: CGRect(x: 0, y: 0, width: resizedSize.width, height: resizedSize.height))
@@ -208,7 +226,8 @@ extension UIImage {
 
 let boundWidth = UIScreen.main.bounds.size.width
 let boundHeight = UIScreen.main.bounds.size.height
-var retina:Int = 2//レティナディスプレイ対応
+//var retina:Int = 2//レティナディスプレイ対応
+let retina:Int = Int(UIScreen.main.scale)//レティナ分解能の抽出
 var infoPage:[(memoNo:Int,gyou:Int,maxUsingGyouNo:Int)]!//未使用
 var isEditMode:Bool! = false//パレットが表示されている場合：true
 var isIndexMode:Bool! = false//Indexの表示フラグ：true
@@ -216,7 +235,7 @@ var isIndexMode:Bool! = false//Indexの表示フラグ：true
 var penColorNum:Int = 1
 let homeFrame:Int = 2//表示用フレーム ⇒グローバル定数
 //-----ページ---------
-var pageImgs = [[UIImage]]()//メモの内容(ページ別)：保存する時のオブジェクト
+var indexImgs:[UIImage] = []//index[30]の画像
 var pageNum:Int = 1//現在表示しているページの番号
 //var frameNum:Int = 1//現在表示しているframe番号　　※削除予定
 var fNum:Int = 1//現在表示しているframe番号:0,1,2:[0]はindexページ
@@ -226,7 +245,7 @@ var nowGyouNo:Int! = 1//編集中の行番号(tag番号）
 var maxUsingGyouNo:Int! = 0//メモが記載されている一番下の行番号//現在、未使用
 //-----メモ---------
 //var memoView:MemoView! = nil//メモ本体
-var memo:[Memo2View]! = nil//メモ本体
+var memo:[MemoView]! = nil//メモ本体
 let topOffset:CGFloat = 20//メモ開始位置(上部スペース量）
 var leafWidth:CGFloat! = boundWidth - 10//?? ??
 let leafHeight:CGFloat = 45//メモ行の高さ
@@ -235,9 +254,9 @@ var memoLowerMargin:Int = 2// メモ末尾の表20示マージン行数
 //-----パレット------------
 var drawableView: DrawableView! = nil//パレット画面
 let vHeight: CGFloat = 181 //手書きビューの高さ@@@@@@@@
-var vWidth:CGFloat! = leafWidth * vHeight/leafHeight
+var vWidth:CGFloat! = leafWidth*(vHeight/leafHeight)
 var maxPosX:CGFloat! = 0//描画したｘ座標の最大値
-var mx  = [String: CGFloat]()
+var mx  = [String: CGFloat]()//[Tag番号:maxPosX]
 var mxTemp:CGFloat!//mxの一時保存（メモに書き出すときにmxにコピーする）
 //var maxPosX = [[CGFloat]]()
 //var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
@@ -264,6 +283,7 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate{
     
+    //var indexFView:UIView!//インデックスメニュー作成評価用
     let myScrollView = TouchScrollView()//UIScrollView()
     var spaceView1: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
     var spaceView2: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
@@ -307,7 +327,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        
+        //本機種の解像度
+        print("　〓retina scale〓 :\(UIScreen.main.scale)")
+
         /** spaceViewを生成(透明：タッチ緩衝の為) **/
         //underViewの下側
         spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - 44 - vHeight , width: boundWidth, height: 10))
@@ -434,6 +456,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myScrollView.showsHorizontalScrollIndicator = false// 横スクロールバー非表示
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
         //myScrollView.directionalLockEnabled = true
+        
         //------------ スワイプ認識登録　------------
         //右スワイプ
         let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.swipeR))
@@ -450,36 +473,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         longPush.minimumPressDuration = 1.0
         myScrollView.addGestureRecognizer(longPush)
 
-    //---- ページデータの読み込み・作成　-------------
-       
-        //UserDrfaultの頁数を調べる
-        let kn = UserDataNum2()//保管してあるページ数
-       //pageImgs[]の初期化(必要なページ分だけで作る)
-        var num:Int = 0
-        if kn != 0{
-            let sa = kn - pageImgs.count + 1
-            if sa > 0{ num = sa }else{ num = 3 }
-            for _ in 1...num{
-              createNewPageImg2()
-            }
-           //imgsに保存データを読み込む
-            for _ in 0..<kn{
-              //readUserData2(pn: i)
-            }
-        }else{
-            for _ in 0..<3{
-              createNewPageImg2()//pageImgs[]にappendする
-            }
-        }
 
     //----- Memo(ページ）ビューを作成・初期化する -------
         if memo == nil{
             
             //メモビューの初期化
             let memoFrame = CGRect(x:0,y: 0,width:leafWidth*1,height: (leafHeight + leafMargin) * CGFloat(pageGyou) + topOffset)
-            let memo0 = Memo2View(frame: memoFrame)
-            let memo1 = Memo2View(frame: memoFrame)
-            let memo2 = Memo2View(frame: memoFrame)
+            let memo0 = MemoView(frame: memoFrame)
+            let memo1 = MemoView(frame: memoFrame)
+            let memo2 = MemoView(frame: memoFrame)
             memo = [memo0,memo1,memo2]
          // メモページの背景色をつける:トランジション時だけ背景色に透明度をつける為
             for n in 0...2{
@@ -487,19 +489,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                let selectedColor = myColor.withAlphaComponent(0.5)
                memo[n].backgroundColor = selectedColor
             }
-            //Indexページだけ背景色をつける
-            memo[0].backgroundColor = UIColor.red.withAlphaComponent(0.1)
-            
-        // メモ表示内容の初期化　??pageImgs[][]を使用している
-            memo[0].setMemo2View(pn: 0)//タグを付ける、メモの作成(indexページ)
-            //memo[1].setMemo2View(pn: 1)//タグを付ける、メモの作成(第1ページ)
-            //memo[2].setMemo2View(pn: 2)//タグを付ける、メモの作成(第2ページ)
-            //---------------------
+            //Indexページの初期化
+            let bImage = UIImage(named: "blankW.png")
+            indexImgs = Array(repeating: bImage!, count: pageGyou + 1)
+            //memo[0].backgroundColor = UIColor.red.withAlphaComponent(0.1)
+            memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
+        
+            // メモ表示内容の初期化
+           
             let im = readPage(pn:1)//１ページ目の外部データを読み込む
             memo[1].setMemoFromImgs(pn:1,imgs:im)
-            //im = readPage(pn:2)
-            //memo[2].setMemoFromImgs(pn:2,imgs:im)
-            //-----------------------------------
+            
             // ** memoView.userInteractionEnabled = true
             fNum = 1//⇒fNumに変更予定
             myScrollView.addSubview((memo[1]))
@@ -515,7 +515,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     mx[s] = 0
                 }
             }
-            
 
         }
         //---------- リストメニュ−　---------
@@ -546,7 +545,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tV.delegate      =   self
         tV.dataSource    =   self
         tV.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        
+        //indexChange(tag:nowGyouNo)
     }
     
     //  ======= End of viewDidLoad=======
@@ -577,6 +576,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         var opt = UIViewAnimationOptions.transitionFlipFromLeft
         if isIndexMode == false{//Indexページが非表示の場合
+            //indexImgs[]からの反映
+            //memo[0].setMemoFromImgs(pn:pageNum,imgs:indexImgs)
+            memo[0].setIndexFromImgs(pn:pageNum,imgs:indexImgs)
+            
             retNum = fNum
             opt = UIViewAnimationOptions.transitionFlipFromTop//transitionFlipFromRight
                         UIView.transition(
@@ -650,9 +653,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if drawableView != nil {// パレットが表示されている時パレットを消す
             //編集中のページ内容を更新する
             //myScrollView.upToImgs()//編集中のページ内容を更新する
-            let im = memo[fNum].memoToImage(pn: pageNum)
-            writePge(pn: pageNum, imgs: im)
-            
+            let im = memo[fNum].memoToImgs(pn: pageNum)
+            writePage(pn: pageNum, imgs: im)//外部に保存
+            indexImgs[pageNum] = indexChange(pn: pageNum)
             //　子viewを削除する??
             drawableView!.removeFromSuperview()
             drawableView = nil
@@ -693,17 +696,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isEditMode == true{
              //drawableView.thirdView.backgroundColor = UIColor.clear//前フィルタの色を無色にする
             drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
-            let resize = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)//
-            let myImage1:UIImage = drawableView.GetImageWithResize(resize: resize)
+            //let resize = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)//
+            //let myImage1:UIImage = drawableView.GetImageWithResize(resize: resize)
+            
+            let palImage = drawableView.GetImage()
+            let myImage1 = palImage.ResizeUIImage(width: leafWidth, height: leafHeight)
             //self.backgroundColor = UIColor(patternImage: myImage1)// @ @ @ @
-            /*========================================================
+            /*
+             ========================================================
              let reSize = CGSize(width: leafWidth, height: leafHeight)
              let leafImage = myImage1.resize(reSize)
-             //========================================================*/
+             //========================================================
+             */
             print("fNum:\(fNum) ,tag: \(nowGyouNo)")
             
             // メモにパレット内容を書き込む
-            memo[fNum].addMemo(img: myImage1,tag:nowGyouNo)
+            memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
             // 最大文字位置を保存する
             mx[String(nowGyouNo)] = mxTemp
             //メモに書き出した内容をパレットに読み込む//20161024追加 変更：20161202
@@ -722,7 +730,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func redo(_ sender: UIBarButtonItem) {
     }
-    //----------------- その他の関数　-------------------------r
+    //----------------- その他の関数　-------------------------
+    //上下barView,スペーサー等の表示／非表示
     func etcBarDisp(disp:Int){
         if disp == 1 {
             self.view.addSubview(underView)
@@ -767,9 +776,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }else{
               //editボタンを押す
               let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号
-              self.Pallete(self.pallete2)
+              self.Pallete(self.pallete2)//パレットを開く
               print("isEdit: \(isEditMode)")
-              self.modalChanged(TouchNumber:nextNum!)
+              self.modalChanged(TouchNumber:nextNum!)//セルを選択
               memo[fNum].togglleCursol()
             }
         }
@@ -786,9 +795,30 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
             return blankImgs }
     }
+    ///UserDwfaultに保存のメモ画像をpageImgs:[]に読み込む
+    func reloadToPage2(pn:Int)->[UIImage] {
+        var imgs:[UIImage] = []
+        let photoData = UserDefaults.standard
+        // [UIImage] → [NSData]
+        //photoData.synchronize()
+        
+        let photosName:String = "photos" + String(pn)//保存名
+        //NSData から画像配列を取得する
+        
+        if photoData.object(forKey: photosName) != nil{
+            let images = photoData.object(forKey: photosName) as! [NSData]
+            
+            for k in 0...pageGyou - 1{
+                imgs.append(UIImage(data:images[k] as Data)!)
+                //imgs.append(UIImage(data:images[k] as Data!,scale:CGFloat(retina))!)
+            }
+        }
+        print("images[k]: \(imgs.count)")
+        return imgs
+    }
     
     //ページ内容を外部データに書き出す
-    func writePge(pn:Int,imgs:[UIImage]){
+    func writePage(pn:Int,imgs:[UIImage]){
         //UserDefaultに保存する
         let photos = imgs
         
@@ -815,58 +845,112 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
  
-    //これから読み込むUserDataに存在するページ数を取得する
-    func UserDataNum2()->Int{
-        //print(NSUserDefaults.standardUserDefaults().dictionaryRepresentation())
+   
+
+    
+    // == Index情報の更新プログラム ==
+    //palleteを閉じるときにページデータからIndex内容を更新する
+/*
+    func clipImage(image: UIImage, y: CGFloat, height: CGFloat) -> UIImage {
+        var imageRef = image.cgImage!.cropping(to: CGRect(x:0,y:y,width:image.size.width,height:height))
+        var cropImage = UIImage(cgImage: imageRef!)
+        return cropImage
+    }
+*/
+    func test(){
+        //保存する画像を設定する
+        let targetIView = memo[fNum].viewWithTag(201) as! UIImageView
+        let testImg = targetIView.image
+        let testCGImg = testImg?.cgImage?.height
         
-        let photoData = UserDefaults.standard
-        let dic: NSDictionary = photoData.dictionaryRepresentation() as NSDictionary
-        let keys = dic.allKeys
-        var kn = 0
-        for k in 0...20{
-            let key = "photos" + String(k + 1)
-            let found = keys.contains(where: { return $0 as! String == key })
-            if found == false { break}
-            kn = kn + 1
-        }
-        print("OK Google!: \(kn)")
-        return kn
-    }
-    
-    //新しいページを作成して末尾に追加する
-    func createNewPageImg2(){
-        let bImage:UIImage = UIImage(named: "blankW.png")!//⬅4545.png
-        let blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
-        pageImgs.append(blankImgs)
-    }
-    
-    //UserDataをpageImmgs[]に読み込む
-    func readUserData2(pn:Int){
-        let rl = reloadToPage2(pn: pn)
-        if rl.count > 0 { //これがないと読み込みエラーが発生 初期ではrl.count= 0
-            pageImgs[pn] = rl
-        }
-    }
-    
-    // UserDwfaultに保存のメモ画像をpageImgs:[]に読み込む
-    func reloadToPage2(pn:Int)->[UIImage] {
-        var imgs:[UIImage] = []
-        let photoData = UserDefaults.standard
+        print("書き込む画像サイズ: \(testImg?.size.height)")
+        print("CGImage.size:\(testCGImg)")
+
+    // = UserDefaultに保存する =
         // [UIImage] → [NSData]
-        //photoData.synchronize()
-        
-        let photosName:String = "photos" + String(pn)//保存名
-        //NSData から画像配列を取得する
-        
-        if photoData.object(forKey: photosName) != nil{
-            let images = photoData.object(forKey: photosName) as! [NSData]
-            
-            for k in 0...pageGyou - 1{
-                imgs.append(UIImage(data:images[k] as Data)!)
-            }
+        let testData: UserDefaults = UserDefaults.standard
+        let dataImages:Data =  UIImagePNGRepresentation(testImg!)!
+        let testName:String = "test01"//保存名を決定
+        testData.set(dataImages, forKey: testName)
+
+    // = UserDefaultから読み込む =
+        if testData.object(forKey: testName) != nil{
+            let img = testData.object(forKey: testName) as! NSData
+            //let readImg = UIImage(data:img as Data)!
+            let resdImg = UIImage(data:img as Data,scale:1.0)
+            print("読み込んだ画像サイズ: \(resdImg?.size.height)")
+            print("CGImageサイズ: \(resdImg?.cgImage?.height)")
         }
-        print("images[k]: \(imgs.count)")
-        return imgs
+
+    // = UserDefaultをクリアする =
+        testData.removeObject(forKey: testName)
+    }
+
+    func indexChange(pn:Int)-> UIImage{
+        
+        //??let scale = imageSize.height / viewSize.height
+        //新しくコンテナView１つと3つのImageViewを作る
+        var indexFView:UIView!
+        var img01:UIImageView!
+        var img02:UIImageView!
+        var img03:UIImageView!
+        
+        indexFView = UIView(frame: CGRect(x:5,y: 210,width:leafWidth,height:leafHeight))
+        img01 = UIImageView(frame:CGRect(x:0,y:0,width:leafHeight,height:leafHeight))
+        img02 = UIImageView(frame:CGRect(x:leafHeight*2/3,y:0,width:leafWidth - 2*leafHeight,height:leafHeight))
+        //枠線,色,角丸
+        img02.layer.borderWidth = 2
+        img02.layer.borderColor = UIColor.lightGray.cgColor
+        img02.layer.cornerRadius = 9
+        img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3,y:0,width:leafHeight*4/3,height:leafHeight))
+        img03.layer.borderWidth = 1
+        img03.layer.borderColor = UIColor.lightGray.cgColor
+        img03.layer.cornerRadius = 5
+        
+        img01.backgroundColor = UIColor.clear
+        img02.backgroundColor = UIColor.white//purple.withAlphaComponent(0.1)
+        img03.backgroundColor = UIColor.purple.withAlphaComponent(0.05)
+
+        
+        //Viewの内容を作成
+        //パレット全画面の切り取り????
+        var tag:Int = pn*100 + 1
+        let rt = CGFloat(retina)
+        let targetIV = memo[fNum].viewWithTag(tag) as! UIImageView
+        let tImage = targetIV.image
+        //ピクセル画像のサイズ
+        let pixWidth:CGFloat = leafWidth! * rt
+        let pixHeight:CGFloat = leafHeight * rt
+        //切り取りサイズ
+        let clip02 = CGRect(x:0,y:0,width: pixWidth - pixHeight,height: pixHeight)
+        //ピクセル画面での切り取り
+        let clipImage02 =  (tImage?.cgImage!)!.cropping(to: clip02)
+         print("◆◆CGIサイズ:\(tImage?.cgImage?.width)")
+         print("◆◆clipImage02サイズ:\(clipImage02?.width)")
+        //UIImageに変換
+        img02.image = UIImage(cgImage: clipImage02!)
+        //3つのViewを合成して１つのコンテナViewにする
+        //subViewを全て削除する
+        let subviews = indexFView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+        indexFView.removeFromSuperview()
+
+        indexFView.addSubview(img01)
+        indexFView.addSubview(img02)
+        indexFView.addSubview(img03)
+        //self.view.addSubview(indexFView)
+        
+        indexFView.backgroundColor =
+            UIColor.clear
+        return indexFView.GetImage()
+ 
+    }
+ //============== 生き　===============
+    //UserDefaultのIndexPage:photos[0]を削除する
+    func delIndex(){
+        delPage(pn:0)
     }
     
     //----- リストメニューtableView関連 ---------------
@@ -891,7 +975,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let itm = items[num]
         let msg = "実行してもいいですか？"
         //--------------------------
-        if num != 7{
+ 
+        if num != 7 && num != 4{
 
         let alert: UIAlertController = UIAlertController(title: itm, message: msg, preferredStyle:  UIAlertControllerStyle.alert)
 
@@ -921,8 +1006,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         alert.addAction(defaultAction)
         self.present(alert, animated: true, completion: nil)// ④ Alertを表示
         }//----------↖
-        
+       
         tV.deselectRow(at: indexPath as IndexPath, animated: true)//カーソルを消す
+        if num == 4{return}
         self.menu(self.menu2)//メニューボタンを押す
     }
     /* リストメニュー選択時の処理 */
@@ -935,7 +1021,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
         memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)    }
     func fc5(){print("test5!!!!!")}
-    func fc6(){print("test6!!!!!")}
+    func fc6(){
+        print("test6!!!!!")
+        let dmmy = indexChange(pn:2)
+        test()
+    }
     
     /* -------------------　ボタン関数　-----------------------------*/
     
@@ -1168,8 +1258,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         modalChanged(TouchNumber: nowGyouNo)
     }
-    
-    func delMemo(sender: AnyObject) {//xxxx,◾◾◾◾：メニュー
+ /*
+    func x_delMemo(sender: AnyObject) {//xxxx,◾◾◾◾：メニュー
         memo[fNum].delSelectedMemo(gyou: nowGyouNo,maxGyou: pageGyou)
         modalChanged(TouchNumber:  nowGyouNo)
         // 保存データを全削除
@@ -1183,8 +1273,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          userDefault.removeObjectForKey("id")
          */
     }
-    
-    func save(sender: AnyObject) {//◾◾◾◾：xxxx自動
+ 
+    func x_save(sender: AnyObject) {//◾◾◾◾：xxxx自動
         //ページ数を取得する(ページ総数　+ Indexページ)
         print("pageImgs.count: \(pageImgs.count)")
         
@@ -1199,12 +1289,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[fNum].saveImage3(pn: pn,imgs: pageImgs[pn])//頁番号，頁内容
         }
     }
+*/
+/*
     
     func reload(sender: AnyObject) {//xxxx，◾◾◾◾：編集破棄の場合
         //myScrollView.Tshow_4thFrame()
         //myScrollView.gotoNextPage()
  
     }
+ */
+/*
     
     func toLeft(sender: AnyObject) {//xxxx
         if isEditMode == true{
@@ -1215,7 +1309,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView.layer.position = CGPoint(x: midX, y:boundHeight - vHeight/2 - 44)//@
         }
     }
-    
+ */
+/*
     func CR(sender: AnyObject) {//xxxx
         if isEditMode == true{
             //let myWidth = self.view.frame.width//画面の幅
@@ -1236,7 +1331,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //resetFunc()//reset動作をさせる
         }
     }
-    
+ */
+/*
     func addMemo(sender: AnyObject) {//xxxx
         if isEditMode == true{
             
@@ -1272,7 +1368,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView.X_color = 0//ペン色：黒
         }
     }
-    
+ */
+/*
     func reset(sender: AnyObject) {//xxxx
         if isEditMode == true{
             //let myWidth = self.view.frame.width//画面の幅
@@ -1290,6 +1387,69 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //myScrollView.showBackPage()
         }
     }
-
+ */
+/*
+    //これから読み込むUserDataに存在するページ数を取得する
+    func UserDataNum2()->Int{
+        //print(NSUserDefaults.standardUserDefaults().dictionaryRepresentation())
+        
+        let photoData = UserDefaults.standard
+        let dic: NSDictionary = photoData.dictionaryRepresentation() as NSDictionary
+        let keys = dic.allKeys
+        var kn = 0
+        for k in 0...20{
+            let key = "photos" + String(k + 1)
+            let found = keys.contains(where: { return $0 as! String == key })
+            if found == false { break}
+            kn = kn + 1
+        }
+        print("OK Google!: \(kn)")
+        return kn
+    }
+*/
+/*
+     //新しいページを作成して末尾に追加する
+     func x_createNewPageImg2(){
+     let bImage:UIImage = UIImage(named: "blankW.png")!//⬅4545.png
+     let blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
+     pageImgs.append(blankImgs)
+     }
+*/
+/*
+     //UserDataをpageImmgs[]に読み込む
+     func x_readUserData2(pn:Int){
+     let rl = reloadToPage2(pn: pn)
+     if rl.count > 0 { //これがないと読み込みエラーが発生 初期ではrl.count= 0
+     pageImgs[pn] = rl
+     }
+     }
+*/
+    //---- ページデータの読み込み・作成　-------------
+    /*
+     //UserDrfaultの頁数を調べる
+     let dataPn = UserDataNum2()//保管してあるページ数
+     //pageImgs[]の初期化(必要なページ分だけで作る)
+     var num:Int = 0
+     if dataPn != 0{
+     let sa = dataPn - pageImgs.count + 1
+     if sa > 0{ num = sa }else{ num = 3 }
+     for _ in 1...num{
+     createNewPageImg2()
+     }
+     //imgsに保存データを読み込む
+     for _ in 0..<dataPn{
+     //readUserData2(pn: i)
+     }
+     }else{//保存ページが1つもない場合
+     for _ in 0..<3{
+     createNewPageImg2()//pageImgs[]にappendする
+     }
+     }
+     
+     //3ページの作成：pageImgs[[30],[30],[30]]
+     for _ in 0..<3{
+     createNewPageImg2()//pageImgs[]にappendする
+     }
+     */
 
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Memo2View:UIView{
+class MemoView:UIView{
     var memoNum:Int = 0
     let mWidth :CGFloat! = leafWidth// boundWidth - 20：メモクラスの幅
     let mHeight :CGFloat! = boundHeight//メモクラスの高さ
@@ -22,57 +22,85 @@ class Memo2View:UIView{
     }
 //
     
+    
+    
+    
     /* pageImageの要素画像をmemoViewにコピーします */
     func setMemoFromImgs(pn:Int,imgs:[UIImage]){
         //tag付の空メモページを作る
         makePageWithTag(pn:pn)
         
         //pageImgs[指定ページ]の内容をメモページに取り込む
+        var temp:CGFloat = 0
+        var temp2:CGFloat = 0
         for idx in 0..<pageGyou{
             let tag = pn*100 + idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
             //print("bbbbbbbbbbb:\(pn)")
             
-            targetMemo.image = imgs[idx]//???pageImgsを無くす??
+            targetMemo.image = imgs[idx]
             //タグ番号を画像に合成する：試験用
             targetMemo.image = targetMemo.image?.addText(text: String(tag))
             
             if idx == 0 && pn == 0{
                 targetMemo.image = targetMemo.image?.addText(text: "INDEX")
             }
-            
+            if idx == 0{
+                temp = (targetMemo.image?.size.height)!
+                temp2 = CGFloat(targetMemo.image!.cgImage!.height)
+            }
             //print("Viewtag : \(self.tag)")
             //print("targetMemo.image = \(targetMemo.image?.size)")
+        }
+        
+        print("◎　[]⇒メモ：targetMemo.image = imgs[idx]")
+        print("◆targetMemo.image?サイズ：\(temp)")
+         print("◇CGImage.size:\(temp2)")
+    }
+
+    func setIndexView(){//最新版1201
+        let pn = 0
+        //tag付の空メモページを作る
+        makePageWithTag(pn:0)
+        
+        //空白の画像をメモページに取り込む
+        for idx in 0..<pageGyou{
+            let tag = pn*100 + idx + 1
+            let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+            
+            targetMemo.image = UIImage(named: "blankW.png")
+            //タグ番号を画像に合成する：試験用
+            targetMemo.image = targetMemo.image?.addText(text: String(tag))
+            //Indexページ固有の処理
+            if pn == 0{
+                //targetMemo.image = targetMemo.image?.addText(text: "INDEX")
+            }
+            
         }
     }
     
-    func setMemo2View(pn:Int){//最新版1201
-       //tag付の空メモページを作る
-        makePageWithTag(pn:pn)
-        
-       //pageImgs[指定ページ]の内容をメモページに取り込む
+    func setIndexFromImgs(pn:Int,imgs:[UIImage]){
+        //tag付の空メモページを作る
+        //makePageWithTag(pn:pn)
+        //pageImgs[指定ページ]の内容をメモページに取り込む
         for idx in 0..<pageGyou{
-            let tag = pn*100 + idx + 1
+            let tag = idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
-            //print("bbbbbbbbbbb:\(pn)")
-            
-            targetMemo.image = pageImgs[pn][idx]//???pageImgsを無くす??
+            targetMemo.image = imgs[idx + 1]
             //タグ番号を画像に合成する：試験用
             targetMemo.image = targetMemo.image?.addText(text: String(tag))
-        /*
-            if idx == 0 && pn == 0{
-                targetMemo.image = targetMemo.image?.addText(text: "INDEX")
-            }
-        */
-            //print("Viewtag : \(self.tag)")
-            //print("targetMemo.image = \(targetMemo.image?.size)")
         }
     }
+
 
     /* メモにパレット内容を書き込む */
     func addMemo(img:UIImage,tag:Int){
         let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView// ____子viewを取り出す(タグ番号:101）
         targetMemo.image = img
+       
+        print("◎パレット⇒メモ：targetMemo.image = パレットのimg")
+        print("◆imgサイズ：\(img.size.height)")
+        print("🔳imgサイズ：\(img.cgImage?.height)")
         //targetMemo.layer.borderColor = UIColor.redColor().CGColor
     }
     
@@ -206,8 +234,78 @@ class Memo2View:UIView{
         }
         
     }
-//         ----------　Data保存に関する ！どこに置くの？--------------
-    /*　メモ内容をUserDwfaultに保存する */
+
+    
+    //* メモ(leaf)[m]からメモ画像:[UIImage]を作成する */
+    func memoToImgs(pn:Int) ->[UIImage]{
+        var img:[UIImage] = []
+        //メモ行の画像を順にimg[]にコピーする
+        var temp:CGFloat = 0
+        for idx in 0..<pageGyou{
+            let tag = pn*100 + idx + 1
+            let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+            img.append(targetMemo.image!)
+            if idx<2{//◆テストです
+            temp = targetMemo.image!.size.height
+            print("◎　memo ⇒UP[]")
+            print("◆targetMemo.image!(30)のサイズ: \(temp)")
+            print("🔳cgimageのサイズ: \(targetMemo.image?.cgImage?.height)")
+            }
+        }
+        //print("◎メモから[]へUP：img.append(targetMemo.image!)")
+        //print("◆targetMemo.image!(30)のサイズ: \(temp)")
+        return img
+    }
+
+    //----------------------------------------
+    
+    var cursolMode:Bool! = false
+    func delCursol(){
+        //表示ページの全てのリーフの背景を透明にする
+        for subview in self.subviews {
+            subview.backgroundColor = UIColor.clear
+            subview.alpha = 1// 透明度を設定
+        }
+    }
+    
+    func togglleCursol(){
+        if cursolMode == true{
+           delCursol()
+           cursolMode = false
+        }else{}
+    }
+ //=========================== 未使用　======================================
+    /*
+     //* メモ(leaf)[m]をメモ画像:pageImgs[n]にUPする */
+     func x_memoTopageImgsToMemo(pn:Int){
+     //配列の画像を順にメモ行にコピーする
+     for idx in 0..<pageGyou{
+     let tag = pn*100 + idx + 1
+     let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+     pageImgs[pn][idx] = targetMemo.image!
+     }
+     }
+     */
+    //* メモ画像:pageImgs[n]をメモ(leaf)[m]に読み込む */
+    //func changePageNum(pn:Int){pageNum = pn}
+    /*
+     func x_TpageImgsToMemo(pn:Int,fn:Int){
+     //配列の画像を順にメモ行にコピーする
+     if fn == homeFrame{ changePageNum(pn: pn) }//フレーム２に入るページ（現行ページ）
+     for idx in 0...pageGyou - 1{
+     let tag = fn*100 + idx + 1
+     let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+     //print("bbbbbbbbbbb:\(pn)")
+     targetMemo.image = pageImgs[pn][idx]
+     print("tag : \(tag)")
+     //framePage[fn] = pn
+     //print("targetMemo.image = \(targetMemo.image?.size)")
+     }
+     print("@@@@@@@@")
+     }
+     */
+    //         ----------　Data保存に関する ！どこに置くの？--------------
+    //--　メモ内容をUserDwfaultに保存する --
     func saveImage3(pn:Int,imgs:[UIImage]){
         let photos = imgs
         let photoData: UserDefaults = UserDefaults.standard
@@ -222,61 +320,26 @@ class Memo2View:UIView{
         //photoData.synchronize()//必要かどうか？あると遅くなるのか？
         
     }
-    
-    //* メモ(leaf)[m]からメモ画像:[UIImage]を作成する */
-    func memoToImage(pn:Int) ->[UIImage]{
-        var img:[UIImage] = []
-        //メモ行の画像を順にimg[]にコピーする
+ /*
+    func x_setMemoView(pn:Int){//最新版1201
+        //tag付の空メモページを作る
+        makePageWithTag(pn:pn)
+        
+        //空白の画像をメモページに取り込む
         for idx in 0..<pageGyou{
             let tag = pn*100 + idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
-            img.append(targetMemo.image!)
-        }
-        return img
-    }
-    
-    //* メモ(leaf)[m]をメモ画像:pageImgs[n]にUPする */
-    func memoTopageImgsToMemo(pn:Int){
-        //配列の画像を順にメモ行にコピーする
-        for idx in 0..<pageGyou{
-            let tag = pn*100 + idx + 1
-            let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
-            pageImgs[pn][idx] = targetMemo.image!
-        }
-    }
-    
-    //* メモ画像:pageImgs[n]をメモ(leaf)[m]に読み込む */
-    func changePageNum(pn:Int){pageNum = pn}
-    
-    func TpageImgsToMemo(pn:Int,fn:Int){
-        //配列の画像を順にメモ行にコピーする
-        if fn == homeFrame{ changePageNum(pn: pn) }//フレーム２に入るページ（現行ページ）
-        for idx in 0...pageGyou - 1{
-            let tag = fn*100 + idx + 1
-            let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
-            //print("bbbbbbbbbbb:\(pn)")
-            targetMemo.image = pageImgs[pn][idx]
-            print("tag : \(tag)")
-            //framePage[fn] = pn
-            //print("targetMemo.image = \(targetMemo.image?.size)")
-        }
-        print("@@@@@@@@")
-    }
-    //----------------------------------------
-    var cursolMode:Bool! = false
-    func delCursol(){
-        //表示ページの全てのリーフの背景を透明にする
-        for subview in self.subviews {
-            subview.backgroundColor = UIColor.clear
-            subview.alpha = 1// 透明度を設定
-        }
-    }
-    func togglleCursol(){
-        if cursolMode == true{
-           delCursol()
-           cursolMode = false
-        }else{
+            
+            targetMemo.image = UIImage(named: "blankW.png")
+            //タグ番号を画像に合成する：試験用
+            targetMemo.image = targetMemo.image?.addText(text: String(tag))
+            //Indexページ固有の処理
+            if pn == 0{
+                //targetMemo.image = targetMemo.image?.addText(text: "INDEX")
+            }
             
         }
     }
+ */
+    
 }
