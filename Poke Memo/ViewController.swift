@@ -219,6 +219,30 @@ extension UIImage {
         
         return newImage!
     }
+    func addIndexText(text:String,rect:CGRect)-> UIImage{
+        let text = text
+        let font = UIFont.boldSystemFont(ofSize: 16)
+        let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
+
+        UIGraphicsBeginImageContext(self.size);
+        
+        self.draw(in: imageRect)
+        
+        let textRect  = rect
+        let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+        let textFontAttributes = [
+            NSFontAttributeName: font,
+            NSForegroundColorAttributeName: UIColor.gray,
+            NSParagraphStyleAttributeName: textStyle
+        ]
+        text.draw(in: textRect, withAttributes: textFontAttributes)
+        
+        let newImage = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext()
+        
+        return newImage!
+    }
 
 }
 
@@ -845,9 +869,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
  
-   
-
-    
     // == Index情報の更新プログラム ==
     //palleteを閉じるときにページデータからIndex内容を更新する
 /*
@@ -896,16 +917,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var img03:UIImageView!
         
         indexFView = UIView(frame: CGRect(x:5,y: 210,width:leafWidth,height:leafHeight))
-        img01 = UIImageView(frame:CGRect(x:0,y:0,width:leafHeight,height:leafHeight))
+        img01 = UIImageView(frame:CGRect(x:0,y:0,width:leafHeight*2/3 - 1,height:leafHeight))
         img02 = UIImageView(frame:CGRect(x:leafHeight*2/3,y:0,width:leafWidth - 2*leafHeight,height:leafHeight))
         //枠線,色,角丸
+        img01.layer.borderWidth = 1
+        img01.layer.borderColor = UIColor.lightGray.cgColor
+        img01.layer.cornerRadius = 5
         img02.layer.borderWidth = 2
         img02.layer.borderColor = UIColor.lightGray.cgColor
-        img02.layer.cornerRadius = 9
-        img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3,y:0,width:leafHeight*4/3,height:leafHeight))
+        img02.layer.cornerRadius = 7
+        img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3 + 2,y:0,width:leafHeight*4/3 - 2,height:leafHeight))
         img03.layer.borderWidth = 1
         img03.layer.borderColor = UIColor.lightGray.cgColor
         img03.layer.cornerRadius = 5
+
         
         img01.backgroundColor = UIColor.clear
         img02.backgroundColor = UIColor.white//purple.withAlphaComponent(0.1)
@@ -944,7 +969,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         indexFView.backgroundColor =
             UIColor.clear
-        return indexFView.GetImage()
+        //日付を追加する
+        let compY = Calendar.Component.year
+        let compM = Calendar.Component.month
+        let compD = Calendar.Component.day
+        
+        let y = NSCalendar.current.component(compY, from: Date() as Date)
+        let m = NSCalendar.current.component(compM, from: Date() as Date)
+        let d = NSCalendar.current.component(compD, from: Date() as Date)
+        let st = String(format: " %4d-\n %2d-%2d",y,m,d)
+        print(st)
+        print("\(y)\n\(m)/\(d)")// 1が日曜日 7が土曜日
+        //画面全体をイメージ化する
+         let orgImage = indexFView.GetImage()
+        return orgImage.addIndexText(text:st,rect:img03.frame.offsetBy(dx: 1, dy: 2))
  
     }
  //============== 生き　===============

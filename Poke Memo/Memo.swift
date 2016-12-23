@@ -14,15 +14,12 @@ class MemoView:UIView{
     let mHeight :CGFloat! = boundHeight//メモクラスの高さ
     let leafRect:CGRect = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)
     
-    
 //  [リーフクラス]
     class Leaf: UIImageView {
         var leafStus:Int = 0//未使用
         var rightSpace:CGFloat! = leafWidth//右端までの余白の長さ
     }
 //
-    
-    
     
     
     /* pageImageの要素画像をmemoViewにコピーします */
@@ -176,12 +173,13 @@ class MemoView:UIView{
             myLeaf.backgroundColor = UIColor.clear
             let yPos:CGFloat = topOffset + (leafHeight + leafMargin)*CGFloat(idx + 1) - leafHeight/2
             myLeaf.layer.position = CGPoint(x: pagePosX , y:yPos)
-            
+            if pn>0{
             //leafの枠の下線を灰色にする
-            if idx == 0 && pn>0{
+              if idx == 0{
                 myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
-            }else{
+              }else{
                 myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 1, type: .Down)
+              }
             }
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
