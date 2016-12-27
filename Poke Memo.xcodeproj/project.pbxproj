@@ -30,6 +30,8 @@
 		30DAD8921DE5C3040068FF45 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30DAD8901DE5C3040068FF45 /* LaunchScreen.storyboard */; };
 		30DAD89D1DE5C3040068FF45 /* Poke_MemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD89C1DE5C3040068FF45 /* Poke_MemoTests.swift */; };
 		30DAD8A81DE5C3040068FF45 /* Poke_MemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD8A71DE5C3040068FF45 /* Poke_MemoUITests.swift */; };
+		30DEDDDA1E0D25A40051C829 /* 僕の世界.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 30DEDDD91E0D25A40051C829 /* 僕の世界.jpg */; };
+		30DEDDDC1E0D428C0051C829 /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DEDDDB1E0D428C0051C829 /* Editor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +81,8 @@
 		30DAD8A31DE5C3040068FF45 /* Poke MemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Poke MemoUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30DAD8A71DE5C3040068FF45 /* Poke_MemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Poke_MemoUITests.swift; sourceTree = "<group>"; };
 		30DAD8A91DE5C3040068FF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30DEDDD91E0D25A40051C829 /* 僕の世界.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "僕の世界.jpg"; sourceTree = "<group>"; };
+		30DEDDDB1E0D428C0051C829 /* Editor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +120,7 @@
 				30C2B1881DEB259D0069A5DF /* blankW.png */,
 				30C2B1891DEB259D0069A5DF /* blank.png */,
 				30C2B18A1DEB259D0069A5DF /* blankA.png */,
+				30DEDDD91E0D25A40051C829 /* 僕の世界.jpg */,
 				30C2B18B1DEB259D0069A5DF /* bg2.png */,
 				30C2B18C1DEB259D0069A5DF /* bg3.png */,
 				30C2B18D1DEB259D0069A5DF /* bg6.png */,
@@ -151,6 +156,7 @@
 				30C2B1841DEB24F60069A5DF /* Imgs */,
 				30DAD8871DE5C3040068FF45 /* AppDelegate.swift */,
 				30DAD8891DE5C3040068FF45 /* ViewController.swift */,
+				30DEDDDB1E0D428C0051C829 /* Editor.swift */,
 				30C2B17E1DEB1DB70069A5DF /* Pallete.swift */,
 				30419DEE1DFFC58D00D22C8A /* Canvas.swift */,
 				30C2B1801DEB1DFF0069A5DF /* TouchScroll.swift */,
@@ -303,6 +309,7 @@
 				30C2B1901DEB259D0069A5DF /* wave.png in Resources */,
 				30C2B1971DEB259D0069A5DF /* bg3.png in Resources */,
 				30C2B1981DEB259D0069A5DF /* bg6.png in Resources */,
+				30DEDDDA1E0D25A40051C829 /* 僕の世界.jpg in Resources */,
 				3002D4FF1DF85A7C0065D8C1 /* 4545.png in Resources */,
 				30DAD88D1DE5C3040068FF45 /* Main.storyboard in Resources */,
 				30C2B1921DEB259D0069A5DF /* blankP.png in Resources */,
@@ -330,6 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30DEDDDC1E0D428C0051C829 /* Editor.swift in Sources */,
 				30DAD88A1DE5C3040068FF45 /* ViewController.swift in Sources */,
 				30C2B17F1DEB1DB70069A5DF /* Pallete.swift in Sources */,
 				30C2B1811DEB1DFF0069A5DF /* TouchScroll.swift in Sources */,

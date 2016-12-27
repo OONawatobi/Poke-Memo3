@@ -255,6 +255,11 @@ let retina:Int = Int(UIScreen.main.scale)//レティナ分解能の抽出
 var infoPage:[(memoNo:Int,gyou:Int,maxUsingGyouNo:Int)]!//未使用
 var isEditMode:Bool! = false//パレットが表示されている場合：true
 var isIndexMode:Bool! = false//Indexの表示フラグ：true
+//エディット画面関係
+var editFlag:Bool = false//パレット編集モードが選ばれるとtrue
+var myInt : String = "NON"//パレット編集モード
+var cursolWFlag:Bool = false//カーソル巾が5以上になると１
+
 
 var penColorNum:Int = 1
 let homeFrame:Int = 2//表示用フレーム ⇒グローバル定数
@@ -277,6 +282,7 @@ let leafMargin:CGFloat = 4//メモ行間の隙間
 var memoLowerMargin:Int = 2// メモ末尾の表20示マージン行数
 //-----パレット------------
 var drawableView: DrawableView! = nil//パレット画面
+var editorView:EditorView! = nil//エディター画面
 let vHeight: CGFloat = 181 //手書きビューの高さ@@@@@@@@
 var vWidth:CGFloat! = leafWidth*(vHeight/leafHeight)
 var maxPosX:CGFloat! = 0//描画したｘ座標の最大値
@@ -459,7 +465,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         editButton10 = UIButton(frame: CGRect(x:boundWidth - 40, y:10, width:30,height: 40))
         editButton10.backgroundColor = UIColor.gray
-        editButton10.addTarget(self, action: #selector(ViewController.btn9_click(sender:)), for:.touchUpInside)
+        editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchUpInside)
         editButton10.setTitle("10", for: UIControlState.normal)
         myEditView.addSubview(editButton10)
         
@@ -517,6 +523,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let bImage = UIImage(named: "blankW.png")
             indexImgs = Array(repeating: bImage!, count: pageGyou + 1)
             //memo[0].backgroundColor = UIColor.red.withAlphaComponent(0.1)
+            //let bI = UIImage(named: "僕の世界.jpg")
+            //memo[0].backgroundColor = UIColor(patternImage: bI!)
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
         
             // メモ表示内容の初期化
@@ -679,7 +687,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //myScrollView.upToImgs()//編集中のページ内容を更新する
             let im = memo[fNum].memoToImgs(pn: pageNum)
             writePage(pn: pageNum, imgs: im)//外部に保存
-            indexImgs[pageNum] = indexChange(pn: pageNum)
+            //indexImgs[pageNum] = indexChange(pn: pageNum)
             //　子viewを削除する??
             drawableView!.removeFromSuperview()
             drawableView = nil
@@ -709,7 +717,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             myScrollView.frame = scrollRect_P
             //myScrollView.showHomeFrame()
             etcBarDisp(disp: 1)//underView等」を追加する
-            
+            //編集画面非表示フラグをリセットする
+            myEditFlag == false
             //１行目をパレットに呼び込む
             modalChanged(TouchNumber: pageNum*100 + 1)
         }
@@ -717,38 +726,45 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func done(_ sender: UIBarButtonItem) {
-        if isEditMode == true{
-             //drawableView.thirdView.backgroundColor = UIColor.clear//前フィルタの色を無色にする
-            drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
-            //let resize = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)//
-            //let myImage1:UIImage = drawableView.GetImageWithResize(resize: resize)
-            
-            let palImage = drawableView.GetImage()
-            let myImage1 = palImage.ResizeUIImage(width: leafWidth, height: leafHeight)
-            //self.backgroundColor = UIColor(patternImage: myImage1)// @ @ @ @
-            /*
-             ========================================================
-             let reSize = CGSize(width: leafWidth, height: leafHeight)
-             let leafImage = myImage1.resize(reSize)
-             //========================================================
-             */
-            print("fNum:\(fNum) ,tag: \(nowGyouNo)")
-            
-            // メモにパレット内容を書き込む
-            memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
-            // 最大文字位置を保存する
-            mx[String(nowGyouNo)] = mxTemp
-            //メモに書き出した内容をパレットに読み込む//20161024追加 変更：20161202
-            //let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
-            //self.backgroundColor = UIColor(patternImage:myMemo)// @ @ @ @
-            drawableView.reAddSubView()//前フィルタ(subView)を付加する
-            //drawableView.thirdView.backgroundColor = UIColor(patternImage: UIImage(named: "blank.png")!)
-            drawableView.addSubview(drawableView.thirdView)//3rdViewを追加する
-            //lined = nil //20161024追加 @ @ @ @ @ 5
+        if isEditMode == true{//パレットが表示されている場合
+         //---------- パレット編集時 ---------------------------
+            if editFlag == true{//カーソルモードが選択された場合
+                if cursolWFlag == true{//カーソル幅が狭い場合では🐞する
+ 
+                    //カーソル画面を撤去する
+                    drawableView.secondView.cursolView.removeFromSuperview()
+                    drawableView.thirdView.removeFromSuperview()
+                    //編集結果画面を取得する
+                    let editedView = drawableView.secondView.editPallete(sel: myInt)
+                    //編集結果画面をパレットに反映させる
+                    //カーソルを削除する
+                    drawableView.secondView.cursolView.removeFromSuperview()
+                    //画面をグリーン色にする
+                    drawableView.addSubview(drawableView.thirdView)
+                    //secondViewの背景を透明にする
+                    drawableView.secondView.backgroundColor = UIColor.clear
+                    drawableView.backgroundColor = UIColor(patternImage: editedView)
+                    editFlag = false;myInt = "NON"
+                }
+                
+            }else{
+                
+               drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
+               let palImage = drawableView.GetImage()
+               let myImage1 = palImage.ResizeUIImage(width: leafWidth, height: leafHeight)
+               print("fNum:\(fNum) ,tag: \(nowGyouNo)")
+              // メモにパレット内容を書き込む
+               memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
+              // 最大文字位置を保存する
+               mx[String(nowGyouNo)] = mxTemp
+               drawableView.reAddSubView()//前フィルタ(secondView)を付加する
+               drawableView.addSubview(drawableView.thirdView)//3rdViewを追加する
+              //インデックス情報を更新する
+               indexImgs[pageNum] = indexChange(pn: pageNum)
+            }
         }
-
     }
-    
+
     @IBAction func zoom(_ sender: UIBarButtonItem) {
     }
     
@@ -869,44 +885,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
  
-    // == Index情報の更新プログラム ==
+    //            == Index情報の更新プログラム ==
     //palleteを閉じるときにページデータからIndex内容を更新する
-/*
-    func clipImage(image: UIImage, y: CGFloat, height: CGFloat) -> UIImage {
-        var imageRef = image.cgImage!.cropping(to: CGRect(x:0,y:y,width:image.size.width,height:height))
-        var cropImage = UIImage(cgImage: imageRef!)
-        return cropImage
-    }
-*/
-    func test(){
-        //保存する画像を設定する
-        let targetIView = memo[fNum].viewWithTag(201) as! UIImageView
-        let testImg = targetIView.image
-        let testCGImg = testImg?.cgImage?.height
-        
-        print("書き込む画像サイズ: \(testImg?.size.height)")
-        print("CGImage.size:\(testCGImg)")
-
-    // = UserDefaultに保存する =
-        // [UIImage] → [NSData]
-        let testData: UserDefaults = UserDefaults.standard
-        let dataImages:Data =  UIImagePNGRepresentation(testImg!)!
-        let testName:String = "test01"//保存名を決定
-        testData.set(dataImages, forKey: testName)
-
-    // = UserDefaultから読み込む =
-        if testData.object(forKey: testName) != nil{
-            let img = testData.object(forKey: testName) as! NSData
-            //let readImg = UIImage(data:img as Data)!
-            let resdImg = UIImage(data:img as Data,scale:1.0)
-            print("読み込んだ画像サイズ: \(resdImg?.size.height)")
-            print("CGImageサイズ: \(resdImg?.cgImage?.height)")
-        }
-
-    // = UserDefaultをクリアする =
-        testData.removeObject(forKey: testName)
-    }
-
     func indexChange(pn:Int)-> UIImage{
         
         //??let scale = imageSize.height / viewSize.height
@@ -939,7 +919,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //Viewの内容を作成
         //パレット全画面の切り取り????
-        var tag:Int = pn*100 + 1
+        let tag:Int = pn*100 + 1
         let rt = CGFloat(retina)
         let targetIV = memo[fNum].viewWithTag(tag) as! UIImageView
         let tImage = targetIV.image
@@ -1061,24 +1041,27 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func fc5(){print("test5!!!!!")}
     func fc6(){
         print("test6!!!!!")
-        let dmmy = indexChange(pn:2)
-        test()
+        
     }
     
     /* -------------------　ボタン関数　-----------------------------*/
     
     func btn1_click(sender:UIButton){
         print("** btn1_click()")
-        if myEditFlag == false{
+        if myEditFlag == false{//エディット画面を表示する
             editButton1.backgroundColor = UIColor.gray
             editButton1.setTitle("⬇", for: UIControlState.normal)
             self.view.addSubview(myEditView)
-            myEditFlag = true
-        }else{
+            myEditFlag = true; editFlag = false//前者:エディット画面,後者:エディットモード
+            //editor画面のイベントの非透過
+            drawableView.secondView.isUserInteractionEnabled = true
+        }else{//エディット画面を非表示にする
             editButton1.backgroundColor = UIColor.red
             editButton1.setTitle("💠", for: UIControlState.normal)
             myEditView.removeFromSuperview()
-            myEditFlag = false
+            drawableView.secondView.cursolView.removeFromSuperview()
+            myEditFlag = false; editFlag = false
+            drawableView.secondView.isUserInteractionEnabled = false
         }
     }
     
@@ -1102,11 +1085,39 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("btn4_clicked!:消しゴム")
         drawableView.X_color = 1//消しゴムモード
     }
-    func btn5_click(sender:UIButton){print("btn5_clicked!")}
-    func btn6_click(sender:UIButton){print("btn6_clicked!")}
+    
+    func editorModeStart(){
+        //secondViewをタッチ可能とするための処理：最上位のビューしか変更できな為
+        drawableView.bringSubview(toFront: drawableView.secondView)
+        drawableView.secondView.isUserInteractionEnabled = true
+    }
+    func editorModeEnd(){
+        
+    }
+    func btn5_click(sender:UIButton){
+        print("btn5_clicked!")
+        myInt = "OVW"//overwrite
+        editFlag = true
+        drawableView.secondView.cursolView.removeFromSuperview()
+        drawableView.secondView.setMyCursolView()
+        editorModeStart()
+    }
+    func btn6_click(sender:UIButton){
+        print("btn6_clicked!")
+        myInt = "INS"//ins
+        editFlag = true
+        drawableView.secondView.cursolView.removeFromSuperview()
+        drawableView.secondView.setMyCursolView()
+        editorModeStart()
+    }
     
     func btn7_click(sender:UIButton){
         print("btn7_clicked!")
+        myInt = "DEL"//del
+        editFlag = true
+        drawableView.secondView.cursolView.removeFromSuperview()
+        drawableView.secondView.setMyCursolView()
+        editorModeStart()
     }
 
     
@@ -1121,7 +1132,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func btn9_click(sender:UIButton){print("btn9_clicked!")}
-    func btn10_click(sender:UIButton){print("btn10_clicked!")}
+    
+    func btn10_click(sender:UIButton){
+        print("btn10_clicked!")
+
+    }
+    
     
    /* -------------------　スワイプ関数　-----------------------------*/
     func swipeR(){

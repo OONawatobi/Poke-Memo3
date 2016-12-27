@@ -17,8 +17,8 @@ class DrawableView: UIView {
     var bezierPath: UIBezierPath!
  //---------------
     var pen:UIImage!
-    var secondView: UIView!//? UIView(secondView)を作成する
-    var thirdView:UIView!//パレットの最前面ビュー（色フィルタ）
+    var secondView: EditorView!//? UIView(secondView)を作成する
+    var thirdView:UIView!//パレットの最前面ビュー（色フィルタ）カーソルビューも兼ねる
     var myImageView:UIImageView!//? UIImageViewを作成する.
  
     
@@ -28,23 +28,28 @@ class DrawableView: UIView {
     
     /* セカンド・サードビューの初期化 */
     func setSecondView(){
-        secondView = UIView(frame: CGRect(x:0,y:0,width:self.bounds.width,height:self.bounds.height))
+        secondView = EditorView(frame: CGRect(x:0,y:0,width:self.bounds.width,height:self.bounds.height))
+        secondView.setMyCursolView()
         //secondView.backgroundColor = UIColor(patternImage: myImg!)
         //secondView.addBothBorderWithColor(color: UIColor.orange, width: 2)
-        self.addSubview(secondView)
+        
         secondView.isUserInteractionEnabled = false //イベントの透過
-        // thirdViewの初期化
+        // thirdViewの初期化：背景を緑色にする、先頭と末尾に印を追加する
         thirdView = UIView(frame: secondView.frame)
+        
         thirdView.backgroundColor = UIColor(patternImage: myImg!)
         thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.10), width: 15)
-        self.addSubview(thirdView)
+        
         thirdView.isUserInteractionEnabled = false //イベントの透過
+ 
+        self.addSubview(secondView)
+        self.addSubview(thirdView)
     }
     
-    func delSubView(){
+    func delSubView(){//secondViewの取り出し
         secondView.removeFromSuperview()
     }
-    func reAddSubView(){
+    func reAddSubView(){//secondViewの追加
         self.addSubview(secondView)
     }
     //--------------------　描画プログラム　---------------------------------/
@@ -176,8 +181,6 @@ class DrawableView: UIView {
         UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
     
         if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
-        //ペン色を指定する
-        //penColor = UIColor.black//(red: 1, green: 0, blue: 0, alpha: 1)
         penColor.setStroke()
         path.lineWidth = penW//ペン幅を指定する
         path.stroke()
@@ -187,7 +190,6 @@ class DrawableView: UIView {
         //タッチEnd時に画面を背景にコピーする
         print("p p p p p p p")
         secondView.backgroundColor = UIColor(patternImage: tempImage!)
-        
         UIGraphicsEndImageContext()  //Canvasを閉じる
     }
  
