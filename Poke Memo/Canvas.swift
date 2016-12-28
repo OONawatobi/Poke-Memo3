@@ -23,8 +23,8 @@ class DrawableView: UIView {
  
     
     //----------- secondView(パレット前面フィルタ)の作成 --------------------------
-    
-    let myImg = UIImage(named: "blank.png")// 背景(メモの選択背景色と合わせる)
+        let myImg = UIImage(named: "blank.png")// 背景(メモの選択背景色と合わせる)
+
     
     /* セカンド・サードビューの初期化 */
     func setSecondView(){
@@ -34,11 +34,11 @@ class DrawableView: UIView {
         //secondView.addBothBorderWithColor(color: UIColor.orange, width: 2)
         
         secondView.isUserInteractionEnabled = false //イベントの透過
-        // thirdViewの初期化：背景を緑色にする、先頭と末尾に印を追加する
+        // ++ thirdViewの初期化：背景を緑色にする、先頭と末尾に印を追加する ++
         thirdView = UIView(frame: secondView.frame)
         
         thirdView.backgroundColor = UIColor(patternImage: myImg!)
-        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.10), width: 15)
+        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.15), width: 15)
         
         thirdView.isUserInteractionEnabled = false //イベントの透過
  
@@ -161,7 +161,7 @@ class DrawableView: UIView {
         
         //ペン色の設定
         var penColor:UIColor!
-        var penW:CGFloat = 6
+        var penW:CGFloat = 7
         if X_color == 0 { //ペンモード
                penColor = UIColor.black
             if penColorNum == 1{

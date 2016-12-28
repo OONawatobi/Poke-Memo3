@@ -118,7 +118,7 @@ extension UIView {
         //センターにも縦線を引く　20161216追加
         let border3 = CALayer()
         border3.backgroundColor = color.cgColor
-        border3.frame = CGRect(x:self.frame.size.width/2, y:0,width:width,
+        border3.frame = CGRect(x:self.frame.size.width/2, y:0,width:width/2,
                                height:self.frame.size.height)
         self.layer.addSublayer(border3)
         
@@ -372,12 +372,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //underFlag = false// 表示・非表示のためのフラグ
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
         underView.backgroundColor = UIColor.green// underViewの背景を青色に設定
-        underView.alpha = 0.12// 透明度を設定
+        underView.alpha = 0.33// 透明度を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 10)// 位置を中心に設定
         /** upperViewを生成. **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
         upperView.backgroundColor = UIColor.green
-        upperView.alpha = 0.12// 透明度を設定
+        upperView.alpha = 0.33// 透明度を設定
         upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 + 10)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
         
@@ -393,27 +393,32 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton1 = UIButton(frame: CGRect(x:boundWidth - 60,y: 5, width:50, height:30))
         editButton1.backgroundColor = UIColor.red  // タイトルを設定する(通常時)
         editButton1.setTitle("💠", for: UIControlState.normal)
+
         // イベントを追加する
         editButton1.addTarget(self, action: #selector(ViewController.btn1_click(sender:)), for: .touchUpInside)
         myToolView.addSubview(editButton1)
         self.toolBar.isHidden  = true//ツールバーを隠す
         // button2の追加
-        editButton2 = UIButton(frame: CGRect(x:10, y:5, width:30, height:30))
-        editButton2.backgroundColor = UIColor.gray
+        editButton2 = UIButton(frame: CGRect(x:10, y:10, width:20, height:20))
+        editButton2.backgroundColor = UIColor.clear
         editButton2.addTarget(self, action: #selector(ViewController.btn2_click(sender:)), for:.touchUpInside)
-        editButton2.setTitle("2", for: UIControlState.normal)
+        //editButton2.setTitle("2", for: UIControlState.normal)
+        editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
         myToolView.addSubview(editButton2)
         // button3の追加
         editButton3 = UIButton(frame: CGRect(x:60, y:5, width:30, height:30))
-        editButton3.backgroundColor = UIColor.gray
+        
+        editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 1)
         editButton3.addTarget(self, action: #selector(ViewController.btn3_click(sender:)), for:.touchUpInside)
-        editButton3.setTitle("3", for: UIControlState.normal)
+        //editButton3.setTitle("3", for: UIControlState.normal)
+        editButton3.setImage(UIImage(named: "pen2.png"), for:UIControlState.normal)
         myToolView.addSubview(editButton3)
         /** button4の追加 **/
         editButton4 = UIButton(frame: CGRect(x:110, y:5, width:30, height:30))
-        editButton4.backgroundColor = UIColor.gray
+        editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton4.addTarget(self, action: #selector(ViewController.btn4_click(sender:)), for:.touchUpInside)
-        editButton4.setTitle("4", for: UIControlState.normal)
+        //editButton4.setTitle("4", for: UIControlState.normal)
+        editButton4.setImage(UIImage(named: "keshi.png"), for:UIControlState.normal)
         myToolView.addSubview(editButton4)
         
         /* editViewを生成. */
@@ -721,6 +726,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             myEditFlag == false
             //１行目をパレットに呼び込む
             modalChanged(TouchNumber: pageNum*100 + 1)
+            penMode()//黒ペンモードにする
         }
         
     }
@@ -735,7 +741,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     drawableView.secondView.cursolView.removeFromSuperview()
                     drawableView.thirdView.removeFromSuperview()
                     //編集結果画面を取得する
-                    let editedView = drawableView.secondView.editPallete(sel: myInt)
+                    var editedView:UIImage!
+                    if myInt == "CLR"{
+                     editedView = UIImage(named:"blankW.png")
+                    }else{
+                     editedView = drawableView.secondView.editPallete(sel: myInt)
+                    }
                     //編集結果画面をパレットに反映させる
                     //カーソルを削除する
                     drawableView.secondView.cursolView.removeFromSuperview()
@@ -745,9 +756,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     drawableView.secondView.backgroundColor = UIColor.clear
                     drawableView.backgroundColor = UIColor(patternImage: editedView)
                     editFlag = false;myInt = "NON"
+                    //パレット入力状態のリセット
+                    drawableView.lastDrawImage = nil
+                    //編集画面を閉じる
+                    closeEditView()
                 }
                 
             }else{
+            if myEditFlag == true && editFlag == false{return}//編集画面表示中で編集モードが選択されていない場合はパス
                 
                drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
                let palImage = drawableView.GetImage()
@@ -761,6 +777,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                drawableView.addSubview(drawableView.thirdView)//3rdViewを追加する
               //インデックス情報を更新する
                indexImgs[pageNum] = indexChange(pn: pageNum)
+               penMode()//黒ペンモードにする
             }
         }
     }
@@ -1045,7 +1062,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     /* -------------------　ボタン関数　-----------------------------*/
-    
+    //エディット画面を非表示にする
+    func closeEditView(){
+        editButton1.backgroundColor = UIColor.red
+        editButton1.setTitle("💠", for: UIControlState.normal)
+        myEditView.removeFromSuperview()
+        drawableView.secondView.cursolView.removeFromSuperview()
+        myEditFlag = false; editFlag = false
+        drawableView.secondView.isUserInteractionEnabled = false
+        penMode()//ペンモードに戻す
+    }///
     func btn1_click(sender:UIButton){
         print("** btn1_click()")
         if myEditFlag == false{//エディット画面を表示する
@@ -1056,34 +1082,46 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //editor画面のイベントの非透過
             drawableView.secondView.isUserInteractionEnabled = true
         }else{//エディット画面を非表示にする
-            editButton1.backgroundColor = UIColor.red
-            editButton1.setTitle("💠", for: UIControlState.normal)
-            myEditView.removeFromSuperview()
-            drawableView.secondView.cursolView.removeFromSuperview()
-            myEditFlag = false; editFlag = false
-            drawableView.secondView.isUserInteractionEnabled = false
+            closeEditView()
         }
     }
     
     func btn2_click(sender:UIButton){
         print("btn2_clicked!：ペン色切り替え")
+        if myEditFlag == true{return}//編集画面が表示の場合はパス
+        if drawableView.X_color == 1{return}//ペンモード以外はパス
         if penColorNum == 1 {
             penColorNum = 2
+            editButton2.setImage(UIImage(named: "ハート.png"), for:UIControlState.normal)
         }else if penColorNum == 2{
             penColorNum = 3
+            editButton2.setImage(UIImage(named: "三つ葉.png"), for:UIControlState.normal)
         }else{
             penColorNum = 1
+            editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
         }
     }
     
+    func penMode(){
+        if myEditFlag == true{return}//編集画面が表示の場合はパス
+        drawableView.X_color = 0//ペンモード[黒色、赤色、青色]
+        penColorNum = 1//黒色
+        editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
+        editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 1)
+        editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
+    }///
     func btn3_click(sender:UIButton){
         print("btn3_clicked!：ペンモード")
-        drawableView.X_color = 0//ペンモード[黒色、赤色、青色]
+        penMode()
     }
     
     func btn4_click(sender:UIButton){
         print("btn4_clicked!:消しゴム")
+        if myEditFlag == true{return}//編集画面が表示の場合はパス
         drawableView.X_color = 1//消しゴムモード
+        editButton2.setImage(UIImage(named: "ダイヤ.png"), for:UIControlState.normal)
+        editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 1)
+        editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
     }
     
     func editorModeStart(){
@@ -1091,9 +1129,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.bringSubview(toFront: drawableView.secondView)
         drawableView.secondView.isUserInteractionEnabled = true
     }
-    func editorModeEnd(){
-        
-    }
+    
+    //func editorModeEnd(){}
+    
     func btn5_click(sender:UIButton){
         print("btn5_clicked!")
         myInt = "OVW"//overwrite
@@ -1124,11 +1162,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func btn8_click(sender:UIButton){
         //----------ページの右端に太線-------------------------
         print("btn8_clicked!")
-        //現行ベージの内容を削除する
-        delPage(pn: pageNum)
-        
-        let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
-        memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
+        myInt = "CLR"
+        cursolWFlag = true //カーソル幅が狭いと🐞される事への対策
+        editFlag = true //カーソルモードが選択されたモードに設定する
     }
     
     func btn9_click(sender:UIButton){print("btn9_clicked!")}

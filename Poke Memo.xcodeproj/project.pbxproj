@@ -23,6 +23,13 @@
 		30C2B1981DEB259D0069A5DF /* bg6.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C2B18D1DEB259D0069A5DF /* bg6.png */; };
 		30C2B1991DEB259D0069A5DF /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C2B18E1DEB259D0069A5DF /* selected.png */; };
 		30C2B19A1DEB259D0069A5DF /* unSelect.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C2B18F1DEB259D0069A5DF /* unSelect.png */; };
+		30D9F3271E138FEB00142144 /* スペード.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F3261E138FEB00142144 /* スペード.png */; };
+		30D9F3291E138FF800142144 /* ハート.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F3281E138FF800142144 /* ハート.png */; };
+		30D9F32C1E13901D00142144 /* ４つ葉.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F32A1E13901D00142144 /* ４つ葉.png */; };
+		30D9F32D1E13901D00142144 /* 三つ葉.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F32B1E13901D00142144 /* 三つ葉.png */; };
+		30D9F32F1E13903100142144 /* ダイヤ.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F32E1E13903100142144 /* ダイヤ.png */; };
+		30D9F3321E13B82B00142144 /* pen2.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F3301E13B82B00142144 /* pen2.png */; };
+		30D9F3331E13B82B00142144 /* keshi.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F3311E13B82B00142144 /* keshi.png */; };
 		30DAD8881DE5C3040068FF45 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD8871DE5C3040068FF45 /* AppDelegate.swift */; };
 		30DAD88A1DE5C3040068FF45 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD8891DE5C3040068FF45 /* ViewController.swift */; };
 		30DAD88D1DE5C3040068FF45 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30DAD88B1DE5C3040068FF45 /* Main.storyboard */; };
@@ -68,6 +75,13 @@
 		30C2B18D1DEB259D0069A5DF /* bg6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg6.png; sourceTree = "<group>"; };
 		30C2B18E1DEB259D0069A5DF /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selected.png; sourceTree = "<group>"; };
 		30C2B18F1DEB259D0069A5DF /* unSelect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unSelect.png; sourceTree = "<group>"; };
+		30D9F3261E138FEB00142144 /* スペード.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "スペード.png"; sourceTree = "<group>"; };
+		30D9F3281E138FF800142144 /* ハート.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ハート.png"; sourceTree = "<group>"; };
+		30D9F32A1E13901D00142144 /* ４つ葉.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "４つ葉.png"; sourceTree = "<group>"; };
+		30D9F32B1E13901D00142144 /* 三つ葉.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "三つ葉.png"; sourceTree = "<group>"; };
+		30D9F32E1E13903100142144 /* ダイヤ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ダイヤ.png"; sourceTree = "<group>"; };
+		30D9F3301E13B82B00142144 /* pen2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen2.png; sourceTree = "<group>"; };
+		30D9F3311E13B82B00142144 /* keshi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = keshi.png; sourceTree = "<group>"; };
 		30DAD8841DE5C3040068FF45 /* Poke Memo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Poke Memo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30DAD8871DE5C3040068FF45 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30DAD8891DE5C3040068FF45 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -113,6 +127,13 @@
 		30C2B1841DEB24F60069A5DF /* Imgs */ = {
 			isa = PBXGroup;
 			children = (
+				30D9F3301E13B82B00142144 /* pen2.png */,
+				30D9F3311E13B82B00142144 /* keshi.png */,
+				30D9F3261E138FEB00142144 /* スペード.png */,
+				30D9F3281E138FF800142144 /* ハート.png */,
+				30D9F32A1E13901D00142144 /* ４つ葉.png */,
+				30D9F32B1E13901D00142144 /* 三つ葉.png */,
+				30D9F32E1E13903100142144 /* ダイヤ.png */,
 				3002D4FE1DF85A7C0065D8C1 /* 4545.png */,
 				30C2B1851DEB259D0069A5DF /* wave.png */,
 				30C2B1861DEB259D0069A5DF /* wave3.png */,
@@ -302,15 +323,22 @@
 				30DAD88F1DE5C3040068FF45 /* Assets.xcassets in Resources */,
 				30C2B1961DEB259D0069A5DF /* bg2.png in Resources */,
 				30C2B19A1DEB259D0069A5DF /* unSelect.png in Resources */,
+				30D9F32F1E13903100142144 /* ダイヤ.png in Resources */,
 				30C2B1931DEB259D0069A5DF /* blankW.png in Resources */,
 				30C2B1941DEB259D0069A5DF /* blank.png in Resources */,
 				30C2B1991DEB259D0069A5DF /* selected.png in Resources */,
 				30C2B1951DEB259D0069A5DF /* blankA.png in Resources */,
+				30D9F32C1E13901D00142144 /* ４つ葉.png in Resources */,
 				30C2B1901DEB259D0069A5DF /* wave.png in Resources */,
+				30D9F3271E138FEB00142144 /* スペード.png in Resources */,
 				30C2B1971DEB259D0069A5DF /* bg3.png in Resources */,
+				30D9F3321E13B82B00142144 /* pen2.png in Resources */,
 				30C2B1981DEB259D0069A5DF /* bg6.png in Resources */,
 				30DEDDDA1E0D25A40051C829 /* 僕の世界.jpg in Resources */,
 				3002D4FF1DF85A7C0065D8C1 /* 4545.png in Resources */,
+				30D9F3331E13B82B00142144 /* keshi.png in Resources */,
+				30D9F32D1E13901D00142144 /* 三つ葉.png in Resources */,
+				30D9F3291E138FF800142144 /* ハート.png in Resources */,
 				30DAD88D1DE5C3040068FF45 /* Main.storyboard in Resources */,
 				30C2B1921DEB259D0069A5DF /* blankP.png in Resources */,
 			);

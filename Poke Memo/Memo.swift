@@ -175,7 +175,7 @@ class MemoView:UIView{
             myLeaf.layer.position = CGPoint(x: pagePosX , y:yPos)
             if pn>0{
             //leafの枠の下線を灰色にする
-              if idx == 0{
+              if idx == 0 || idx == pageGyou - 1{
                 myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
               }else{
                 myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 1, type: .Down)
