@@ -76,14 +76,14 @@ class MemoView:UIView{
         }
     }
     
-    func setIndexFromImgs(pn:Int,imgs:[UIImage]){
+    func setIndexFromImgs(imgs:[UIImage]){
         //tag付の空メモページを作る
         //makePageWithTag(pn:pn)
         //pageImgs[指定ページ]の内容をメモページに取り込む
         for idx in 0..<pageGyou{
             let tag = idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
-            targetMemo.image = imgs[idx + 1]
+            targetMemo.image = indexImgs[idx]
             //タグ番号を画像に合成する：試験用
             targetMemo.image = targetMemo.image?.addText(text: String(tag))
         }
@@ -173,13 +173,16 @@ class MemoView:UIView{
             myLeaf.backgroundColor = UIColor.clear
             let yPos:CGFloat = topOffset + (leafHeight + leafMargin)*CGFloat(idx + 1) - leafHeight/2
             myLeaf.layer.position = CGPoint(x: pagePosX , y:yPos)
-            if pn>0{
+            
+            if pn>0{  //メモページの場合
             //leafの枠の下線を灰色にする
               if idx == 0 || idx == pageGyou - 1{
                 myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
               }else{
                 myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 1, type: .Down)
               }
+            }else{  //indexページの場合
+                //myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 0.5, lineSize: 2, spaceSize: 2, type: .Down)
             }
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
@@ -304,6 +307,7 @@ class MemoView:UIView{
      */
     //         ----------　Data保存に関する ！どこに置くの？--------------
     //--　メモ内容をUserDwfaultに保存する --
+/*
     func saveImage3(pn:Int,imgs:[UIImage]){
         let photos = imgs
         let photoData: UserDefaults = UserDefaults.standard
@@ -318,6 +322,7 @@ class MemoView:UIView{
         //photoData.synchronize()//必要かどうか？あると遅くなるのか？
         
     }
+ */
  /*
     func x_setMemoView(pn:Int){//最新版1201
         //tag付の空メモページを作る
