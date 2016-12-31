@@ -556,16 +556,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             naviBar.topItem?.title = String(pageNum) + " /30"
             
             // **mx[]の読み込み・初期化 **
-            //loadMx()
-        //
-            for p in 1...30{
-                for g in 0...30{
-                    let s = String(p*100 + g)
-                    mx[s] = 0
-                }
-            }
- 
-        //
+            mx = loadMx()
+            print("105: \(mx["105"])")
 
         }
         //---------- リストメニュ−　---------
@@ -701,6 +693,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isIndexMode! { return }//index表示中は実行しない
         //----------------------------------------------
         if drawableView != nil {// パレットが表示されている時パレットを消す
+           
             //編集中のページ内容を更新する
             //myScrollView.upToImgs()//編集中のページ内容を更新する
             let im = memo[fNum].memoToImgs(pn: pageNum)
@@ -708,7 +701,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             writePage(pn: pageNum, imgs: im)
             //INDEX内容を外部に保存
             writePage(pn:0, imgs:indexImgs)
-            
+            //mx[]の内容を外部に保存する
+            print("mx[105]up:\(mx["105"])")
+            updataMx(my:mx)
             //　子viewを削除する??
             drawableView!.removeFromSuperview()
             drawableView = nil
@@ -719,6 +714,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             self.toolBar.isHidden  = true//ツールバーを隠す
             //メモページのカーソルを削除する
             memo[fNum].delCursol()
+            for n in 1...30{
+                print("mx[\(n)]= \(mx[String(n)])")
+                
+            }
             
         }else{// パレットが表示されていない時パレットを表示する
             //パレットビューを作成・初期化する
@@ -750,9 +749,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func done(_ sender: UIBarButtonItem) {
+        //---------- パレット編集時 ---------------------------
         if isEditMode == true{//パレットが表示されている場合
-         //---------- パレット編集時 ---------------------------
-            if editFlag == true{//カーソルモードが選択された場合
+            //カーソルモードが選択された場合
+            if editFlag == true{
                 if cursolWFlag == true{//カーソル幅が狭い場合では🐞する
  
                     //カーソル画面を撤去する
@@ -779,7 +779,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     //編集画面を閉じる
                     closeEditView()
                 }
-                
+            
             }else{
             if myEditFlag == true && editFlag == false{return}//編集画面表示中で編集モードが選択されていない場合はパス
             //  ** パレット入力時における処理 **
@@ -795,14 +795,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                drawableView.reAddSubView()//前フィルタ(secondView)を付加する
                drawableView.addSubview(drawableView.thirdView)//3rdViewを追加する
               //インデックス情報を更新する
-               let uNum = numOfUsedLine(pn:pageNum)
+               let uNum = numOfUsedLine(pn:pageNum)//入力行最小値を取得
                indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
+              //indexリストに対象の頁番号を登録する(登録済頁だけがタッチ反応する）
+                mx[String(pageNum)] = 1
+
               //非空白行の最上値
                 print("numOfUsedLine:\(numOfUsedLine(pn:pageNum))")
               //ペンモードの初期化
                penMode()//黒ペンモードにする
             }
         }
+         print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
     }
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
@@ -837,6 +841,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if myScrollView.isLongPushed == false{//チャタリング防止作
             // ** [INDEXページ] **
             if isIndexMode == true{
+              //登録されてない頁番号の場合は、パスする
+                let shou:Int = nowGyouNo
+                if mx[String(nowGyouNo)] == 0{return }
+
               //飛び先ページを指定
                 //-------
                 let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号:0ページの為tag番号（一桁）がページ番号を現す。
@@ -854,7 +862,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 nowGyouNo = nextNum!*100 + 1
             // ** [メモページ] **
             }else{
-              //editボタンを押す
+              //仮想的にeditボタンを押す
               let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号
               self.Pallete(self.pallete2)//パレットを開く
               print("isEdit: \(isEditMode)")
@@ -915,7 +923,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         photoData.synchronize()//必要かどうか？あると遅くなるのか？
     }
     
-    //外部のページデータを削除する(all:1の場合は全削除）
+    //外部のページデータを削除する(all:0の場合は全削除）
     func delPage(pn:Int){
         if pn == 0{
         let appDomain:String = Bundle.main.bundleIdentifier!
@@ -929,9 +937,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
  
     //            == Index情報の更新プログラム ==
-    //palleteを閉じるときにページデータからIndex内容を更新する
+    //palleteのdone実行時にページデータからIndex内容を更新する
     func indexChange(pn:Int,usedNum:Int)-> UIImage{
-        
+
         //新しくコンテナView１つと3つのImageViewを作る
         var indexFView:UIView!
         var img01:UIImageView!
@@ -956,7 +964,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         img01.backgroundColor = UIColor.clear
         img02.backgroundColor = UIColor.white//purple.withAlphaComponent(0.1)
         img03.backgroundColor = UIColor.purple.withAlphaComponent(0.05)
-
         
         //Viewの内容を作成
         //パレット全画面の切り取り????
@@ -973,6 +980,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let clipImage02 =  (tImage?.cgImage!)!.cropping(to: clip02)
          print("◆◆CGIサイズ:\(tImage?.cgImage?.width)")
          print("◆◆clipImage02サイズ:\(clipImage02?.width)")
+        
         //UIImageに変換
         img02.image = UIImage(cgImage: clipImage02!)
         //3つのViewを合成して１つのコンテナViewにする
@@ -1015,19 +1023,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
    // ------------  mx[]更新関係   -----------------
     
     ///該当するページのmx[]値をリセットする
-    func clearMx(pn:Int){
+    func xxclearMx(pn:Int){
         for n in 0..<pageGyou{
             let tg = pn*100 + n + 1
             mx[String(tg)] = 0
         }
     }
-    //該当ページのmx[]値を配列mxs[]に保存する
+    /*該当ページのmx[]値を配列mxs[]に保存する。？↖と同じ？
     func wrightMx(pn:Int){
         for n in 0..<pageGyou{
             let tg = pn*100 + n + 1
             mx[String(tg)] = 0
         }
-    }
+    }*/
 
     //対象ページの非空白行のうち一番小さい行番号を返す
     func numOfUsedLine(pn:Int)->Int{
@@ -1051,10 +1059,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         photoData.synchronize()
         let photosName:String = "index"//保存名
         //NSData から画像配列を取得する
+        print("aa aa")
         if photoData.dictionary(forKey: photosName) != nil{
             img = photoData.dictionary(forKey: photosName) as! [String : CGFloat]
-            
+         print("bb bb")
         }else{
+            print("cc cc")
             //mx[]の初期化
             for p in 1...30{
                 for g in 0...30{
@@ -1062,6 +1072,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     img[s] = 0
                 }
             }
+            //mx[]にindexリストを追加する[1:0,2:0…]:[頁No:使用時は1]
+            for p in 1...30{
+                let s = String(p)
+                img[s] = 0
+            }
+            
         }
         return img
     }
@@ -1135,10 +1151,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     /* リストメニュー選択時の処理 */
     func fc1(){print("test1!!!!!")}
-    func fc2(){print("test2!!!!!")}
-    func fc3(){
-        print("test3!!!!!")
-
+    func fc2(){
+        print("test2!!!!!")
         //現行ベージの内容を削除する
         delPage(pn: pageNum)
         let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
@@ -1147,6 +1161,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         indexImgs[pageNum - 1] = UIImage(named:"blankW.png")!
         //INDEX内容を外部に保存
         writePage(pn:0, imgs:indexImgs)
+        //indexリストを更新する
+        mx[String(pageNum)] = 0
+    
+    }
+    func fc3(){
+        print("test3!!!!!")
+        // 指定キー"index"の値のみを削除
+        let userDefault = UserDefaults.standard
+        userDefault.removeObject(forKey: "index")
     }
     func fc5(){print("test5!!!!!")}
     func fc6(){
