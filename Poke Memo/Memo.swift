@@ -134,11 +134,11 @@ class MemoView:UIView{
         //新しく選択した行の背景に色を付ける
         print("newGyouNo:tag\(tag)")
         
-        //↓エラー
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
         let gColor = UIColor.green.withAlphaComponent(0.1)
         let wColor = UIColor.white
-        let backColor = isIndexMode == true ? wColor : gColor
+        let cColor = UIColor.white.withAlphaComponent(0.3)
+        let backColor = isIndexMode == true ? cColor : gColor
         targetMemo.backgroundColor = backColor
  
     }

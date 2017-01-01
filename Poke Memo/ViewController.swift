@@ -539,7 +539,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                memo[n].backgroundColor = selectedColor
             }
             // ** Indexページの初期化 **
-            memo[0].backgroundColor = UIColor.blue.withAlphaComponent(0.1)
+            memo[0].backgroundColor = UIColor.clear//blue.withAlphaComponent(0.1)
             //let bI = UIImage(named: "僕の世界.jpg")
             //memo[0].backgroundColor = UIColor(patternImage: bI!)
             indexImgs = readPage(pn:0)//0ページ目の外部データを読み込む
@@ -572,13 +572,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tV.layer.cornerRadius = 8.0//角丸にする
         tV.layer.borderColor = UIColor.gray.cgColor
         tV.layer.borderWidth = 1
-    //
+    /*
         // シャドウカラー
         tV.layer.shadowColor = UIColor.black.cgColor/* 影の色 */
         tV.layer.shadowOffset = CGSize(width:1,height: 1)       //  シャドウサイズ
         tV.layer.shadowOpacity = 1.0        // 透明度
         tV.layer.shadowRadius = 1        // 角度(距離）
-    //
+    */
 
         smv.contentSize = tV.frame.size
         smv.contentOffset = CGPoint(x:0,y:mh)
@@ -640,6 +640,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             naviBar.topItem?.title = "--  INDEX  --"
             memo[0].delCursol()
             print("retNum1: \(retNum)")
+            myScrollView.backgroundColor =  UIColor.blue.withAlphaComponent(0.1)
         }else{//Indexページが表示中の場合
             print("index else**")
             //self.navigationController?.setToolbarHidden(true, animated: true)
@@ -661,6 +662,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("retNum: \(retNum)")
             fNum = retNum
             naviBar.topItem?.title = String(pageNum) + " /30"
+            myScrollView.backgroundColor =  UIColor.clear
         }
     }
     
@@ -752,18 +754,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //---------- パレット編集時 ---------------------------
         if isEditMode == true{//パレットが表示されている場合
             //カーソルモードが選択された場合
-            if editFlag == true{
-                if cursolWFlag == true{//カーソル幅が狭い場合では🐞する
+            if editFlag == true && cursolWFlag == true{
+                //カーソル幅が狭い場合では🐞する
  
                     //カーソル画面を撤去する
                     drawableView.secondView.cursolView.removeFromSuperview()
                     drawableView.thirdView.removeFromSuperview()
+                
                     //編集結果画面を取得する
                     var editedView:UIImage!
                     if myInt == "CLR"{
-                     editedView = UIImage(named:"blankW.png")
+                       editedView = UIImage(named:"blankW.png")
+                        
+                        //mx[]を更新する(0にリセット)
+                        mx[String(nowGyouNo)] = 0
+                        mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
+                      
                     }else{
-                     editedView = drawableView.secondView.editPallete(sel: myInt)
+                       editedView = drawableView.secondView.editPallete(sel: myInt)
                     }
                     //編集結果画面をパレットに反映させる
                     //カーソルを削除する
@@ -772,13 +780,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     drawableView.addSubview(drawableView.thirdView)
                     //secondViewの背景を透明にする
                     drawableView.secondView.backgroundColor = UIColor.clear
+                    //編集結果をパレットviewの背景に入れ替える
                     drawableView.backgroundColor = UIColor(patternImage: editedView)
                     editFlag = false;myInt = "NON"
                     //パレット入力状態のリセット
                     drawableView.lastDrawImage = nil
                     //編集画面を閉じる
                     closeEditView()
-                }
+            
             
             }else{
             if myEditFlag == true && editFlag == false{return}//編集画面表示中で編集モードが選択されていない場合はパス
@@ -1298,12 +1307,38 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton8.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         cursolWFlag = true //カーソル幅が狭いと🐞される事への対策
         editFlag = true //カーソルモードが選択されたモードに設定する
+  
     }
     
-    func btn9_click(sender:UIButton){print("btn9_clicked!")}
+    func btn9_click(sender:UIButton){
+        print("btn9_clicked!")
+       
+        if editFlag == true && cursolWFlag == true{
+           //カーソル表示変更
+            let cStart:CGFloat = drawableView.secondView.cursolStartX
+            let cEnd:CGFloat = 0
+            drawableView.secondView.cursolEndX = cEnd
+            drawableView.secondView.changeMyCursolView2(curX: cEnd, startX:cStart)
+           
+        }else{
+        //パレットの表示位置をリセットする
+        drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - 44 - vHeight/2)
+        }
+    }
     
     func btn10_click(sender:UIButton){
         print("btn10_clicked!")
+        if editFlag == true && cursolWFlag == true{
+            //カーソル表示変更
+            let cStart:CGFloat = drawableView.secondView.cursolStartX
+            let cEnd:CGFloat = vWidth - 2
+            drawableView.secondView.cursolEndX = cEnd
+            drawableView.secondView.changeMyCursolView2(curX: cEnd, startX:cStart)
+            
+        }else{
+        //パレットの表示位置を末尾にする
+        drawableView.layer.position = CGPoint(x:boundWidth - vWidth/2, y:boundHeight - 44 - vHeight/2)
+        }
 
     }
     
