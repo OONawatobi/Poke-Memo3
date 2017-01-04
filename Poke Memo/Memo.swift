@@ -37,8 +37,10 @@ class MemoView:UIView{
             
             targetMemo.image = imgs[idx]
             //タグ番号を画像に合成する：試験用
-            targetMemo.image = targetMemo.image?.addText(text: String(tag))
-            
+            if debug1 == true{
+                print("== Debug01モード ==")
+              targetMemo.image = targetMemo.image?.addText(text: String(tag))
+            }else{print("==  ==")}
             if idx == 0 && pn == 0{
                 targetMemo.image = targetMemo.image?.addText(text: "INDEX")
             }
@@ -140,8 +142,9 @@ class MemoView:UIView{
         let cColor = UIColor.white.withAlphaComponent(0.3)
         let backColor = isIndexMode == true ? cColor : gColor
         targetMemo.backgroundColor = backColor
- 
-    }
+        print("==▶mx[\(nowGyouNo)]:\(mx[String(nowGyouNo)]!)")
+        
+        }
     
     func clearBackgroundColor(){
         for fn in 1...3{

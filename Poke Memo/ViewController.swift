@@ -247,6 +247,9 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
+var debug1:Bool = false//デバグ用：ページタグ表示
+var debug2:Bool = true//デバグ用：mx[]表示
 
 let boundWidth = UIScreen.main.bounds.size.width
 let boundHeight = UIScreen.main.bounds.size.height
@@ -307,6 +310,7 @@ protocol UpperToolViewDelegate{//upperビューの操作(機能）
 
 protocol DrawableViewDelegate{//パレットビューの操作(機能）
     func selectNextGyou()
+    func shiftMX()
 }
 
 
@@ -326,7 +330,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var myEditFlag:Bool! = false//パレット追加編集ツール表示フラグ
     var scrollRect:CGRect!
     var scrollRect_P:CGRect!//パレットが表示されている時の表示サイズ
-
+    var svOffset:CGFloat = 0
     var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
     //var isIndexMode:Bool! = false//Indexの表示フラグ：true
     //var indexFlag:Bool! = false//Indexの表示フラグ：true
@@ -360,7 +364,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.backgroundColor = UIColor.white
         //本機種の解像度
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
-
+        //testVを作成
+        testV = UIView(frame:CGRect(x: 0, y:0 , width: 2, height: vHeight))
+        testV.backgroundColor = UIColor.magenta
+        //mx[]の位置にtestVを表示する
+        testV.layer.position = CGPoint(x: 0, y:vHeight/2 )
+        
         /** spaceViewを生成(透明：タッチ緩衝の為) **/
         //underViewの下側
         spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - 44 - vHeight , width: boundWidth, height: 10))
@@ -494,7 +503,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //パレット表示されていない場合
         scrollRect = CGRect(x:(boundWidth - leafWidth)/2, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 )
         //パレット表示されている場合
-        scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 44)
+        scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50)//最後の50は目で見て調整した
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -726,16 +735,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
             drawableView.Delegate = self
-            //let sa = (vWidth - boundWidth)/2  //?? ??
+            //let startPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/4 - 44)
             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
-            drawableView.layer.position = leftEndPoint
+            
+            //無くても動くの,何故????drawableView.layer.position = leftEndPoint
             
             drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
             self.view.addSubview(drawableView)
             // second view
-            drawableView.setSecondView()
+            drawableView.setSecondView()//編集ツールの追加
+//デバグview; if debug2 == true{drawableView.addSubview(testV)}
+            
             isEditMode = true//パレットが表示されている場合は"true"
             self.toolBar.isHidden  = false//ツールバーを現す
+            
             // frameの値を設定する.
             myScrollView.frame = scrollRect_P
             //myScrollView.showHomeFrame()
@@ -746,15 +759,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             modalChanged(TouchNumber: pageNum*100 + 1)
             penMode()//黒ペンモードにする
             closeEditView()//編集画面の設定を初期化する
+
         }
         
     }
     
     @IBAction func done(_ sender: UIBarButtonItem) {
+        print("cursolWFlag:\(cursolWFlag)")
         //---------- パレット編集時 ---------------------------
         if isEditMode == true{//パレットが表示されている場合
             //カーソルモードが選択された場合
-            if editFlag == true && cursolWFlag == true{
+            if editFlag == true{
+                if cursolWFlag == true{
                 //カーソル幅が狭い場合では🐞する
  
                     //カーソル画面を撤去する
@@ -787,8 +803,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     drawableView.lastDrawImage = nil
                     //編集画面を閉じる
                     closeEditView()
-            
-            
+                    done(done2)// okボタンを押す：パレット内容をメモに移す
+                }else{
+                    print("カーソル巾がゼロです")
+                }
             }else{
             if myEditFlag == true && editFlag == false{return}//編集画面表示中で編集モードが選択されていない場合はパス
             //  ** パレット入力時における処理 **
@@ -814,6 +832,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               //ペンモードの初期化
                penMode()//黒ペンモードにする
             }
+            // = debug2 =
+            testV.layer.position = CGPoint(x: mx[String(nowGyouNo)]!, y:vHeight/2 )
         }
          print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
     }
@@ -824,6 +844,27 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBAction func redo(_ sender: UIBarButtonItem) {
     }
     //----------------- その他の関数　-------------------------
+    //メモのスクロール位置を設定する
+    func scrollPos(){
+    //現在のタグ行がスクロール窓から隠れているかをチェック
+        
+          //print("スクロール窓の高さ:\(scrollRect_P.height)")
+          //print("何行目?:\(nowGyouNo%100)")
+          //print("オフセット：\(myScrollView.contentOffset)")
+        let os:CGPoint = myScrollView.contentOffset
+        let iti = topOffset + CGFloat(leafHeight + leafMargin)*CGFloat(nowGyouNo%100) - os.y //print("タグ行の下線の位置:\(iti)")
+        //スクロール量を計算する
+        let maxIti = scrollRect_P.height - myEditView.frame.height//スクロール可否の閾値
+        let saIti = iti - maxIti
+        if iti > maxIti{
+            UIScrollView.animate(withDuration: 0.5, animations: {
+                () -> Void in
+                self.myScrollView.contentOffset = CGPoint(x:0,y:os.y + saIti)
+            })
+           
+        }
+
+    }
     //上下barView,スペーサー等の表示／非表示
     func etcBarDisp(disp:Int){
         if disp == 1 {
@@ -1201,7 +1242,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func btn1_click(sender:UIButton){
         print("** btn1_click()")
         if myEditFlag == false{//エディット画面を表示する
-            clearSelect()//編集ルールを非選択状態にする
+            done(done2)// okボタンを押す
+            clearSelect()//編集ツールを非選択状態にする
             editButton1.backgroundColor = UIColor.clear
             //editButton1.setTitle("⬇", for: UIControlState.normal)
             editButton1.setImage(UIImage(named: "green3a.png"), for:UIControlState.normal)
@@ -1212,6 +1254,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView.secondView.isUserInteractionEnabled = true
         }else{//エディット画面を非表示にする
             closeEditView()
+            
         }
     }
     
@@ -1267,6 +1310,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton7.backgroundColor = UIColor.clear
         editButton8.backgroundColor = UIColor.clear
     }
+    
     func btn5_click(sender:UIButton){
         print("btn5_clicked!")
         myInt = "OVW"//overwrite
@@ -1305,6 +1349,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myInt = "CLR"
         clearSelect()
         editButton8.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+        drawableView.secondView.cursolView.removeFromSuperview()
+        drawableView.secondView.setMyCursolView()
+        editorModeStart()
         cursolWFlag = true //カーソル幅が狭いと🐞される事への対策
         editFlag = true //カーソルモードが選択されたモードに設定する
   
@@ -1331,7 +1378,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if editFlag == true && cursolWFlag == true{
             //カーソル表示変更
             let cStart:CGFloat = drawableView.secondView.cursolStartX
-            let cEnd:CGFloat = vWidth - 2
+            let cEnd:CGFloat = mx[String(nowGyouNo)]! + 10//vWidth - 2
             drawableView.secondView.cursolEndX = cEnd
             drawableView.secondView.changeMyCursolView2(curX: cEnd, startX:cStart)
             
@@ -1425,9 +1472,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("nowGyouNo?: \(nowGyouNo)")
         //対象行のTag番号のleafViewのmaxPosXをmxTempにコピーする。
         mxTemp = mx[String(nowGyouNo)]
+            //パレット編集ツールを閉じる
+            if myEditFlag == true{ closeEditView()}
 
             //パレット表示中
             if isEditMode == true{
+                //メモのスクロール位置を設定する
+                scrollPos()
+                
                 //メモに書き出した内容をパレットに読み込む//20161024追加
                 let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
                 //表示中のフレーム番号
@@ -1498,6 +1550,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if nowGyouNo%100 < 30{
            modalChanged(TouchNumber:nowGyouNo + 1)
         }
+    }
+    func shiftMX(){
+        done(done2)// okボタンを押す
     }
 
     

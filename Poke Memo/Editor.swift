@@ -49,8 +49,10 @@ class EditorView: UIView {
             cursolView.backgroundColor = UIColor(white: 1,alpha: 1)
           case "DEL" :
             cursolView.backgroundColor = UIColor(white: 0.3,alpha: 1)
-          default ://　それ以外の時はここを実行
+          case "INS" :
             cursolView.backgroundColor = UIColor(white: 0.5,alpha: 0.5)
+          default ://　それ以外の時はここを実行
+            cursolView.backgroundColor = UIColor.clear
         }
         
         // UIImageViewをSecondViewに追加する.
@@ -149,8 +151,30 @@ class EditorView: UIView {
         let clip05U:UIImage = downSize(image: UIImage(cgImage: clipImage05!), scale: retina)
         
         //ブランク画像の作成(clip02のブランク画像）
-        
-        let size = CGSize(width: rightX - leftX, height: myHeight)
+        var saX:CGFloat = rightX - leftX//カーソルの巾
+        //  ======= INS時におけるmx[]の確認と変更 ========
+        print("1qqvWidth:\(vWidth)qqqqqqqqq")
+        let myX:CGFloat = mx[String(nowGyouNo)]!//現行のmaxX
+        let atoX:CGFloat = (vWidth - 10) - myX
+        print("2qqqqmyX:\(myX)qqqqqqqatoX:\(atoX)")
+        if sel == "INS"{
+        //
+            //末尾が消えないようにカーソル巾を変更
+          if atoX < 0{
+            print("3qqqqqqqqqqq")
+            saX = 1
+            cursolWFlag = false
+          }else{}
+        //
+          mxTemp = mx[String(nowGyouNo)]! + saX //mx[]の変更
+          mx[String(nowGyouNo)]! = mxTemp//mx[]への反映
+        }else if sel == "DEL"{
+           mxTemp = mx[String(nowGyouNo)]! - saX //mx[]の変更
+           mx[String(nowGyouNo)]! = mxTemp//mx[]への反映
+        }
+        //  ========================================== //
+
+        let size = CGSize(width: saX, height: myHeight)
         let blankImge = UIImage.colorImage(color: UIColor.clear, size: size)
         print("D @@@@@@@@@@@@@@@@@@@@@@@")
         //コンテナへの書き込み
@@ -250,7 +274,7 @@ class EditorView: UIView {
     let yOfset:CGFloat! = -35//==================-35
     var cursolStartX:CGFloat!//?タッチ開始点のｘ座標
     var cursolEndX:CGFloat!//?タッチ終了点のｘ座標
-    
+    var isSpace:Bool = true//右側スペースがある場合：true
     // タッチされた
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
         print("touchbegan")
@@ -263,11 +287,18 @@ class EditorView: UIView {
     
     // タッチが動いた
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touchesMoved")
+        //print("touchesMoved")
+        
         if editFlag == false{return}//編集モードが選択されていない時はパス
         let point = touches.first!.location(in: self)
-        changeMyCursolView2(curX: point.x,startX:cursolStartX)
         
+        //mx[]より右側では編集不可（パス）
+        isSpace = Double(cursolStartX) < Double(mx[String(nowGyouNo)]! - 10) ? true:false
+        print("mx:\(mx[String(nowGyouNo)]),isSpace:\(isSpace)")
+        if isSpace {changeMyCursolView2(curX: point.x,startX:cursolStartX)
+        }else{
+          changeMyCursolView2(curX: cursolStartX,startX:cursolStartX)
+        }
     }
     
     // タッチが終わった
@@ -277,7 +308,8 @@ class EditorView: UIView {
         cursolEndX = point.x//動作最終点が残る
 
     }
-    
+
+/*
     func resetContext(context: CGContext) {
         context.clear(self.bounds)
         if let color = self.backgroundColor {
@@ -287,4 +319,5 @@ class EditorView: UIView {
         }
         context.fill(self.bounds)
     }
+*/
 }

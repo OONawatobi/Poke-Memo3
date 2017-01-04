@@ -89,7 +89,10 @@ class DrawableView: UIView {
         
        //通常モード
        if rightFlag == false{
-         if bezierPath == nil { return }
+        //mx最大値を取得
+        mxTemp = max(mxTemp,currentPoint.x)
+        
+        if bezierPath == nil { return }
           //中間点を作成
         let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
         bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
@@ -120,8 +123,8 @@ class DrawableView: UIView {
          let currentPoint = touches.first!.location(in:self)
 
          //posxの最大値を更新する
-         mxTemp = max(mxTemp,currentPoint.x)
-         print("mx: \(mxTemp)")
+         //mxTemp = max(mxTemp,currentPoint.x)
+         print("end of mx: \(mxTemp)")
 
          if bezierPath == nil { return }
            bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
@@ -135,6 +138,7 @@ class DrawableView: UIView {
             //左端制限
             dsX = dsX > vWidth/2 ? vWidth/2:dsX
             self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
+            self.Delegate?.shiftMX()
         }else if shiftDownFlag == true{
             print("downFlag: \(shiftDownFlag)")
             self.Delegate?.selectNextGyou()
