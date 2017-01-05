@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3002D4FF1DF85A7C0065D8C1 /* 4545.png in Resources */ = {isa = PBXBuildFile; fileRef = 3002D4FE1DF85A7C0065D8C1 /* 4545.png */; };
+		301AD36B1E1E55A2004B1858 /* redo.png in Resources */ = {isa = PBXBuildFile; fileRef = 301AD36A1E1E55A2004B1858 /* redo.png */; };
 		30419DEF1DFFC58D00D22C8A /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30419DEE1DFFC58D00D22C8A /* Canvas.swift */; };
 		30BE70A81E14009D00B9F52E /* 2lines.png in Resources */ = {isa = PBXBuildFile; fileRef = 30BE70A71E14009D00B9F52E /* 2lines.png */; };
 		30BE70AA1E14016800B9F52E /* ダイヤ２.png in Resources */ = {isa = PBXBuildFile; fileRef = 30BE70A91E14016800B9F52E /* ダイヤ２.png */; };
@@ -68,6 +69,7 @@
 
 /* Begin PBXFileReference section */
 		3002D4FE1DF85A7C0065D8C1 /* 4545.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4545.png; sourceTree = "<group>"; };
+		301AD36A1E1E55A2004B1858 /* redo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redo.png; sourceTree = "<group>"; };
 		30419DEE1DFFC58D00D22C8A /* Canvas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
 		30BE70A71E14009D00B9F52E /* 2lines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2lines.png; sourceTree = "<group>"; };
 		30BE70A91E14016800B9F52E /* ダイヤ２.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ダイヤ２.png"; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		30C2B1841DEB24F60069A5DF /* Imgs */ = {
 			isa = PBXGroup;
 			children = (
+				301AD36A1E1E55A2004B1858 /* redo.png */,
 				30BE70BF1E14D59400B9F52E /* CLR.png */,
 				30BE70BB1E14D3EA00B9F52E /* DEL.png */,
 				30BE70BC1E14D3EA00B9F52E /* INS.png */,
@@ -347,6 +350,7 @@
 				30DAD8921DE5C3040068FF45 /* LaunchScreen.storyboard in Resources */,
 				30DAD88F1DE5C3040068FF45 /* Assets.xcassets in Resources */,
 				30BE70B61E14BF3A00B9F52E /* green3a.png in Resources */,
+				301AD36B1E1E55A2004B1858 /* redo.png in Resources */,
 				30C2B1961DEB259D0069A5DF /* bg2.png in Resources */,
 				30C2B19A1DEB259D0069A5DF /* unSelect.png in Resources */,
 				30BE70AA1E14016800B9F52E /* ダイヤ２.png in Resources */,

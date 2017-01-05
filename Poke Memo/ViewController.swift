@@ -248,7 +248,7 @@ extension UIImage {
 
 //-----　grobal constance　--------
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
-var debug1:Bool = false//デバグ用：ページタグ表示
+var debug1:Bool = true//デバグ用：ページタグ表示
 var debug2:Bool = true//デバグ用：mx[]表示
 
 let boundWidth = UIScreen.main.bounds.size.width
@@ -391,14 +391,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 + 10)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
         
-        /** myToolViewを生成. **/
+        /** myToolView ([色][ペン][消しゴム][▲])を生成. **/
         myToolView.Delegate = self
         myToolView.frame =  CGRect(x: 0, y: 0, width: boundWidth, height: 40)// underViewを生成.
         myToolView.backgroundColor = UIColor(patternImage: UIImage(named:"2lines.png")!)
-        //UIColor.lightGray// underViewの背景を青色に設定
         myToolView.alpha = 0.5// 透明度を設定
-        myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )// 位置を中心に設定
+        
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
+        
         //ツールViewのボタンの生成　[2][3][4]   [1]
         // button1の追加
         editButton1 = UIButton(frame: CGRect(x:boundWidth - 40,y: 10, width:25, height:20))
@@ -407,8 +407,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton1.setImage(UIImage(named: "red3.png"), for:UIControlState.normal)
         // イベントを追加する
         editButton1.addTarget(self, action: #selector(ViewController.btn1_click(sender:)), for: .touchUpInside)
-        myToolView.addSubview(editButton1)
-        self.toolBar.isHidden  = true//ツールバーを隠す
+        
+        
         // button2の追加
         editButton2 = UIButton(frame: CGRect(x:10, y:10, width:20, height:20))
         editButton2.backgroundColor = UIColor.clear
@@ -419,7 +419,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton2.addTarget(self, action: #selector(ViewController.btn2_click(sender:)), for:.touchUpInside)
         //editButton2.setTitle("2", for: UIControlState.normal)
         editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
-        myToolView.addSubview(editButton2)
+        
         // button3の追加
         editButton3 = UIButton(frame: CGRect(x:60, y:5, width:30, height:30))
         editButton3.layer.cornerRadius = 5
@@ -427,7 +427,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton3.addTarget(self, action: #selector(ViewController.btn3_click(sender:)), for:.touchUpInside)
         //editButton3.setTitle("3", for: UIControlState.normal)
         editButton3.setImage(UIImage(named: "pen2.png"), for:UIControlState.normal)
-        myToolView.addSubview(editButton3)
+        
         /** button4の追加 **/
         editButton4 = UIButton(frame: CGRect(x:110, y:5, width:30, height:30))
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
@@ -435,9 +435,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton4.addTarget(self, action: #selector(ViewController.btn4_click(sender:)), for:.touchUpInside)
         //editButton4.setTitle("4", for: UIControlState.normal)
         editButton4.setImage(UIImage(named: "keshi.png"), for:UIControlState.normal)
-        myToolView.addSubview(editButton4)
         
-        /* editViewを生成. */
+        //ボタンをツールバーに追加する
+        myToolView.addSubview(editButton1)
+        myToolView.addSubview(editButton2)
+        myToolView.addSubview(editButton3)
+        myToolView.addSubview(editButton4)
+        self.toolBar.isHidden  = true//ツールバーを隠す
+        
+        /* editView([<][OVW][INS][DEL][CLR][>])を生成. */
         myEditView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 60))
         myEditView.backgroundColor = UIColor.red// underViewの背景を青色に設定
         myEditView.alpha = 0.6// 透明度を設定
@@ -697,11 +703,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
 
     }
- 
+    var animeFlag:Bool = false//アニメ中はtrue
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
+        if animeFlag { return}//アニメ中は実行しない
         if isMenuMode! { return }//リストメニュー表示中は実行しない
         if isIndexMode! { return }//index表示中は実行しない
+        
+        animeFlag = true//アニメ開始
         //----------------------------------------------
         if drawableView != nil {// パレットが表示されている時パレットを消す
            
@@ -715,14 +724,33 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //mx[]の内容を外部に保存する
             print("mx[105]up:\(mx["105"])")
             updataMx(my:mx)
-            //　子viewを削除する??
-            drawableView!.removeFromSuperview()
-            drawableView = nil
-            myScrollView.frame = scrollRect
+            
+            
+            //++ パレットを閉じるアニメーション
+             self.etcBarDisp(disp: 0)//underView等を削除する
+             self.toolBar.isHidden  = true//ツールバーを隠す
+            UIView.animate(withDuration:0.3, animations: {
+                () -> Void in
+                self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + 44 - 40/2)
+                let nowPosx = drawableView.layer.position.x//表示中の位置
+                drawableView.layer.position = CGPoint(x:nowPosx , y:boundHeight + 44 - 40/2 + vHeight/2)
+                self.myScrollView.frame = self.scrollRect// メモframeの値を設定する
+
+            }){
+                (Bool) -> Void in
+                //　子viewを削除する??
+                drawableView!.removeFromSuperview()
+                drawableView = nil
+                self.myToolView.removeFromSuperview()
+                self.animeFlag = false
+            }
+            
+            
+            //++
             //myScrollView.showHomeFrame()//スクロール再設定の後は必要！
-            etcBarDisp(disp: 0)//underView等を削除する
+            //++etcBarDisp(disp: 0)//underView等を削除する
             isEditMode = false
-            self.toolBar.isHidden  = true//ツールバーを隠す
+            //++self.toolBar.isHidden  = true//ツールバーを隠す
             //メモページのカーソルを削除する
             memo[fNum].delCursol()
             for n in 1...30{
@@ -732,8 +760,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
         }else{// パレットが表示されていない時パレットを表示する
             //パレットビューを作成・初期化する
+            self.view.addSubview(myToolView)
+            myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + 44 - 40/2)// 位置を中心に設定：画面の外に位置する
+            //++ パレットを開くアニメーション
+            UIView.animate(withDuration:0.3, animations: {
+                () -> Void in
+                self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )//++ 位置を中心に設定
+                self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
+            }){
+            (Bool) -> Void in//++
+                self.view.addSubview(drawableView)
+                self.etcBarDisp(disp: 1)//underView等」を追加する
+                self.toolBar.isHidden  = false//ツールバーを現す
+                self.animeFlag = false//アニメ動作終了宣言
+
+             }//++
             
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
+            
             drawableView.Delegate = self
             //let startPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/4 - 44)
             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
@@ -741,18 +785,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //無くても動くの,何故????drawableView.layer.position = leftEndPoint
             
             drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
-            self.view.addSubview(drawableView)
+            //???self.view.addSubview(drawableView)
+           
             // second view
             drawableView.setSecondView()//編集ツールの追加
 //デバグview; if debug2 == true{drawableView.addSubview(testV)}
             
             isEditMode = true//パレットが表示されている場合は"true"
-            self.toolBar.isHidden  = false//ツールバーを現す
+            
             
             // frameの値を設定する.
-            myScrollView.frame = scrollRect_P
+            //++myScrollView.frame = scrollRect_P
             //myScrollView.showHomeFrame()
-            etcBarDisp(disp: 1)//underView等」を追加する
+            //++etcBarDisp(disp: 1)//underView等」を追加する
             //編集画面非表示フラグをリセットする
             myEditFlag == false
             //１行目をパレットに呼び込む
@@ -843,7 +888,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func redo(_ sender: UIBarButtonItem) {
     }
-    //----------------- その他の関数　-------------------------
+//=================================================================
+//                        その他の関数
+//=================================================================
+    
     //メモのスクロール位置を設定する
     func scrollPos(){
     //現在のタグ行がスクロール窓から隠れているかをチェック
@@ -865,18 +913,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
 
     }
+    
     //上下barView,スペーサー等の表示／非表示
     func etcBarDisp(disp:Int){
         if disp == 1 {
             self.view.addSubview(underView)
             self.view.addSubview(upperView)
-            self.view.addSubview(myToolView)
+            //self.view.addSubview(myToolView)
             self.view.addSubview(spaceView1)
             self.view.addSubview(spaceView2)
         }else if disp == 0{
             underView.removeFromSuperview()
             upperView.removeFromSuperview()
-            myToolView.removeFromSuperview()
+            //myToolView.removeFromSuperview()
             if myEditView != nil{
                 myEditView.removeFromSuperview()
                 spaceView1.removeFromSuperview()
@@ -885,19 +934,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
-    //セルの長押し処理:長押しイベント処理
+    /* ----- セルの長押し処理:長押しイベント処理 ----- */
+    
     func longPress(){
         print("longPush")
         if myScrollView.isLongPushed == false{//チャタリング防止作
             // ** [INDEXページ] **
             if isIndexMode == true{
               //登録されてない頁番号の場合は、パスする
-                let shou:Int = nowGyouNo
-                if mx[String(nowGyouNo)] == 0{return }
-
+                //let shou:Int = nowGyouNo
+                //空ページの場合は処理しない
+                if mx[String(nowGyouNo)] == 0{return}//mx[1〜30]は空フラグとして使用
+                if Double(mx[String(nowGyouNo)]!) > 30{return}//念のため：ダメな対応
               //飛び先ページを指定
                 //-------
                 let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号:0ページの為tag番号（一桁）がページ番号を現す。
+                print("===========\(nextNum)====================")
                 let im = readPage(pn:nextNum!)//外部から取得する
                 fNum = 1
                 memo[fNum].setMemoFromImgs(pn:nextNum!,imgs:im)
@@ -912,6 +964,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 nowGyouNo = nextNum!*100 + 1
             // ** [メモページ] **
             }else{
+            //メモページの場合
               //仮想的にeditボタンを押す
               let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号
               self.Pallete(self.pallete2)//パレットを開く
@@ -922,7 +975,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         myScrollView.isLongPushed = true//touchBeginsでfalseにリセットする
     }
-    // ==  外部データ入出力関係  ==
+
+  /* --------------　外部データ入出力関係　----------------------- */
     
     //外部のページデータを読み込む: photos”pn”[] ->[UIImage]
   
@@ -986,7 +1040,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
  
-    //            == Index情報の更新プログラム ==
+
+  /* --------------　Index情報の更新プログラム　----------------------- */
+    
     //palleteのdone実行時にページデータからIndex内容を更新する
     func indexChange(pn:Int,usedNum:Int)-> UIImage{
 
@@ -1065,12 +1121,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
  
     }
  
- /*   //UserDefaultのIndexPage:photos[0]を削除する？使用予定？
-    func delIndex(){
-        delPage(pn:0)
-    }
-*/
-   // ------------  mx[]更新関係   -----------------
+   /* -------------------　mx[]更新関係　---------------------------- */
     
     ///該当するページのmx[]値をリセットする
     func xxclearMx(pn:Int){
@@ -1102,6 +1153,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
           }
         return ret
     }
+    
     func loadMx()->[String:CGFloat]{
         //Dictionary型のデータの読込
         var img:[String:CGFloat] = mx as! [String : CGFloat]
@@ -1141,8 +1193,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         photoData.synchronize()
     }
     
-    //----- リストメニューtableView関連 ---------------
- 
+   /* ---------------　リストメニューtableView関連　------------------　*/
+    
     func tableView(_ tV: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return self.items.count
@@ -1224,10 +1276,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func fc5(){print("test5!!!!!")}
     func fc6(){
         print("test6!!!!!")
-        
+        //現行ベージの内容を削除する
+        delPage(pn: pageNum)
+        let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
+        memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
+
+        delPage(pn: 0)//全ページ削除する
     }
     
-    /* -------------------　ボタン関数　-----------------------------*/
+   /* ----------------------　ボタン関数　-----------------------------*/
+    
     //エディット画面を非表示にする
     func closeEditView(){
         editButton1.backgroundColor = UIColor.clear
@@ -1369,7 +1427,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            
         }else{
         //パレットの表示位置をリセットする
-        drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - 44 - vHeight/2)
+            //アニメーション動作をさせる
+            UIView.animate(withDuration: 0.3, animations: {
+            () -> Void in
+            drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - 44 - vHeight/2)
+            })
         }
     }
     
@@ -1384,13 +1446,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
         }else{
         //パレットの表示位置を末尾にする
-        drawableView.layer.position = CGPoint(x:boundWidth - vWidth/2, y:boundHeight - 44 - vHeight/2)
+            UIView.animate(withDuration: 0.3, animations: {
+            () -> Void in
+            drawableView.layer.position = CGPoint(x:boundWidth - vWidth/2, y:boundHeight - 44 - vHeight/2)
+          })
         }
-
+ 
     }
     
     
-   /* -------------------　スワイプ関数　-----------------------------*/
+   /* -------------------　スワイプ関数　---------------------------- */
+    
     func swipeR(){
         if isIndexMode! { return }//Indexが表示中は実行しない
         if isEditMode! { return }//パレットが表示中は実行しない
@@ -1421,7 +1487,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         fNum = f
         //--------
         pageNum -= 1
-        //if pageNum < 1{pageNum = 1}
+        //nowGyouNoの更新
+        nowGyouNo = pageNum * 100 + 1
+        
         naviBar.topItem?.title = String(pageNum) + " /30"
         //--------
     }
@@ -1457,14 +1525,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //-----------
         pageNum += 1
         naviBar.topItem?.title = String(pageNum) + " /30"
-        //-----------------------------------------
-                //transitionCurlUp,
+        //nowGyouNoの更新
+        nowGyouNo = pageNum * 100 + 1
     }
-
-
+  
+   /* -------------------　プロトコル関数　-----------------------------*/
     
-    
-    /* -------------------　プロトコル関数　-----------------------------*/
     func modalChanged(TouchNumber: Int) {// protocol ScrollViewDelegate
         print("TouchNumber:@\(TouchNumber)")
         print("fNum:\(fNum)")
@@ -1528,6 +1594,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.layer.position = CGPoint(x: midX2, y:boundHeight - vHeight/2 - 44)
     }
     /* ------------------------ デリゲート関数　-------------------------- */
+    
     var scrollBeginingPoint: CGPoint!
     
     private func scrollViewWillBeginDragging(myScrollView: UIScrollView) {
@@ -1556,8 +1623,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
 
     
-  //------------------------------------------------------------------
-  //---------------旧ボタン関数(未使用）----------------------------------
+  //----------------------------------------------------------------
+  //                  旧ボタン関数(未使用）                             |
+  //----------------------------------------------------------------
+    
     func insert(sender: AnyObject) {//xxxx,◾◾◾◾：メニュー
         memo[fNum].insertNewMemo(gyou: nowGyouNo,maxGyou:pageGyou)
         
@@ -1764,5 +1833,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
      createNewPageImg2()//pageImgs[]にappendする
      }
      */
+//-----------------------------------------------------------------------------
 
 }

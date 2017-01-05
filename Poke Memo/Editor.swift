@@ -111,7 +111,7 @@ class EditorView: UIView {
         
         self.cursolView.removeFromSuperview()//カーソル画面を撤去する
         let containerView = UIView(frame: CGRect(x:0,y:0,width:self.bounds.width,height:self.bounds.height))
-        print("B @@@@@@@@@@@@@@@@@@@@@@@")
+               //print("B @@@@@@@@@@@@@@@@@@@@@@@")
         //時間−平面点変換
         var leftX = min(cursolStartX, cursolEndX)
         var rightX = max(cursolStartX, cursolEndX)
@@ -127,7 +127,7 @@ class EditorView: UIView {
         
         //画面のクリップ（全てのカーソル区切りエリア毎に）
         //  []◾[]:上書き||DEL , [ ][⬜]：挿入1 , [ ⬜][]：挿入2
-        print("C @@@@@@@@@@@@@@@@@@@@@@@")
+             //  print("C @@@@@@@@@@@@@@@@@@@@@@@")
         let clip01 = CGRect(x:0,y:0 ,width:pixLeftX,height:pixHeight)
         let clip02 = CGRect(x:pixLeftX,y:0 ,width:pixRightX - pixLeftX,height:pixHeight)
         let clip03 = CGRect(x:pixRightX,y:0 ,width:pixWidth - pixRightX,height:pixHeight)
@@ -146,22 +146,22 @@ class EditorView: UIView {
         let clip02U:UIImage = downSize(image: UIImage(cgImage: clipImage02!), scale: retina)
         
         let clip03U:UIImage = downSize(image: UIImage(cgImage: clipImage03!), scale: retina)
-        print("D1 @@@@@@@@@@@@@@@@@@@@@@@")
+               //print("D1 @@@@@@@@@@@@@@@@@@@@@@@")
         let clip04U:UIImage = downSize(image: UIImage(cgImage: clipImage04!), scale: retina)
         let clip05U:UIImage = downSize(image: UIImage(cgImage: clipImage05!), scale: retina)
         
         //ブランク画像の作成(clip02のブランク画像）
         var saX:CGFloat = rightX - leftX//カーソルの巾
         //  ======= INS時におけるmx[]の確認と変更 ========
-        print("1qqvWidth:\(vWidth)qqqqqqqqq")
+              //print("1qqvWidth:\(vWidth)qqqqqqqqq")
         let myX:CGFloat = mx[String(nowGyouNo)]!//現行のmaxX
         let atoX:CGFloat = (vWidth - 10) - myX
-        print("2qqqqmyX:\(myX)qqqqqqqatoX:\(atoX)")
+              //print("2qqqqmyX:\(myX)qqqqqqqatoX:\(atoX)")
         if sel == "INS"{
         //
             //末尾が消えないようにカーソル巾を変更
           if atoX < 0{
-            print("3qqqqqqqqqqq")
+               //print("3qqqqqqqqqqq")
             saX = 1
             cursolWFlag = false
           }else{}
@@ -176,7 +176,7 @@ class EditorView: UIView {
 
         let size = CGSize(width: saX, height: myHeight)
         let blankImge = UIImage.colorImage(color: UIColor.clear, size: size)
-        print("D @@@@@@@@@@@@@@@@@@@@@@@")
+              //print("D @@@@@@@@@@@@@@@@@@@@@@@")
         //コンテナへの書き込み
         var clips:[UIImage]! = []
         switch sel {
@@ -205,7 +205,7 @@ class EditorView: UIView {
             
         default: break
         }
-        print("E @@@@@@@@@@@@@@@@@@@@@@@")
+              //print("E @@@@@@@@@@@@@@@@@@@@@@@")
         let crop = addContainer(containerView: containerView,clips: clips)
         return crop
     }

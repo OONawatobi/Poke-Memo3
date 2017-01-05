@@ -235,7 +235,7 @@ class xDrawableView: UIView {
         
         // 描き終わったline
         if  lined != nil {//(ペンアップの都度） @ @ @ @ @ 4
-            print("|||||||||||||||||||||||||||||||||||||||||||")
+                 //print("|||||||||||||||||||||||||||||||||||||||||||")
             lined.drawOnContext(context: context!)// @ @ @ @ @ 4
             //パレットの内容をメモにコピーする(ペンアップの都度）※パレットのサイズ？
             if isEditMode == true{

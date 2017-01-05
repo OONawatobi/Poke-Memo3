@@ -38,9 +38,10 @@ class MemoView:UIView{
             targetMemo.image = imgs[idx]
             //タグ番号を画像に合成する：試験用
             if debug1 == true{
-                print("== Debug01モード ==")
+                //print("== Debug01モード ==")
               targetMemo.image = targetMemo.image?.addText(text: String(tag))
-            }else{print("==  ==")}
+            }else{//print("==  ==")
+            }
             if idx == 0 && pn == 0{
                 targetMemo.image = targetMemo.image?.addText(text: "INDEX")
             }

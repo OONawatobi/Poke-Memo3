@@ -137,8 +137,13 @@ class DrawableView: UIView {
             dsX = dsX < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):dsX
             //左端制限
             dsX = dsX > vWidth/2 ? vWidth/2:dsX
-            self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
-            self.Delegate?.shiftMX()
+            
+            //アニメーション動作をさせる
+            UIView.animate(withDuration: 0.3, animations: {
+                () -> Void in
+                self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
+            })
+            self.Delegate?.shiftMX()// okボタンを押す:view.done(done2)
         }else if shiftDownFlag == true{
             print("downFlag: \(shiftDownFlag)")
             self.Delegate?.selectNextGyou()
