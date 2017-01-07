@@ -27,8 +27,8 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <items>
-                                    <navigationItem title="E.T.Memo" id="gaI-wz-R0b">
-                                        <barButtonItem key="leftBarButtonItem" systemItem="pause" id="aWX-hW-h3T">
+                                    <navigationItem id="gaI-wz-R0b">
+                                        <barButtonItem key="leftBarButtonItem" image="index.png" id="aWX-hW-h3T">
                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <connections>
                                                 <action selector="index:" destination="BYZ-38-t0r" id="lRA-V3-XVW"/>
@@ -41,8 +41,9 @@
                                                     <action selector="Pallete:" destination="BYZ-38-t0r" id="FOY-yr-PlH"/>
                                                 </connections>
                                             </barButtonItem>
-                                            <barButtonItem systemItem="bookmarks" id="oI5-jf-xra">
-                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <barButtonItem image="enn.png" id="oI5-jf-xra">
+                                                <inset key="imageInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="-3"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <connections>
                                                     <action selector="menu:" destination="BYZ-38-t0r" id="XE5-GX-lqK"/>
                                                 </connections>
@@ -57,7 +58,7 @@
                                 <items>
                                     <barButtonItem image="redo.png" width="36" style="plain" id="MpA-rg-HAi">
                                         <inset key="imageInsets" minX="-10" minY="-5" maxX="1" maxY="-6"/>
-                                        <color key="tintColor" red="1" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" red="0.43529412150000002" green="0.4431372583" blue="0.47450980539999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
                                             <action selector="redo:" destination="BYZ-38-t0r" id="VNi-fV-UK8"/>
                                         </connections>
@@ -98,6 +99,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="enn.png" width="24" height="24"/>
+        <image name="index.png" width="24" height="24"/>
         <image name="redo.png" width="32" height="32"/>
     </resources>
 </document>

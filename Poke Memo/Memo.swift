@@ -140,7 +140,8 @@ class MemoView:UIView{
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
         let gColor = UIColor.green.withAlphaComponent(0.1)
         let wColor = UIColor.white
-        let cColor = UIColor.white.withAlphaComponent(0.3)
+        let cColor = UIColor.purple.withAlphaComponent(0.2)
+        //Indexページの場合は色を変える
         let backColor = isIndexMode == true ? cColor : gColor
         targetMemo.backgroundColor = backColor
         print("==▶mx[\(nowGyouNo)]:\(mx[String(nowGyouNo)]!)")

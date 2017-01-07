@@ -102,8 +102,7 @@ class EditorView: UIView {
      //---------------------------------------------------------- */
     
     func editPallete(sel:String) -> UIImage {
-        let cropImage:UIImage! = nil
-        let retina:Int = 2
+        //let cropImage:UIImage! = nil
         let myWidth:CGFloat = self.bounds.width
         let myHeight:CGFloat = self.bounds.height
         let pixWidth:CGFloat = myWidth * CGFloat(retina)
@@ -150,33 +149,53 @@ class EditorView: UIView {
         let clip04U:UIImage = downSize(image: UIImage(cgImage: clipImage04!), scale: retina)
         let clip05U:UIImage = downSize(image: UIImage(cgImage: clipImage05!), scale: retina)
         
-        //ブランク画像の作成(clip02のブランク画像）
+        //** ブランク画像の作成(clip02のブランク画像）**//
+        
+        //  == INS時,DEL時におけるmx[]の確認と変更 ==
+        
         var saX:CGFloat = rightX - leftX//カーソルの巾
-        //  ======= INS時におけるmx[]の確認と変更 ========
               //print("1qqvWidth:\(vWidth)qqqqqqqqq")
         let myX:CGFloat = mx[String(nowGyouNo)]!//現行のmaxX
         let atoX:CGFloat = (vWidth - 10) - myX
-              //print("2qqqqmyX:\(myX)qqqqqqqatoX:\(atoX)")
+            print("2qqqq: atoX:\(atoX)= W:\(vWidth - 10) - myX:\(myX)qqqqqqq")
+        
+        /* INS の場合 */
         if sel == "INS"{
-        //
-            //末尾が消えないようにカーソル巾を変更
-          if atoX < 0{
-               //print("3qqqqqqqqqqq")
-            saX = 1
+        
+          //末尾が消えないようにカーソル巾を変更
+          if atoX < saX{
+            saX = atoX
             cursolWFlag = false
           }else{}
-        //
+        
+            print("3qqqqqqq saX:\(saX)qqqq")
           mxTemp = mx[String(nowGyouNo)]! + saX //mx[]の変更
           mx[String(nowGyouNo)]! = mxTemp//mx[]への反映
+            
         }else if sel == "DEL"{
-           mxTemp = mx[String(nowGyouNo)]! - saX //mx[]の変更
+            
+        /* DEL の場合 */
+        let saX2 = rightX < myX ? saX : myX - leftX//最後文字までの分を考慮
+           mxTemp = mx[String(nowGyouNo)]! - saX2 //mx[]の変更
            mx[String(nowGyouNo)]! = mxTemp//mx[]への反映
         }
-        //  ========================================== //
-
+        
+        /* OVW,INS,DEL共通の処理 */
+        //blankImgeをnilにしないために最小巾のカーソルを作る
+        if saX<=0{ saX = 1 }
+        
+        //末尾に余裕が無い場合は
+        if mx[String(nowGyouNo)]! >= (vWidth - 10){
+            if sel == "INS"{
+              cursolWFlag = false//但し、実際には再描画をしないようにする
+            }
+        }
+        //  =========  ココまで    ==========
+        
         let size = CGSize(width: saX, height: myHeight)
         let blankImge = UIImage.colorImage(color: UIColor.clear, size: size)
               //print("D @@@@@@@@@@@@@@@@@@@@@@@")
+        
         //コンテナへの書き込み
         var clips:[UIImage]! = []
         switch sel {
