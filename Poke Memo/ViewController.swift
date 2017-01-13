@@ -311,6 +311,7 @@ protocol UpperToolViewDelegate{//upperビューの操作(機能）
 protocol DrawableViewDelegate{//パレットビューの操作(機能）
     func selectNextGyou()
     func shiftMX()
+    func upToMemo()
 }
 
 
@@ -364,7 +365,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.backgroundColor = UIColor.white
         //本機種の解像度
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
-        //testVを作成
+        //testVを作成  = debug2 =
         testV = UIView(frame:CGRect(x: 0, y:0 , width: 2, height: vHeight))
         testV.backgroundColor = UIColor.magenta
         //mx[]の位置にtestVを表示する
@@ -508,6 +509,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //myScrollView.Delegate3 = self
         //パレット表示されていない場合
         scrollRect = CGRect(x:(boundWidth - leafWidth)/2, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 )
+        
         //パレット表示されている場合
         scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50)//最後の50は目で見て調整した
         
@@ -520,6 +522,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myScrollView.showsHorizontalScrollIndicator = false// 横スクロールバー非表示
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
         //myScrollView.directionalLockEnabled = true
+        
+        myScrollView.backgroundColor = UIColor.white
         
         //------------ スワイプ認識登録　------------
         //右スワイプ
@@ -564,6 +568,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let im = readPage(pn:1)//１ページ目の外部データを読み込む
             memo[1].setMemoFromImgs(pn:1,imgs:im)
             fNum = 1
+            //nowGyouNoの更新
+            nowGyouNo = 1 * 100 + 1
             myScrollView.addSubview((memo[1]))
             self.view.addSubview(myScrollView)
             myScrollView.contentOffset = CGPoint(x:0,y: 0)
@@ -573,7 +579,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             // **mx[]の読み込み・初期化 **
             mx = loadMx()
             print("105: \(mx["105"])")
-
+            
         }
         //---------- リストメニュ−　---------
         //テーブルビュー初期化、関連付け
@@ -707,8 +713,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
 
     }
-    var animeFlag:Bool = false//アニメ中はtrue
+    
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
+    var animeFlag:Bool = false//アニメ中はtrue
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
         if animeFlag { return}//アニメ中は実行しない
         if isMenuMode! { return }//リストメニュー表示中は実行しない
@@ -732,7 +739,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
            //++ パレットを閉じるアニメーション
             self.etcBarDisp(disp: 0)//underView等を削除する
-            self.toolBar.isHidden  = true//ツールバーを隠す
+            //self.toolBar.isHidden  = true//ツールバーを隠す
             UIView.animate(withDuration:0.3, animations: {
                 () -> Void in
                 self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + 44 - 40/2)
@@ -742,6 +749,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
             }){
                 (Bool) -> Void in
+                
+                self.toolBar.isHidden  = true//ツールバーを隠す
                 //　子viewを削除する??
                 drawableView!.removeFromSuperview()
                 drawableView = nil
@@ -749,8 +758,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 
                 //アニメーションの終わり
                 self.animeFlag = false
+                
             }
-
+            
             //メモページのカーソルを削除する
             memo[fNum].delCursol()
             
@@ -783,14 +793,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
             
             drawableView.Delegate = self
-            let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
+            //let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
             
             //無くても動くの,何故????drawableView.layer.position = leftEndPoint
             drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
             drawableView.setSecondView()//編集ツールの追加
-//debug2 :
-            if debug2 == true{drawableView.addSubview(testV)}//@@ DEBUG2 @@
-            
+           
             isEditMode = true//パレットが表示されている場合は"true"
             //編集画面非表示フラグをリセットする
             myEditFlag = false
@@ -798,7 +806,37 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             modalChanged(TouchNumber: pageNum*100 + 1)
             penMode()//黒ペンモードにする
             closeEditView()//編集画面の設定を初期化する
+            // == debug2 ==========================================================
+            if debug2 == true{drawableView.addSubview(testV)}      //@@ DEBUG2 @@
+            testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
+            // =====================================================================
+            
         }
+    }
+    
+    ///  ** パレット入力時における[OK]ボタン処理 **
+    func upToMemo(){  //パレット内容をメモに反映させる
+        drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
+        let palImage = drawableView.GetImage()
+        let myImage1 = palImage.ResizeUIImage(width: leafWidth, height: leafHeight)
+        print("fNum:\(fNum) ,tag: \(nowGyouNo)")
+        // メモにパレット内容を書き込む
+        memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
+        // 最大文字位置を保存する
+        mx[String(nowGyouNo)] = mxTemp
+        //drawableView.reAddSubView()//(secondView)を付加する
+        drawableView.addSubview(drawableView.thirdView)//前フィルタ3rdViewを追加'170110変更（ダブリと思われるため）
+        //インデックス情報を更新する
+        let uNum = numOfUsedLine(pn:pageNum)//入力行最小値を取得
+        indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
+        //indexリストに対象の頁番号を登録する(登録済頁だけがタッチ反応する）
+        mx[String(pageNum)] = 1
+        
+        //非空白行の最上値
+        print("numOfUsedLine:\(numOfUsedLine(pn:pageNum))")
+        //ペンモードの初期化
+        penMode()//黒ペンモードにする
+
     }
     
     @IBAction func done(_ sender: UIBarButtonItem) {
@@ -835,12 +873,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     drawableView.secondView.backgroundColor = UIColor.clear
                     //編集結果をパレットviewの背景に入れ替える
                     drawableView.backgroundColor = UIColor(patternImage: editedView)
-                    editFlag = false;myInt = "NON"
+                    
                     //パレット入力状態のリセット
+                    editFlag = false;myInt = "NON"
                     drawableView.lastDrawImage = nil
                     //編集画面を閉じる
                     closeEditView()
-                    done(done2)// okボタンを押す：パレット内容をメモに移す
+                    // okボタンを押す：パレット内容をメモに移す
+                    //done(done2)
+                    upToMemo()//パレット内容をメモに移す
+                    //◆◆◆◆
+                    drawableView.get1VImage()
                 }else{
                     print("カーソル巾がゼロです")
                     //カーソルを削除する
@@ -849,41 +892,52 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     closeEditView()
                     
                 }
-            }else{
-            if myEditFlag == true && editFlag == false{return}//編集画面表示中で編集モードが選択されていない場合はパス
-            //  ** パレット入力時における処理 **
                 
-               drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
-               let palImage = drawableView.GetImage()
-               let myImage1 = palImage.ResizeUIImage(width: leafWidth, height: leafHeight)
-               print("fNum:\(fNum) ,tag: \(nowGyouNo)")
-              // メモにパレット内容を書き込む
-               memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
-              // 最大文字位置を保存する
-               mx[String(nowGyouNo)] = mxTemp
-               drawableView.reAddSubView()//前フィルタ(secondView)を付加する
-               drawableView.addSubview(drawableView.thirdView)//3rdViewを追加する
-              //インデックス情報を更新する
-               let uNum = numOfUsedLine(pn:pageNum)//入力行最小値を取得
-               indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
-              //indexリストに対象の頁番号を登録する(登録済頁だけがタッチ反応する）
-                mx[String(pageNum)] = 1
-
-              //非空白行の最上値
-                print("numOfUsedLine:\(numOfUsedLine(pn:pageNum))")
-              //ペンモードの初期化
-               penMode()//黒ペンモードにする
+            /** パレット入力時における処理 **/
+            }else{
+            
+              //編集画面表示中で編集モードが選択されていない場合はパス
+              if myEditFlag == true && editFlag == false{return}
+              upToMemo()//パレット画面をメモ行にコピーする
+              //◆◆◆◆
+              drawableView.get1VImage()
             }
-// = debug2 = //
-            testV.layer.position = CGPoint(x: mx[String(nowGyouNo)]!, y:vHeight/2 )
+            
+        // == debug2 ==========================================================
+          if debug2 == true{//@@ DEBUG2 @@
+            testV.removeFromSuperview()
+            drawableView.addSubview(testV)
+            testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
+          }
+        // =====================================================================
+            
         }
          print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
     }
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
+        print("◆◆◆◆")
+        if drawableView.undoMode != 8{return}
+        let im0 = drawableView.bup["2"]?.0
+        drawableView.secondView.backgroundColor = UIColor(patternImage: im0!)
     }
     
     @IBAction func redo(_ sender: UIBarButtonItem) {
+        print("@@ undo @@")
+        print("◆◆◆◆undoFLG:\(drawableView.undoMode)")
+        if drawableView.undoMode == 0{return}
+        //if drawableView.undoMode == 1{return}
+        //if drawableView.undoMode == 8{return}
+        if drawableView.bup["0"] == nil{return}
+        
+        drawableView.undo()
+        /*
+        let im0 = drawableView.bup["0"]?.0
+        drawableView.secondView.backgroundColor = UIColor(patternImage: im0!)
+        drawableView.lastDrawImage = im0
+        drawableView.undoMode = 8
+        */
+
     }
 //=================================================================
 //                        その他の関数
@@ -902,7 +956,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let maxIti = scrollRect_P.height - myEditView.frame.height//スクロール可否の閾値
         let saIti = iti - maxIti
         if iti > maxIti{
-            UIScrollView.animate(withDuration: 0.5, animations: {
+            UIScrollView.animate(withDuration: 0.3, animations: {
                 () -> Void in
                 self.myScrollView.contentOffset = CGPoint(x:0,y:os.y + saIti)
             })
@@ -1061,6 +1115,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         img02.layer.borderWidth = 3
         img02.layer.borderColor = UIColor.purple.withAlphaComponent(0.1).cgColor
         img02.layer.cornerRadius = 10
+        img02.layer.masksToBounds = true
         
         img03.layer.borderWidth = 1
         img03.layer.borderColor = UIColor.clear.cgColor
@@ -1111,8 +1166,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         let y = NSCalendar.current.component(compY, from: Date() as Date)
         let y2 = y - 2000
-        var m = NSCalendar.current.component(compM, from: Date() as Date)
-        var d = NSCalendar.current.component(compD, from: Date() as Date)
+        let m = NSCalendar.current.component(compM, from: Date() as Date)
+        let d = NSCalendar.current.component(compD, from: Date() as Date)
         //let st = String(format: " %4d-\n %2d-%2d",y,m,d)
          //デバグ用　m = 12;d = 15;
         let st = String(format: " %2d/%2d\n    '%2d",m,d,y2)
@@ -1319,7 +1374,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             editButton2.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
             editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
             editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
-            
+            //◆◆◆◆
+            drawableView.get1VImage()
         }else{//エディット画面を非表示にする
             closeEditView()
             
@@ -1426,7 +1482,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editorModeStart()
         cursolWFlag = true //カーソル幅が狭いと🐞される事への対策
         editFlag = true //カーソルモードが選択されたモードに設定する
-  
     }
     
     func btn9_click(sender:UIButton){
@@ -1584,9 +1639,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //====================================================
 
             drawableView.backgroundColor = UIColor(patternImage: reMemo)
+            //◆◆◆◆
+            drawableView.get1VImage()//パレット画面を保存する
+            
             drawableView.lastDrawImage = nil//21061213に追加
             drawableView.secondView.backgroundColor = UIColor.clear
-           
+            
         }else if isIndexMode == true{
         //パレット非表示の場合
             memo[fNum].selectedNo(tagN:nowGyouNo)

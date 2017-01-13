@@ -25,16 +25,13 @@ extension UIImage {
 }
 
 class EditorView: UIView {
-  
-    // 画像をUIImageViewに設定する.
-    var pen:UIImage!
-    // UIView(secondView)を作成する
-    var secondView: UIView!
-    // UIImageViewを作成する.
-    var myImageView:UIImageView!
+/*
+      2017 var pen:UIImage!
+      2017 var secondView: UIView!
+      2017 var myImageView:UIImageView!
+*/
     // UIView(cursolView)を作成する
     var cursolView: UIView!
-
 
     func setMyCursolView(){//範囲編集パネル
         print("func cursolView!!!!!!!")
@@ -152,7 +149,6 @@ class EditorView: UIView {
         //** ブランク画像の作成(clip02のブランク画像）**//
         
         //  == INS時,DEL時におけるmx[]の確認と変更 ==
-        
         var saX:CGFloat = rightX - leftX//カーソルの巾
               //print("1qqvWidth:\(vWidth)qqqqqqqqq")
         let myX:CGFloat = mx[String(nowGyouNo)]!//現行のmaxX
@@ -275,6 +271,7 @@ class EditorView: UIView {
         UIGraphicsEndImageContext()
         return resizeImage!
     }
+/* 2017
     //ペンカーソルの表示位置設定
     func setPosx(x:CGFloat,y: CGFloat) {
         //myImageView.image = pen
@@ -285,6 +282,7 @@ class EditorView: UIView {
     func hatena(pen:UIImage){
         myImageView.image = pen
     }
+*/
     //--------------------------------------------------------
     //??var lines: [Line] = []
     //??var currentLine: Line? = nil
