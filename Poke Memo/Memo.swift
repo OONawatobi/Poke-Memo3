@@ -145,20 +145,13 @@ class MemoView:UIView{
         let backColor = isIndexMode == true ? cColor : gColor
         targetMemo.backgroundColor = backColor
         print("==▶mx[\(nowGyouNo)]:\(mx[String(nowGyouNo)]!)")
-        
+      //
         // == debug2 ==========================================================
           if debug2 == true{//@@ DEBUG2 @@
             testV.layer.position = CGPoint(x: 0, y:vHeight/2 )
           }
-        // =====================================================================
-        //undo関係のリセット
-         drawableView.undoMode = 0
-         drawableView.bup["0"] = nil
-         drawableView.bup["10"] = nil
-         drawableView.bup["1"] = nil
-         drawableView.bup["2"] = nil
-         drawableView.bup["temp"] = nil
-         
+        // ====================================================================
+
     }
     
     func clearBackgroundColor(){

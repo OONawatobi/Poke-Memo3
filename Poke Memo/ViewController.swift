@@ -1644,6 +1644,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             drawableView.lastDrawImage = nil//21061213に追加
             drawableView.secondView.backgroundColor = UIColor.clear
+            //UNDO関連の初期化
+            drawableView.resetUndo()
             
         }else if isIndexMode == true{
         //パレット非表示の場合

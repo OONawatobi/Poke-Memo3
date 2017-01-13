@@ -70,7 +70,16 @@ class DrawableView: UIView {
           undoMode = 1
         }
     }
-    
+    //undo関係のリセット
+    func resetUndo(){
+         undoMode = 0
+         bup["0"] = nil
+         bup["10"] = nil
+         bup["1"] = nil
+         bup["2"] = nil
+         bup["temp"] = nil
+    }
+ 
     //SecondView画面を取得する
     func get2VImage(){
         print("get2VImage()")
