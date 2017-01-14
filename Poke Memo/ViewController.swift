@@ -359,6 +359,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
     var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","------------------------　","各種設定","スタートガイドを見る","                ▲ "]
+    var titleV:UIImageView!//indexページのタイトル
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -547,6 +548,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             //メモビューの初期化
             let memoFrame = CGRect(x:0,y: 0,width:leafWidth*1,height: (leafHeight + leafMargin) * CGFloat(pageGyou) + topOffset)
+
             let memo0 = MemoView(frame: memoFrame)
             let memo1 = MemoView(frame: memoFrame)
             let memo2 = MemoView(frame: memoFrame)
@@ -563,7 +565,30 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //memo[0].backgroundColor = UIColor(patternImage: bI!)
             indexImgs = readPage(pn:0)//0ページ目の外部データを読み込む
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
-            
+            //indexタイトルの作成
+            titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
+            titleV.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
+            titleV.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
+            let tw = titleV.frame.width
+            let th = titleV.frame.height
+            let label1 = UILabel(frame: CGRect(x:0,y:15,width:tw/3,height:th/2))
+            let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:15,width:tw/3,height:th/2))
+            let label3 = UILabel(frame: CGRect(x:tw*2/3 ,y:15,width:tw/3 - 10,height:th/2))
+            label1.text = " NO."
+            label2.text = "TITLE"
+            label3.text = "UPDATE"
+            label2.textAlignment = .center
+            label3.textAlignment = .right
+            //label1.backgroundColor = UIColor.red
+            //label2.backgroundColor = UIColor.red
+            //label3.backgroundColor = UIColor.red
+
+
+            //label1.font = UIFont(name: "HiraMinProN-W3", size: 9)
+            //label1.sizeToFit();label2.sizeToFit();label3.sizeToFit()
+            titleV.addSubview(label1)
+            titleV.addSubview(label2)
+            titleV.addSubview(label3)
             // ** メモ表示内容の初期化 **
             let im = readPage(pn:1)//１ページ目の外部データを読み込む
             memo[1].setMemoFromImgs(pn:1,imgs:im)
@@ -631,6 +656,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //INDEXの表示・非表示
     var retNum:Int = 0
     @IBAction func index(_ sender: UIBarButtonItem) {
+        //index タイトルを追加表示する
+        
+        //titleView.removeFromSuperview()
+
         if isEditMode! { return }//パレットが表示中は実行しない
         //memo[0]-[2]に枠を追加する
         for n in 0...2{
@@ -640,6 +669,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         var opt = UIViewAnimationOptions.transitionFlipFromLeft
         if isIndexMode == false{//Indexページが非表示の場合
+            
             //indexImgs[]からの反映
             memo[0].setIndexFromImgs(imgs:indexImgs)
             
@@ -655,6 +685,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         memo[n].layer.borderColor = UIColor.clear.cgColor
                         memo[n].layer.borderWidth = 0
                     }
+                self.view.addSubview(self.titleV)
             })
             isIndexMode = true
             fNum = 0
@@ -662,8 +693,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[0].delCursol()
             print("retNum1: \(retNum)")
             myScrollView.backgroundColor =  UIColor.blue.withAlphaComponent(0.1)
+           
         }else{//Indexページが表示中の場合
             print("index else**")
+            
             //self.navigationController?.setToolbarHidden(true, animated: true)
             opt = UIViewAnimationOptions.transitionFlipFromBottom//transitionFlipFromLeft
             
@@ -677,6 +710,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         memo[n].layer.borderColor = UIColor.clear.cgColor
                         memo[n].layer.borderWidth = 0
                     }
+                    
                 }
             )
             isIndexMode = false
@@ -684,6 +718,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             fNum = retNum
             naviBar.topItem?.title = String(pageNum) + " /30"
             myScrollView.backgroundColor =  UIColor.clear
+            titleV.removeFromSuperview()
         }
     }
     
@@ -1101,28 +1136,31 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var indexFView:UIView!
         var img01:UIImageView!
         var img02:UIImageView!
+        var cont02:UIView!//img02を入れる箱View
         var img03:UIImageView!
         
         indexFView = UIView(frame: CGRect(x:5,y: 210,width:leafWidth,height:leafHeight))
         img01 = UIImageView(frame:CGRect(x:0,y:0,width:20,height:leafHeight))
-        img02 = UIImageView(frame:CGRect(x:leafHeight*2/3,y:0 + 2,width:leafWidth - 2*leafHeight - 4
+        img02 = UIImageView(frame:CGRect(x:leafHeight*1/3,y:0 + 2,width:leafWidth - 3*leafHeight
+            ,height:leafHeight - 10))
+        cont02 = UIView(frame:CGRect(x:leafHeight*2/3,y:0 + 2,width:leafWidth - 2*leafHeight - 4 - 3
             ,height:leafHeight - 4))
         img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3 + 2,y:0,width:leafHeight*4/3 - 8,height:leafHeight))
         //枠線,色,角丸
         img01.layer.borderWidth = 1
         img01.layer.borderColor = UIColor.clear.cgColor
         img01.layer.cornerRadius = 1
-        img02.layer.borderWidth = 3
-        img02.layer.borderColor = UIColor.purple.withAlphaComponent(0.1).cgColor
-        img02.layer.cornerRadius = 10
-        img02.layer.masksToBounds = true
+        cont02.layer.borderWidth = 3
+        cont02.layer.borderColor = UIColor.purple.withAlphaComponent(0.1).cgColor
+        cont02.layer.cornerRadius = 10
+        cont02.layer.masksToBounds = true
         
         img03.layer.borderWidth = 1
-        img03.layer.borderColor = UIColor.clear.cgColor
+        img03.layer.borderColor = UIColor.white.cgColor
         img03.layer.cornerRadius = 20
 
         img01.backgroundColor = UIColor.clear
-        img02.backgroundColor = UIColor.white//purple.withAlphaComponent(0.1)
+        cont02.backgroundColor = UIColor.white//purple.withAlphaComponent(0.1)
         img03.backgroundColor = UIColor.purple.withAlphaComponent(0.1)
         
         //Viewの内容を作成
@@ -1143,6 +1181,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //UIImageに変換
         img02.image = UIImage(cgImage: clipImage02!)
+
         //3つのViewを合成して１つのコンテナViewにする
         //subViewを全て削除する
         let subviews = indexFView.subviews
@@ -1153,7 +1192,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         indexFView.removeFromSuperview()
 
         //indexFView.addSubview(img01)
-        indexFView.addSubview(img02)
+        cont02.addSubview(img02)
+        indexFView.addSubview(cont02)
         indexFView.addSubview(img03)
         //self.view.addSubview(indexFView)
         
@@ -1536,7 +1576,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isEditMode! { return }//パレットが表示中は実行しない
         if pageNum == 1{ return }//１ページが最終ページ
         
-        for n in 0...2{//ボーダーラインを付ける
+        for n in 0...2{//ボーダーラインを付ける(ページめくりの時の枠）
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
         }

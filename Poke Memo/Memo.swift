@@ -178,11 +178,14 @@ class MemoView:UIView{
         removeAllSubviews(parentView: self)
         //self.removeFromSuperview()
         
+        //indexページだけtopOffsetを大きくする
+        let topOffset2:CGFloat = (pn == 0) ?topOffset*3:topOffset
+
         let pagePosX = (leafWidth)/2 //フレームの中点ｘ座標
         for idx in 0..<pageGyou {
             let myLeaf = Leaf(frame: leafRect)//リーフの初期化
             myLeaf.backgroundColor = UIColor.clear
-            let yPos:CGFloat = topOffset + (leafHeight + leafMargin)*CGFloat(idx + 1) - leafHeight/2
+            let yPos:CGFloat = topOffset2 + (leafHeight + leafMargin)*CGFloat(idx + 1) - leafHeight/2
             myLeaf.layer.position = CGPoint(x: pagePosX , y:yPos)
             
             if pn>0{  //メモページの場合
@@ -194,6 +197,7 @@ class MemoView:UIView{
               }
             }else{  //indexページの場合
                 //myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 0.5, lineSize: 2, spaceSize: 2, type: .Down)
+                
             }
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
@@ -207,7 +211,7 @@ class MemoView:UIView{
     }
 //         ----------　メモの行編集関係 ！ScrollViewでは？--------------
     
-    /* 指定行のメモを削除する(Tag番号を付け替える） */
+    /* 指定行のメモを削除する(Tag番号を付け替える）★今V.は非使用 */
     func delSelectedMemo(gyou:Int,maxGyou:Int){
         let tag = (pageNum)*100 + gyou//tag = 100 + 行番号
         let maxTag = (pageNum)*100 + maxGyou
@@ -225,7 +229,7 @@ class MemoView:UIView{
         targetMemo.image = UIImage(named: "blankA.png")
     }
     
-    /* 選択行の真下に空白のメモを一行追加する(Tag番号を付け替える) */
+    /* 選択行の真下に空白のメモを一行追加する(Tag番号を付け替える)★今V.は非使用 */
     func insertNewMemo(gyou:Int,maxGyou:Int){
         let tag = (pageNum)*100 + gyou//tag = 300 + 行番号
        // let maxTag = (pageNum)*100 + maxGyou
