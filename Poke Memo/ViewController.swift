@@ -360,7 +360,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //++テーブルに表示するセル配列
     var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","------------------------　","各種設定","スタートガイドを見る","                ▲ "]
     var titleV:UIImageView!//indexページのタイトル
- 
+    var tl: UILabel!//ナビゲーションバータイトルの表示文字
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
@@ -397,7 +398,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.Delegate = self
         myToolView.frame =  CGRect(x: 0, y: 0, width: boundWidth, height: 40)// underViewを生成.
         myToolView.backgroundColor = UIColor(patternImage: UIImage(named:"2lines.png")!)
-        myToolView.alpha = 0.5// 透明度を設定
+        myToolView.alpha = 0.7// 透明度を設定
         
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         
@@ -579,16 +580,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             label3.text = "UPDATE"
             label2.textAlignment = .center
             label3.textAlignment = .right
-            //label1.backgroundColor = UIColor.red
-            //label2.backgroundColor = UIColor.red
-            //label3.backgroundColor = UIColor.red
 
-
-            //label1.font = UIFont(name: "HiraMinProN-W3", size: 9)
-            //label1.sizeToFit();label2.sizeToFit();label3.sizeToFit()
             titleV.addSubview(label1)
             titleV.addSubview(label2)
             titleV.addSubview(label3)
+   
             // ** メモ表示内容の初期化 **
             let im = readPage(pn:1)//１ページ目の外部データを読み込む
             memo[1].setMemoFromImgs(pn:1,imgs:im)
@@ -599,8 +595,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             self.view.addSubview(myScrollView)
             myScrollView.contentOffset = CGPoint(x:0,y: 0)
             // myScrollView.showHomeFrame()
-            naviBar.topItem?.title = String(pageNum) + " /30"
             
+            //naviBar.topItem?.title = String(pageNum) + " /30"
+            //
+            //ナビゲーションバータイトルの設定
+            
+            tl = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
+            tl.layer.borderColor = UIColor.white.cgColor
+            tl.layer.borderWidth = 1.0
+            tl.layer.cornerRadius = 10
+            tl.layer.masksToBounds = true
+            //tl.sizeToFit()
+            tl.textColor = UIColor.blue
+            tl.textAlignment = .center
+            tl.backgroundColor = UIColor.white
+            tl.text = String(pageNum) + " /30"
+            naviBar.topItem?.titleView = tl
+            //
             // **mx[]の読み込み・初期化 **
             mx = loadMx()
             print("105: \(mx["105"])")
@@ -656,9 +667,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //INDEXの表示・非表示
     var retNum:Int = 0
     @IBAction func index(_ sender: UIBarButtonItem) {
-        //index タイトルを追加表示する
-        
-        //titleView.removeFromSuperview()
 
         if isEditMode! { return }//パレットが表示中は実行しない
         //memo[0]-[2]に枠を追加する
@@ -686,10 +694,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         memo[n].layer.borderWidth = 0
                     }
                 self.view.addSubview(self.titleV)
+                self.tl.text = "- INDEX -"
+                self.naviBar.topItem?.titleView = self.tl
+                //naviBar.topItem?.title = "--  INDEX  --"
             })
             isIndexMode = true
             fNum = 0
-            naviBar.topItem?.title = "--  INDEX  --"
+            
             memo[0].delCursol()
             print("retNum1: \(retNum)")
             myScrollView.backgroundColor =  UIColor.blue.withAlphaComponent(0.1)
@@ -710,14 +721,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         memo[n].layer.borderColor = UIColor.clear.cgColor
                         memo[n].layer.borderWidth = 0
                     }
-                    
+                    self.tl.text = String(pageNum) + " /30"
+                    self.naviBar.topItem?.titleView = self.tl
                 }
             )
             isIndexMode = false
             print("retNum: \(retNum)")
             fNum = retNum
-            naviBar.topItem?.title = String(pageNum) + " /30"
             myScrollView.backgroundColor =  UIColor.clear
+            //タイトルの設定
+            //naviBar.topItem?.title = String(pageNum) + " /30"
+            //let p:String = String(pageNum) + " /30"
+            
             titleV.removeFromSuperview()
         }
     }
@@ -1045,7 +1060,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.index(self.index2)
               //ページ番号を更新する
                 pageNum = nextNum!
-                naviBar.topItem?.title = String(pageNum) + " /30"
+                //naviBar.topItem?.title = String(pageNum) + " /30"
+                tl.text = String(pageNum) + " /30"
+                naviBar.topItem?.titleView = tl
                 //飛び先のtag番号を決定する
                 nowGyouNo = nextNum!*100 + 1
             // ** [メモページ] **
@@ -1597,6 +1614,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     //memo[n].layer.borderColor = UIColor.clear.cgColor
                     memo[n].layer.borderWidth = 0
                 }
+                self.tl.text = String(pageNum) + " /30"
+                self.naviBar.topItem?.titleView = self.tl
         })
         fNum = f
         //--------
@@ -1604,7 +1623,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //nowGyouNoの更新
         nowGyouNo = pageNum * 100 + 1
         
-        naviBar.topItem?.title = String(pageNum) + " /30"
+        //naviBar.topItem?.title = String(pageNum) + " /30"
+        
         //--------
     }
     
@@ -1634,11 +1654,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                       memo[n].layer.borderColor = UIColor.clear.cgColor
                       memo[n].layer.borderWidth = 0
                     }
+                    self.tl.text = String(pageNum) + " /30"
+                    self.naviBar.topItem?.titleView = self.tl
                 })
         fNum = f
         //-----------
         pageNum += 1
-        naviBar.topItem?.title = String(pageNum) + " /30"
+        //naviBar.topItem?.title = String(pageNum) + " /30"
+        
         //nowGyouNoの更新
         nowGyouNo = pageNum * 100 + 1
     }

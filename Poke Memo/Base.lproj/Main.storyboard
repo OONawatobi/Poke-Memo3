@@ -103,4 +103,5 @@
         <image name="index.png" width="24" height="24"/>
         <image name="redo.png" width="32" height="32"/>
     </resources>
+    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
 </document>
