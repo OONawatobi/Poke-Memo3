@@ -248,7 +248,7 @@ extension UIImage {
 
 //-----　grobal constance　--------
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
-var debug1:Bool = true//デバグ用：ページタグ表示
+var debug1:Bool = false//デバグ用：ページタグ表示
 var debug2:Bool = true//デバグ用：mx[]表示
 
 let boundWidth = UIScreen.main.bounds.size.width
@@ -286,7 +286,7 @@ var memoLowerMargin:Int = 2// メモ末尾の表20示マージン行数
 //-----パレット------------
 var drawableView: DrawableView! = nil//パレット画面
 var editorView:EditorView! = nil//エディター画面
-let vHeight: CGFloat = 181 //手書きビューの高さ@@@@@@@@
+let vHeight: CGFloat = 180 //手書きビューの高さ@@@@@@@@
 var vWidth:CGFloat! = leafWidth*(vHeight/leafHeight)
 var maxPosX:CGFloat! = 0//描画したｘ座標の最大値
 var mx  = [String: CGFloat]()//[Tag番号:maxPosX]
@@ -404,7 +404,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //ツールViewのボタンの生成　[2][3][4]   [1]
         // button1の追加
-        editButton1 = UIButton(frame: CGRect(x:boundWidth - 40,y: 10, width:25, height:20))
+        editButton1 = UIButton(frame: CGRect(x:boundWidth - 60,y: 10, width:25, height:20))
         editButton1.backgroundColor = UIColor.clear  // タイトルを設定する(通常時)
         //editButton1.setTitle("💠", for: UIControlState.normal)
         editButton1.setImage(UIImage(named: "red3.png"), for:UIControlState.normal)
@@ -413,7 +413,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         
         // button2の追加
-        editButton2 = UIButton(frame: CGRect(x:10, y:10, width:20, height:20))
+        editButton2 = UIButton(frame: CGRect(x:20, y:10, width:20, height:20))
         editButton2.backgroundColor = UIColor.clear
         editButton2.layer.cornerRadius = 5
         //editButton2.layer.masksToBounds = true//角のはみ出しをマスクする
@@ -424,7 +424,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
         
         // button3の追加
-        editButton3 = UIButton(frame: CGRect(x:60, y:5, width:30, height:30))
+        editButton3 = UIButton(frame: CGRect(x:70, y:5, width:30, height:30))
         editButton3.layer.cornerRadius = 5
         editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 1)
         editButton3.addTarget(self, action: #selector(ViewController.btn3_click(sender:)), for:.touchUpInside)
@@ -432,7 +432,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton3.setImage(UIImage(named: "pen2.png"), for:UIControlState.normal)
         
         /** button4の追加 **/
-        editButton4 = UIButton(frame: CGRect(x:110, y:5, width:30, height:30))
+        editButton4 = UIButton(frame: CGRect(x:120, y:5, width:30, height:30))
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton4.layer.cornerRadius = 5
         editButton4.addTarget(self, action: #selector(ViewController.btn4_click(sender:)), for:.touchUpInside)
@@ -492,14 +492,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton8.setTitle("8", for: UIControlState.normal)
         myEditView.addSubview(editButton8)
         
-        editButton9 = UIButton(frame: CGRect(x:10, y:10, width:30,height: 40))
+        editButton9 = UIButton(frame: CGRect(x:20, y:10, width:30,height: 40))
         editButton9.backgroundColor = UIColor.clear
         editButton9.layer.cornerRadius = 8
         editButton9.addTarget(self, action: #selector(ViewController.btn9_click(sender:)), for:.touchUpInside)
         editButton9.setTitle("|<", for: UIControlState.normal)
         myEditView.addSubview(editButton9)
         
-        editButton10 = UIButton(frame: CGRect(x:boundWidth - 40, y:10, width:30,height: 40))
+        editButton10 = UIButton(frame: CGRect(x:boundWidth - 50, y:10, width:30,height: 40))
         editButton10.backgroundColor = UIColor.clear
         editButton10.layer.cornerRadius = 8
         editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchUpInside)
@@ -540,7 +540,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //長押し認識登録
         let longPush = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPress))
         // 長押し-最低2秒間は長押しする.
-        longPush.minimumPressDuration = 1.0
+        longPush.minimumPressDuration = 0.8
         myScrollView.addGestureRecognizer(longPush)
 
 
@@ -975,18 +975,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBAction func redo(_ sender: UIBarButtonItem) {
         print("@@ undo @@")
         print("◆◆◆◆undoFLG:\(drawableView.undoMode)")
+        print("bup[10]=\(drawableView.bup["10"])")
         if drawableView.undoMode == 0{return}
         //if drawableView.undoMode == 1{return}
         //if drawableView.undoMode == 8{return}
-        if drawableView.bup["0"] == nil{return}
-        
-        drawableView.undo()
         /*
-        let im0 = drawableView.bup["0"]?.0
-        drawableView.secondView.backgroundColor = UIColor(patternImage: im0!)
-        drawableView.lastDrawImage = im0
-        drawableView.undoMode = 8
+        if drawableView.bup["0"] == nil{
+            print("bup[0]=\(drawableView.bup["0"])")
+            return
+        }
         */
+        drawableView.undo()
 
     }
 //=================================================================
@@ -1433,6 +1432,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
             //◆◆◆◆
             drawableView.get1VImage()
+            cursolWFlag = false//カーソル巾５以下フラグにリセットする
         }else{//エディット画面を非表示にする
             closeEditView()
             
@@ -1504,6 +1504,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton5.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         drawableView.secondView.cursolView.removeFromSuperview()
         drawableView.secondView.setMyCursolView()
+        cursolWFlag = false//カーソル巾５以下フラグにリセットする
         editorModeStart()
     }
     func btn6_click(sender:UIButton){
@@ -1514,6 +1515,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton6.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         drawableView.secondView.cursolView.removeFromSuperview()
         drawableView.secondView.setMyCursolView()
+        cursolWFlag = false//カーソル巾５以下フラグにリセットする
         editorModeStart()
     }
     
@@ -1525,6 +1527,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton7.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         drawableView.secondView.cursolView.removeFromSuperview()
         drawableView.secondView.setMyCursolView()
+        cursolWFlag = false//カーソル巾５以下フラグにリセットする
         editorModeStart()
     }
 
@@ -1543,7 +1546,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func btn9_click(sender:UIButton){
         print("btn9_clicked!")
-       
+        if myInt == "CLR"{return}//"CLR"モードの時はパス
         if editFlag == true && cursolWFlag == true{
            //カーソル表示変更
             let cStart:CGFloat = drawableView.secondView.cursolStartX
@@ -1563,6 +1566,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func btn10_click(sender:UIButton){
         print("btn10_clicked!")
+        if myInt == "CLR"{return}//"CLR"モードの時はパス
         if editFlag == true && cursolWFlag == true{
             //カーソル表示変更
             let cStart:CGFloat = drawableView.secondView.cursolStartX
@@ -1703,6 +1707,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
             drawableView.backgroundColor = UIColor(patternImage: reMemo)
             //◆◆◆◆
+            drawableView.bup["0"] = (reMemo,mx[String(nowGyouNo)]!)
+            drawableView.bup["1"] = (reMemo,mx[String(nowGyouNo)]!)
             drawableView.get1VImage()//パレット画面を保存する
             
             drawableView.lastDrawImage = nil//21061213に追加

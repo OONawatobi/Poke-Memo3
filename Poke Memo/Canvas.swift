@@ -22,14 +22,15 @@ class DrawableView: UIView {
     var thirdView:UIView!//パレットの最前面ビュー（色フィルタ）カーソルビューも兼ねる
     var myImageView:UIImageView!//? UIImageViewを作成する.
  //-------   undo用バックアップ  -------------
-    var bup = [String:(UIImage,CGFloat)]() //バックアップData["id":(img,mx)]
-    var undoMode:Int = 0 //↑[2]:2,↑[1]:1,undo不可：0,undo中：8
-
+    var bup = [String:(UIImage,CGFloat)]() //["key":(img,mx)]
+    //key⇒ (["0"],["1"],["2"],["7"],["8"],["temp"])
+    var undoMode:Int = 0 //[0,1,2,7,8]
+    
     //:Undo/REDO
     func undo() {
         
-        if undoMode == 2{
-        if bup["0"] == nil{return}
+        if undoMode == 2{//secondView上の処理
+          if bup["0"] == nil{return}
           print("@@ redo @@")
           let im0 = bup["0"]?.0
           mxTemp = bup["0"]?.1
@@ -37,15 +38,16 @@ class DrawableView: UIView {
           lastDrawImage = im0
           undoMode = 8
             
-        }else if undoMode == 8{
+        }else if undoMode == 8{//undo処理直後
           let im2 = bup["2"]?.0
           mxTemp = bup["2"]?.1
           secondView.backgroundColor = UIColor(patternImage: im2!)
           lastDrawImage = im2
           undoMode = 2
             
-        }else if undoMode == 1{
-        if bup["10"] == nil{return}
+        }else if undoMode == 1{//okボタンが押された直後
+          if bup["10"] == nil{return}
+            
           let blankView = UIImage(named:"blankW.png")
           secondView.backgroundColor = UIColor(patternImage: blankView!)
           let im1 = bup["10"]?.0
@@ -58,7 +60,7 @@ class DrawableView: UIView {
           print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
           undoMode = 7
             
-        }else if undoMode == 7{
+        }else if undoMode == 7{//undo処理が行われた直後
           let im1 = bup["temp"]?.0
           mxTemp = bup["temp"]?.1
           drawableView.backgroundColor = UIColor(patternImage: im1!)
@@ -73,9 +75,9 @@ class DrawableView: UIView {
     //undo関係のリセット
     func resetUndo(){
          undoMode = 0
-         bup["0"] = nil
-         bup["10"] = nil
-         bup["1"] = nil
+         //bup["0"] = nil
+         //bup["10"] = nil
+         //bup["1"] = nil
          bup["2"] = nil
          bup["temp"] = nil
     }
