@@ -187,24 +187,12 @@ extension UIImage {
         let text = text
         let font = UIFont.boldSystemFont(ofSize: 16)
         let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
-        /*
-        //-------------------------------------------------
-        var hi = Int(self.size.width/100)
-        print("imageSize = \(self.size)")
-        print("hi = \(hi)")
-        var font:UIFont!
-        if hi>9 {
-            font = UIFont.boldSystemFont(ofSize: 128)
-        }else if hi>5{font = UIFont.boldSystemFont(ofSize: 64)
-        }else{font = UIFont.boldSystemFont(ofSize: 12)}
-        print("font = \(font)")
-        //--------------------------------------------------
-        */
+
         UIGraphicsBeginImageContext(self.size);
         
         self.draw(in: imageRect)
         
-        let textRect  = CGRect(x:5, y:5, width:self.size.width - 5, height:self.size.height - 5)
+        let textRect  = CGRect(x:10, y:15, width:self.size.width - 5, height:self.size.height - 5)
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
@@ -404,7 +392,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //ツールViewのボタンの生成　[2][3][4]   [1]
         // button1の追加
-        editButton1 = UIButton(frame: CGRect(x:boundWidth - 60,y: 10, width:25, height:20))
+        editButton1 = UIButton(frame: CGRect(x:boundWidth - 60,y: 10, width:30, height:20))
         editButton1.backgroundColor = UIColor.clear  // タイトルを設定する(通常時)
         //editButton1.setTitle("💠", for: UIControlState.normal)
         editButton1.setImage(UIImage(named: "red3.png"), for:UIControlState.normal)
@@ -575,10 +563,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let label1 = UILabel(frame: CGRect(x:0,y:15,width:tw/3,height:th/2))
             let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:15,width:tw/3,height:th/2))
             let label3 = UILabel(frame: CGRect(x:tw*2/3 ,y:15,width:tw/3 - 10,height:th/2))
-            label1.text = " NO."
-            label2.text = "TITLE"
-            label3.text = "UPDATE"
+            label1.text = " page"
+            label2.text = "memo"
+            label3.text = "update"
             label2.textAlignment = .center
+            //label2.backgroundColor = UIColor.lightGray
             label3.textAlignment = .right
 
             titleV.addSubview(label1)
@@ -992,6 +981,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 //                        その他の関数
 //=================================================================
     
+    //UIViewの内容をDocumentディレクトリにPDFファイルで出力する
+    func pdfMake(vi: UIView, path: String) {
+        UIGraphicsBeginPDFContextToFile(path, CGRect.zero, nil)
+        //renderView(view)
+        if let context = UIGraphicsGetCurrentContext() {
+            
+            UIGraphicsBeginPDFPageWithInfo(vi.frame, nil)
+            print("pdfを作ります！")
+            vi.layer.render(in: context)
+        }
+        UIGraphicsEndPDFContext()
+    }
+    
     //メモのスクロール位置を設定する
     func scrollPos(){
     //現在のタグ行がスクロール窓から隠れているかをチェック
@@ -1156,7 +1158,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var img03:UIImageView!
         
         indexFView = UIView(frame: CGRect(x:5,y: 210,width:leafWidth,height:leafHeight))
-        img01 = UIImageView(frame:CGRect(x:0,y:0,width:20,height:leafHeight))
+        img01 = UIImageView(frame:CGRect(x:5,y:2 + 2,width:leafHeight*2/3 - 10,height:leafHeight - 4 - 3))
         img02 = UIImageView(frame:CGRect(x:leafHeight*1/3,y:0 + 2,width:leafWidth - 3*leafHeight
             ,height:leafHeight - 10))
         cont02 = UIView(frame:CGRect(x:leafHeight*2/3,y:0 + 2,width:leafWidth - 2*leafHeight - 4 - 3
@@ -1164,8 +1166,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3 + 2,y:0,width:leafHeight*4/3 - 8,height:leafHeight))
         //枠線,色,角丸
         img01.layer.borderWidth = 1
-        img01.layer.borderColor = UIColor.clear.cgColor
-        img01.layer.cornerRadius = 1
+        img01.layer.borderColor = UIColor.purple.withAlphaComponent(0.3).cgColor
+        img01.layer.cornerRadius = 3
         cont02.layer.borderWidth = 3
         cont02.layer.borderColor = UIColor.purple.withAlphaComponent(0.1).cgColor
         cont02.layer.cornerRadius = 10
@@ -1204,12 +1206,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         for subview in subviews {
             subview.removeFromSuperview()
         }
-        img01.backgroundColor = UIColor.white
+        img01.backgroundColor = UIColor.clear
         indexFView.removeFromSuperview()
 
-        //indexFView.addSubview(img01)
+        
         cont02.addSubview(img02)
         indexFView.addSubview(cont02)
+        indexFView.addSubview(img01)
         indexFView.addSubview(img03)
         //self.view.addSubview(indexFView)
         
@@ -1388,7 +1391,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let userDefault = UserDefaults.standard
         userDefault.removeObject(forKey: "index")
     }
-    func fc5(){print("test5!!!!!")}
+    func fc5(){
+        print("test5!!!!!")
+        let dst = NSHomeDirectory() + "/Documents" + "/happy.pdf"
+        let v1 = UIView(frame: CGRect(x:0,y:0,width:10,height:50))//memo[1]
+        v1.backgroundColor = UIColor.red
+        self.pdfMake(vi:v1, path: dst)
+    }
     func fc6(){
         print("test6!!!!!")
         //現行ベージの内容を削除する
@@ -1397,6 +1406,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
 
         delPage(pn: 0)//全ページ削除する
+        //アプリの再起動
+        //self.loadView()
+        //self.viewDidLoad()
+
     }
     
    /* ----------------------　ボタン関数　-----------------------------*/
@@ -1693,23 +1706,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 
            //メモに書き出した内容をパレットに読み込む//20161024追加
             let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
-           //表示中のフレーム番号
-           //let fn = Int(myScrollView.contentOffset.x/leafWidth) + 1
+           //選択されたセルに色を付ける
             memo[fNum].selectedNo(tagN: nowGyouNo)
            //パレットの表示位置をリセットする
             drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - 44 - vHeight/2)
 
-           //パレット表示用にリサイズする(extension)
-            //====================================================
+           //パレット表示用にリサイズする(extension)？読み込む画像はどこから？myMemo
+           //上のreadMemo(tag: nowGyouNo)の中ですでにリサイズしている為以下省略する
+            /* ====================================================
                 let reSize = CGSize(width: vWidth, height: vHeight)
                 let reMemo = myMemo.resize(size: reSize)
-            //====================================================
-
+            //==================================================== */
+            let reMemo = myMemo//上記を省略した為追加した。
             drawableView.backgroundColor = UIColor(patternImage: reMemo)
             //◆◆◆◆
+            drawableView.get1VImage()//パレット画面を保存する
             drawableView.bup["0"] = (reMemo,mx[String(nowGyouNo)]!)
             drawableView.bup["1"] = (reMemo,mx[String(nowGyouNo)]!)
-            drawableView.get1VImage()//パレット画面を保存する
             
             drawableView.lastDrawImage = nil//21061213に追加
             drawableView.secondView.backgroundColor = UIColor.clear
