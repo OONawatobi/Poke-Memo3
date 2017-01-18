@@ -158,15 +158,15 @@ class DrawableView: UIView {
         
         //右側エリアに入っているか判定
         let midX = self.frame.midX //Viewの中心のX座標を取得
-        let screenX = currentPoint.x + midX - vWidth/2// 画面座標に変換
+        let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
+        let screenX = b*(currentPoint.x) + (midX - b*vWidth/2)    // 画面座標に変換
+        
         rightFlag =  screenX > (boundWidth - rightArea) ? true:false
         print("screenX:\(screenX)")
-        
         print("◆◆◆◆")
         if lastDrawImage != nil{
           bup["0"] = (lastDrawImage,mxTemp)//)bup["2"]
         }
-        
         //lastXm = mx[String(nowGyouNo)]!//◆◆◆◆
 
     }
@@ -225,7 +225,7 @@ class DrawableView: UIView {
          //print("◆◆◆◆ XXTend画面をバックアップする")
             get2VImage()//second画像をbup[2]に保存
 
-        }else if shiftLeftFlag == true{
+        }else if shiftLeftFlag == true && bigFlag == false{//拡大モードではパス
         // 左方向へのシフトを実施する:画面の５分の１だけ左側に表示する
             var dsX = vWidth/2 - mxTemp + boundWidth/5
             //右端制限
@@ -239,7 +239,7 @@ class DrawableView: UIView {
                 self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
             })
             self.Delegate?.shiftMX()// [ok]ボタンを押す:view.done(done2)
-        }else if shiftDownFlag == true{
+        }else if shiftDownFlag == true && bigFlag == false{//拡大モードではパス
             print("downFlag: \(shiftDownFlag)")
             self.Delegate?.selectNextGyou()//改行する
         }

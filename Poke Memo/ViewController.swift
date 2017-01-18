@@ -280,6 +280,8 @@ var maxPosX:CGFloat! = 0//描画したｘ座標の最大値
 var mx  = [String: CGFloat]()//[Tag番号:maxPosX]
 //var mxs:[[String: CGFloat]] = [[:]]//mxs.count = 30
 var mxTemp:CGFloat!//mxの一時保存（メモに書き出すときにmxにコピーする）
+var bigFlag = false//パレット拡大時：(true)
+let big:CGFloat = 1.5//拡大率
 //var maxPosX = [[CGFloat]]()
 //var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
 
@@ -319,8 +321,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var myEditFlag:Bool! = false//パレット追加編集ツール表示フラグ
     var scrollRect:CGRect!
     var scrollRect_P:CGRect!//パレットが表示されている時の表示サイズ
+    var scrollRect_B:CGRect!//パレットが拡大表示されている時の表示サイズ
     var svOffset:CGFloat = 0
     var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
+    
     //var isIndexMode:Bool! = false//Indexの表示フラグ：true
     //var indexFlag:Bool! = false//Indexの表示フラグ：true
 
@@ -502,6 +506,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //パレット表示されている場合
         scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50)//最後の50は目で見て調整した
+        //パレット表示されている場合
+        let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
+        scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -832,9 +839,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
             
             drawableView.Delegate = self
-            //let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
+            let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
             
-            //無くても動くの,何故????drawableView.layer.position = leftEndPoint
+            //無くても動くの,何故????
+            drawableView.layer.position = leftEndPoint
             drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
             drawableView.setSecondView()//編集ツールの追加
            
@@ -880,6 +888,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func done(_ sender: UIBarButtonItem) {
         print("cursolWFlag:\(cursolWFlag)")
+        if bigFlag == true{ return}
         //---------- パレット編集時 ---------------------------
         if isEditMode == true{//パレットが表示されている場合
             //カーソルモードが選択された場合
@@ -953,18 +962,52 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
          print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
     }
+    
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
         print("◆◆◆◆")
-        if drawableView.undoMode != 8{return}
-        let im0 = drawableView.bup["2"]?.0
-        drawableView.secondView.backgroundColor = UIColor(patternImage: im0!)
+        if myEditFlag == true{return}
+        //let big:CGFloat = 1.5//拡大率
+        let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
+            if drawableView.frame.height == vHeight{
+                print("normalSize:")
+                let cx = drawableView.center.x
+                
+                drawableView.transform = CGAffineTransform(scaleX: big, y: big)//拡大率を2倍にする
+                drawableView.layer.position = CGPoint(x: big*cx, y:boundHeight - 40 - big*vHeight/2)
+            //myEditViewの再描画
+                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 - sa )
+                etcBarDisp(disp:0)//マスクビューを非表示にする
+            //スクロールviewを合わせる
+                myScrollView.frame = self.scrollRect_B// メモframeの値を設定する
+            //線幅：☓0.8
+            //停止する事：←シフト、editパネル、OKボタン（⇒専用）、selectNo(),
+            bigFlag = true
+                
+            }else{
+                print("bigSize:")
+                let cx = drawableView.center.x
+                drawableView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)//元に戻す場合
+                drawableView.layer.position = CGPoint(x: cx/big, y:boundHeight - 40 - vHeight/2)
+            //myEditViewの再描画
+                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )
+                etcBarDisp(disp:1)//マスクビューの再追加
+            //スクロールviewを元に戻す
+                myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
+            //線幅：元に戻す
+            bigFlag = false
+                
+            }
+            
+     //
+        
     }
     
     @IBAction func redo(_ sender: UIBarButtonItem) {
         print("@@ undo @@")
         print("◆◆◆◆undoFLG:\(drawableView.undoMode)")
         print("bup[10]=\(drawableView.bup["10"])")
+
         if drawableView.undoMode == 0{return}
         //if drawableView.undoMode == 1{return}
         //if drawableView.undoMode == 8{return}
@@ -988,10 +1031,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if let context = UIGraphicsGetCurrentContext() {
             
             UIGraphicsBeginPDFPageWithInfo(vi.frame, nil)
-            print("pdfを作ります！")
             vi.layer.render(in: context)
+            
         }
+        print("pdfを作ります2！")
         UIGraphicsEndPDFContext()
+        print("pdfを作ります3！")
     }
     
     //メモのスクロール位置を設定する
@@ -1393,9 +1438,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     func fc5(){
         print("test5!!!!!")
-        let dst = NSHomeDirectory() + "/Documents" + "/happy.pdf"
-        let v1 = UIView(frame: CGRect(x:0,y:0,width:10,height:50))//memo[1]
+        let dst = NSHomeDirectory() + "/Documents" + "/test.pdf"
+        let v1 = UIView(frame: CGRect(x:0,y:0,width:100,height:500))
         v1.backgroundColor = UIColor.red
+        print("pdfを作ります！")
         self.pdfMake(vi:v1, path: dst)
     }
     func fc6(){
@@ -1428,6 +1474,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }///
     func btn1_click(sender:UIButton){
         print("** btn1_click()")
+        if bigFlag == true{ return}
+
         if myEditFlag == false{//エディット画面を表示する
             done(done2)// okボタンを押す
             clearSelect()//編集ツールを非選択状態にする
@@ -1688,6 +1736,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func modalChanged(TouchNumber: Int) {// protocol ScrollViewDelegate
         print("TouchNumber:@\(TouchNumber)")
         print("fNum:\(fNum)")
+        if bigFlag == true{
+            zoom(zoom2)//倍率を元に戻す
+        }
             nowGyouNo = TouchNumber
             print("nowGyouNo?: \(nowGyouNo)")
         
@@ -1739,24 +1790,27 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func dispPosChange(midX: CGFloat,deltaX:CGFloat){// protocol UpperToolViewDelegate
         //print("midX: \(midX)")
+        let b = (bigFlag == true) ? big:1
         var midX2 = midX
-        let topX:CGFloat = vWidth/2
-        let lastX:CGFloat = boundWidth - vWidth/2
+        let topX:CGFloat = (b*vWidth/2)
+        let lastX:CGFloat = (boundWidth - b*vWidth/2)
+        let pY:CGFloat = (boundHeight - b*vHeight/2 - 44)//パレットのセンター座標
+        
         let dir = deltaX>=0 ? 1 : 0 //0:右へシフト,1:左へシフト
         //先頭へシフトする場合
         if dir == 0{
            if drawableView.frame.midX >= topX{//Viewの中心のX座標
-             drawableView.layer.position = CGPoint(x: topX, y:boundHeight - vHeight/2 - 44)
+             drawableView.layer.position = CGPoint(x: topX, y:pY)
            }
         //末尾にシフト
         }else if dir == 1{
             if drawableView.frame.midX < lastX{//Viewの中心のX座標
-                drawableView.layer.position = CGPoint(x: lastX, y:boundHeight - vHeight/2 - 44)
+                drawableView.layer.position = CGPoint(x: lastX, y:pY)
             }
         }
         if midX > topX{ midX2 = topX}
         if midX < lastX{ midX2 = lastX}
-        drawableView.layer.position = CGPoint(x: midX2, y:boundHeight - vHeight/2 - 44)
+        drawableView.layer.position = CGPoint(x: midX2, y:pY)
     }
     /* ------------------------ デリゲート関数　-------------------------- */
     

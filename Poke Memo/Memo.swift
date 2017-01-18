@@ -201,7 +201,7 @@ class MemoView:UIView{
             }
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
-            myLeaf.image = UIImage(named: "blankW.png")
+            myLeaf.image = UIImage(named: "blank.png")
             //print("myTag?:\(myTag)")
             myLeaf.isUserInteractionEnabled = true
             self.addSubview(myLeaf)
