@@ -989,11 +989,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 let cx = drawableView.center.x
                 drawableView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)//元に戻す場合
                 drawableView.layer.position = CGPoint(x: cx/big, y:boundHeight - 40 - vHeight/2)
+            //パレットの左右端の制限
+                var cx2 = drawableView.center.x//パレットの中点のｘ座標
+                //右端制限
+                cx2 = cx2 < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):cx2
+                //左端制限
+                cx2 = cx2 > vWidth/2 ? vWidth/2:cx2
+                drawableView.layer.position = CGPoint(x: cx2, y:boundHeight - 40 - vHeight/2)
             //myEditViewの再描画
                 myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )
                 etcBarDisp(disp:1)//マスクビューの再追加
             //スクロールviewを元に戻す
                 myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
+                
             //線幅：元に戻す
             bigFlag = false
                 
@@ -1446,15 +1454,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     func fc6(){
         print("test6!!!!!")
+        /*
         //現行ベージの内容を削除する
         delPage(pn: pageNum)
         let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
         memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
-
+        */
         delPage(pn: 0)//全ページ削除する
         //アプリの再起動
-        //self.loadView()
-        //self.viewDidLoad()
+        memo = nil
+        //exit(0)
+        self.loadView()
+        self.viewDidLoad()
 
     }
     
