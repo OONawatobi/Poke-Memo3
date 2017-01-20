@@ -324,6 +324,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var scrollRect_B:CGRect!//パレットが拡大表示されている時の表示サイズ
     var svOffset:CGFloat = 0
     var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
+    var setV:UIView!
+    var setFlag:Bool = false
     
     //var isIndexMode:Bool! = false//Indexの表示フラグ：true
     //var indexFlag:Bool! = false//Indexの表示フラグ：true
@@ -642,6 +644,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tV.dataSource    =   self
         tV.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         //indexChange(tag:nowGyouNo)
+        //設定画面
+        setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
+        setV.backgroundColor = UIColor.gray.withAlphaComponent(0.65)
     }
     
     //  ======= End of viewDidLoad=======
@@ -1386,8 +1391,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let itm = items[num]
         let msg = "実行してもいいですか？"
         //--------------------------
- 
-        if num != 7 && num != 4{
+        if num == 5{
+            fc5()//設定画面を開く
+        }else if num != 7 && num != 4{
 
         let alert: UIAlertController = UIAlertController(title: itm, message: msg, preferredStyle:  UIAlertControllerStyle.alert)
 
@@ -1423,7 +1429,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.menu(self.menu2)//メニューボタンを押す
     }
     /* リストメニュー選択時の処理 */
-    func fc1(){print("test1!!!!!")}
+    func fc1(){
+        print("test1!!!!!PDF-write")
+        let dst = NSHomeDirectory() + "/Documents" + "/test.pdf"
+        let v1 = UIView(frame: CGRect(x:0,y:0,width:100,height:500))
+        v1.backgroundColor = UIColor.red
+        print("pdfを作ります！")
+        self.pdfMake(vi:v1, path: dst)
+    }
     func fc2(){
         print("test2!!!!!")
         //現行ベージの内容を削除する
@@ -1446,11 +1459,26 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     func fc5(){
         print("test5!!!!!")
-        let dst = NSHomeDirectory() + "/Documents" + "/test.pdf"
-        let v1 = UIView(frame: CGRect(x:0,y:0,width:100,height:500))
-        v1.backgroundColor = UIColor.red
-        print("pdfを作ります！")
-        self.pdfMake(vi:v1, path: dst)
+        let setV2 = UIView(frame: CGRect(x:0,y:0,width:400,height:400))
+        setV2.backgroundColor = UIColor.white
+        setV2.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.4)
+        setV2.layer.cornerRadius = 7
+        
+        setV.addSubview(setV2)
+        if setFlag == false{
+            self.view.addSubview(setV)
+            UIScrollView.animate(withDuration: 0.2, animations: {
+                () -> Void in
+                setV2.frame.size = CGSize(width: 300, height: 300)
+                setV2.layer.position = CGPoint(x:boundWidth / 2,y:boundHeight * 0.4)
+                //setV2.frame = CGRect(x:0,y:0,width:300,height:300)
+            })
+            setFlag = true
+        }else{
+            setV.removeFromSuperview()
+            
+            setFlag = false
+        }
     }
     func fc6(){
         print("test6!!!!!")
