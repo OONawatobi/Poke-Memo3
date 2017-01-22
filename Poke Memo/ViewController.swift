@@ -324,8 +324,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var scrollRect_B:CGRect!//パレットが拡大表示されている時の表示サイズ
     var svOffset:CGFloat = 0
     var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
-    var setV:UIView!
-    var setFlag:Bool = false
+    var setV:UIView!//設定画面の背景（半透明グレイ）
+    var setV2:UIView!//設定画面
+    //var setFlag:Bool = false
     
     //var isIndexMode:Bool! = false//Indexの表示フラグ：true
     //var indexFlag:Bool! = false//Indexの表示フラグ：true
@@ -342,7 +343,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var editButton8:UIButton!
     var editButton9:UIButton!
     var editButton10:UIButton!
-  
+    var setButtonN:UIButton!//設定画面のキャンセルボタン
+    var setButtonY:UIButton!//設定画面の決定ボタン
+
     /* --- リストメニュー --- */
     let ch:CGFloat = 40//セルの高さ
     let cn:Int = 8//リストの数
@@ -499,6 +502,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchUpInside)
         editButton10.setTitle(">|", for: UIControlState.normal)
         myEditView.addSubview(editButton10)
+
         
         /* ScrollViewを生成. */
         myScrollView.Delegate2 = self
@@ -646,7 +650,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //indexChange(tag:nowGyouNo)
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
-        setV.backgroundColor = UIColor.gray.withAlphaComponent(0.65)
+        setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
     }
     
     //  ======= End of viewDidLoad=======
@@ -1457,29 +1461,261 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let userDefault = UserDefaults.standard
         userDefault.removeObject(forKey: "index")
     }
-    func fc5(){
+    
+    func fc5(){ // = 設定 =
         print("test5!!!!!")
-        let setV2 = UIView(frame: CGRect(x:0,y:0,width:400,height:400))
+        setV2 = UIView(frame: setV.frame)//初期値
         setV2.backgroundColor = UIColor.white
-        setV2.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.4)
+        setV2.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.5)
         setV2.layer.cornerRadius = 7
-        
         setV.addSubview(setV2)
-        if setFlag == false{
-            self.view.addSubview(setV)
-            UIScrollView.animate(withDuration: 0.2, animations: {
-                () -> Void in
-                setV2.frame.size = CGSize(width: 300, height: 300)
-                setV2.layer.position = CGPoint(x:boundWidth / 2,y:boundHeight * 0.4)
-                //setV2.frame = CGRect(x:0,y:0,width:300,height:300)
-            })
-            setFlag = true
-        }else{
-            setV.removeFromSuperview()
+        //部品のコンテントVIew
+        let cv = UIView(frame: CGRect(x:0,y:0,width:300,height:500))
+        cv.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.5)
+        //決定ボタン
+        setButtonY = UIButton(frame: CGRect(x:210, y:10, width:80,height: 30))
+        setButtonY.backgroundColor = UIColor.orange.withAlphaComponent(0.80)
+        setButtonY.layer.cornerRadius = 8
+        setButtonY.addTarget(self, action: #selector(ViewController.okBtn(sender:)), for:.touchUpInside)
+        setButtonY.setTitle("Set", for: UIControlState.normal)
+        //setButtonN.tintColor = UIColor.lightGray
+        
+        //キャンセルボタン
+        setButtonN = UIButton(frame: CGRect(x:10, y:10, width:80,height: 30))
+        setButtonN.backgroundColor = UIColor.lightGray
+        setButtonN.layer.cornerRadius = 8
+        //setButtonN.layer.borderColor = UIColor.red.cgColor
+        //setButtonN.layer.borderWidth = 1
+        setButtonN.addTarget(self, action: #selector(ViewController.cancelBtn(sender:)), for:.touchUpInside)
+        setButtonN.setTitle("Cancel", for: UIControlState.normal)
+        //setButtonN.tintColor = UIColor.lightGray
+        //------- セグメント01---------------------------------------------------
+        // 表示する配列を作成する.
+        let myArray: NSArray = ["thin","normal","thic"]
+        let sW:CGFloat = 50
+        // SegmentedControlを作成する.
+        var sc: UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
+        let scBox = UIView(frame: CGRect(x:130,y:150,width:sW*3,height:sW))
+        //scBox.backgroundColor = UIColor.lightGray
+        scBox.layer.position = CGPoint(x: cv.frame.width/2, y: 175)
+        let scBox1 = UIView(frame: CGRect(x:5,y:30,width:sW - 10,height:sW/10))
+        let scBox2 = UIView(frame: CGRect(x:sW + 5,y:30,width:sW - 10,height:sW/7))
+        let scBox3 = UIView(frame: CGRect(x:sW*2 + 5,y:30,width:sW - 10,height:sW/5))
+        scBox1.backgroundColor = UIColor.darkGray
+        scBox2.backgroundColor = UIColor.darkGray
+        scBox3.backgroundColor = UIColor.darkGray
+        scBox.addSubview(scBox1)
+        scBox.addSubview(scBox2)
+        scBox.addSubview(scBox3)
+       
+        sc.setWidth(sW, forSegmentAt: 0)
+        sc.setWidth(sW, forSegmentAt: 1)
+        sc.setWidth(sW, forSegmentAt: 2)
+        sc.center = CGPoint(x:sW*3/2, y: 0)
+        sc.layer.borderColor = UIColor.lightGray.cgColor
+        sc.backgroundColor = UIColor.white
+        sc.tintColor = UIColor.gray
+        // イベントを追加する.
+        sc.addTarget(self, action: #selector(segconChanged(segcon:)), for: UIControlEvents.valueChanged)
+        //セパレータ-------------------------------------------------------------
+        let sep1 = UIView(frame: CGRect(x:20,y:210,width:300 - 40,height:0.5))
+        sep1.backgroundColor = UIColor.gray
+        setV2.addSubview(sep1)
+        //セパレータ2
+        let sep2 = UIView(frame: CGRect(x:20,y:350,width:300 - 40,height:0.5))
+        sep2.backgroundColor = UIColor.gray
+        setV2.addSubview(sep2)
+        //------- セグメント02---------------------------------------------------
+        
+        // 表示する配列を作成する.
+        let myArrayB: NSArray = ["Blue","Green","Orange"]
+        let sWB:CGFloat = 50
+        // SegmentedControlを作成する.
+        var scB: UISegmentedControl = UISegmentedControl(items: myArrayB as [AnyObject])
+        let scBoxB = UIView(frame: CGRect(x:130,y:280,width:sWB*3,height:sWB))
+        let scBox1B = UIView(frame: CGRect(x:5,y:30,width:sWB - 10,height:sWB/3))
+        let scBox2B = UIView(frame: CGRect(x:sWB + 5,y:30,width:sWB - 10,height:sWB/3))
+        let scBox3B = UIView(frame: CGRect(x:sWB*2 + 5,y:30,width:sWB - 10,height:sWB/3))
+        scBox1B.backgroundColor = UIColor.blue
+        scBox1B.layer.cornerRadius = 10.0
+        scBox2B.backgroundColor = UIColor.green
+        scBox2B.layer.cornerRadius = 10.0
+        scBox3B.backgroundColor = UIColor.brown
+        scBox3B.layer.cornerRadius = 10.0
+        scBoxB.addSubview(scBox1B);
+        scBoxB.addSubview(scBox2B)
+        scBoxB.addSubview(scBox3B)
+        scB.setWidth(sWB, forSegmentAt: 0);
+        scB.setWidth(sWB, forSegmentAt: 1)
+        scB.setWidth(sWB, forSegmentAt: 2)
+        scB.center = CGPoint(x:sWB*3/2, y: 0)
+        scB.layer.borderColor = UIColor.lightGray.cgColor
+        scB.backgroundColor = UIColor.white
+        scB.tintColor = UIColor.gray
+        // イベントを追加する.
+        scB.addTarget(self, action: #selector(segconChangedB(segcon:)), for: UIControlEvents.valueChanged)
+ 
+        //------- セグメント03(Boxなし)---------------------------------------------
+        
+        // 表示する配列を作成する.
+        let myArrayC: NSArray = ["DLETE-ALL","NO ACTION"]
+        let sWC:CGFloat = 120
+        // SegmentedControlを作成する.
+        var scC: UISegmentedControl = UISegmentedControl(items: myArrayC as [AnyObject])
+
+        scC.setWidth(sWC, forSegmentAt: 0)
+        scC.setWidth(sWC, forSegmentAt: 1)
+        scC.center = CGPoint(x:cv.frame.width/2, y:cv.frame.height/2 + 190)
+        scC.layer.borderColor = UIColor.lightGray.cgColor
+        scC.backgroundColor = UIColor.white
+        scC.tintColor = UIColor.gray
+        // イベントを追加する.
+        scC.addTarget(self, action: #selector(segconChangedC(segcon:)), for: UIControlEvents.valueChanged)
+        //-------------------------------------------------------------------
+        
+        // Labelを作成.
+        let lb1: UILabel = UILabel(frame: CGRect(x:20,y:90,width:120,height:40))
+        //lb1.backgroundColor = UIColor.yellow
+        lb1.text = "LINE-WIDTH"
+        // Labe2を作成.
+        let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220,width:120,height:40))
+        //lb2.backgroundColor = UIColor.yellow
+        lb2.text = "LINE-COLOR"
+        let lb2a: UILabel = UILabel(frame: CGRect(x:20,y:280,width:30,height:30))
+        lb2a.backgroundColor = UIColor.black
+        lb2a.layer.masksToBounds = true
+        lb2a.layer.cornerRadius = 6
+        let lb2b: UILabel = UILabel(frame: CGRect(x:55,y:280,width:30,height:30))
+        lb2b.backgroundColor = UIColor.red
+        lb2b.layer.masksToBounds = true
+        lb2b.layer.cornerRadius = 6
+        let lb2c: UILabel = UILabel(frame: CGRect(x:100,y:280,width:30,height:30))
+        lb2c.text = "＋"
+        //lb2c.backgroundColor = UIColor.black
+        
+        // Labe3を作成.
+        let lb3: UILabel = UILabel(frame: CGRect(x:20,y:360,width:250,height:40))
+        //lb3.backgroundColor = UIColor.yellow
+        lb3.text = "DELETE ALL PAGES"
+        //コンテナに追加する
+        scBox.addSubview(sc)
+        scBoxB.addSubview(scB)
+        cv.addSubview(scBox)
+        cv.addSubview(scBoxB)
+        cv.addSubview(scC)
+        cv.addSubview(self.setButtonN)
+        cv.addSubview(self.setButtonY)
+        cv.addSubview(lb1)
+        cv.addSubview(lb2);cv.addSubview(lb2a);cv.addSubview(lb2b);cv.addSubview(lb2c)
+        cv.addSubview(lb3)
+        
+        // コンテナをseVに追加する.
+        setV.addSubview(cv)
+        //setVを表示する
+        self.view.addSubview(setV)
+        
+        UIScrollView.animate(withDuration: 0.3, animations: {
+        () -> Void in
+            self.setV2.frame.size = CGSize(width: 300, height: 500)
+            self.setV2.layer.position = CGPoint(x:boundWidth / 2,y:boundHeight * 0.5)
+        })
+
+    }
+    
+    ///設定画面実行関数
+    func segconChanged(segcon: UISegmentedControl){
+        
+        switch segcon.selectedSegmentIndex {
+        case 0:
+            print("case 0")
             
-            setFlag = false
+        case 1:
+            print("case 1")
+            
+        case 2:
+            print("case 2")
+            
+        default:
+            print("Error")
         }
     }
+    
+    func segconChangedB(segcon: UISegmentedControl){
+        
+        switch segcon.selectedSegmentIndex {
+        case 0:
+            print("case 0")
+            
+        case 1:
+            print("case 1")
+            
+        case 2:
+            print("case 2")
+            
+        default:
+            print("Error")
+        }
+    }
+    
+    func segconChangedC(segcon: UISegmentedControl){
+        
+        switch segcon.selectedSegmentIndex {
+        case 0:
+            print("case 0")
+            
+        case 1:
+            print("case 1")
+            
+        case 2:
+            print("case 2")
+            
+        default:
+            print("Error")
+        }
+    }
+
+    ///キャンセル処理
+    func cancelBtn(sender:UIButton){
+        print("cancelBtn")
+        setButtonN.removeFromSuperview()
+        setV2.removeFromSuperview()
+        setV.removeFromSuperview()
+        //setFlag = false
+        //fc5()
+    }
+    ///決定処理
+    func okBtn(sender:UIButton){
+        print("okBtn")
+        let itm = "全ページの内容を削除します"
+        let msg = "本当に実行しても宜しいですか？"
+        let alert: UIAlertController = UIAlertController(title: itm, message: msg, preferredStyle:  UIAlertControllerStyle.alert)
+        
+        // OKボタン
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            // ボタンが押された時の処理（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            //ページ削除処理の実行
+            print("前ページの内容を削除します!!!!")
+            //設定viewを閉じる
+            self.setButtonN.removeFromSuperview()
+            self.setV2.removeFromSuperview()
+            self.setV.removeFromSuperview()
+
+        })
+        
+        // キャンセルボタン
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in print("Cancel")
+        })
+        
+        alert.addAction(cancelAction)// ③ UIAlertControllerにActionを追加
+        alert.addAction(defaultAction)
+        self.present(alert, animated: true, completion: nil)// ④ Alertを表示
+    
+    }
+
+    
     func fc6(){
         print("test6!!!!!")
         /*
@@ -1855,7 +2091,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var scrollBeginingPoint: CGPoint!
     
-    private func scrollViewWillBeginDragging(myScrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(myScrollView: UIScrollView) {
         scrollBeginingPoint = myScrollView.contentOffset;
         print("SSSSSS")
     }

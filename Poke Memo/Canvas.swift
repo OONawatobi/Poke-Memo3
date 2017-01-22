@@ -140,7 +140,9 @@ class DrawableView: UIView {
     let rightArea:CGFloat = 20//右側エリア境界位置
     var shiftLeftFlag:Bool = false
     var shiftDownFlag:Bool = false
-    var X_color = 0//?
+    var X_color = 0
+
+    var sCount:Int16 = 0//?
     
     // タッチされた
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
@@ -168,12 +170,14 @@ class DrawableView: UIView {
           bup["0"] = (lastDrawImage,mxTemp)//)bup["2"]
         }
         //lastXm = mx[String(nowGyouNo)]!//◆◆◆◆
-
+        setPen()
+        sCount = 0//?
     }
     
     // タッチが動いた
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touchesMoved")
+        print("touchesMoved\(sCount)")
+        
         if bezierPath == nil { return }//タッチされていない場合(Pathが初期化前)はパス
         let currentPoint = touches.first!.location(in:self)//  @ self:UIView @
         
@@ -205,6 +209,7 @@ class DrawableView: UIView {
         
        }
         print("shiftLeftFlag = \(shiftLeftFlag)")
+        sCount = sCount + 1//?
     }
     
     // タッチが終わった
@@ -266,30 +271,34 @@ class DrawableView: UIView {
         }
         context.fill(self.bounds)
     }
+    //ペン色、線幅の設定
+    var penC:UIColor!
+    var penW:CGFloat = 7
+    
+    func setPen(){
+        if X_color == 0 { //ペンモード
+            penC = UIColor.black
+            if penColorNum == 1{
+                penC = UIColor.black
+            }else if penColorNum == 2{
+                penC = UIColor.red
+            }else{
+                penC = UIColor.blue
+            }
+            //消しゴムモード
+        }else{
+            penC = UIColor.white
+            penW = 15
+        }
+        print("@@@@@@@@:::::\(penC)")
+    }
  
     // 描画処理
     func drawLine(path:UIBezierPath) {
         
-    //---  ペン色などの設定  -----------------
-        var penColor:UIColor!
-        var penW:CGFloat = 7
-        if X_color == 0 { //ペンモード
-               penColor = UIColor.black
-            if penColorNum == 1{
-                penColor = UIColor.black
-            }else if penColorNum == 2{
-                penColor = UIColor.red
-            }else{
-                penColor = UIColor.blue
-            }
-            //消しゴムモード
-        }else{
-            penColor = UIColor.white
-            penW = 15
-        }
-        print("@@@@@@@@:::::\(penColor)")
     //---  描画実行  -----------------
-        
+        let penColor = penC
+        //let penW2 = penW
         UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
         //前回までの描画を保存する
       
@@ -297,10 +306,10 @@ class DrawableView: UIView {
            lastDrawImage.draw(at:CGPoint.zero)
         }
   
-        penColor.setStroke()
+        penColor?.setStroke()
         path.lineWidth = penW//ペン幅を指定する
         path.stroke()//描画する
-
+        //setNeedsDisplay()
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
 
         //タッチEnd時に画面を背景にコピーする
