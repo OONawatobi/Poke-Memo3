@@ -11,7 +11,7 @@ import UIKit
 class DrawableView: UIView {
     var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
-    var lastDrawImage: UIImage!
+        var lastDrawImage: UIImage!
     var lastXm:CGFloat = 0//一つ前のxm[]の値
     var lastPoint:CGPoint!//++++++++
     var tempImage:UIImage!
@@ -170,15 +170,22 @@ class DrawableView: UIView {
           bup["0"] = (lastDrawImage,mxTemp)//)bup["2"]
         }
         //lastXm = mx[String(nowGyouNo)]!//◆◆◆◆
-        setPen()
+        setPen()//線巾、線色の設定
         sCount = 0//?
+        // ++ ラインキャップ++++
+        if  bigFlag == true{
+            bezierPath.lineCapStyle = .round
+        }else{
+            bezierPath.lineCapStyle = .round
+        }
+        //+++++++++
     }
     
     // タッチが動いた
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("touchesMoved\(sCount)")
         
-        if bezierPath == nil { return }//タッチされていない場合(Pathが初期化前)はパス
+        if bezierPath.isEmpty == true { return }//タッチされていない場合(Pathが初期化前)はパス
         let currentPoint = touches.first!.location(in:self)//  @ self:UIView @
         
        //通常モード
@@ -189,6 +196,8 @@ class DrawableView: UIView {
         //中間点を作成
         let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
         bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
+        
+
         drawLine(path:bezierPath)
         lastPoint = currentPoint
         
@@ -277,19 +286,33 @@ class DrawableView: UIView {
     
     func setPen(){
         if X_color == 0 { //ペンモード
+            //ペン巾の変更
+            switch lineWidth {
+               case 0:penW = 5
+               case 1:penW = 7
+               case 2:penW = 9
+               default:break
+            }
             penC = UIColor.black
             if penColorNum == 1{
                 penC = UIColor.black
             }else if penColorNum == 2{
                 penC = UIColor.red
-            }else{
-                penC = UIColor.blue
+            }else{//第３番目の色：設定色
+               switch lineColor {
+                case 0:penC = UIColor.blue
+                case 1:penC = UIColor.green
+                case 2:penC = UIColor.brown
+                default:break
+               }
+                
             }
-            //消しゴムモード
+        //消しゴムモード
         }else{
             penC = UIColor.white
-            penW = 15
+            penW = 15//消しゴムの巾
         }
+        
         print("@@@@@@@@:::::\(penC)")
     }
  

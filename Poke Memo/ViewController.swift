@@ -285,6 +285,9 @@ let big:CGFloat = 1.5//拡大率
 //var maxPosX = [[CGFloat]]()
 //var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
 
+var lineWidth:Int = 5//線幅
+var lineColor:Int = 0//三番目の線色
+
 
 //------------------------------------------------------------------------
 
@@ -345,7 +348,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var editButton10:UIButton!
     var setButtonN:UIButton!//設定画面のキャンセルボタン
     var setButtonY:UIButton!//設定画面の決定ボタン
-
+    var tempLineW:Int = 0//設定用線幅
+    var tempColor:Int = 0//設定用線色
+    var tempDelAll:Int = 0//削除フラグ：１で削除
     /* --- リストメニュー --- */
     let ch:CGFloat = 40//セルの高さ
     let cn:Int = 8//リストの数
@@ -592,16 +597,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[1].setMemoFromImgs(pn:1,imgs:im)
             fNum = 1
             //nowGyouNoの更新
-            nowGyouNo = 1 * 100 + 1
+            nowGyouNo = 1 * 100 + 1//１頁の１行目
             myScrollView.addSubview((memo[1]))
             self.view.addSubview(myScrollView)
             myScrollView.contentOffset = CGPoint(x:0,y: 0)
-            // myScrollView.showHomeFrame()
-            
-            //naviBar.topItem?.title = String(pageNum) + " /30"
-            //
+
             //ナビゲーションバータイトルの設定
-            
             tl = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
             tl.layer.borderColor = UIColor.white.cgColor
             tl.layer.borderWidth = 1.0
@@ -613,10 +614,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             tl.backgroundColor = UIColor.white
             tl.text = String(pageNum) + " /30"
             naviBar.topItem?.titleView = tl
-            //
+            
             // **mx[]の読み込み・初期化 **
             mx = loadMx()
-            print("105: \(mx["105"])")
             
         }
         //---------- リストメニュ−　---------
@@ -651,6 +651,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
+        settingRead()//設定値を読み込む
     }
     
     //  ======= End of viewDidLoad=======
@@ -685,7 +686,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             //indexImgs[]からの反映
             memo[0].setIndexFromImgs(imgs:indexImgs)
-            
             retNum = fNum
             opt = UIViewAnimationOptions.transitionFlipFromTop//transitionFlipFromRight
                         UIView.transition(
@@ -788,10 +788,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //INDEX内容を外部に保存
             writePage(pn:0, imgs:indexImgs)
             //mx[]の内容を外部に保存する
-            print("mx[105]up:\(mx["105"])")
             updataMx(my:mx)
-            
-            
+          
            //++ パレットを閉じるアニメーション
             self.etcBarDisp(disp: 0)//underView等を削除する
             //self.toolBar.isHidden  = true//ツールバーを隠す
@@ -885,6 +883,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //インデックス情報を更新する
         let uNum = numOfUsedLine(pn:pageNum)//入力行最小値を取得
         indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
+        
         //indexリストに対象の頁番号を登録する(登録済頁だけがタッチ反応する）
         mx[String(pageNum)] = 1
         
@@ -911,7 +910,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 
                     //編集結果画面を取得する
                     var editedView:UIImage!
-                    if myInt == "CLR"{
+                    if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
                        editedView = UIImage(named:"blankW.png")
                         
                         //mx[]を更新する(0にリセット)
@@ -938,7 +937,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     closeEditView()
                     // okボタンを押す：パレット内容をメモに移す
                     //done(done2)
-                    upToMemo()//パレット内容をメモに移す
+                    upToMemo()//パレット内容をメモに移す(mx[],index情報の更新も含む）
                     //◆◆◆◆
                     drawableView.get1VImage()
                 }else{
@@ -1040,8 +1039,30 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 //=================================================================
 //                        その他の関数
 //=================================================================
+    func settingWite(){
+        // NSUserDefaults のインスタンス取得
+        let colorNum = String(lineColor)
+        let lineWNum = String(lineWidth)
+        let ud = UserDefaults.standard
+        // キーを指定してオブジェクトを保存
+        ud.set(colorNum, forKey: "color")
+        ud.set(lineWNum, forKey: "width")
+        ud.synchronize()
+        
+    }
+    func settingRead(){
+        let ud = UserDefaults.standard
+        //キーを指定してオブジェクトを読み込み
+      if ud.object(forKey: "color") != nil{
+        
+        let colorNum = ud.object(forKey: "color") as! String
+        let lineWNum = ud.object(forKey: "width") as! String
+        lineColor = Int(colorNum)!
+        lineWidth = Int(lineWNum)!
+      }
+    }
     
-    //UIViewの内容をDocumentディレクトリにPDFファイルで出力する
+    //UIViewの内容をDocumentディレクトリにPDFファイルで出力する？？？？
     func pdfMake(vi: UIView, path: String) {
         UIGraphicsBeginPDFContextToFile(path, CGRect.zero, nil)
         //renderView(view)
@@ -1195,15 +1216,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     //外部のページデータを削除する(all:0の場合は全削除）
     func delPage(pn:Int){
-        if pn == 0{
+      if pn == 0{// 全キーidの内容を削除
         let appDomain:String = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: appDomain)
-        }else if pn<31{
+        
+      }else if pn<31{
         // 指定キーidの値のみを削除
         let photosName:String = "photos" + String(pn)//保存名を決定
         let userDefault = UserDefaults.standard
         userDefault.removeObject(forKey: photosName)
-        }
+      }
+        
     }
  
 
@@ -1303,20 +1326,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
  
    /* -------------------　mx[]更新関係　---------------------------- */
     
-    ///該当するページのmx[]値をリセットする
-    func xxclearMx(pn:Int){
-        for n in 0..<pageGyou{
+    ///該当するページのmx[]値をリセットする(0を指定すると全頁をリセット）
+    func clearMx(pn:Int){
+      if pn != 0{
+         for n in 0..<pageGyou{
             let tg = pn*100 + n + 1
             mx[String(tg)] = 0
+         }
+      }else{
+        for a in 1...30{
+           for n in 0..<pageGyou{
+            let tg = a*100 + n + 1
+            mx[String(tg)] = 0
+           }
         }
+      }
     }
-    /*該当ページのmx[]値を配列mxs[]に保存する。？↖と同じ？
-    func wrightMx(pn:Int){
-        for n in 0..<pageGyou{
-            let tg = pn*100 + n + 1
-            mx[String(tg)] = 0
-        }
-    }*/
 
     //対象ページの非空白行のうち一番小さい行番号を返す
     func numOfUsedLine(pn:Int)->Int{
@@ -1334,8 +1359,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return ret
     }
     
+    //Dictionary型のデータの読込
     func loadMx()->[String:CGFloat]{
-        //Dictionary型のデータの読込
+
         var img:[String:CGFloat] = mx 
         let photoData = UserDefaults.standard
         photoData.synchronize()
@@ -1344,7 +1370,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("aa aa")
         if photoData.dictionary(forKey: photosName) != nil{
             img = photoData.dictionary(forKey: photosName) as! [String : CGFloat]
-         print("bb bb")
+            
+        //indexデータが保存されていない場合
         }else{
             print("cc cc")
             //mx[]の初期化
@@ -1364,8 +1391,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return img
     }
     
+    //Dictionary型のデータを保存
     func updataMx(my:[String:CGFloat]){
-        //Dictionary型のデータを保存
+
         let photoData: UserDefaults = UserDefaults.standard
         let photosName:String = "index" //保存名を決定
         let dataImg:[String:CGFloat] = my
@@ -1445,33 +1473,37 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("test2!!!!!")
         //現行ベージの内容を削除する
         delPage(pn: pageNum)
+        //----- 現行ページを再読込する---------
         let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
         memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
-        //indexから削除する
-        indexImgs[pageNum - 1] = UIImage(named:"blankW.png")!
-        //INDEX内容を外部に保存
-        writePage(pn:0, imgs:indexImgs)
-        //indexリストを更新する
-        mx[String(pageNum)] = 0
+        
+        //------- index頁を更新する-----------------
+        clearMx(pn:pageNum)//該当するページのmx[]値をリセット
+        updataMx(my:mx)//mx[]のデータを外部に保存
+        //現行頁(空白)情報をindex頁に反映させる
+        let uNum = numOfUsedLine(pn:pageNum)//入力行最小値を取得
+        
+        //インデックス情報(現行頁)を更新する
+        indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
     
     }
     func fc3(){
         print("test3!!!!!")
         // 指定キー"index"の値のみを削除
-        let userDefault = UserDefaults.standard
-        userDefault.removeObject(forKey: "index")
+        //let userDefault = UserDefaults.standard
+        //userDefault.removeObject(forKey: "index")
     }
     
     func fc5(){ // = 設定 =
         print("test5!!!!!")
         setV2 = UIView(frame: setV.frame)//初期値
         setV2.backgroundColor = UIColor.white
-        setV2.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.5)
+        setV2.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.53)
         setV2.layer.cornerRadius = 7
         setV.addSubview(setV2)
         //部品のコンテントVIew
         let cv = UIView(frame: CGRect(x:0,y:0,width:300,height:500))
-        cv.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.5)
+        cv.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.53)
         //決定ボタン
         setButtonY = UIButton(frame: CGRect(x:210, y:10, width:80,height: 30))
         setButtonY.backgroundColor = UIColor.orange.withAlphaComponent(0.80)
@@ -1515,6 +1547,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         sc.layer.borderColor = UIColor.lightGray.cgColor
         sc.backgroundColor = UIColor.white
         sc.tintColor = UIColor.gray
+        sc.selectedSegmentIndex = lineWidth
         // イベントを追加する.
         sc.addTarget(self, action: #selector(segconChanged(segcon:)), for: UIControlEvents.valueChanged)
         //セパレータ-------------------------------------------------------------
@@ -1552,6 +1585,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         scB.layer.borderColor = UIColor.lightGray.cgColor
         scB.backgroundColor = UIColor.white
         scB.tintColor = UIColor.gray
+        scB.selectedSegmentIndex = lineColor
         // イベントを追加する.
         scB.addTarget(self, action: #selector(segconChangedB(segcon:)), for: UIControlEvents.valueChanged)
  
@@ -1569,6 +1603,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         scC.layer.borderColor = UIColor.lightGray.cgColor
         scC.backgroundColor = UIColor.white
         scC.tintColor = UIColor.gray
+        scC.selectedSegmentIndex = 1
         // イベントを追加する.
         scC.addTarget(self, action: #selector(segconChangedC(segcon:)), for: UIControlEvents.valueChanged)
         //-------------------------------------------------------------------
@@ -1614,63 +1649,40 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //setVを表示する
         self.view.addSubview(setV)
         
-        UIScrollView.animate(withDuration: 0.3, animations: {
+        UIScrollView.animate(withDuration: 0.2, animations: {
         () -> Void in
             self.setV2.frame.size = CGSize(width: 300, height: 500)
-            self.setV2.layer.position = CGPoint(x:boundWidth / 2,y:boundHeight * 0.5)
+            self.setV2.layer.position = CGPoint(x:boundWidth / 2,y:boundHeight * 0.53)
         })
 
     }
     
     ///設定画面実行関数
-    func segconChanged(segcon: UISegmentedControl){
-        
+    func segconChanged(segcon: UISegmentedControl){//線幅
         switch segcon.selectedSegmentIndex {
-        case 0:
-            print("case 0")
-            
-        case 1:
-            print("case 1")
-            
-        case 2:
-            print("case 2")
-            
-        default:
-            print("Error")
+            case 0:tempLineW = 0
+            case 1:tempLineW = 1
+            case 2:tempLineW = 2
+            default:break
         }
+        print("tempLineW:\(tempLineW)")
     }
     
-    func segconChangedB(segcon: UISegmentedControl){
-        
+    func segconChangedB(segcon: UISegmentedControl){//追加線色
         switch segcon.selectedSegmentIndex {
-        case 0:
-            print("case 0")
-            
-        case 1:
-            print("case 1")
-            
-        case 2:
-            print("case 2")
-            
-        default:
-            print("Error")
+            case 0:tempColor = 0
+            case 1:tempColor = 1
+            case 2:tempColor = 2
+            default:break
         }
+        print("tempColor=\(tempColor)")
     }
     
-    func segconChangedC(segcon: UISegmentedControl){
-        
+    func segconChangedC(segcon: UISegmentedControl){//全頁削除
         switch segcon.selectedSegmentIndex {
-        case 0:
-            print("case 0")
-            
-        case 1:
-            print("case 1")
-            
-        case 2:
-            print("case 2")
-            
-        default:
-            print("Error")
+            case 0:tempDelAll = 1// 削除する場合
+            case 1:tempDelAll = 0
+            default:break
         }
     }
 
@@ -1685,7 +1697,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     ///決定処理
     func okBtn(sender:UIButton){
-        print("okBtn")
+        print("okBtn：\(tempDelAll)")
+      if tempDelAll == 1{//全削除が選択された場合
         let itm = "全ページの内容を削除します"
         let msg = "本当に実行しても宜しいですか？"
         let alert: UIAlertController = UIAlertController(title: itm, message: msg, preferredStyle:  UIAlertControllerStyle.alert)
@@ -1694,8 +1707,31 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
             // ボタンが押された時の処理（クロージャ実装）
             (action: UIAlertAction!) -> Void in
-            //ページ削除処理の実行
-            print("前ページの内容を削除します!!!!")
+            
+            //---- ページ削除処理の実行 ----
+              print("前ページの内容を削除します!!!!")
+              self.delPage(pn: 0)//全ページ削除する
+              self.clearMx(pn: 0)//全ページのmx[]をリセットする
+              //現行ベージの内容を削除する
+              self.delPage(pn: pageNum)
+            
+              //-- １ページを再読込する --
+              pageNum = 1
+              let im = self.readPage(pn:pageNum)//現在ページの外部データを読み込む
+              self.tl.text = String(pageNum) + " /30"
+              self.naviBar.topItem?.titleView = self.tl//頁番号を再表示する
+              memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
+  
+              //-- index頁のリセット --
+              for idx in 0..<30{
+                //空白の画像をインデックス頁に貼り付ける
+                indexImgs[idx] = UIImage(named:"blankW.png")!
+                //indexリストの登録頁をリセットする(登録済頁だけがタッチ反応する）
+                mx[String(idx)] = 0
+              }
+              memo[0].setIndexFromImgs(imgs:indexImgs)
+            //---- ここまで[ ページ削除処理の実行 ]----
+            
             //設定viewを閉じる
             self.setButtonN.removeFromSuperview()
             self.setV2.removeFromSuperview()
@@ -1712,25 +1748,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         alert.addAction(cancelAction)// ③ UIAlertControllerにActionを追加
         alert.addAction(defaultAction)
         self.present(alert, animated: true, completion: nil)// ④ Alertを表示
-    
+      }else{
+        //線幅の設定値を反映させる
+        lineWidth = tempLineW
+        //線色の設定値を反映させる
+        lineColor = tempColor
+        //設定viewを閉じる
+        self.setButtonN.removeFromSuperview()
+        self.setV2.removeFromSuperview()
+        self.setV.removeFromSuperview()
+        //永久保存する
+        settingWite()
+      }
     }
 
     
     func fc6(){
         print("test6!!!!!")
-        /*
-        //現行ベージの内容を削除する
-        delPage(pn: pageNum)
-        let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
-        memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
-        */
-        delPage(pn: 0)//全ページ削除する
-        //アプリの再起動
-        memo = nil
-        //exit(0)
-        self.loadView()
-        self.viewDidLoad()
-
+        
     }
     
    /* ----------------------　ボタン関数　-----------------------------*/
