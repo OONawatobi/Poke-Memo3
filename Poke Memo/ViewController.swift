@@ -285,9 +285,8 @@ let big:CGFloat = 1.5//拡大率
 //var maxPosX = [[CGFloat]]()
 //var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
 
-var lineWidth:Int = 5//線幅
-var lineColor:Int = 0//三番目の線色
-
+var lineWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
+var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:brown]
 
 //------------------------------------------------------------------------
 
@@ -354,13 +353,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     /* --- リストメニュー --- */
     let ch:CGFloat = 40//セルの高さ
     let cn:Int = 8//リストの数
-    let mw:CGFloat = 200//メニューリストの幅
+    let mw:CGFloat = 230//メニューリストの幅
     var mh:CGFloat = 300//メニューリストの高さ
     var mv:UIView!
     var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
-    var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","------------------------　","各種設定","スタートガイドを見る","                ▲ "]
+    var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","　","各種設定","スタートガイドを見る","                ▲ "]
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
     
@@ -624,23 +623,28 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         mh = ch * CGFloat(cn)//メニューの高さ＝セルの高さ☓セル数
         let w = boundWidth
         tV.frame         =   CGRect(x:0, y:0, width:mw + 20 , height:mh)
-        smv = UIScrollView(frame: CGRect(x:w - mw - 10,y:65,width:mw + 20,height:mh - 0))
+        smv = UIScrollView(frame: CGRect(x:w - mw - 10 ,y:65,width:mw + 20,height:mh - 0))
         smv.backgroundColor = UIColor.clear
         tV.separatorColor = UIColor.clear//セパレータ無し
         tV.rowHeight = 40
         tV.layer.cornerRadius = 8.0//角丸にする
         tV.layer.borderColor = UIColor.gray.cgColor
         tV.layer.borderWidth = 1
-    /*
+        //区切り線
+        let sen = UIView(frame: CGRect(x:10,y:ch*4.5,width:mw*0.9,height:1))
+        sen.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
+        tV.addSubview(sen)
+    //
         // シャドウカラー
-        tV.layer.shadowColor = UIColor.black.cgColor/* 影の色 */
-        tV.layer.shadowOffset = CGSize(width:1,height: 1)       //  シャドウサイズ
-        tV.layer.shadowOpacity = 1.0        // 透明度
-        tV.layer.shadowRadius = 1        // 角度(距離）
-    */
+        tV.layer.masksToBounds = false
+        tV.layer.shadowColor = UIColor.gray.cgColor/* 影の色 */
+        tV.layer.shadowOffset = CGSize(width:-2,height: 4)       //  シャドウサイズ
+        tV.layer.shadowOpacity = 0.15 // 透明度
+        tV.layer.shadowRadius = 2 // 角度(距離）
+    //
 
         smv.contentSize = tV.frame.size
-        smv.contentOffset = CGPoint(x:0,y:mh)
+        smv.contentOffset = CGPoint(x:-10,y:mh)
         smv.addSubview(tV)
         //smv.addSubview(bgV)
         
@@ -709,7 +713,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[0].delCursol()
             print("retNum1: \(retNum)")
             myScrollView.backgroundColor =  UIColor.blue.withAlphaComponent(0.1)
-           
+            myScrollView.contentOffset.y = 0//スクロール位置：TOP
         }else{//Indexページが表示中の場合
             print("index else**")
             
@@ -734,6 +738,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("retNum: \(retNum)")
             fNum = retNum
             myScrollView.backgroundColor =  UIColor.clear
+            myScrollView.contentOffset.y = 0//スクロール位置：TOP
             //タイトルの設定
             //naviBar.topItem?.title = String(pageNum) + " /30"
             //let p:String = String(pageNum) + " /30"
@@ -746,10 +751,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isEditMode! { return }//パレットが表示中は実行しない
         if isMenuMode == false{//リストが非表示の場合
             view.addSubview(smv)
-            smv.contentOffset = CGPoint(x:0,y:self.mh )
+            smv.contentOffset = CGPoint(x:-10,y:self.mh )
             UIScrollView.animate(withDuration: 0.3, animations: {
                 () -> Void in
-                self.smv.contentOffset = CGPoint(x:0,y:40)
+                self.smv.contentOffset = CGPoint(x:-10,y:40)
             })
             isMenuMode = true
             
@@ -759,7 +764,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }else{//リストが表示の場合
             UIScrollView.animate(withDuration: 0.3, animations: {
                 () -> Void in
-                self.smv.contentOffset = CGPoint(x:0,y:self.mh)
+                self.smv.contentOffset = CGPoint(x:-10,y:self.mh)
             }){ (Bool) -> Void in  // アニメーション完了時の処理
                 self.smv.removeFromSuperview()
             }
@@ -1731,7 +1736,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               }
               memo[0].setIndexFromImgs(imgs:indexImgs)
             //---- ここまで[ ページ削除処理の実行 ]----
-            
+            //ペン仕様の初期化
+            lineWidth = 1//線幅
+            lineColor = 0//三番目の線色
             //設定viewを閉じる
             self.setButtonN.removeFromSuperview()
             self.setV2.removeFromSuperview()
@@ -1760,6 +1767,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //永久保存する
         settingWite()
       }
+        tempDelAll = 0
     }
 
     
@@ -1997,7 +2005,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         pageNum -= 1
         //nowGyouNoの更新
         nowGyouNo = pageNum * 100 + 1
-        
+        myScrollView.contentOffset.y = 0//スクロール位置：TOP
         //naviBar.topItem?.title = String(pageNum) + " /30"
         
         //--------
@@ -2039,6 +2047,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //nowGyouNoの更新
         nowGyouNo = pageNum * 100 + 1
+        myScrollView.contentOffset.y = 0//スクロール位置：TOP
     }
   
    /* -------------------　プロトコル関数　-----------------------------*/
