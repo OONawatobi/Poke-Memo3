@@ -677,8 +677,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //INDEXの表示・非表示
     var retNum:Int = 0
     @IBAction func index(_ sender: UIBarButtonItem) {
+        //パレットが開いている時は
+        if isEditMode == true{//パレット内容を保存して閉じる
+            done(done2)
+            Pallete(pallete2)
+        }
+        if isMenuMode == true{
+            menu(menu2)
+        }
 
-        if isEditMode! { return }//パレットが表示中は実行しない
+        //if isEditMode == true { return }//パレットが表示中は実行しない
         //memo[0]-[2]に枠を追加する
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
@@ -748,7 +756,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func menu(_ sender: UIBarButtonItem) {
-        if isEditMode! { return }//パレットが表示中は実行しない
+        //パレットが開いている時は
+        //if isEditMode == true { return }//パレットが表示中は実行しない
+        if isEditMode == true{//パレット内容を保存して閉じる
+            done(done2)
+            Pallete(pallete2)
+        }
+            
         if isMenuMode == false{//リストが非表示の場合
             view.addSubview(smv)
             smv.contentOffset = CGPoint(x:-10,y:self.mh )
@@ -777,9 +791,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
     var animeFlag:Bool = false//アニメ中はtrue
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
+        
         if animeFlag { return}//アニメ中は実行しない
-        if isMenuMode! { return }//リストメニュー表示中は実行しない
-        if isIndexMode! { return }//index表示中は実行しない
+        //if isMenuMode == true{ return }//リストメニュー表示中は実行しない
+        if isMenuMode == true{
+            menu(menu2)
+        }
+        if isIndexMode == true { return }//index表示中は実行しない
         
         animeFlag = true//アニメ開始(開始ボタンのチャタリング防止用）
         //----------------------------------------------

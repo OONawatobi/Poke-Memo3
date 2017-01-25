@@ -141,14 +141,15 @@ class DrawableView: UIView {
     var shiftLeftFlag:Bool = false
     var shiftDownFlag:Bool = false
     var X_color = 0
-
+    var autoScrollFlag:Bool = false//自動スクロールフラグ
+    var moveFlag:Bool = false// タッチしている時にtrue
     var sCount:Int16 = 0//?
+    var timer:Timer!
     
     // タッチされた
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
         print("touchbegan")
   
-        
         let currentPoint = touches.first!.location(in: self)
         print("currentPoint.x: \(currentPoint.x)")
         bezierPath = UIBezierPath()
@@ -159,7 +160,7 @@ class DrawableView: UIView {
        // undoStack = lastDrawImage
         
         //右側エリアに入っているか判定
-        let midX = self.frame.midX //Viewの中心のX座標を取得
+        let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
         let screenX = b*(currentPoint.x) + (midX - b*vWidth/2)    // 画面座標に変換
         
@@ -179,6 +180,9 @@ class DrawableView: UIView {
             bezierPath.lineCapStyle = .round
         }
         //+++++++++
+        autoScrollFlag == false//自動スクロールをリセットする
+        //moveFlag == true//タッチ状態開始
+        if timer != nil{timer.invalidate()}
     }
     
     // タッチが動いた
@@ -196,11 +200,17 @@ class DrawableView: UIView {
         //中間点を作成
         let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
         bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
-        
 
         drawLine(path:bezierPath)
         lastPoint = currentPoint
-        
+
+        //currentPoint.xのスクリーン座標から自動スクロールを決定
+        if bigFlag == false{
+          let midX = self.frame.midX //Viewから見たパレット中心X座標
+          let screenX = (currentPoint.x) + (midX - vWidth/2)    // 画面座標に変
+          autoScrollFlag =  screenX > (boundWidth - rightArea*2) ? true:false
+        }
+
        }else{
         
        //右端エリアにタッチされた場合
@@ -223,42 +233,30 @@ class DrawableView: UIView {
     
     // タッチが終わった
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-
+        //moveFlag == false//タッチ状態終了
         if bezierPath == nil { return }
+        
+        //------- 右端エリア以外にタッチされた場合 -------
         if rightFlag == false{
             
          let currentPoint = touches.first!.location(in:self)
-            
-         //posxの最大値を更新する
-         //mxTemp = max(mxTemp,currentPoint.x)
-         print("end of mx: \(mxTemp)")
-          //bup["temp"] = (lastDrawImage,mx[String(nowGyouNo)]!)
          bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
          drawLine(path: bezierPath)
             
-         //print("◆◆◆◆ XXTend画面をバックアップする")
-            get2VImage()//second画像をbup[2]に保存
-
-        }else if shiftLeftFlag == true && bigFlag == false{//拡大モードではパス
-        // 左方向へのシフトを実施する:画面の５分の１だけ左側に表示する
-            var dsX = vWidth/2 - mxTemp + boundWidth/5
-            //右端制限
-            dsX = dsX < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):dsX
-            //左端制限
-            dsX = dsX > vWidth/2 ? vWidth/2:dsX
+         get2VImage()//second画像をbup[2]に保存
+        //左方向への自動スクロール
+            startTimer()//遅延してスクロール
             
-            //アニメーション動作をさせる
-            UIView.animate(withDuration: 0.3, animations: {
-                () -> Void in
-                self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
-            })
-            self.Delegate?.shiftMX()// [ok]ボタンを押す:view.done(done2)
+        //------- 右端エリアにタッチされた場合 -------
+        }else if shiftLeftFlag == true && bigFlag == false{//拡大モードではパス
+            scrollLeft()// 左方向へのフリップスクロール
+
         }else if shiftDownFlag == true && bigFlag == false{//拡大モードではパス
             print("downFlag: \(shiftDownFlag)")
             self.Delegate?.selectNextGyou()//改行する
         }
         
-        //右側エリアフラグのリセット
+        //---- 右側エリアフラグのリセット ----
         shiftLeftFlag = false
         shiftDownFlag = false
     // == debug2 ==========================================================
@@ -270,7 +268,40 @@ class DrawableView: UIView {
     // =====================================================================
 
     }
+    // タイマー開始
+    func startTimer() {
+      //左方向への自動スクロール
+       if autoScrollFlag == true{
+ 
+          timer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: "timerAction", userInfo: nil, repeats: false)
+       }
+    }
 
+    ///タイマーアップ時の処理
+    func timerAction(){
+        if autoScrollFlag == false {return}
+        //print("moveFlag ==:\(moveFlag)")
+        //if moveFlag == true{return}
+        scrollLeft()
+    }
+    /// 左方向へのスクロール
+    func scrollLeft(){
+        
+        // 左方向へのシフトを実施する:画面の５分の１だけ左側に表示する
+        var dsX = vWidth/2 - mxTemp + boundWidth/5
+        //右端制限
+        dsX = dsX < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):dsX
+        //左端制限
+        dsX = dsX > vWidth/2 ? vWidth/2:dsX
+        
+        //アニメーション動作をさせる
+        UIView.animate(withDuration: 0.3, animations: {
+            () -> Void in
+            self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
+        })
+        self.Delegate?.shiftMX()// [ok]ボタンを押す:view.done(done2)
+    }
+    
     func resetContext(context: CGContext) {
         context.clear(self.bounds)
         if let color = self.backgroundColor {
