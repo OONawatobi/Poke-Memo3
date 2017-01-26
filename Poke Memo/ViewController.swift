@@ -935,7 +935,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     var editedView:UIImage!
                     if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
                        editedView = UIImage(named:"blankW.png")
-                        
+                        //パレットの位置を先頭にする
+                        let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
+                        drawableView.layer.position = leftEndPoint
                         //mx[]を更新する(0にリセット)
                         mx[String(nowGyouNo)] = 0
                         mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
@@ -1549,7 +1551,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let myArray: NSArray = ["thin","normal","thic"]
         let sW:CGFloat = 50
         // SegmentedControlを作成する.
-        var sc: UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
+        let sc: UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
         let scBox = UIView(frame: CGRect(x:130,y:150,width:sW*3,height:sW))
         //scBox.backgroundColor = UIColor.lightGray
         scBox.layer.position = CGPoint(x: cv.frame.width/2, y: 175)
@@ -1587,7 +1589,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let myArrayB: NSArray = ["Blue","Green","Orange"]
         let sWB:CGFloat = 50
         // SegmentedControlを作成する.
-        var scB: UISegmentedControl = UISegmentedControl(items: myArrayB as [AnyObject])
+        let scB: UISegmentedControl = UISegmentedControl(items: myArrayB as [AnyObject])
         let scBoxB = UIView(frame: CGRect(x:130,y:280,width:sWB*3,height:sWB))
         let scBox1B = UIView(frame: CGRect(x:5,y:30,width:sWB - 10,height:sWB/3))
         let scBox2B = UIView(frame: CGRect(x:sWB + 5,y:30,width:sWB - 10,height:sWB/3))
@@ -1618,7 +1620,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let myArrayC: NSArray = ["DLETE-ALL","NO ACTION"]
         let sWC:CGFloat = 120
         // SegmentedControlを作成する.
-        var scC: UISegmentedControl = UISegmentedControl(items: myArrayC as [AnyObject])
+        let scC: UISegmentedControl = UISegmentedControl(items: myArrayC as [AnyObject])
 
         scC.setWidth(sWC, forSegmentAt: 0)
         scC.setWidth(sWC, forSegmentAt: 1)
@@ -1832,7 +1834,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             cursolWFlag = false//カーソル巾５以下フラグにリセットする
         }else{//エディット画面を非表示にする
             closeEditView()
-            
+            //drawableView.myMx = 0 //今回タッチした最大X座標(タイマースクロール用）
+            //drawableView.autoScrollFlag = false
         }
     }
     

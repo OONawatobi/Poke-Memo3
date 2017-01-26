@@ -11,7 +11,7 @@ import UIKit
 class DrawableView: UIView {
     var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
-        var lastDrawImage: UIImage!
+    var lastDrawImage: UIImage!
     var lastXm:CGFloat = 0//一つ前のxm[]の値
     var lastPoint:CGPoint!//++++++++
     var tempImage:UIImage!
@@ -145,6 +145,7 @@ class DrawableView: UIView {
     var moveFlag:Bool = false// タッチしている時にtrue
     var sCount:Int16 = 0//?
     var timer:Timer!
+    var myMx:CGFloat = 0 //今回タッチした最大X座標(タイマースクロール用）
     
     // タッチされた
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
@@ -153,7 +154,6 @@ class DrawableView: UIView {
         let currentPoint = touches.first!.location(in: self)
         print("currentPoint.x: \(currentPoint.x)")
         bezierPath = UIBezierPath()
-        //bezierPath.lineCapStyle = kCGLineCapRound
         bezierPath.lineWidth = 1.0
         bezierPath.move(to:currentPoint)
         lastPoint = currentPoint//++++++++++
@@ -179,10 +179,15 @@ class DrawableView: UIView {
         }else{
             bezierPath.lineCapStyle = .round
         }
-        //+++++++++
-        autoScrollFlag == false//自動スクロールをリセットする
-        //moveFlag == true//タッチ状態開始
+        //+++++++++1:自動スクロール関係検証用
+        autoScrollFlag = false//自動スクロールをリセットする
         if timer != nil{timer.invalidate()}
+        //+++++++++2:新タッチシステム検証用
+        UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
+        if lastDrawImage != nil {
+            lastDrawImage.draw(at:CGPoint.zero)
+        }
+
     }
     
     // タッチが動いた
@@ -204,18 +209,22 @@ class DrawableView: UIView {
         drawLine(path:bezierPath)
         lastPoint = currentPoint
 
-        //currentPoint.xのスクリーン座標から自動スクロールを決定
+        //自動スクロール機能
         if bigFlag == false{
-          let midX = self.frame.midX //Viewから見たパレット中心X座標
-          let screenX = (currentPoint.x) + (midX - vWidth/2)    // 画面座標に変
-          autoScrollFlag =  screenX > (boundWidth - rightArea*2) ? true:false
+          //myMx最大値を取得
+          myMx = max(myMx,currentPoint.x)
+          if myMx >= mxTemp{
+            let midX = self.frame.midX //スクリーンViewから見たパレット中心X座標
+            let screenX = myMx + (midX - vWidth/2)    // 画面座標に変
+            autoScrollFlag =  screenX > (boundWidth - rightArea*3) ? true:false
+          }
         }
 
        }else{
         
        //右端エリアにタッチされた場合
         print(" is rightArea!!")
-        //左自動シフトの判定
+        //左シフトの判定
         let dX = lastPoint.x - currentPoint.x
         print(" is rightArea!!")
         let dY = lastPoint.y - currentPoint.y
@@ -235,17 +244,17 @@ class DrawableView: UIView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //moveFlag == false//タッチ状態終了
         if bezierPath == nil { return }
-        
         //------- 右端エリア以外にタッチされた場合 -------
         if rightFlag == false{
             
          let currentPoint = touches.first!.location(in:self)
          bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
          drawLine(path: bezierPath)
+        //ココに何か入るのか？？？画面をパレット背面にコピーする
             
-         get2VImage()//second画像をbup[2]に保存
+         get2VImage()//second画像をbup[2]に保存：UNDO用
         //左方向への自動スクロール
-            startTimer()//遅延してスクロール
+            if bigFlag == false{ startTimer()}//遅延してスクロール
             
         //------- 右端エリアにタッチされた場合 -------
         }else if shiftLeftFlag == true && bigFlag == false{//拡大モードではパス
@@ -259,30 +268,31 @@ class DrawableView: UIView {
         //---- 右側エリアフラグのリセット ----
         shiftLeftFlag = false
         shiftDownFlag = false
-    // == debug2 ==========================================================
+        
+      // == debug2 ================================================
         if debug2 == true{//@@ DEBUG2 @@
             testV.removeFromSuperview()
             drawableView.addSubview(testV)
-            testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
+            testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2)
         }
-    // =====================================================================
-
+      // ==========================================================
+        UIGraphicsEndImageContext()  //Canvasを閉じる
     }
+    
     // タイマー開始
     func startTimer() {
       //左方向への自動スクロール
        if autoScrollFlag == true{
  
-          timer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: "timerAction", userInfo: nil, repeats: false)
+          timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(DrawableView.timerAction), userInfo: nil, repeats: false)
        }
     }
 
     ///タイマーアップ時の処理
     func timerAction(){
         if autoScrollFlag == false {return}
-        //print("moveFlag ==:\(moveFlag)")
-        //if moveFlag == true{return}
         scrollLeft()
+        myMx = 0//スクロール実施後、タッチ最大ｘをリセット
     }
     /// 左方向へのスクロール
     func scrollLeft(){
@@ -353,11 +363,11 @@ class DrawableView: UIView {
     //---  描画実行  -----------------
         let penColor = penC
         //let penW2 = penW
-        UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
+        //UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
         //前回までの描画を保存する
-      
+  //??????????????????????????????????????????????????????????
         if lastDrawImage != nil {
-           lastDrawImage.draw(at:CGPoint.zero)
+           //lastDrawImage.draw(at:CGPoint.zero)
         }
   
         penColor?.setStroke()
@@ -369,8 +379,8 @@ class DrawableView: UIView {
         //タッチEnd時に画面を背景にコピーする
         secondView.backgroundColor = UIColor(patternImage: lastDrawImage!)
 
-        UIGraphicsEndImageContext()  //Canvasを閉じる
+        //UIGraphicsEndImageContext()  //Canvasを閉じる
     }
- 
+    
  }
  
