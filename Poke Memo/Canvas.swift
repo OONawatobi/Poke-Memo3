@@ -143,7 +143,7 @@ class DrawableView: UIView {
     var X_color = 0
     var autoScrollFlag:Bool = false//自動スクロールフラグ
     var moveFlag:Bool = false// タッチしている時にtrue
-    var sCount:Int16 = 0//?
+    //var sCount:Int16 = 0//?
     var timer:Timer!
     var myMx:CGFloat = 0 //今回タッチした最大X座標(タイマースクロール用）
     
@@ -156,8 +156,7 @@ class DrawableView: UIView {
         bezierPath = UIBezierPath()
         bezierPath.lineWidth = 1.0
         bezierPath.move(to:currentPoint)
-        lastPoint = currentPoint//++++++++++
-       // undoStack = lastDrawImage
+        lastPoint = currentPoint
         
         //右側エリアに入っているか判定
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
@@ -165,23 +164,25 @@ class DrawableView: UIView {
         let screenX = b*(currentPoint.x) + (midX - b*vWidth/2)    // 画面座標に変換
         
         rightFlag =  screenX > (boundWidth - rightArea) ? true:false
-        print("screenX:\(screenX)")
-        print("◆◆◆◆")
+        //print("screenX:\(screenX)")
+        //print("◆◆◆◆")
         if lastDrawImage != nil{
           bup["0"] = (lastDrawImage,mxTemp)//)bup["2"]
         }
         //lastXm = mx[String(nowGyouNo)]!//◆◆◆◆
         setPen()//線巾、線色の設定
-        sCount = 0//?
+        //sCount = 0//?
         // ++ ラインキャップ++++
         if  bigFlag == true{
             bezierPath.lineCapStyle = .round
         }else{
             bezierPath.lineCapStyle = .round
         }
+        
         //+++++++++1:自動スクロール関係検証用
         autoScrollFlag = false//自動スクロールをリセットする
         if timer != nil{timer.invalidate()}
+
         //+++++++++2:新タッチシステム検証用
         UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
         if lastDrawImage != nil {
@@ -192,12 +193,12 @@ class DrawableView: UIView {
     
     // タッチが動いた
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touchesMoved\(sCount)")
+        //print("touchesMoved\(sCount)")
         
         if bezierPath.isEmpty == true { return }//タッチされていない場合(Pathが初期化前)はパス
         let currentPoint = touches.first!.location(in:self)//  @ self:UIView @
         
-       //通常モード
+       //---- 通常モード ----
        if rightFlag == false{
         //mx最大値を取得
         mxTemp = max(mxTemp,currentPoint.x)
@@ -219,12 +220,12 @@ class DrawableView: UIView {
             autoScrollFlag =  screenX > (boundWidth - rightArea*3) ? true:false
           }
         }
-
-       }else{
         
-       //右端エリアにタッチされた場合
+       //---- 右端エリアモード ----
+       }else{
         print(" is rightArea!!")
-        //左シフトの判定
+        
+       //左シフトの判定
         let dX = lastPoint.x - currentPoint.x
         print(" is rightArea!!")
         let dY = lastPoint.y - currentPoint.y
@@ -237,7 +238,7 @@ class DrawableView: UIView {
         
        }
         print("shiftLeftFlag = \(shiftLeftFlag)")
-        sCount = sCount + 1//?
+        //sCount = sCount + 1//?
     }
     
     // タッチが終わった
@@ -247,14 +248,13 @@ class DrawableView: UIView {
         //------- 右端エリア以外にタッチされた場合 -------
         if rightFlag == false{
             
-         let currentPoint = touches.first!.location(in:self)
-         bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
-         drawLine(path: bezierPath)
-        //ココに何か入るのか？？？画面をパレット背面にコピーする
-            
-         get2VImage()//second画像をbup[2]に保存：UNDO用
-        //左方向への自動スクロール
-            if bigFlag == false{ startTimer()}//遅延してスクロール
+          let currentPoint = touches.first!.location(in:self)
+          bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
+          //drawLine(path: bezierPath)
+  
+          get2VImage()//second画像をbup[2]に保存：UNDO用
+          //左方向への自動スクロール
+          if bigFlag == false{ startTimer()}//遅延してスクロール
             
         //------- 右端エリアにタッチされた場合 -------
         }else if shiftLeftFlag == true && bigFlag == false{//拡大モードではパス
@@ -269,14 +269,16 @@ class DrawableView: UIView {
         shiftLeftFlag = false
         shiftDownFlag = false
         
-      // == debug2 ================================================
+    // ================ debug2 ==================================
+        
         if debug2 == true{//@@ DEBUG2 @@
             testV.removeFromSuperview()
             drawableView.addSubview(testV)
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2)
         }
-      // ==========================================================
+    // ==========================================================
         UIGraphicsEndImageContext()  //Canvasを閉じる
+        
     }
     
     // タイマー開始
@@ -359,27 +361,13 @@ class DrawableView: UIView {
  
     // 描画処理
     func drawLine(path:UIBezierPath) {
-        
-    //---  描画実行  -----------------
         let penColor = penC
-        //let penW2 = penW
-        //UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
-        //前回までの描画を保存する
-  //??????????????????????????????????????????????????????????
-        if lastDrawImage != nil {
-           //lastDrawImage.draw(at:CGPoint.zero)
-        }
-  
         penColor?.setStroke()
         path.lineWidth = penW//ペン幅を指定する
         path.stroke()//描画する
-        //setNeedsDisplay()
-        lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
-
         //タッチEnd時に画面を背景にコピーする
+        lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
         secondView.backgroundColor = UIColor(patternImage: lastDrawImage!)
-
-        //UIGraphicsEndImageContext()  //Canvasを閉じる
     }
     
  }

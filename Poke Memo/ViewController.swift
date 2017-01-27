@@ -677,6 +677,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //INDEXの表示・非表示
     var retNum:Int = 0
     @IBAction func index(_ sender: UIBarButtonItem) {
+        //拡大表示の時はパス
+        if bigFlag == true{ return}
         //パレットが開いている時は
         if isEditMode == true{//パレット内容を保存して閉じる
             done(done2)
@@ -756,8 +758,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func menu(_ sender: UIBarButtonItem) {
-        //パレットが開いている時は
-        //if isEditMode == true { return }//パレットが表示中は実行しない
+        //indexページが開いている時は
+        if isIndexMode == true { return }//Indexが表示中は実行しない
         if isEditMode == true{//パレット内容を保存して閉じる
             done(done2)
             Pallete(pallete2)
@@ -846,8 +848,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
             
             isEditMode = false
+            bigFlag = false
         }else{
         // ◆◆ パレットが表示されていない時パレットを表示する
+   
             //パレットビューを作成・初期化する
             self.view.addSubview(myToolView)
             myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + 44 - 40/2)// 位置を中心に設定：画面の外に位置する
@@ -1268,10 +1272,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var img03:UIImageView!
         
         indexFView = UIView(frame: CGRect(x:5,y: 210,width:leafWidth,height:leafHeight))
-        img01 = UIImageView(frame:CGRect(x:5,y:2 + 2,width:leafHeight*2/3 - 10,height:leafHeight - 4 - 3))
+        img01 = UIImageView(frame:CGRect(x:5,y:2 + 2,width:leafHeight*2/3 - 0,height:leafHeight - 4 - 3))
         img02 = UIImageView(frame:CGRect(x:leafHeight*1/3,y:0 + 2,width:leafWidth - 3*leafHeight
             ,height:leafHeight - 10))
-        cont02 = UIView(frame:CGRect(x:leafHeight*2/3,y:0 + 2,width:leafWidth - 2*leafHeight - 4 - 3
+        cont02 = UIView(frame:CGRect(x:leafHeight*2/3 + 10,y:0 + 2,width:leafWidth - 2*leafHeight - 4 - 3 - 10
             ,height:leafHeight - 4))
         img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3 + 2,y:0,width:leafHeight*4/3 - 8,height:leafHeight))
         //枠線,色,角丸

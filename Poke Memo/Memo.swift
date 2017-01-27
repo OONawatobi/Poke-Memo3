@@ -151,7 +151,7 @@ class MemoView:UIView{
             testV.layer.position = CGPoint(x: 0, y:vHeight/2 )
           }
         // ====================================================================
-
+ 
     }
     
     func clearBackgroundColor(){
