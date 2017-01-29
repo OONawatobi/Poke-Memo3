@@ -85,6 +85,7 @@ class DrawableView: UIView {
     //SecondView画面を取得する
     func get2VImage(){
         print("get2VImage()")
+        if lastDrawImage == nil{return}//何も描いていない時はパス
         thirdView.removeFromSuperview()//3rdViewを取り出す
         let im = lastDrawImage//secondView.GetImage()
         self.addSubview(thirdView)//前フィルタ3rdViewを追加

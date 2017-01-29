@@ -713,7 +713,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         memo[n].layer.borderWidth = 0
                     }
                 self.view.addSubview(self.titleV)
-                self.tl.text = "- INDEX -"
+                self.tl.text = "INDEX"
+                self.tl.font = UIFont(name: "ChalkboardSE-Bold", size: 20)
+                //self.tl.font = "Cooper Std"//"HiraKakuProN-W3"//"Chalkboard SE"//"Optima-ExtraBlack"//AmericanTypewriter-Bold//"Optima-ExtraBlack"//"Chalkduster"//Euphemia UCAS
                 self.naviBar.topItem?.titleView = self.tl
                 //naviBar.topItem?.title = "--  INDEX  --"
             })
@@ -873,7 +875,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
             
             drawableView.Delegate = self
-            let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
+            let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44 - 1)
             
             //無くても動くの,何故????
             drawableView.layer.position = leftEndPoint
@@ -1011,7 +1013,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 let cx = drawableView.center.x
                 
                 drawableView.transform = CGAffineTransform(scaleX: big, y: big)//拡大率を2倍にする
-                drawableView.layer.position = CGPoint(x: big*cx, y:boundHeight - 40 - big*vHeight/2)
+                drawableView.layer.position = CGPoint(x: big*cx, y:boundHeight - 44 - big*vHeight/2 )
             //myEditViewの再描画
                 myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 - sa )
                 etcBarDisp(disp:0)//マスクビューを非表示にする
@@ -1025,14 +1027,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 print("bigSize:")
                 let cx = drawableView.center.x
                 drawableView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)//元に戻す場合
-                drawableView.layer.position = CGPoint(x: cx/big, y:boundHeight - 40 - vHeight/2)
+                drawableView.layer.position = CGPoint(x: cx/big, y:boundHeight - 44 - vHeight/2 - 1)
             //パレットの左右端の制限
                 var cx2 = drawableView.center.x//パレットの中点のｘ座標
                 //右端制限
                 cx2 = cx2 < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):cx2
                 //左端制限
                 cx2 = cx2 > vWidth/2 ? vWidth/2:cx2
-                drawableView.layer.position = CGPoint(x: cx2, y:boundHeight - 40 - vHeight/2)
+                drawableView.layer.position = CGPoint(x: cx2, y:boundHeight - 44 - vHeight/2)
             //myEditViewの再描画
                 myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )
                 etcBarDisp(disp:1)//マスクビューの再追加
@@ -1093,7 +1095,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     //UIViewの内容をDocumentディレクトリにPDFファイルで出力する？？？？
     func pdfMake(vi: UIView, path: String) {
-        UIGraphicsBeginPDFContextToFile(path, CGRect.zero, nil)
+        //UIGraphicsBeginPDFContextToFile(path, CGRect.zero, nil)
         //renderView(view)
         if let context = UIGraphicsGetCurrentContext() {
             
@@ -1292,7 +1294,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         img03.layer.cornerRadius = 20
 
         img01.backgroundColor = UIColor.clear
-        cont02.backgroundColor = UIColor.white//purple.withAlphaComponent(0.1)
+        cont02.backgroundColor = UIColor.white.withAlphaComponent(0.8)//purple.withAlphaComponent(0.1)
         img03.backgroundColor = UIColor.purple.withAlphaComponent(0.1)
         
         //Viewの内容を作成
@@ -1498,6 +1500,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("pdfを作ります！")
         self.pdfMake(vi:v1, path: dst)
     }
+    
     func fc2(){
         print("test2!!!!!")
         //現行ベージの内容を削除する

@@ -64,6 +64,7 @@ class MemoView:UIView{
         makePageWithTag(pn:0)
         
         //空白の画像をメモページに取り込む
+      
         for idx in 0..<pageGyou{
             let tag = pn*100 + idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
