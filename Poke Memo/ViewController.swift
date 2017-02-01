@@ -207,6 +207,28 @@ extension UIImage {
         
         return newImage!
     }
+    
+    func addText_Date(text:String)-> UIImage{
+        let text = text
+        let font = UIFont.boldSystemFont(ofSize: 16)
+        let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
+        UIGraphicsBeginImageContext(self.size);
+        self.draw(in: imageRect)
+        
+        let textRect  = CGRect(x:self.size.width - 100, y:0, width:120, height:self.size.height - 5)
+        let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+        let textFontAttributes = [
+            NSFontAttributeName: font,
+            NSForegroundColorAttributeName: UIColor.gray,
+            NSParagraphStyleAttributeName: textStyle
+        ]
+        
+        text.draw(in: textRect, withAttributes: textFontAttributes)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext()
+        return newImage!
+    }
+    
     func addIndexText(text:String,rect:CGRect)-> UIImage{
         let text = text
         let font = UIFont.boldSystemFont(ofSize: 16)
@@ -287,6 +309,8 @@ let big:CGFloat = 1.5//拡大率
 
 var lineWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
 var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:brown]
+var autoScrollFlag = true//自動スクロールOn/Offフラグ
+var myLabel:UILabel!//自動スクロールOn/Off表示用
 
 //------------------------------------------------------------------------
 
@@ -324,10 +348,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var scrollRect:CGRect!
     var scrollRect_P:CGRect!//パレットが表示されている時の表示サイズ
     var scrollRect_B:CGRect!//パレットが拡大表示されている時の表示サイズ
+    var scrollRect_T:CGRect!//toolbarが表示されている時の表示サイズ
     var svOffset:CGFloat = 0
     var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
     var setV:UIView!//設定画面の背景（半透明グレイ）
     var setV2:UIView!//設定画面
+
     //var setFlag:Bool = false
     
     //var isIndexMode:Bool! = false//Indexの表示フラグ：true
@@ -350,6 +376,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var tempLineW:Int = 0//設定用線幅
     var tempColor:Int = 0//設定用線色
     var tempDelAll:Int = 0//削除フラグ：１で削除
+    var tempAutoScroll = false//設定用(初期値：手動）
+    
     /* --- リストメニュー --- */
     let ch:CGFloat = 40//セルの高さ
     let cn:Int = 8//リストの数
@@ -362,6 +390,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","　","各種設定","スタートガイドを見る","                ▲ "]
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
+    var mask:UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -387,7 +416,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
         underView.backgroundColor = UIColor.green// underViewの背景を青色に設定
         underView.alpha = 0.33// 透明度を設定
-        underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 10)// 位置を中心に設定
+        underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 10 )// 位置を中心に設定
+        underView.addBottomBorderWithColor(color: UIColor.black, width:2)
         /** upperViewを生成. **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
         upperView.backgroundColor = UIColor.green
@@ -399,22 +429,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.Delegate = self
         myToolView.frame =  CGRect(x: 0, y: 0, width: boundWidth, height: 40)// underViewを生成.
         myToolView.backgroundColor = UIColor(patternImage: UIImage(named:"2lines.png")!)
-        myToolView.alpha = 0.7// 透明度を設定
+        myToolView.alpha = 1//0.7// 透明度を設定
         
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         
         //ツールViewのボタンの生成　[2][3][4]   [1]
         // button1の追加
-        editButton1 = UIButton(frame: CGRect(x:boundWidth - 60,y: 10, width:30, height:20))
+        editButton1 = UIButton(frame: CGRect(x:boundWidth - 70,y: 3, width:50, height:34))
         editButton1.backgroundColor = UIColor.clear  // タイトルを設定する(通常時)
         //editButton1.setTitle("💠", for: UIControlState.normal)
         editButton1.setImage(UIImage(named: "red3.png"), for:UIControlState.normal)
         // イベントを追加する
-        editButton1.addTarget(self, action: #selector(ViewController.btn1_click(sender:)), for: .touchUpInside)
-        
+        editButton1.addTarget(self, action: #selector(ViewController.btn1_click(sender:)), for: .touchDown)
         
         // button2の追加
-        editButton2 = UIButton(frame: CGRect(x:20, y:10, width:20, height:20))
+        editButton2 = UIButton(frame: CGRect(x:20, y:5, width:30, height:30))
         editButton2.backgroundColor = UIColor.clear
         editButton2.layer.cornerRadius = 5
         //editButton2.layer.masksToBounds = true//角のはみ出しをマスクする
@@ -425,7 +454,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
         
         // button3の追加
-        editButton3 = UIButton(frame: CGRect(x:70, y:5, width:30, height:30))
+        editButton3 = UIButton(frame: CGRect(x:75, y:5, width:30, height:30))
         editButton3.layer.cornerRadius = 5
         editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 1)
         editButton3.addTarget(self, action: #selector(ViewController.btn3_click(sender:)), for:.touchUpInside)
@@ -433,7 +462,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton3.setImage(UIImage(named: "pen2.png"), for:UIControlState.normal)
         
         /** button4の追加 **/
-        editButton4 = UIButton(frame: CGRect(x:120, y:5, width:30, height:30))
+        editButton4 = UIButton(frame: CGRect(x:125, y:5, width:30, height:30))
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton4.layer.cornerRadius = 5
         editButton4.addTarget(self, action: #selector(ViewController.btn4_click(sender:)), for:.touchUpInside)
@@ -449,8 +478,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         /* editView([<][OVW][INS][DEL][CLR][>])を生成. */
         myEditView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 60))
-        myEditView.backgroundColor = UIColor.red// underViewの背景を青色に設定
-        myEditView.alpha = 0.6// 透明度を設定
+        let myEditColor = UIColor.red.withAlphaComponent(0.6)
+        myEditView.backgroundColor = myEditColor// underViewの背景を青色に設定
+        //myEditView.alpha = 0.6// 透明度を設定
         myEditView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40 - 30)// 位置を中心に設定
         //Editbuttonの追加 [9]　[5][6][7][8] [10]
         let sW = 20//ボタン間のスペース
@@ -493,18 +523,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton8.setTitle("8", for: UIControlState.normal)
         myEditView.addSubview(editButton8)
         
-        editButton9 = UIButton(frame: CGRect(x:20, y:10, width:30,height: 40))
+        editButton9 = UIButton(frame: CGRect(x:10, y:5, width:40,height: 45))
         editButton9.backgroundColor = UIColor.clear
         editButton9.layer.cornerRadius = 8
-        editButton9.addTarget(self, action: #selector(ViewController.btn9_click(sender:)), for:.touchUpInside)
+        editButton9.addTarget(self, action: #selector(ViewController.btn9_click(sender:)), for:.touchDown)
         editButton9.setTitle("|<", for: UIControlState.normal)
         myEditView.addSubview(editButton9)
         
-        editButton10 = UIButton(frame: CGRect(x:boundWidth - 50, y:10, width:30,height: 40))
+        editButton10 = UIButton(frame: CGRect(x:boundWidth - 50, y:5, width:40,height: 45))
         editButton10.backgroundColor = UIColor.clear
         editButton10.layer.cornerRadius = 8
-        editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchUpInside)
-        editButton10.setTitle(">|", for: UIControlState.normal)
+        editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchDown)
+        editButton10.setTitle(" >|", for: UIControlState.normal)
         myEditView.addSubview(editButton10)
 
         
@@ -519,6 +549,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //パレット表示されている場合
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
+        scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 - 44 )//toolViewだけが表示されている場合
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -545,7 +576,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //長押し認識登録
         let longPush = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPress))
         // 長押し-最低2秒間は長押しする.
-        longPush.minimumPressDuration = 0.8
+        longPush.minimumPressDuration = 0.6
         myScrollView.addGestureRecognizer(longPush)
 
 
@@ -613,7 +644,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             tl.backgroundColor = UIColor.white
             tl.text = String(pageNum) + " /30"
             naviBar.topItem?.titleView = tl
-            
+            //リストボタン以外にはマスクを掛ける
+            mask = UIView(frame: CGRect(x: boundWidth - 100, y: 21, width: 100, height: 42))
             // **mx[]の読み込み・初期化 **
             mx = loadMx()
             
@@ -656,6 +688,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
         settingRead()//設定値を読み込む
+        
     }
     
     //  ======= End of viewDidLoad=======
@@ -697,6 +730,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         var opt = UIViewAnimationOptions.transitionFlipFromLeft
         if isIndexMode == false{//Indexページが非表示の場合
+
+            mask.backgroundColor = UIColor.yellow
             
             //indexImgs[]からの反映
             memo[0].setIndexFromImgs(imgs:indexImgs)
@@ -718,6 +753,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //self.tl.font = "Cooper Std"//"HiraKakuProN-W3"//"Chalkboard SE"//"Optima-ExtraBlack"//AmericanTypewriter-Bold//"Optima-ExtraBlack"//"Chalkduster"//Euphemia UCAS
                 self.naviBar.topItem?.titleView = self.tl
                 //naviBar.topItem?.title = "--  INDEX  --"
+                self.view.addSubview(self.mask)
             })
             isIndexMode = true
             fNum = 0
@@ -744,8 +780,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                     self.tl.text = String(pageNum) + " /30"
                     self.naviBar.topItem?.titleView = self.tl
+                    self.mask.removeFromSuperview()
                 }
             )
+
             isIndexMode = false
             print("retNum: \(retNum)")
             fNum = retNum
@@ -776,7 +814,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             })
             isMenuMode = true
             
-            //ボタンの画像を入れ替える
+            //◯ボタンの画像を入れ替える
              //menu2.setBackgroundImage(UIImage(named: "enn2.png"), for:UIControlState.normal, style: UIBarButtonItemStyle.plain, barMetrics:UIBarMetrics.compact)
             
         }else{//リストが表示の場合
@@ -802,9 +840,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             menu(menu2)
         }
         if isIndexMode == true { return }//index表示中は実行しない
-        
         animeFlag = true//アニメ開始(開始ボタンのチャタリング防止用）
-        //----------------------------------------------
+        //----------------------------------------------①
         if drawableView != nil {
         // ◆◆ パレットが表示されている時パレットを消す
            //編集中のページ内容を更新する
@@ -819,27 +856,26 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
           
            //++ パレットを閉じるアニメーション
             self.etcBarDisp(disp: 0)//underView等を削除する
-            //self.toolBar.isHidden  = true//ツールバーを隠す
-            UIView.animate(withDuration:0.3, animations: {
+            UIView.animate(withDuration:0.2, animations: {
                 () -> Void in
                 self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + 44 - 40/2)
                 let nowPosx = drawableView.layer.position.x//表示中の位置
                 drawableView.layer.position = CGPoint(x:nowPosx , y:boundHeight + 44 - 40/2 + vHeight/2)
-                self.myScrollView.frame = self.scrollRect// メモframeの値を設定する
+                self.myScrollView.frame = self.scrollRect_T// メモframeの値を設定する
 
             }){
                 (Bool) -> Void in
                 
-                self.toolBar.isHidden  = true//ツールバーを隠す
-                //　子viewを削除する??
+                // 子viewを削除する??
                 drawableView!.removeFromSuperview()
                 drawableView = nil
                 self.myToolView.removeFromSuperview()
-                
-                //アニメーションの終わり
+                //ツールバーを隠す
+                self.myScrollView.frame = self.scrollRect//最大表示
+                self.toolBar.isHidden  = true
                 self.animeFlag = false
-                
-            }
+            } // アニメーションの終わり
+            //self.toolBar.isHidden  = true
             
             //メモページのカーソルを削除する
             memo[fNum].delCursol()
@@ -852,13 +888,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             isEditMode = false
             bigFlag = false
         }else{
-        // ◆◆ パレットが表示されていない時パレットを表示する
-   
+        // パレットが表示されていない時パレットを表示する-----------②
             //パレットビューを作成・初期化する
+            //
+             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
+             drawableView.Delegate = self
+             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44 - 1)
+             drawableView.layer.position = leftEndPoint
+             drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
+             drawableView.setSecondView()//編集ツールの追加とおｌBar
+             //
             self.view.addSubview(myToolView)
-            myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + 44 - 40/2)// 位置を中心に設定：画面の外に位置する
-            //++++++ パレットを開くアニメーション
-            UIView.animate(withDuration:0.3, animations: {
+            myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 40/2)// 位置を中心に設定：画面の外に位置する
+            self.myScrollView.frame = self.scrollRect_T
+            //+++ パレットを開くアニメーション　+++
+            UIView.animate(withDuration:0.4, animations: {
                 () -> Void in
                 self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )//++ 位置を中心に設定
                 self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
@@ -866,33 +910,32 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             (Bool) -> Void in
                 self.view.addSubview(drawableView)
                 self.etcBarDisp(disp: 1)//underView等」を追加する
-                self.toolBar.isHidden  = false//ツールバーを現す
+                //self.toolBar.isHidden  = false//ツールバーを現す
                 //アニメ動作終了
                 self.animeFlag = false//アニメ動作終了宣言
-             }
-            //+++++++++++++++++++++++++++++++++++++++
-            
+             } // ++++  ココまで  ++++
+            //パレットビューを作成する
+        /*
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
-            
+        
             drawableView.Delegate = self
             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44 - 1)
-            
-            //無くても動くの,何故????
             drawableView.layer.position = leftEndPoint
             drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
-            drawableView.setSecondView()//編集ツールの追加
-           
+        */
+            
+            self.toolBar.isHidden  = false//ツールバーを現す
             isEditMode = true//パレットが表示されている場合は"true"
             //編集画面非表示フラグをリセットする
-            myEditFlag = false
+            //????myEditFlag = false
             //１行目をパレットに呼び込む
             modalChanged(TouchNumber: pageNum*100 + 1)
             penMode()//黒ペンモードにする
-            closeEditView()//編集画面の設定を初期化する
-            // == debug2 ==========================================================
-            if debug2 == true{drawableView.addSubview(testV)}      //@@ DEBUG2 @@
+            //????closeEditView()//編集パレット画面を閉じる
+            // == debug2 =====================================================
+            if debug2 == true{drawableView.addSubview(testV)}  //@@ DEBUG2 @@
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
-            // =====================================================================
+            //  ==============================================================
             
         }
     }
@@ -1052,45 +1095,47 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func redo(_ sender: UIBarButtonItem) {
         print("@@ undo @@")
-        print("◆◆◆◆undoFLG:\(drawableView.undoMode)")
-        print("bup[10]=\(drawableView.bup["10"])")
+        //print("◆◆◆◆undoFLG:\(drawableView.undoMode)")
+        //print("bup[10]=\(drawableView.bup["10"])")
 
         if drawableView.undoMode == 0{return}
-        //if drawableView.undoMode == 1{return}
-        //if drawableView.undoMode == 8{return}
-        /*
-        if drawableView.bup["0"] == nil{
-            print("bup[0]=\(drawableView.bup["0"])")
-            return
-        }
-        */
         drawableView.undo()
 
     }
 //=================================================================
 //                        その他の関数
 //=================================================================
+    //設定値の外部保存
     func settingWite(){
         // NSUserDefaults のインスタンス取得
         let colorNum = String(lineColor)
         let lineWNum = String(lineWidth)
+        let autoScroll = autoScrollFlag ? "1" :"0"
         let ud = UserDefaults.standard
         // キーを指定してオブジェクトを保存
         ud.set(colorNum, forKey: "color")
         ud.set(lineWNum, forKey: "width")
+        ud.set(autoScroll, forKey: "auto")
+
         ud.synchronize()
         
     }
     func settingRead(){
         let ud = UserDefaults.standard
         //キーを指定してオブジェクトを読み込み
-      if ud.object(forKey: "color") != nil{
-        
+        if ud.object(forKey: "color") == nil{return}
+        if ud.object(forKey: "auto") == nil{return}
+
         let colorNum = ud.object(forKey: "color") as! String
         let lineWNum = ud.object(forKey: "width") as! String
+        
         lineColor = Int(colorNum)!
         lineWidth = Int(lineWNum)!
-      }
+        
+        let autoScroll = ud.object(forKey: "auto") as! String
+        let at = Int(autoScroll)!
+        autoScrollFlag = (at == 1) ? true : false
+      
     }
     
     //UIViewの内容をDocumentディレクトリにPDFファイルで出力する？？？？
@@ -1199,10 +1244,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //外部のページデータを読み込む: photos”pn”[] ->[UIImage]
   
     func readPage(pn:Int)->[UIImage]{
+        //-- ブランク画像をを作成する --
+        let blankView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
+        let bImage:UIImage = blankView.GetImage()
+        
         let retImgs = reloadToPage2(pn:pn)//UserDataをpageImmgs[]に読み込む
         if retImgs.count > 0{ return retImgs }
         else{ //外部データが無い場合は空白の目ページImgsを作成する
-            let bImage:UIImage = UIImage(named: "blankW.png")!//⬅4545.png
+            //let bImage:UIImage = UIImage(named: "blankW.png")!//⬅4545.png
             let blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
             return blankImgs
         }
@@ -1222,7 +1271,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let images = photoData.object(forKey: photosName) as! [NSData]
             
             for k in 0...pageGyou - 1{
-                imgs.append(UIImage(data:images[k] as Data)!)
+                imgs.append(UIImage(data:images[k] as Data, scale: CGFloat(retina))!)
                 //imgs.append(UIImage(data:images[k] as Data!,scale:CGFloat(retina))!)
             }
         }
@@ -1310,7 +1359,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let clip02 = CGRect(x:5,y:0,width: pixWidth - pixHeight,height: pixHeight)
         //ピクセル画面での切り取り
         let clipImage02 =  (tImage?.cgImage!)!.cropping(to: clip02)
-         print("◆◆CGIサイズ:\(tImage?.cgImage?.width)")
+         print("◆◆CGIサイズ:\(tImage?.cgImage?.width):index画面")
          print("◆◆clipImage02サイズ:\(clipImage02?.width)")
         
         //UIImageに変換
@@ -1493,12 +1542,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     /* リストメニュー選択時の処理 */
     func fc1(){
+        memo[fNum].addDate(pn:pageNum)
+        
+    /*
         print("test1!!!!!PDF-write")
         let dst = NSHomeDirectory() + "/Documents" + "/test.pdf"
         let v1 = UIView(frame: CGRect(x:0,y:0,width:100,height:500))
         v1.backgroundColor = UIColor.red
         print("pdfを作ります！")
         self.pdfMake(vi:v1, path: dst)
+    */
     }
     
     func fc2(){
@@ -1528,7 +1581,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func fc5(){ // = 設定 =
         print("test5!!!!!")
-        setV2 = UIView(frame: setV.frame)//初期値
+        //setV2 = UIView(frame: setV.frame)//初期値
+        setV2 = UIView(frame:CGRect(x:0,y:0,width: 400, height: 600))//表示初期値
         setV2.backgroundColor = UIColor.white
         setV2.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.53)
         setV2.layer.cornerRadius = 7
@@ -1537,7 +1591,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let cv = UIView(frame: CGRect(x:0,y:0,width:300,height:500))
         cv.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.53)
         //決定ボタン
-        setButtonY = UIButton(frame: CGRect(x:210, y:10, width:80,height: 30))
+        setButtonY = UIButton(frame: CGRect(x:210, y:0, width:80,height: 30))
         setButtonY.backgroundColor = UIColor.orange.withAlphaComponent(0.80)
         setButtonY.layer.cornerRadius = 8
         setButtonY.addTarget(self, action: #selector(ViewController.okBtn(sender:)), for:.touchUpInside)
@@ -1545,7 +1599,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //setButtonN.tintColor = UIColor.lightGray
         
         //キャンセルボタン
-        setButtonN = UIButton(frame: CGRect(x:10, y:10, width:80,height: 30))
+        setButtonN = UIButton(frame: CGRect(x:10, y:0, width:80,height: 30))
         setButtonN.backgroundColor = UIColor.lightGray
         setButtonN.layer.cornerRadius = 8
         //setButtonN.layer.borderColor = UIColor.red.cgColor
@@ -1561,7 +1615,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sc: UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
         let scBox = UIView(frame: CGRect(x:130,y:150,width:sW*3,height:sW))
         //scBox.backgroundColor = UIColor.lightGray
-        scBox.layer.position = CGPoint(x: cv.frame.width/2, y: 175)
+        scBox.layer.position = CGPoint(x: cv.frame.width/2, y: 175 - 40)
         let scBox1 = UIView(frame: CGRect(x:5,y:30,width:sW - 10,height:sW/10))
         let scBox2 = UIView(frame: CGRect(x:sW + 5,y:30,width:sW - 10,height:sW/7))
         let scBox3 = UIView(frame: CGRect(x:sW*2 + 5,y:30,width:sW - 10,height:sW/5))
@@ -1583,13 +1637,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // イベントを追加する.
         sc.addTarget(self, action: #selector(segconChanged(segcon:)), for: UIControlEvents.valueChanged)
         //セパレータ-------------------------------------------------------------
-        let sep1 = UIView(frame: CGRect(x:20,y:210,width:300 - 40,height:0.5))
+        let sep1 = UIView(frame: CGRect(x:20,y:170,width:300 - 40,height:0.5))
         sep1.backgroundColor = UIColor.gray
         setV2.addSubview(sep1)
         //セパレータ2
-        let sep2 = UIView(frame: CGRect(x:20,y:350,width:300 - 40,height:0.5))
+        let sep2 = UIView(frame: CGRect(x:20,y:300,width:300 - 40,height:0.5))
         sep2.backgroundColor = UIColor.gray
         setV2.addSubview(sep2)
+        //セパレータ3
+        let sep3 = UIView(frame: CGRect(x:20,y:400,width:300 - 40,height:0.5))
+        sep3.backgroundColor = UIColor.gray
+        setV2.addSubview(sep3)
+        
         //------- セグメント02---------------------------------------------------
         
         // 表示する配列を作成する.
@@ -1597,7 +1656,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sWB:CGFloat = 50
         // SegmentedControlを作成する.
         let scB: UISegmentedControl = UISegmentedControl(items: myArrayB as [AnyObject])
-        let scBoxB = UIView(frame: CGRect(x:130,y:280,width:sWB*3,height:sWB))
+        let scBoxB = UIView(frame: CGRect(x:130,y:280 - 60,width:sWB*3,height:sWB))
         let scBox1B = UIView(frame: CGRect(x:5,y:30,width:sWB - 10,height:sWB/3))
         let scBox2B = UIView(frame: CGRect(x:sWB + 5,y:30,width:sWB - 10,height:sWB/3))
         let scBox3B = UIView(frame: CGRect(x:sWB*2 + 5,y:30,width:sWB - 10,height:sWB/3))
@@ -1631,39 +1690,54 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
         scC.setWidth(sWC, forSegmentAt: 0)
         scC.setWidth(sWC, forSegmentAt: 1)
-        scC.center = CGPoint(x:cv.frame.width/2, y:cv.frame.height/2 + 190)
+        scC.center = CGPoint(x:cv.frame.width/2, y:cv.frame.height/2 + 190 + 30)
         scC.layer.borderColor = UIColor.lightGray.cgColor
         scC.backgroundColor = UIColor.white
         scC.tintColor = UIColor.gray
         scC.selectedSegmentIndex = 1
         // イベントを追加する.
         scC.addTarget(self, action: #selector(segconChangedC(segcon:)), for: UIControlEvents.valueChanged)
-        //-------------------------------------------------------------------
+        //------------セグメントSw(Boxなし)----------------------------------------
+        // Swicthを作成する.
+        let mySwicth: UISwitch = UISwitch()
+        mySwicth.layer.position = CGPoint(x: cv.frame.width/2, y: cv.frame.height/2 + 100)
+        mySwicth.tintColor = UIColor.gray
+        // SwitchをOnに設定する.
+        mySwicth.isOn = autoScrollFlag ? true :false
+        // SwitchのOn/Off切り替わりの際に、呼ばれるイベントを設定する.
+        mySwicth.addTarget(self, action: #selector(ViewController.onClickMySwicth(sender:)), for: UIControlEvents.valueChanged)
         
+        // On/Offを表示するラベルを作成する.
+        myLabel = UILabel(frame: CGRect(x:cv.frame.width/2 + 60,y: 330,width:100,height:40))
+        myLabel.text = autoScrollFlag ? "[ ON  ]" : "[ OFF ]"
+        
+        //--------------------------------------------------------------------------
         // Labelを作成.
-        let lb1: UILabel = UILabel(frame: CGRect(x:20,y:90,width:120,height:40))
+        let lb1: UILabel = UILabel(frame: CGRect(x:20,y:50,width:120,height:40))
         //lb1.backgroundColor = UIColor.yellow
         lb1.text = "LINE-WIDTH"
         // Labe2を作成.
-        let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220,width:120,height:40))
+        let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220 - 60,width:120,height:40))
         //lb2.backgroundColor = UIColor.yellow
         lb2.text = "LINE-COLOR"
-        let lb2a: UILabel = UILabel(frame: CGRect(x:20,y:280,width:30,height:30))
+        let lb2a: UILabel = UILabel(frame: CGRect(x:20,y:280 - 60,width:30,height:30))
         lb2a.backgroundColor = UIColor.black
         lb2a.layer.masksToBounds = true
         lb2a.layer.cornerRadius = 6
-        let lb2b: UILabel = UILabel(frame: CGRect(x:55,y:280,width:30,height:30))
+        let lb2b: UILabel = UILabel(frame: CGRect(x:55,y:280 - 60,width:30,height:30))
         lb2b.backgroundColor = UIColor.red
         lb2b.layer.masksToBounds = true
         lb2b.layer.cornerRadius = 6
-        let lb2c: UILabel = UILabel(frame: CGRect(x:100,y:280,width:30,height:30))
+        let lb2c: UILabel = UILabel(frame: CGRect(x:100,y:280 - 60,width:30,height:30))
         lb2c.text = "＋"
         //lb2c.backgroundColor = UIColor.black
-        
+        // LabeSwを作成.
+        let lbSw: UILabel = UILabel(frame: CGRect(x:20,y:270 + 20,width:250,height:40))
+        lbSw.text = "AUTO-SCROLL"
         // Labe3を作成.
-        let lb3: UILabel = UILabel(frame: CGRect(x:20,y:360,width:250,height:40))
+        let lb3: UILabel = UILabel(frame: CGRect(x:20,y:370 + 30,width:250,height:40))
         //lb3.backgroundColor = UIColor.yellow
-        lb3.text = "DELETE ALL PAGES"
+        lb3.text = "DELETE-ALL(PAGES)"
         //コンテナに追加する
         scBox.addSubview(sc)
         scBoxB.addSubview(scB)
@@ -1675,7 +1749,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         cv.addSubview(lb1)
         cv.addSubview(lb2);cv.addSubview(lb2a);cv.addSubview(lb2b);cv.addSubview(lb2c)
         cv.addSubview(lb3)
-        
+        cv.addSubview(lbSw)
+        cv.addSubview(mySwicth)
+        cv.addSubview(myLabel)
         // コンテナをseVに追加する.
         setV.addSubview(cv)
         //setVを表示する
@@ -1683,13 +1759,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         UIScrollView.animate(withDuration: 0.2, animations: {
         () -> Void in
-            self.setV2.frame.size = CGSize(width: 300, height: 500)
+            self.setV2.frame.size = CGSize(width: 300, height: 520)
             self.setV2.layer.position = CGPoint(x:boundWidth / 2,y:boundHeight * 0.53)
         })
 
     }
     
     ///設定画面実行関数
+    func onClickMySwicth(sender: UISwitch){
+        if sender.isOn {
+            myLabel.text = "[ ON  ]"
+            tempAutoScroll = true
+        }
+        else {
+            myLabel.text = "[ OFF ]"
+            tempAutoScroll = false
+        }
+    }
+    
     func segconChanged(segcon: UISegmentedControl){//線幅
         switch segcon.selectedSegmentIndex {
             case 0:tempLineW = 0
@@ -1787,6 +1874,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         lineWidth = tempLineW
         //線色の設定値を反映させる
         lineColor = tempColor
+        //自動スクロールOn/Off設定を反映させる
+        autoScrollFlag = tempAutoScroll
         //設定viewを閉じる
         self.setButtonN.removeFromSuperview()
         self.setV2.removeFromSuperview()
@@ -1817,6 +1906,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.secondView.isUserInteractionEnabled = false
         penMode()//ペンモードに戻す
     }///
+    
     func btn1_click(sender:UIButton){
         print("** btn1_click()")
         if bigFlag == true{ return}
@@ -2087,18 +2177,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             zoom(zoom2)//倍率を元に戻す
         }
             nowGyouNo = TouchNumber
-            print("nowGyouNo?: \(nowGyouNo)")
+            //print("nowGyouNo?: \(nowGyouNo)")
         
         //対象行のTag番号のleafViewのmaxPosXをmxTempにコピーする。
         //但し、INDEXページではmx[1〜30]はページ登録フラグとして使用している為↓
         //Indexページでもmx[]を使用する
            mxTemp = mx[String(nowGyouNo)]
-
-        //パレット編集ツールを閉じる
-        if myEditFlag == true{ closeEditView()}
+  
 
         //パレット表示中
         if isEditMode == true{
+            //パレット編集ツールを閉じる
+            if myEditFlag == true{ closeEditView()}
+            
            //メモのスクロール位置を設定する
             scrollPos()
                 
@@ -2131,8 +2222,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //パレット非表示の場合
             memo[fNum].selectedNo(tagN:nowGyouNo)
         }else{}
-        
+    /*
         print("** nowGyouNo: \(nowGyouNo)")
+        print("◆imgサイズ：\(img.size.height)")
+        print("🔳cg-imgサイズ：\(img.cgImage?.height)")
+    */
     }
     
     func dispPosChange(midX: CGFloat,deltaX:CGFloat){// protocol UpperToolViewDelegate
@@ -2192,7 +2286,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
   //----------------------------------------------------------------
   //                  旧ボタン関数(未使用）                             |
   //----------------------------------------------------------------
-    
+/*   
     func insert(sender: AnyObject) {//xxxx,◾◾◾◾：メニュー
         memo[fNum].insertNewMemo(gyou: nowGyouNo,maxGyou:pageGyou)
         
@@ -2206,7 +2300,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         modalChanged(TouchNumber: nowGyouNo)
     }
- /*
+
     func x_delMemo(sender: AnyObject) {//xxxx,◾◾◾◾：メニュー
         memo[fNum].delSelectedMemo(gyou: nowGyouNo,maxGyou: pageGyou)
         modalChanged(TouchNumber:  nowGyouNo)
@@ -2222,121 +2316,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          */
     }
  
-    func x_save(sender: AnyObject) {//◾◾◾◾：xxxx自動
-        //ページ数を取得する(ページ総数　+ Indexページ)
-        print("pageImgs.count: \(pageImgs.count)")
-        
-        //メモをpageImgsにupdataする
-        for pn in 0..<pageImgs.count{
-            //* メモ(leaf)[m]をメモ画像:pageImgs[n]にUPする */
-            memo[fNum].memoTopageImgsToMemo(pn:pn)//⬅ pageNum
-        }
-        
-        //UserDefaultに保存する
-        for pn in 0..<pageImgs.count{
-            memo[fNum].saveImage3(pn: pn,imgs: pageImgs[pn])//頁番号，頁内容
-        }
-    }
-*/
-/*
-    
-    func reload(sender: AnyObject) {//xxxx，◾◾◾◾：編集破棄の場合
-        //myScrollView.Tshow_4thFrame()
-        //myScrollView.gotoNextPage()
- 
-    }
- */
-/*
-    
-    func toLeft(sender: AnyObject) {//xxxx
-        if isEditMode == true{
-            let myWidth = self.view.frame.width//画面の幅
-            //
-            var midX = drawableView.frame.midX//Viewの中心のX座標を取得
-            midX = midX + myWidth/6
-            drawableView.layer.position = CGPoint(x: midX, y:boundHeight - vHeight/2 - 44)//@
-        }
-    }
- */
-/*
-    func CR(sender: AnyObject) {//xxxx
-        if isEditMode == true{
-            //let myWidth = self.view.frame.width//画面の幅
-            /* first_Memo-view */
-            
-            //入力パレットの表示位置(横方向）を決める
-            drawableView.layer.position = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
-            
-            if nowGyouNo < pageGyou {nowGyouNo = nowGyouNo + 1}
-            //対象行を一行下げる
-
-            //print("-----------------------------------")
-            //メモに書き出した内容をパレットに読み込む//20161024追加
-            
-            let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
-            drawableView.backgroundColor = UIColor(patternImage: myMemo)
-            drawableView.X_color = 0//ペン色：黒
-            //resetFunc()//reset動作をさせる
-        }
-    }
- */
-/*
-    func addMemo(sender: AnyObject) {//xxxx
-        if isEditMode == true{
-            
-            let myWidth = self.view.frame.width//画面の幅
-            // ボタンの位置取得
-            var midX = drawableView.frame.midX//Viewの中心のX座標を取得
-            midX = midX - myWidth/6
-            drawableView.layer.position = CGPoint(x: midX, y:boundHeight - vHeight/2 - 44)//@
-        }
-    }
-    
-    func edit(sender: AnyObject) {//xxxx「ペン色の変更」として流用
-        if isEditMode == true{
-            
-            if drawableView.X_color == 0{
-                drawableView.X_color = 1 //ペン色：白色
-            }else{
-                drawableView.X_color = 0 //黒色
-            }
-        }
-    }
-    
-    func color(sender: AnyObject) {//xxxx「カーソルUP」として流用する
-        if isEditMode == true{
-            if nowGyouNo > 1{
-                nowGyouNo = nowGyouNo - 1//対象行を一行上げる
-            }else{ nowGyouNo = 1 }
-            
-            //メモに書き出した内容をパレットに読み込む//20161024追加
-            let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
-
-            drawableView.backgroundColor = UIColor(patternImage: myMemo)
-            drawableView.X_color = 0//ペン色：黒
-        }
-    }
- */
-/*
-    func reset(sender: AnyObject) {//xxxx
-        if isEditMode == true{
-            //let myWidth = self.view.frame.width//画面の幅
-            drawableView.X_color = 0//ペン色：黒
-            //drawableView.refresh()
-            //drawableView.flagRset()//@
-            //let sa = (vWidth - boundWidth)/2  //?? ??
-            let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
-            drawableView.layer.position = leftEndPoint
-            myScrollView.frame = scrollRect_P
-            memo[fNum].clearMemo(tag: nowGyouNo)
-        }else{
-            //myScrollView.Tshow_1beforeFrame()
-            //myScrollView.showHomeFrame()
-            //myScrollView.showBackPage()
-        }
-    }
- */
-/*
     //これから読み込むUserDataに存在するページ数を取得する
     func UserDataNum2()->Int{
         //print(NSUserDefaults.standardUserDefaults().dictionaryRepresentation())
@@ -2354,26 +2333,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("OK Google!: \(kn)")
         return kn
     }
-*/
-/*
-     //新しいページを作成して末尾に追加する
-     func x_createNewPageImg2(){
-     let bImage:UIImage = UIImage(named: "blankW.png")!//⬅4545.png
-     let blankImgs:[UIImage] = Array(repeating: bImage, count: pageGyou)
-     pageImgs.append(blankImgs)
-     }
-*/
-/*
-     //UserDataをpageImmgs[]に読み込む
-     func x_readUserData2(pn:Int){
-     let rl = reloadToPage2(pn: pn)
-     if rl.count > 0 { //これがないと読み込みエラーが発生 初期ではrl.count= 0
-     pageImgs[pn] = rl
-     }
-     }
-*/
+
+
+
     //---- ページデータの読み込み・作成　-------------
-    /*
+ 
      //UserDrfaultの頁数を調べる
      let dataPn = UserDataNum2()//保管してあるページ数
      //pageImgs[]の初期化(必要なページ分だけで作る)
@@ -2398,7 +2362,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
      for _ in 0..<3{
      createNewPageImg2()//pageImgs[]にappendする
      }
-     */
+*/
 //-----------------------------------------------------------------------------
 
 }

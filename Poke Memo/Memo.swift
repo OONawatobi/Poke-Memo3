@@ -13,14 +13,30 @@ class MemoView:UIView{
     let mWidth :CGFloat! = leafWidth// boundWidth - 20：メモクラスの幅
     let mHeight :CGFloat! = boundHeight//メモクラスの高さ
     let leafRect:CGRect = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)
+    var blankImg:UIImage!//leaf画像の初期値
     
 //  [リーフクラス]
     class Leaf: UIImageView {
         var leafStus:Int = 0//未使用
         var rightSpace:CGFloat! = leafWidth//右端までの余白の長さ
     }
-//
     
+    /* ページの１行目に日付を追加する */
+    func addDate(pn:Int){
+       //日付を取得
+       let compY = Calendar.Component.year
+       let compM = Calendar.Component.month
+       let compD = Calendar.Component.day
+       let y = NSCalendar.current.component(compY, from: Date() as Date)
+       let m = NSCalendar.current.component(compM, from: Date() as Date)
+       let d = NSCalendar.current.component(compD, from: Date() as Date)
+       let st = String(format: "%4d-%2d-%2d",y,m,d)
+       //日付を追加する
+       let tag = pn*100 +  1
+       let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+       targetMemo.image = targetMemo.image?.addText_Date(text: st)
+        
+    }
     
     /* pageImageの要素画像をmemoViewにコピーします */
     func setMemoFromImgs(pn:Int,imgs:[UIImage]){
@@ -54,7 +70,7 @@ class MemoView:UIView{
         }
         
         print("◎　[]⇒メモ：targetMemo.image = imgs[idx]")
-        print("◆targetMemo.image?サイズ：\(temp)")
+        print("◆targetMemo.image?サイズ：\(temp):setMemoFromImgs(pn,imgs[])")
          print("◇CGImage.size:\(temp2)")
     }
 
@@ -100,8 +116,8 @@ class MemoView:UIView{
         targetMemo.image = img
        
         print("◎パレット⇒メモ：targetMemo.image = パレットのimg")
-        print("◆imgサイズ：\(img.size.height)")
-        print("🔳imgサイズ：\(img.cgImage?.height)")
+        print("◆imgサイズ：\(img.size.height):addMemo(img,tag)")
+        print("🔳cg-imgサイズ：\(img.cgImage?.height)")
         //targetMemo.layer.borderColor = UIColor.redColor().CGColor
     }
     
@@ -152,6 +168,9 @@ class MemoView:UIView{
             testV.layer.position = CGPoint(x: 0, y:vHeight/2 )
           }
         // ====================================================================
+        print("** nowGyouNo: \(nowGyouNo)")
+        print("◆imgサイズ：\(targetMemo.image?.size.height)")
+        print("🔳cg-imgサイズ：\(targetMemo.image?.cgImage?.height)")
  
     }
     
@@ -175,6 +194,9 @@ class MemoView:UIView{
     }
     
     func makePageWithTag(pn:Int){//pn=0:indexページ
+        //-- ブランク画像をを作成する --
+        let blankView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
+        blankImg = blankView.GetImage()
         //一旦、サブビューを削除する
         removeAllSubviews(parentView: self)
         //self.removeFromSuperview()
@@ -198,11 +220,12 @@ class MemoView:UIView{
               }
             }else{  //indexページの場合
                 //myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 0.5, lineSize: 2, spaceSize: 2, type: .Down)
-                
             }
+            
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
-            myLeaf.image = UIImage(named: "blank.png")
+            myLeaf.image = blankImg//[leafWidth] x [lesfHeight]
+            ///////myLeaf.image = UIImage(named: "blank.png")//500x50
             //print("myTag?:\(myTag)")
             myLeaf.isUserInteractionEnabled = true
             self.addSubview(myLeaf)
@@ -264,9 +287,9 @@ class MemoView:UIView{
             img.append(targetMemo.image!)
             if idx<2{//◆テストです
             temp = targetMemo.image!.size.height
-            print("◎　memo ⇒UP[]")
-            print("◆targetMemo.image!(30)のサイズ: \(temp)")
-            print("🔳cgimageのサイズ: \(targetMemo.image?.cgImage?.height)")
+            //print("◎　memo ⇒UP[]")
+            //print("◆targetMemo.image!(30)のサイズ: \(temp)")
+            //print("🔳cgimageのサイズ: \(targetMemo.image?.cgImage?.height)")
             }
         }
         //print("◎メモから[]へUP：img.append(targetMemo.image!)")

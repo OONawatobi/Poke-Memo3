@@ -119,12 +119,9 @@ class DrawableView: UIView {
         secondView.isUserInteractionEnabled = false //イベントの透過
         // ++ thirdViewの初期化：背景を緑色にする、先頭と末尾に印を追加する ++
         thirdView = UIView(frame: secondView.frame)
-        
         thirdView.backgroundColor = UIColor(patternImage: myImg!)
         thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.15), width: 15)
-        
         thirdView.isUserInteractionEnabled = false //イベントの透過
- 
         self.addSubview(secondView)
         self.addSubview(thirdView)
 
@@ -142,7 +139,7 @@ class DrawableView: UIView {
     var shiftLeftFlag:Bool = false
     var shiftDownFlag:Bool = false
     var X_color = 0
-    var autoScrollFlag:Bool = false//自動スクロールフラグ
+    var autoFlag:Bool = false//自動スクロールフラグ
     var moveFlag:Bool = false// タッチしている時にtrue
     //var sCount:Int16 = 0//?
     var timer:Timer!
@@ -181,7 +178,7 @@ class DrawableView: UIView {
         }
         
         //+++++++++1:自動スクロール関係検証用
-        autoScrollFlag = false//自動スクロールをリセットする
+        autoFlag = false//自動スクロールをリセットする
         if timer != nil{timer.invalidate()}
 
         //+++++++++2:新タッチシステム検証用
@@ -218,7 +215,7 @@ class DrawableView: UIView {
           if myMx >= mxTemp{
             let midX = self.frame.midX //スクリーンViewから見たパレット中心X座標
             let screenX = myMx + (midX - vWidth/2)    // 画面座標に変
-            autoScrollFlag =  screenX > (boundWidth - rightArea*3) ? true:false
+            autoFlag =  screenX > (boundWidth - rightArea*3) ? true:false
           }
         }
         
@@ -255,7 +252,10 @@ class DrawableView: UIView {
   
           get2VImage()//second画像をbup[2]に保存：UNDO用
           //左方向への自動スクロール
-          if bigFlag == false{ startTimer()}//遅延してスクロール
+            print("autoScrollFlag:\(autoFlag)")
+          if autoScrollFlag == true{
+             if bigFlag == false{ startTimer()}//遅延してスクロール
+          }
             
         //------- 右端エリアにタッチされた場合 -------
         }else if shiftLeftFlag == true && bigFlag == false{//拡大モードではパス
@@ -285,7 +285,7 @@ class DrawableView: UIView {
     // タイマー開始
     func startTimer() {
       //左方向への自動スクロール
-       if autoScrollFlag == true{
+       if autoFlag == true{
  
           timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(DrawableView.timerAction), userInfo: nil, repeats: false)
        }
@@ -293,7 +293,7 @@ class DrawableView: UIView {
 
     ///タイマーアップ時の処理
     func timerAction(){
-        if autoScrollFlag == false {return}
+        if autoFlag == false {return}
         scrollLeft()
         myMx = 0//スクロール実施後、タッチ最大ｘをリセット
     }
