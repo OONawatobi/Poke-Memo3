@@ -188,8 +188,8 @@ extension UIImage {
         let font = UIFont.boldSystemFont(ofSize: 16)
         let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
 
-        UIGraphicsBeginImageContext(self.size);
-        
+        //qUIGraphicsBeginImageContext(self.size);
+        UIGraphicsBeginImageContextWithOptions(self.size,false,0.0)
         self.draw(in: imageRect)
         
         let textRect  = CGRect(x:10, y:15, width:self.size.width - 5, height:self.size.height - 5)
@@ -212,10 +212,10 @@ extension UIImage {
         let text = text
         let font = UIFont.boldSystemFont(ofSize: 16)
         let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
-        UIGraphicsBeginImageContext(self.size);
+        //UIGraphicsBeginImageContext(self.size)
+        UIGraphicsBeginImageContextWithOptions(self.size,false,0.0)
         self.draw(in: imageRect)
-        
-        let textRect  = CGRect(x:self.size.width - 100, y:0, width:120, height:self.size.height - 5)
+        let textRect  = CGRect(x:self.size.width - 95, y:0, width:120, height:self.size.height - 5)
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
@@ -234,8 +234,8 @@ extension UIImage {
         let font = UIFont.boldSystemFont(ofSize: 16)
         let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
 
-        UIGraphicsBeginImageContext(self.size);
-        
+        //UIGraphicsBeginImageContext(self.size);
+        UIGraphicsBeginImageContextWithOptions(self.size,false,0.0)
         self.draw(in: imageRect)
         
         let textRect  = rect
@@ -311,7 +311,7 @@ var lineWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
 var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:brown]
 var autoScrollFlag = true//自動スクロールOn/Offフラグ
 var myLabel:UILabel!//自動スクロールOn/Off表示用
-
+var bImage:UIImage!//ブランク画像
 //------------------------------------------------------------------------
 
 protocol ScrollView2Delegate{//スクロールビューの操作(機能）
@@ -353,7 +353,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
     var setV:UIView!//設定画面の背景（半透明グレイ）
     var setV2:UIView!//設定画面
-
+    //var bView:UIView!//ブランクビュー
+    
     //var setFlag:Bool = false
     
     //var isIndexMode:Bool! = false//Indexの表示フラグ：true
@@ -397,6 +398,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.backgroundColor = UIColor.white
         //本機種の解像度
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
+        //ブランクleafを作成する
+        let bView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
+        bImage = bView.GetImage()
         //testVを作成  = debug2 =
         testV = UIView(frame:CGRect(x: 0, y:0 , width: 2, height: vHeight))
         testV.backgroundColor = UIColor.magenta
@@ -688,6 +692,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
         settingRead()//設定値を読み込む
+        //setNaviBar()
         
     }
     
@@ -732,7 +737,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isIndexMode == false{//Indexページが非表示の場合
 
             mask.backgroundColor = UIColor.yellow
-            
+            setNaviBar()
             //indexImgs[]からの反映
             memo[0].setIndexFromImgs(imgs:indexImgs)
             retNum = fNum
@@ -762,6 +767,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("retNum1: \(retNum)")
             myScrollView.backgroundColor =  UIColor.blue.withAlphaComponent(0.1)
             myScrollView.contentOffset.y = 0//スクロール位置：TOP
+            // ナビゲーションを透明にする処理
+            //setNaviBar()
         }else{//Indexページが表示中の場合
             print("index else**")
             
@@ -915,7 +922,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.animeFlag = false//アニメ動作終了宣言
              } // ++++  ココまで  ++++
             //パレットビューを作成する
-        /*
+        /* 上（アニメの前）に移動しました
             drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
         
             drawableView.Delegate = self
@@ -983,7 +990,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     //編集結果画面を取得する
                     var editedView:UIImage!
                     if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
-                       editedView = UIImage(named:"blankW.png")
+                       editedView = bImage//UIImage(named:"blankW.png")
                         //パレットの位置を先頭にする
                         let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
                         drawableView.layer.position = leftEndPoint
@@ -1105,6 +1112,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 //=================================================================
 //                        その他の関数
 //=================================================================
+    // 透明にしたナビゲーションを元に戻す処理
+    func setNaviBar() {
+       
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+         print("setNaviBar")
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+    }
+    // 透明にしたナビゲーションを元に戻す処理
+    func resetNaviBar() {
+        self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        self.navigationController?.navigationBar.shadowImage = nil
+    }
     //設定値の外部保存
     func settingWite(){
         // NSUserDefaults のインスタンス取得
@@ -1323,12 +1342,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var img03:UIImageView!
         
         indexFView = UIView(frame: CGRect(x:5,y: 210,width:leafWidth,height:leafHeight))
-        img01 = UIImageView(frame:CGRect(x:5,y:2 + 2,width:leafHeight*2/3 - 0,height:leafHeight - 4 - 3))
-        img02 = UIImageView(frame:CGRect(x:leafHeight*1/3,y:0 + 2,width:leafWidth - 3*leafHeight
+        img01 = UIImageView(frame:CGRect(x:5,y:2 + 2,width:leafHeight*2/3 - 5,height:leafHeight - 4 - 3))
+        img02 = UIImageView(frame:CGRect(x:leafHeight*1/3,y:0 + 2,width:leafWidth - 120 - 25
             ,height:leafHeight - 10))
-        cont02 = UIView(frame:CGRect(x:leafHeight*2/3 + 10,y:0 + 2,width:leafWidth - 2*leafHeight - 4 - 3 - 10
+        cont02 = UIView(frame:CGRect(x:leafHeight*2/3 + 20,y:0 + 2,width:leafWidth - 120
             ,height:leafHeight - 4))
-        img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3 + 2,y:0,width:leafHeight*4/3 - 8,height:leafHeight))
+        img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3 - 2,y:0,width:leafHeight*4/3 - 8,height:leafHeight))
         //枠線,色,角丸
         img01.layer.borderWidth = 1
         img01.layer.borderColor = UIColor.purple.withAlphaComponent(0.3).cgColor
@@ -1356,7 +1375,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let pixWidth:CGFloat = leafWidth! * rt
         let pixHeight:CGFloat = leafHeight * rt
         //切り取りサイズ
-        let clip02 = CGRect(x:5,y:0,width: pixWidth - pixHeight,height: pixHeight)
+        let clip02 = CGRect(x:5,y:0,width: pixWidth - 100*rt,height: pixHeight)
         //ピクセル画面での切り取り
         let clipImage02 =  (tImage?.cgImage!)!.cropping(to: clip02)
          print("◆◆CGIサイズ:\(tImage?.cgImage?.width):index画面")
@@ -1542,8 +1561,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     /* リストメニュー選択時の処理 */
     func fc1(){
-        memo[fNum].addDate(pn:pageNum)
-        
+        memo[fNum].addDate(pn:pageNum)//日付追加
+        //編集中のページ内容を更新する
+        let im = memo[fNum].memoToImgs(pn: pageNum)
+        //メモ内容を外部に保存
+        writePage(pn: pageNum, imgs: im)
+        //INDEX内容を外部に保存
+        writePage(pn:0, imgs:indexImgs)
+        //mx[]の内容を外部に保存する
+        updataMx(my:mx)
+
     /*
         print("test1!!!!!PDF-write")
         let dst = NSHomeDirectory() + "/Documents" + "/test.pdf"
@@ -1844,7 +1871,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               //-- index頁のリセット --
               for idx in 0..<30{
                 //空白の画像をインデックス頁に貼り付ける
-                indexImgs[idx] = UIImage(named:"blankW.png")!
+                indexImgs[idx] = bImage//UIImage(named:"blankW.png")!
                 //indexリストの登録頁をリセットする(登録済頁だけがタッチ反応する）
                 mx[String(idx)] = 0
               }

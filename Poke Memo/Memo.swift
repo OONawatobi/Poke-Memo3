@@ -13,7 +13,7 @@ class MemoView:UIView{
     let mWidth :CGFloat! = leafWidth// boundWidth - 20：メモクラスの幅
     let mHeight :CGFloat! = boundHeight//メモクラスの高さ
     let leafRect:CGRect = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)
-    var blankImg:UIImage!//leaf画像の初期値
+    //var blankImg:UIImage!//leaf画像の初期値
     
 //  [リーフクラス]
     class Leaf: UIImageView {
@@ -30,6 +30,7 @@ class MemoView:UIView{
        let y = NSCalendar.current.component(compY, from: Date() as Date)
        let m = NSCalendar.current.component(compM, from: Date() as Date)
        let d = NSCalendar.current.component(compD, from: Date() as Date)
+       //デバグ用　let m2 = 12 ;let d2 = 15//デバグ用
        let st = String(format: "%4d-%2d-%2d",y,m,d)
        //日付を追加する
        let tag = pn*100 +  1
@@ -85,7 +86,7 @@ class MemoView:UIView{
             let tag = pn*100 + idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
             
-            targetMemo.image = UIImage(named: "blankW.png")
+            targetMemo.image = bImage//UIImage(named: "blankW.png")
             //タグ番号を画像に合成する：試験用
             targetMemo.image = targetMemo.image?.addText(text: String(tag))
             //Indexページ固有の処理
@@ -123,7 +124,7 @@ class MemoView:UIView{
     
     /* メモ内容を空白にする */
     func clearMemo(tag:Int){
-        let img = UIImage(named: "blankW.png")
+        let img = bImage//UIImage(named: "blankW.png")
         let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView// ____子viewを取り出す(タグ番号:101）
         targetMemo.image = img
     }
@@ -195,8 +196,10 @@ class MemoView:UIView{
     
     func makePageWithTag(pn:Int){//pn=0:indexページ
         //-- ブランク画像をを作成する --
+    /*
         let blankView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
         blankImg = blankView.GetImage()
+    */
         //一旦、サブビューを削除する
         removeAllSubviews(parentView: self)
         //self.removeFromSuperview()
@@ -224,7 +227,7 @@ class MemoView:UIView{
             
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
-            myLeaf.image = blankImg//[leafWidth] x [lesfHeight]
+            myLeaf.image = bImage//[leafWidth] x [lesfHeight]
             ///////myLeaf.image = UIImage(named: "blank.png")//500x50
             //print("myTag?:\(myTag)")
             myLeaf.isUserInteractionEnabled = true
@@ -250,7 +253,7 @@ class MemoView:UIView{
             
         }
         let targetMemo:UIImageView = self.viewWithTag(maxTag) as! UIImageView
-        targetMemo.image = UIImage(named: "blankA.png")
+        targetMemo.image = bImage//UIImage(named: "blankA.png")
     }
     
     /* 選択行の真下に空白のメモを一行追加する(Tag番号を付け替える)★今V.は非使用 */
@@ -269,7 +272,7 @@ class MemoView:UIView{
                 targetMemo2.image = targetMemo.image
             }
             let targetMemo:UIImageView = self.viewWithTag(tag + 1) as! UIImageView
-            targetMemo.image = UIImage(named: "blankA.png")
+            targetMemo.image = bImage//UIImage(named: "blankA.png")
             nowGyouNo = nowGyouNo + 1
         }
         

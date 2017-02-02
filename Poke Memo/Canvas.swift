@@ -48,7 +48,7 @@ class DrawableView: UIView {
         }else if undoMode == 1{//okボタンが押された直後
           if bup["10"] == nil{return}
             
-          let blankView = UIImage(named:"blankW.png")
+          let blankView = bImage//UIImage(named:"blankW.png")
           secondView.backgroundColor = UIColor(patternImage: blankView!)
           let im1 = bup["10"]?.0
           mxTemp = bup["10"]?.1
@@ -107,8 +107,7 @@ class DrawableView: UIView {
     
     //----------- secondView(パレット前面フィルタ)の作成 --------------------------
         let myImg = UIImage(named: "blank.png")// 背景(メモの選択背景色と合わせる)
-        let myImg2 = UIImage(named: "blankP.png")// 背景(メモの選択背景色と合わせる)
-    
+        //let myImg2 = UIImage(named: "blankP.png")// 背景(メモの選択背景色と合わせる)
     /* セカンド・サードビューの初期化 */
     func setSecondView(){
         secondView = EditorView(frame: CGRect(x:0,y:0,width:self.bounds.width,height:self.bounds.height))
