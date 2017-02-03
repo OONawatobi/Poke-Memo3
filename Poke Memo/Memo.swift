@@ -205,7 +205,7 @@ class MemoView:UIView{
         //self.removeFromSuperview()
         
         //indexページだけtopOffsetを大きくする
-        let topOffset2:CGFloat = (pn == 0) ?topOffset*3:topOffset
+        let topOffset2:CGFloat = (pn == 0) ?topOffset/2:topOffset
 
         let pagePosX = (leafWidth)/2 //フレームの中点ｘ座標
         for idx in 0..<pageGyou {

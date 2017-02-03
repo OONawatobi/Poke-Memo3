@@ -336,6 +336,7 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate{
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
+    var statusBarBackground:UIView!
     let myScrollView = TouchScrollView()//UIScrollView()
     var spaceView1: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
     var spaceView2: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
@@ -349,18 +350,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var scrollRect_P:CGRect!//パレットが表示されている時の表示サイズ
     var scrollRect_B:CGRect!//パレットが拡大表示されている時の表示サイズ
     var scrollRect_T:CGRect!//toolbarが表示されている時の表示サイズ
+    var scrollRect_I:CGRect!//Indexページが表示されている時の表示サイズ
     var svOffset:CGFloat = 0
     var isMenuMode:Bool! = false//リストメニューがの表示フラグ：true
     var setV:UIView!//設定画面の背景（半透明グレイ）
     var setV2:UIView!//設定画面
+    var nColor:UIColor!//ナビゲーションバーの色
+    var iColor:UIColor!//indexページのナビバーの色
+    
     //var bView:UIView!//ブランクビュー
-    
     //var setFlag:Bool = false
-    
-    //var isIndexMode:Bool! = false//Indexの表示フラグ：true
+    //var isIndexMode:Bool! = false//Indexの表示フラグ：
     //var indexFlag:Bool! = false//Indexの表示フラグ：true
-
     //var reloadedImage:UIImage!//ファイルから読み込んだイメージ：未使用　下記使用
+    
     var reloads:[UIImage]!//ファイルから読み込んだイメージ配列
     var editButton1:UIButton!
     var editButton2:UIButton!
@@ -391,13 +394,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","　","各種設定","スタートガイドを見る","                ▲ "]
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
-    var mask:UIView!
+    //var mask:UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         //本機種の解像度
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
+        //ステータスバーの色を変える
+        nColor = UIColor.init(red: 0, green: 0.4, blue: 1, alpha: 1)
+        iColor = UIColor.brown
+        
+        statusBarBackground = UIView(frame: CGRect(x:0 ,y: 0, width:self.view.frame.width, height:UIApplication.shared.statusBarFrame.height))
+        statusBarBackground.backgroundColor = nColor
+        self.view.addSubview(statusBarBackground)
+        //ナビゲーションバーの色を変える
+        setNaviBar(color: nColor)
         //ブランクleafを作成する
         let bView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
         bImage = bView.GetImage()
@@ -554,6 +566,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
         scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 - 44 )//toolViewだけが表示されている場合
+        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:110  ,width:leafWidth, height:boundHeight - 110 )//index表示されている場合
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -608,14 +621,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
             //indexタイトルの作成
             titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
-            titleV.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
-            titleV.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
+            titleV.backgroundColor = UIColor.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
+            titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
             let tw = titleV.frame.width
             let th = titleV.frame.height
             let label1 = UILabel(frame: CGRect(x:0,y:15,width:tw/3,height:th/2))
             let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:15,width:tw/3,height:th/2))
             let label3 = UILabel(frame: CGRect(x:tw*2/3 ,y:15,width:tw/3 - 10,height:th/2))
-            label1.text = " page"
+            label1.text = "　page"
             label2.text = "memo"
             label3.text = "update"
             label2.textAlignment = .center
@@ -639,17 +652,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //ナビゲーションバータイトルの設定
             tl = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
             tl.layer.borderColor = UIColor.white.cgColor
-            tl.layer.borderWidth = 1.0
+            tl.layer.borderWidth = 0
             tl.layer.cornerRadius = 10
             tl.layer.masksToBounds = true
             //tl.sizeToFit()
-            tl.textColor = UIColor.blue
+            tl.textColor = UIColor.white
             tl.textAlignment = .center
-            tl.backgroundColor = UIColor.white
+            tl.backgroundColor = UIColor.clear
             tl.text = String(pageNum) + " /30"
             naviBar.topItem?.titleView = tl
             //リストボタン以外にはマスクを掛ける
-            mask = UIView(frame: CGRect(x: boundWidth - 100, y: 21, width: 100, height: 42))
+            //mask = UIView(frame: CGRect(x: boundWidth - 100, y: 21, width: 100, height: 42))
+            
             // **mx[]の読み込み・初期化 **
             mx = loadMx()
             
@@ -690,14 +704,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //indexChange(tag:nowGyouNo)
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
-        setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
+        setV.backgroundColor = UIColor.black.withAlphaComponent(0.10)
         settingRead()//設定値を読み込む
-        //setNaviBar()
         
     }
     
     //  ======= End of viewDidLoad=======
-    
+   
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -719,8 +732,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if bigFlag == true{ return}
         //パレットが開いている時は
         if isEditMode == true{//パレット内容を保存して閉じる
-            done(done2)
+            return
+        /*    done(done2)
             Pallete(pallete2)
+            myScrollView.contentOffset.y = 50//スクロール位置：TOP
+        */
         }
         if isMenuMode == true{
             menu(menu2)
@@ -735,13 +751,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         var opt = UIViewAnimationOptions.transitionFlipFromLeft
         if isIndexMode == false{//Indexページが非表示の場合
-
-            mask.backgroundColor = UIColor.yellow
-            setNaviBar()
+            myScrollView.contentOffset.y = -40//スクロール位置：TOP
+            //mask.backgroundColor = UIColor.yellow
+            
             //indexImgs[]からの反映
             memo[0].setIndexFromImgs(imgs:indexImgs)
             retNum = fNum
-            opt = UIViewAnimationOptions.transitionFlipFromTop//transitionFlipFromRight
+            opt = UIViewAnimationOptions.transitionFlipFromBottom//transitionFlipFromRight
                         UIView.transition(
                 from: memo[fNum],
                 to: memo[0],
@@ -758,22 +774,27 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //self.tl.font = "Cooper Std"//"HiraKakuProN-W3"//"Chalkboard SE"//"Optima-ExtraBlack"//AmericanTypewriter-Bold//"Optima-ExtraBlack"//"Chalkduster"//Euphemia UCAS
                 self.naviBar.topItem?.titleView = self.tl
                 //naviBar.topItem?.title = "--  INDEX  --"
-                self.view.addSubview(self.mask)
+                //self.view.addSubview(self.mask)
+                 self.myScrollView.frame = self.scrollRect_I
+               self.myScrollView.contentOffset.y = 0//スクロール位置：TOP
             })
+            //ステータスバーの色を変える
+            statusBarBackground.backgroundColor = iColor            // ナビゲーションを透明にする処理
+            self.setNaviBar(color: iColor)
             isIndexMode = true
             fNum = 0
             
             memo[0].delCursol()
             print("retNum1: \(retNum)")
-            myScrollView.backgroundColor =  UIColor.blue.withAlphaComponent(0.1)
-            myScrollView.contentOffset.y = 0//スクロール位置：TOP
-            // ナビゲーションを透明にする処理
-            //setNaviBar()
+           
+            myScrollView.backgroundColor =  UIColor.orange.withAlphaComponent(0.5)
+            
+
         }else{//Indexページが表示中の場合
             print("index else**")
             
             //self.navigationController?.setToolbarHidden(true, animated: true)
-            opt = UIViewAnimationOptions.transitionFlipFromBottom//transitionFlipFromLeft
+            opt = UIViewAnimationOptions.transitionFlipFromTop//transitionFlipFromLeft
             
             UIView.transition(
                 from: memo[0],
@@ -787,19 +808,29 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                     self.tl.text = String(pageNum) + " /30"
                     self.naviBar.topItem?.titleView = self.tl
-                    self.mask.removeFromSuperview()
+                    //self.mask.removeFromSuperview()
+                    //ステータスバーの色を変える
+                    self.statusBarBackground.backgroundColor = self.nColor
+                    // ナビゲーションを透明にする処理
+                    self.setNaviBar(color: self.nColor)
+                    
+                    
+/*
+ self.navigationController?.navigationBar.setBackgroundImage(UIImage(named:"blankP.png"), for: UIBarPosition.any , barMetrics: UIBarMetrics.default)
+ */
                 }
             )
-
+            myScrollView.frame = scrollRect
             isIndexMode = false
             print("retNum: \(retNum)")
             fNum = retNum
             myScrollView.backgroundColor =  UIColor.clear
             myScrollView.contentOffset.y = 0//スクロール位置：TOP
+
             //タイトルの設定
             //naviBar.topItem?.title = String(pageNum) + " /30"
             //let p:String = String(pageNum) + " /30"
-            
+            //myScrollView.backgroundColor =  UIColor.orange.withAlphaComponent(0.2)
             titleV.removeFromSuperview()
         }
     }
@@ -1112,18 +1143,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 //=================================================================
 //                        その他の関数
 //=================================================================
-    // 透明にしたナビゲーションを元に戻す処理
-    func setNaviBar() {
-       
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-         print("setNaviBar")
-        self.navigationController?.navigationBar.shadowImage = UIImage()
+    // ナビゲーションの背景色を変える
+    func setNaviBar(color:UIColor) {
+       print("setNaviBar")
+        var tColor = UIColor.white
+        self.naviBar.barTintColor = color
+        //indexページでリストボタン(左側）以外のボタンを見えなくする
+        if color == iColor{
+            tColor = iColor
+        }
+         self.naviBar.items?.first?.rightBarButtonItem?.tintColor  = tColor
+         self.menu2.tintColor = tColor
     }
-    // 透明にしたナビゲーションを元に戻す処理
-    func resetNaviBar() {
-        self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
-        self.navigationController?.navigationBar.shadowImage = nil
-    }
+
     //設定値の外部保存
     func settingWite(){
         // NSUserDefaults のインスタンス取得
