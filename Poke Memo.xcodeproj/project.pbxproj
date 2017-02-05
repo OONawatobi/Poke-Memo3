@@ -24,7 +24,6 @@
 		30BE70BD1E14D3EA00B9F52E /* DEL.png in Resources */ = {isa = PBXBuildFile; fileRef = 30BE70BB1E14D3EA00B9F52E /* DEL.png */; };
 		30BE70BE1E14D3EA00B9F52E /* INS.png in Resources */ = {isa = PBXBuildFile; fileRef = 30BE70BC1E14D3EA00B9F52E /* INS.png */; };
 		30BE70C01E14D59400B9F52E /* CLR.png in Resources */ = {isa = PBXBuildFile; fileRef = 30BE70BF1E14D59400B9F52E /* CLR.png */; };
-		30C2B17F1DEB1DB70069A5DF /* Pallete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2B17E1DEB1DB70069A5DF /* Pallete.swift */; };
 		30C2B1811DEB1DFF0069A5DF /* TouchScroll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2B1801DEB1DFF0069A5DF /* TouchScroll.swift */; };
 		30C2B1831DEB1E310069A5DF /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C2B1821DEB1E310069A5DF /* Memo.swift */; };
 		30C2B1901DEB259D0069A5DF /* wave.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C2B1851DEB259D0069A5DF /* wave.png */; };
@@ -54,6 +53,8 @@
 		30DAD8A81DE5C3040068FF45 /* Poke_MemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD8A71DE5C3040068FF45 /* Poke_MemoUITests.swift */; };
 		30DEDDDA1E0D25A40051C829 /* 僕の世界.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 30DEDDD91E0D25A40051C829 /* 僕の世界.jpg */; };
 		30DEDDDC1E0D428C0051C829 /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DEDDDB1E0D428C0051C829 /* Editor.swift */; };
+		30E326A41E474D1700DD6686 /* 3lines.png in Resources */ = {isa = PBXBuildFile; fileRef = 30E326A31E474D1700DD6686 /* 3lines.png */; };
+		30E326A61E474E5B00DD6686 /* lines.png in Resources */ = {isa = PBXBuildFile; fileRef = 30E326A51E474E5B00DD6686 /* lines.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,7 +92,6 @@
 		30BE70BB1E14D3EA00B9F52E /* DEL.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DEL.png; sourceTree = "<group>"; };
 		30BE70BC1E14D3EA00B9F52E /* INS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = INS.png; sourceTree = "<group>"; };
 		30BE70BF1E14D59400B9F52E /* CLR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CLR.png; sourceTree = "<group>"; };
-		30C2B17E1DEB1DB70069A5DF /* Pallete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pallete.swift; sourceTree = "<group>"; };
 		30C2B1801DEB1DFF0069A5DF /* TouchScroll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchScroll.swift; sourceTree = "<group>"; };
 		30C2B1821DEB1E310069A5DF /* Memo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
 		30C2B1851DEB259D0069A5DF /* wave.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wave.png; sourceTree = "<group>"; };
@@ -127,6 +127,8 @@
 		30DAD8A91DE5C3040068FF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30DEDDD91E0D25A40051C829 /* 僕の世界.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "僕の世界.jpg"; sourceTree = "<group>"; };
 		30DEDDDB1E0D428C0051C829 /* Editor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
+		30E326A31E474D1700DD6686 /* 3lines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3lines.png; sourceTree = "<group>"; };
+		30E326A51E474E5B00DD6686 /* lines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lines.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +159,8 @@
 		30C2B1841DEB24F60069A5DF /* Imgs */ = {
 			isa = PBXGroup;
 			children = (
+				30E326A51E474E5B00DD6686 /* lines.png */,
+				30E326A31E474D1700DD6686 /* 3lines.png */,
 				30403F3F1E3DFDD7004120EB /* ok@2x.png */,
 				30403F3D1E3DF833004120EB /* zoom@2x.png */,
 				308BDDDD1E3CDA13006F1504 /* blankX.png */,
@@ -223,7 +227,6 @@
 				30DAD8871DE5C3040068FF45 /* AppDelegate.swift */,
 				30DAD8891DE5C3040068FF45 /* ViewController.swift */,
 				30DEDDDB1E0D428C0051C829 /* Editor.swift */,
-				30C2B17E1DEB1DB70069A5DF /* Pallete.swift */,
 				30419DEE1DFFC58D00D22C8A /* Canvas.swift */,
 				30C2B1801DEB1DFF0069A5DF /* TouchScroll.swift */,
 				30C2B1821DEB1E310069A5DF /* Memo.swift */,
@@ -370,9 +373,11 @@
 				301AD36F1E1F6B14004B1858 /* enn.png in Resources */,
 				30DAD88F1DE5C3040068FF45 /* Assets.xcassets in Resources */,
 				30BE70B61E14BF3A00B9F52E /* green3a.png in Resources */,
+				30E326A61E474E5B00DD6686 /* lines.png in Resources */,
 				301AD3751E1F7296004B1858 /* index.png in Resources */,
 				301AD36B1E1E55A2004B1858 /* redo.png in Resources */,
 				30C2B1961DEB259D0069A5DF /* bg2.png in Resources */,
+				30E326A41E474D1700DD6686 /* 3lines.png in Resources */,
 				301AD3711E1F6E9A004B1858 /* enn2.png in Resources */,
 				30C2B19A1DEB259D0069A5DF /* unSelect.png in Resources */,
 				30BE70AA1E14016800B9F52E /* ダイヤ２.png in Resources */,
@@ -427,7 +432,6 @@
 			files = (
 				30DEDDDC1E0D428C0051C829 /* Editor.swift in Sources */,
 				30DAD88A1DE5C3040068FF45 /* ViewController.swift in Sources */,
-				30C2B17F1DEB1DB70069A5DF /* Pallete.swift in Sources */,
 				30C2B1811DEB1DFF0069A5DF /* TouchScroll.swift in Sources */,
 				30DAD8881DE5C3040068FF45 /* AppDelegate.swift in Sources */,
 				30C2B1831DEB1E310069A5DF /* Memo.swift in Sources */,

@@ -136,10 +136,12 @@ class MemoView:UIView{
         let leafImage = targetMemo.image!
         //========================================================
         let reSize = CGSize(width: vWidth, height: vHeight)
-        let palleteImage = leafImage.resize(size: reSize)
+        let palleteImage = leafImage.resize2(size: reSize)
         
         //========================================================
-        return palleteImage//_____
+        return palleteImage!//_____
+        //let retImage = leafImage
+        //return leafImage
     }
     
     /* 選択した行のメモの背景に色を付ける */
@@ -158,21 +160,20 @@ class MemoView:UIView{
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
         let gColor = UIColor.green.withAlphaComponent(0.1)
         let wColor = UIColor.white
-        let cColor = UIColor.purple.withAlphaComponent(0.2)
+        let cColor = UIColor.orange.withAlphaComponent(0.3)
         //Indexページの場合は色を変える
-        let backColor = isIndexMode == true ? cColor : gColor
+        let backColor = (isIndexMode == true) ? cColor : gColor
         targetMemo.backgroundColor = backColor
         print("==▶mx[\(nowGyouNo)]:\(mx[String(nowGyouNo)]!)")
-      //
+      
         // == debug2 ==========================================================
           if debug2 == true{//@@ DEBUG2 @@
             testV.layer.position = CGPoint(x: 0, y:vHeight/2 )
+            print("** nowGyouNo: \(nowGyouNo)")
+            print("◆imgサイズ：\(targetMemo.image?.size.height)")
+            print("🔳cg-imgサイズ：\(targetMemo.image?.cgImage?.height)")
           }
         // ====================================================================
-        print("** nowGyouNo: \(nowGyouNo)")
-        print("◆imgサイズ：\(targetMemo.image?.size.height)")
-        print("🔳cg-imgサイズ：\(targetMemo.image?.cgImage?.height)")
- 
     }
     
     func clearBackgroundColor(){
@@ -227,7 +228,7 @@ class MemoView:UIView{
             
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
-            myLeaf.image = bImage//[leafWidth] x [lesfHeight]
+            myLeaf.image = bImage//グローバル変数：[leafWidth] x [lesfHeight]
             ///////myLeaf.image = UIImage(named: "blank.png")//500x50
             //print("myTag?:\(myTag)")
             myLeaf.isUserInteractionEnabled = true

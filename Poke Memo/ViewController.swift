@@ -62,47 +62,20 @@ extension UIView {
 extension UIView {
   
     func GetImage() -> UIImage{
-        
         // キャプチャする範囲を取得.
         let rect = self.bounds
-        
         // ビットマップ画像のcontextを作成.
         UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
         let context: CGContext = UIGraphicsGetCurrentContext()!
-        
         // 対象のview内の描画をcontextに複写する.
         self.layer.render(in: context)
-        
         // 現在のcontextのビットマップをUIImageとして取得.
         let capturedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        
         // contextを閉じる.
         UIGraphicsEndImageContext()
-        
         return capturedImage
     }
     
-    
-    func GetImageWithResize(resize:CGRect) -> UIImage{
-    //func UIGraphicsBeginImageContextWithOptions(_ size: CGSize, _ opaque: Bool, _ scale: CGFloat)
-        // キャプチャする範囲を取得.
-        let rect = self.bounds
-        
-        // ビットマップ画像のcontextを作成.
-        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
-        let context: CGContext = UIGraphicsGetCurrentContext()!
-        
-        // 対象のview内の描画をcontextに複写する.
-        self.layer.render(in: context)
-        
-        // 現在のcontextのビットマップをUIImageとして取得.
-        let capturedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        
-        // contextを閉じる.
-        UIGraphicsEndImageContext()
-        
-        return capturedImage
-    }
     
     public func addBothBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
@@ -162,14 +135,13 @@ extension UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
         //var context = UIGraphicsGetCurrentContext()
             
-        self.draw(in: CGRect(x:0,y:0,width:size.width,height:size.height))
+        self.draw(in: CGRect(x:0,y:0,width:width,height:height))
         let image = UIGraphicsGetImageFromCurrentImageContext()
-        
         UIGraphicsEndImageContext()
         
         return image
     }
-    
+ //resize2に変更
     func resize(size: CGSize) -> UIImage {
         //let widthRatio = size.width / self.size.width
         let heightRatio = size.height / self.size.height
@@ -182,6 +154,14 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return resizedImage!
     }
+    //retina対応
+    func resize2(size: CGSize)-> UIImage!{
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        self.draw(in: CGRect(x:0,y:0,width:size.width,height:size.height))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
     
     func addText(text:String)-> UIImage{
         let text = text
@@ -192,7 +172,7 @@ extension UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size,false,0.0)
         self.draw(in: imageRect)
         
-        let textRect  = CGRect(x:10, y:15, width:self.size.width - 5, height:self.size.height - 5)
+        let textRect  = CGRect(x:15, y:15, width:self.size.width - 5, height:self.size.height - 5)
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
@@ -207,7 +187,6 @@ extension UIImage {
         
         return newImage!
     }
-    
     func addText_Date(text:String)-> UIImage{
         let text = text
         let font = UIFont.boldSystemFont(ofSize: 16)
@@ -296,8 +275,8 @@ var memoLowerMargin:Int = 2// メモ末尾の表20示マージン行数
 //-----パレット------------
 var drawableView: DrawableView! = nil//パレット画面
 var editorView:EditorView! = nil//エディター画面
-let vHeight: CGFloat = 180 //手書きビューの高さ@@@@@@@@
-var vWidth:CGFloat! = leafWidth*(vHeight/leafHeight)
+let vHeight: CGFloat = leafHeight*4 //180 //手書きビューの高さ@@@@@@@@
+var vWidth:CGFloat! = leafWidth*4 //(vHeight/leafHeight)
 var maxPosX:CGFloat! = 0//描画したｘ座標の最大値
 var mx  = [String: CGFloat]()//[Tag番号:maxPosX]
 //var mxs:[[String: CGFloat]] = [[:]]//mxs.count = 30
@@ -410,6 +389,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.addSubview(statusBarBackground)
         //ナビゲーションバーの色を変える
         setNaviBar(color: nColor)
+        //ナビゲーションバーの下線（半透明）
+        let underNav = UIView(frame: CGRect(x:0,y:64 - 5,width:boundWidth,height:8))
+        underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
+        
         //ブランクleafを作成する
         let bView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
         bImage = bView.GetImage()
@@ -444,7 +427,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /** myToolView ([色][ペン][消しゴム][▲])を生成. **/
         myToolView.Delegate = self
         myToolView.frame =  CGRect(x: 0, y: 0, width: boundWidth, height: 40)// underViewを生成.
-        myToolView.backgroundColor = UIColor(patternImage: UIImage(named:"2lines.png")!)
+        myToolView.backgroundColor = UIColor(patternImage: UIImage(named:"lines.png")!)
         myToolView.alpha = 1//0.7// 透明度を設定
         
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
@@ -566,7 +549,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
         scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 - 44 )//toolViewだけが表示されている場合
-        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:110  ,width:leafWidth, height:boundHeight - 110 )//index表示されている場合
+        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:115  ,width:leafWidth, height:boundHeight - 110 )//index表示されている場合
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -620,7 +603,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             indexImgs = readPage(pn:0)//0ページ目の外部データを読み込む
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
             //indexタイトルの作成
-            titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
+            titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:75,width:myScrollView.frame.width,height:topOffset*2))
             titleV.backgroundColor = UIColor.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
             titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
             let tw = titleV.frame.width
@@ -628,6 +611,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let label1 = UILabel(frame: CGRect(x:0,y:15,width:tw/3,height:th/2))
             let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:15,width:tw/3,height:th/2))
             let label3 = UILabel(frame: CGRect(x:tw*2/3 ,y:15,width:tw/3 - 10,height:th/2))
+            label1.font = UIFont(name: "AmericanTypewriter", size: 16)
+            label2.font = UIFont(name: "Optima-ExtraBlack", size: 16)
+            label3.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
             label1.text = "　page"
             label2.text = "memo"
             label3.text = "update"
@@ -706,7 +692,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.10)
         settingRead()//設定値を読み込む
-        
+        self.view.addSubview(underNav)//ナビゲーション下線を追加
     }
     
     //  ======= End of viewDidLoad=======
@@ -1374,7 +1360,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var img03:UIImageView!
         
         indexFView = UIView(frame: CGRect(x:5,y: 210,width:leafWidth,height:leafHeight))
-        img01 = UIImageView(frame:CGRect(x:5,y:2 + 2,width:leafHeight*2/3 - 5,height:leafHeight - 4 - 3))
+        img01 = UIImageView(frame:CGRect(x:5,y:2 + 2,width:leafHeight*2/3 + 5,height:leafHeight - 4 - 3))
         img02 = UIImageView(frame:CGRect(x:leafHeight*1/3,y:0 + 2,width:leafWidth - 120 - 25
             ,height:leafHeight - 10))
         cont02 = UIView(frame:CGRect(x:leafHeight*2/3 + 20,y:0 + 2,width:leafWidth - 120
@@ -1594,6 +1580,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     /* リストメニュー選択時の処理 */
     func fc1(){
         memo[fNum].addDate(pn:pageNum)//日付追加
+        mx[String(nowGyouNo)] = vWidth - 10//mx[]を右端に設定
         //編集中のページ内容を更新する
         let im = memo[fNum].memoToImgs(pn: pageNum)
         //メモ内容を外部に保存
@@ -1633,6 +1620,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     func fc3(){
         print("test3!!!!!")
+        for n in 0...100{
+            //メモに書き出した内容をパレットに読み込む:resize2(size: reSize)
+            let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
+            //サイズ変換
+            let myImage1 = myMemo.ResizeUIImage(width: leafWidth, height: leafHeight)
+            //let rs = CGSize(width:leafWidth,height:leafHeight)
+            //let myImage1 = myMemo.resize2(size: rs)
+            // メモにパレット内容を書き込む
+            memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
+            print("[\(n)]nowGyouNo:\(nowGyouNo)")
+            //upToMemo()
+        }
         // 指定キー"index"の値のみを削除
         //let userDefault = UserDefaults.standard
         //userDefault.removeObject(forKey: "index")
