@@ -162,6 +162,14 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return image
     }
+    func resize3(size: CGSize)-> UIImage!{
+        UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
+        self.draw(in: CGRect(x:0,y:0,width:size.width,height:size.height))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
+    }
+
     
     func addText(text:String)-> UIImage{
         let text = text
@@ -189,12 +197,12 @@ extension UIImage {
     }
     func addText_Date(text:String)-> UIImage{
         let text = text
-        let font = UIFont.boldSystemFont(ofSize: 16)
+        let font = UIFont.boldSystemFont(ofSize: 22)
         let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
         //UIGraphicsBeginImageContext(self.size)
         UIGraphicsBeginImageContextWithOptions(self.size,false,0.0)
         self.draw(in: imageRect)
-        let textRect  = CGRect(x:self.size.width - 95, y:0, width:120, height:self.size.height - 5)
+        let textRect  = CGRect(x:self.size.width - 120, y:0, width:120, height:self.size.height - 5)
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
@@ -605,12 +613,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //indexタイトルの作成
             titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:75,width:myScrollView.frame.width,height:topOffset*2))
             titleV.backgroundColor = UIColor.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
-            titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
+            //titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
             let tw = titleV.frame.width
             let th = titleV.frame.height
-            let label1 = UILabel(frame: CGRect(x:0,y:15,width:tw/3,height:th/2))
-            let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:15,width:tw/3,height:th/2))
-            let label3 = UILabel(frame: CGRect(x:tw*2/3 ,y:15,width:tw/3 - 10,height:th/2))
+            let label1 = UILabel(frame: CGRect(x:0,y:10,width:tw/3,height:th/2))
+            let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:10,width:tw/3,height:th/2))
+            let label3 = UILabel(frame: CGRect(x:tw*2/3 ,y:10,width:tw/3 - 10,height:th/2))
             label1.font = UIFont(name: "AmericanTypewriter", size: 16)
             label2.font = UIFont(name: "Optima-ExtraBlack", size: 16)
             label3.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
@@ -659,7 +667,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         mh = ch * CGFloat(cn)//メニューの高さ＝セルの高さ☓セル数
         let w = boundWidth
         tV.frame         =   CGRect(x:0, y:0, width:mw + 20 , height:mh)
-        smv = UIScrollView(frame: CGRect(x:w - mw - 10 ,y:65,width:mw + 20,height:mh - 0))
+        smv = UIScrollView(frame: CGRect(x:w - mw - 10 ,y:65,width:mw + 20,height:mh - 30))
         smv.backgroundColor = UIColor.clear
         tV.separatorColor = UIColor.clear//セパレータ無し
         tV.rowHeight = 40
@@ -690,7 +698,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //indexChange(tag:nowGyouNo)
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
-        setV.backgroundColor = UIColor.black.withAlphaComponent(0.10)
+        setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
         settingRead()//設定値を読み込む
         self.view.addSubview(underNav)//ナビゲーション下線を追加
     }
@@ -754,7 +762,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         memo[n].layer.borderColor = UIColor.clear.cgColor
                         memo[n].layer.borderWidth = 0
                     }
-                self.view.addSubview(self.titleV)
+                
                 self.tl.text = "INDEX"
                 self.tl.font = UIFont(name: "ChalkboardSE-Bold", size: 20)
                 //self.tl.font = "Cooper Std"//"HiraKakuProN-W3"//"Chalkboard SE"//"Optima-ExtraBlack"//AmericanTypewriter-Bold//"Optima-ExtraBlack"//"Chalkduster"//Euphemia UCAS
@@ -762,7 +770,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //naviBar.topItem?.title = "--  INDEX  --"
                 //self.view.addSubview(self.mask)
                  self.myScrollView.frame = self.scrollRect_I
-               self.myScrollView.contentOffset.y = 0//スクロール位置：TOP
+                self.myScrollView.contentOffset.y = 0//スクロール位置：TOP
+                self.view.addSubview(self.titleV)
             })
             //ステータスバーの色を変える
             statusBarBackground.backgroundColor = iColor            // ナビゲーションを透明にする処理
@@ -905,10 +914,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[fNum].delCursol()
             
             //ページ登録フラグを更新する
-            for n in 1...30{
+            /*
+                for n in 1...30{
                 print("mx[\(n)]= \(mx[String(n)])")
-            }
-            
+                }
+            */
             isEditMode = false
             bigFlag = false
         }else{
@@ -968,7 +978,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func upToMemo(){  //パレット内容をメモに反映させる
         drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
         let palImage = drawableView.GetImage()
-        let myImage1 = palImage.ResizeUIImage(width: leafWidth, height: leafHeight)
+        let myImage1 = palImage.ResizeUIImage(width: vWidth/3, height: vHeight/3)
         print("fNum:\(fNum) ,tag: \(nowGyouNo)")
         // メモにパレット内容を書き込む
         memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
@@ -978,11 +988,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.addSubview(drawableView.thirdView)//前フィルタ3rdViewを追加'170110変更（ダブリと思われるため）
         //インデックス情報を更新する
         let uNum = numOfUsedLine(pn:pageNum)//入力行最小値を取得
-        indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
         
-        //indexリストに対象の頁番号を登録する(登録済頁だけがタッチ反応する）
-        mx[String(pageNum)] = 1
-        
+        if uNum > 0{
+          //index画像を更新する
+          indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
+          mx[String(pageNum)] = 1//indexリストに対象の頁番号を登録する
+        }else{
+          mx[String(pageNum)] = 0
+          indexImgs[pageNum - 1] = bImage//空白の画像をインデックス頁に貼り付ける
+        }
         //非空白行の最上値
         print("numOfUsedLine:\(numOfUsedLine(pn:pageNum))")
         //ペンモードの初期化
@@ -1121,7 +1135,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("@@ undo @@")
         //print("◆◆◆◆undoFLG:\(drawableView.undoMode)")
         //print("bup[10]=\(drawableView.bup["10"])")
-
+        if editFlag == true{return}
         if drawableView.undoMode == 0{return}
         drawableView.undo()
 
@@ -1351,7 +1365,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     //palleteのdone実行時にページデータからIndex内容を更新する
     func indexChange(pn:Int,usedNum:Int)-> UIImage{
-
+      
         //新しくコンテナView１つと3つのImageViewを作る
         var indexFView:UIView!
         var img01:UIImageView!
@@ -1393,7 +1407,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let pixWidth:CGFloat = leafWidth! * rt
         let pixHeight:CGFloat = leafHeight * rt
         //切り取りサイズ
-        let clip02 = CGRect(x:5,y:0,width: pixWidth - 100*rt,height: pixHeight)
+        let clip02 = CGRect(x:10,y:6,width: pixWidth - 60*rt,height: pixHeight)
         //ピクセル画面での切り取り
         let clipImage02 =  (tImage?.cgImage!)!.cropping(to: clip02)
          print("◆◆CGIサイズ:\(tImage?.cgImage?.width):index画面")
@@ -1438,7 +1452,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //画面全体をイメージ化する
          let orgImage = indexFView.GetImage()
         return orgImage.addIndexText(text:st,rect:img03.frame.offsetBy(dx: 4, dy: 2))
- 
+      
     }
  
    /* -------------------　mx[]更新関係　---------------------------- */
@@ -1461,16 +1475,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
 
     //対象ページの非空白行のうち一番小さい行番号を返す
+    //全行空白行の場合は０を返す
     func numOfUsedLine(pn:Int)->Int{
         
-        var ret:Int = 1
+        var ret:Int = 0
         var tg:Int = 101
         print("aaa")
 
           for i in 0..<pageGyou {
             tg = pn*100 + (pageGyou - i)
             if Int(mx[String(tg)]!)>50{
-                ret = pageGyou - i
+                ret = pageGyou - i  //1 〜 30
             }
           }
         return ret
@@ -1603,6 +1618,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func fc2(){
         print("test2!!!!!")
         //現行ベージの内容を削除する
+        //indexリストに対象の頁番号を登録を抹消する(登録済頁だけがタッチ反応する）
+        mx[String(pageNum)] = 0
+        
         delPage(pn: pageNum)
         //----- 現行ページを再読込する---------
         let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
@@ -1612,10 +1630,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         clearMx(pn:pageNum)//該当するページのmx[]値をリセット
         updataMx(my:mx)//mx[]のデータを外部に保存
         //現行頁(空白)情報をindex頁に反映させる
+        //インデックス情報を更新する
         let uNum = numOfUsedLine(pn:pageNum)//入力行最小値を取得
-        
-        //インデックス情報(現行頁)を更新する
-        indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
+        if uNum > 0{
+            //index画像を更新する
+            indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
+            mx[String(pageNum)] = 1//indexリストに対象の頁番号を登録する
+        }else{ //全行が空白行の場合
+            mx[String(pageNum)] = 0
+            indexImgs[pageNum - 1] = bImage//空白の画像をインデックス頁に貼り付ける
+        }
     
     }
     func fc3(){
@@ -1624,9 +1648,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //メモに書き出した内容をパレットに読み込む:resize2(size: reSize)
             let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
             //サイズ変換
-            let myImage1 = myMemo.ResizeUIImage(width: leafWidth, height: leafHeight)
-            //let rs = CGSize(width:leafWidth,height:leafHeight)
-            //let myImage1 = myMemo.resize2(size: rs)
+            let myImage1 = myMemo.ResizeUIImage(width: vWidth/2, height: vHeight/2)
             // メモにパレット内容を書き込む
             memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
             print("[\(n)]nowGyouNo:\(nowGyouNo)")
