@@ -311,7 +311,9 @@ class DrawableView: UIView {
             () -> Void in
             self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
         })
-        self.Delegate?.shiftMX()// [ok]ボタンを押す:view.done(done2)
+        //シフトスクロールした後にOKボタンを押さない様にする
+        //理由：①ボケ回数を減らす為、②ペン色が変わらない様にする
+        //self.Delegate?.shiftMX()// [ok]ボタンを押す:view.done(done2)
     }
     
     func resetContext(context: CGContext) {

@@ -162,6 +162,7 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return image
     }
+    //テスト用
     func resize3(size: CGSize)-> UIImage!{
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
         self.draw(in: CGRect(x:0,y:0,width:size.width,height:size.height))
@@ -442,10 +443,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //ツールViewのボタンの生成　[2][3][4]   [1]
         // button1の追加
-        editButton1 = UIButton(frame: CGRect(x:boundWidth - 70,y: 3, width:50, height:34))
+        editButton1 = UIButton(frame: CGRect(x:boundWidth - 65,y: 5, width:40, height:40))
         editButton1.backgroundColor = UIColor.clear  // タイトルを設定する(通常時)
         //editButton1.setTitle("💠", for: UIControlState.normal)
-        editButton1.setImage(UIImage(named: "red3.png"), for:UIControlState.normal)
+        editButton1.setImage(UIImage(named: "redUp.png"), for:UIControlState.normal)
         // イベントを追加する
         editButton1.addTarget(self, action: #selector(ViewController.btn1_click(sender:)), for: .touchDown)
         
@@ -454,27 +455,31 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton2.backgroundColor = UIColor.clear
         editButton2.layer.cornerRadius = 5
         //editButton2.layer.masksToBounds = true//角のはみ出しをマスクする
-        editButton2.layer.borderColor = UIColor.black.cgColor
-        editButton2.layer.borderWidth = 2
+        editButton2.layer.borderColor = UIColor.gray.cgColor
+        editButton2.layer.borderWidth = 0
         editButton2.addTarget(self, action: #selector(ViewController.btn2_click(sender:)), for:.touchUpInside)
         //editButton2.setTitle("2", for: UIControlState.normal)
-        editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
+        editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         
         // button3の追加
         editButton3 = UIButton(frame: CGRect(x:75, y:5, width:30, height:30))
         editButton3.layer.cornerRadius = 5
-        editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 1)
+        //editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 1)
+        editButton3.layer.borderColor = UIColor.darkGray.cgColor
+        editButton3.layer.borderWidth = 0
         editButton3.addTarget(self, action: #selector(ViewController.btn3_click(sender:)), for:.touchUpInside)
         //editButton3.setTitle("3", for: UIControlState.normal)
-        editButton3.setImage(UIImage(named: "pen2.png"), for:UIControlState.normal)
+        editButton3.setImage(UIImage(named: "pen2.pdf"), for:UIControlState.normal)
         
         /** button4の追加 **/
         editButton4 = UIButton(frame: CGRect(x:125, y:5, width:30, height:30))
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton4.layer.cornerRadius = 5
+        editButton4.layer.borderColor = UIColor.darkGray.cgColor
+        editButton4.layer.borderWidth = 0
         editButton4.addTarget(self, action: #selector(ViewController.btn4_click(sender:)), for:.touchUpInside)
         //editButton4.setTitle("4", for: UIControlState.normal)
-        editButton4.setImage(UIImage(named: "keshi.png"), for:UIControlState.normal)
+        editButton4.setImage(UIImage(named: "wOut.pdf"), for:UIControlState.normal)
         
         //ボタンをツールバーに追加する
         myToolView.addSubview(editButton1)
@@ -489,14 +494,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myEditView.backgroundColor = myEditColor// underViewの背景を青色に設定
         //myEditView.alpha = 0.6// 透明度を設定
         myEditView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40 - 30)// 位置を中心に設定
+        //---------------------------------------
         //Editbuttonの追加 [9]　[5][6][7][8] [10]
-        let sW = 20//ボタン間のスペース
-        let bW = 50//ボタンの幅
-        let tW = sW + bW//各ボタン間の距離
-        let cW = boundWidth/2 //画面の幅の半分
-        let x05 = cW - CGFloat(2*tW - sW/2)//左端のボタンの位置
+        let sp:CGFloat = 10 + (boundWidth - 315)/10 //20ボタン間のスペース
+        
+        let bW:CGFloat = 45.0//ボタンの幅
+        let b2W:CGFloat = 40.0//矢印ボタンの幅
+        let tW:CGFloat = sp + bW//各ボタン間の距離
+        let sp2:CGFloat = (boundWidth - (bW*4 + b2W*2 + sp*5))/2//両側のスペース
+        let x05 = b2W + sp + sp2//cW - CGFloat(2*tW - sp/2)//左端のボタン(05)の位置
         //button5の追加
-        editButton5 = UIButton(frame: CGRect(x:x05, y:10, width:50, height:40))
+        editButton5 = UIButton(frame: CGRect(x:x05, y:10, width:bW, height:40))
         editButton5.backgroundColor = UIColor.clear
         editButton5.layer.cornerRadius = 8
         //editButton5.layer.masksToBounds = true
@@ -506,7 +514,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myEditView.addSubview(editButton5)
  
         //button6の追加
-        editButton6 = UIButton(frame: CGRect(x:x05 + CGFloat(tW), y:10, width:50, height:40))
+        editButton6 = UIButton(frame: CGRect(x:x05 + tW, y:10, width:bW, height:40))
         editButton6.backgroundColor = UIColor.clear
         editButton6.layer.cornerRadius = 8
         editButton6.addTarget(self, action: #selector(ViewController.btn6_click(sender:)), for:.touchUpInside)
@@ -514,7 +522,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton6.setTitle("6", for: UIControlState.normal)
         myEditView.addSubview(editButton6)
         //button7の追加
-        editButton7 = UIButton(frame: CGRect(x:x05 + CGFloat(tW)*2,y: 10,width: 50, height:40))
+        editButton7 = UIButton(frame: CGRect(x:x05 + tW*2,y: 10,width: bW, height:40))
         editButton7.backgroundColor = UIColor.clear
         editButton7.layer.cornerRadius = 8
         editButton7.addTarget(self, action: #selector(ViewController.btn7_click(sender:)), for:.touchUpInside)
@@ -522,7 +530,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton7.setTitle("7", for: UIControlState.normal)
         myEditView.addSubview(editButton7)
         //button8の追加
-        editButton8 = UIButton(frame: CGRect(x:x05 + CGFloat(tW)*3, y:10, width:50,height: 40))
+        editButton8 = UIButton(frame: CGRect(x:x05 + tW*3, y:10, width:bW,height: 40))
         editButton8.backgroundColor = UIColor.clear
         editButton8.layer.cornerRadius = 8
         editButton8.addTarget(self, action: #selector(ViewController.btn8_click(sender:)), for:.touchUpInside)
@@ -530,18 +538,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton8.setTitle("8", for: UIControlState.normal)
         myEditView.addSubview(editButton8)
         
-        editButton9 = UIButton(frame: CGRect(x:10, y:5, width:40,height: 45))
+        editButton9 = UIButton(frame: CGRect(x:sp2, y:5, width:40,height: 45))
         editButton9.backgroundColor = UIColor.clear
         editButton9.layer.cornerRadius = 8
         editButton9.addTarget(self, action: #selector(ViewController.btn9_click(sender:)), for:.touchDown)
         editButton9.setTitle("|<", for: UIControlState.normal)
         myEditView.addSubview(editButton9)
         
-        editButton10 = UIButton(frame: CGRect(x:boundWidth - 50, y:5, width:40,height: 45))
+        editButton10 = UIButton(frame: CGRect(x:x05 + tW*4, y:5, width:40,height: 45))
         editButton10.backgroundColor = UIColor.clear
         editButton10.layer.cornerRadius = 8
         editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchDown)
-        editButton10.setTitle(" >|", for: UIControlState.normal)
+        editButton10.setTitle(">|", for: UIControlState.normal)
         myEditView.addSubview(editButton10)
 
         
@@ -557,7 +565,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
         scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 - 44 )//toolViewだけが表示されている場合
-        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:115  ,width:leafWidth, height:boundHeight - 110 )//index表示されている場合
+        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:110  ,width:leafWidth, height:boundHeight - 110 )//index表示されている場合
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -611,27 +619,30 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             indexImgs = readPage(pn:0)//0ページ目の外部データを読み込む
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
             //indexタイトルの作成
-            titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:75,width:myScrollView.frame.width,height:topOffset*2))
+            titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
             titleV.backgroundColor = UIColor.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
             //titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
             let tw = titleV.frame.width
-            let th = titleV.frame.height
-            let label1 = UILabel(frame: CGRect(x:0,y:10,width:tw/3,height:th/2))
-            let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:10,width:tw/3,height:th/2))
-            let label3 = UILabel(frame: CGRect(x:tw*2/3 ,y:10,width:tw/3 - 10,height:th/2))
-            label1.font = UIFont(name: "AmericanTypewriter", size: 16)
-            label2.font = UIFont(name: "Optima-ExtraBlack", size: 16)
-            label3.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
+            let th = titleV.frame.height*1.2
+            let label1 = UILabel(frame: CGRect(x:0,y:4,width:tw/3,height:th/2))
+            let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:4,width:tw/3,height:th/2))
+            let label3 = UILabel(frame: CGRect(x:tw*2/3 - 5 ,y:4,width:tw/3 - 10,height:th/2))
+            label1.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
+            label2.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
+            label3.font = UIFont(name: "ChalkboardSE-Bold", size: 16)//ChalkboardSE-Bold//Optima-ExtraBlack
             label1.text = "　page"
-            label2.text = "memo"
+            label2.text = "title"
             label3.text = "update"
             label2.textAlignment = .center
             //label2.backgroundColor = UIColor.lightGray
             label3.textAlignment = .right
-
+            //ラベルの下に白線を追加する
+            let senW = UIView(frame: CGRect(x:15,y:titleV.frame.height - 7,width:titleV.frame.width - 25,height:3))
+            senW.backgroundColor = UIColor.white//gray.withAlphaComponent(0.5)
             titleV.addSubview(label1)
             titleV.addSubview(label2)
             titleV.addSubview(label3)
+            titleV.addSubview(senW)
    
             // ** メモ表示内容の初期化 **
             let im = readPage(pn:1)//１ページ目の外部データを読み込む
@@ -701,6 +712,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
         settingRead()//設定値を読み込む
         self.view.addSubview(underNav)//ナビゲーション下線を追加
+        
+        //redo2.image = UIImage(named:"redo.png")// tintColor = UIColor.white
+        
+        
     }
     
     //  ======= End of viewDidLoad=======
@@ -716,8 +731,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var index2: UIBarButtonItem!
     @IBOutlet weak var pallete2: UIBarButtonItem!
     @IBOutlet weak var done2: UIBarButtonItem!
-    
     @IBOutlet weak var zoom2: UIBarButtonItem!
+    @IBOutlet weak var redo2: UIBarButtonItem!
     
     //INDEXの表示・非表示
     var retNum:Int = 0
@@ -774,7 +789,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.view.addSubview(self.titleV)
             })
             //ステータスバーの色を変える
-            statusBarBackground.backgroundColor = iColor            // ナビゲーションを透明にする処理
+            statusBarBackground.backgroundColor = iColor            // ナビゲーションを変更する処理
             self.setNaviBar(color: iColor)
             isIndexMode = true
             fNum = 0
@@ -1006,7 +1021,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func done(_ sender: UIBarButtonItem) {
         print("cursolWFlag:\(cursolWFlag)")
-        if bigFlag == true{ return}
+        if bigFlag == true{
+            zoom(zoom2)
+            return
+        }
         //---------- パレット編集時 ---------------------------
         if isEditMode == true{//パレットが表示されている場合
             //カーソルモードが選択された場合
@@ -1100,10 +1118,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 etcBarDisp(disp:0)//マスクビューを非表示にする
             //スクロールviewを合わせる
                 myScrollView.frame = self.scrollRect_B// メモframeの値を設定する
-            //線幅：☓0.8
+            //線幅：☓0.8(少し細くする）
             //停止する事：←シフト、editパネル、OKボタン（⇒専用）、selectNo(),
             bigFlag = true
-                
+            //拡大鏡アイコンを表示する
+            editButton1.setImage(UIImage(named: "big2.pdf"), for:UIControlState.normal)
             }else{
                 print("bigSize:")
                 let cx = drawableView.center.x
@@ -1124,6 +1143,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 
             //線幅：元に戻す
             bigFlag = false
+            //赤▲アイコンに戻す
+            editButton1.setImage(UIImage(named: "redUp.png"), for:UIControlState.normal)
                 
             }
             
@@ -1403,11 +1424,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let rt = CGFloat(retina)
         let targetIV = memo[fNum].viewWithTag(tag) as! UIImageView
         let tImage = targetIV.image
-        //ピクセル画像のサイズ
-        let pixWidth:CGFloat = leafWidth! * rt
-        let pixHeight:CGFloat = leafHeight * rt
+        //ピクセル画像のサイズ:leaf画像サイズを変更した場合は要サイズ調整!
+        let pixWidth:CGFloat = vWidth/3 * rt//leafWidth! * rt
+        let pixHeight:CGFloat = vHeight/3 * rt//leafHeight * rt
         //切り取りサイズ
-        let clip02 = CGRect(x:10,y:6,width: pixWidth - 60*rt,height: pixHeight)
+        let clip02 = CGRect(x:10,y:0,width: pixWidth - 130*rt,height: pixHeight)
+
         //ピクセル画面での切り取り
         let clipImage02 =  (tImage?.cgImage!)!.cropping(to: clip02)
          print("◆◆CGIサイズ:\(tImage?.cgImage?.width):index画面")
@@ -1451,7 +1473,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
        
         //画面全体をイメージ化する
          let orgImage = indexFView.GetImage()
-        return orgImage.addIndexText(text:st,rect:img03.frame.offsetBy(dx: 4, dy: 2))
+        return orgImage.addIndexText(text:st,rect:img03.frame.offsetBy(dx: 3, dy: 4))
       
     }
  
@@ -1594,8 +1616,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     /* リストメニュー選択時の処理 */
     func fc1(){
+        //タイトル行が空白の場合はパス
+        if Int(mx[String(pageNum*100 + 1)]!)<50{
+        // アラート表示
+        let alert = UIAlertView()
+        alert.title = "タイトルが未記入です！"
+        alert.message = "１行目にタイトルを記載して下さい。"
+        alert.addButton(withTitle: "OK")
+        alert.show();
+        return
+        }
         memo[fNum].addDate(pn:pageNum)//日付追加
-        mx[String(nowGyouNo)] = vWidth - 10//mx[]を右端に設定
+        mx[String(pageNum*100 + 1)]! = vWidth - 10//mx[]を右端に設定
+        //mx[String(nowGyouNo)] = vWidth - 10//mx[]を右端に設定
         //編集中のページ内容を更新する
         let im = memo[fNum].memoToImgs(pn: pageNum)
         //メモ内容を外部に保存
@@ -1979,7 +2012,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if myEditFlag == false { return }
         editButton1.backgroundColor = UIColor.clear
         //editButton1.setTitle("💠", for: UIControlState.normal)
-        editButton1.setImage(UIImage(named: "red3.png"), for:UIControlState.normal)
+        editButton1.setImage(UIImage(named: "redUP.png"), for:UIControlState.normal)
         myEditView.removeFromSuperview()
         drawableView.secondView.cursolView.removeFromSuperview()
         myEditFlag = false; editFlag = false
@@ -1989,15 +2022,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func btn1_click(sender:UIButton){
         print("** btn1_click()")
-        if bigFlag == true{ return}
+        if bigFlag == true{
+           zoom(zoom2)
+           return
+        }
 
         if myEditFlag == false{//エディット画面を表示する
             done(done2)// okボタンを押す
             clearSelect()//編集ツールを非選択状態にする
             editButton1.backgroundColor = UIColor.clear
             //editButton1.setTitle("⬇", for: UIControlState.normal)
-            editButton1.setImage(UIImage(named: "green3a.png"), for:UIControlState.normal)
-            
+            editButton1.setImage(UIImage(named: "grayDown.png"), for:UIControlState.normal)
+            //無理やり色を変えています
+            editButton1.tintColor = UIColor.darkGray
             self.view.addSubview(myEditView)
             myEditFlag = true; editFlag = false//前者:エディット画面,後者:エディットモード
             //パレット画面のイベントの非透過
@@ -2006,7 +2043,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             editButton2.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
             editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
             editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
-            //◆◆◆◆
+            //◆◆◆◆redo対応
             drawableView.get1VImage()
             cursolWFlag = false//カーソル巾５以下フラグにリセットする
         }else{//エディット画面を非表示にする
@@ -2023,13 +2060,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if drawableView.X_color == 1{return}//ペンモード以外はパス
         if penColorNum == 1 {
             penColorNum = 2
-            editButton2.setImage(UIImage(named: "ハート.png"), for:UIControlState.normal)
+            editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
         }else if penColorNum == 2{
             penColorNum = 3
-            editButton2.setImage(UIImage(named: "三つ葉.png"), for:UIControlState.normal)
+            editButton2.setImage(UIImage(named: "blue.png"), for:UIControlState.normal)
         }else{
             penColorNum = 1
-            editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
+            editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         }
     }
     
@@ -2038,9 +2075,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         closeEditView()//パレット編集画面を閉じる
         drawableView.X_color = 0//ペンモード[黒色、赤色、青色]
         penColorNum = 1//黒色
-        editButton2.setImage(UIImage(named: "スペード.png"), for:UIControlState.normal)
-        editButton3.backgroundColor = UIColor.init(white: 0.5, alpha: 1)
+        editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
+        editButton3.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
+        editButton3.layer.borderWidth = 0.5
+        editButton4.layer.borderWidth = 0
     }///
     func btn3_click(sender:UIButton){
         print("btn3_clicked!：ペンモード")
@@ -2053,9 +2092,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
         drawableView.X_color = 1//消しゴムモード
-        editButton2.setImage(UIImage(named: "ダイヤ２.png"), for:UIControlState.normal)
+        editButton2.setImage(UIImage(named: "white.png"), for:UIControlState.normal)
         editButton4.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
+        editButton4.layer.borderWidth = 0.5
+        editButton3.layer.borderWidth = 0
     }
     
     func editorModeStart(){
