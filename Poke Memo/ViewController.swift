@@ -12,6 +12,12 @@ enum DashedLineType {
     case All,Top,Down,Right,Left
 }
 
+extension UIColor {
+    class func rgb(r r: Int, g: Int, b: Int, alpha: CGFloat) -> UIColor{
+        return UIColor(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: alpha)
+    }
+}
+
 extension UIView {
     
     func drawDashedLine(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber, type: DashedLineType) -> UIView {
@@ -198,12 +204,12 @@ extension UIImage {
     }
     func addText_Date(text:String)-> UIImage{
         let text = text
-        let font = UIFont.boldSystemFont(ofSize: 22)
+        let font = UIFont.boldSystemFont(ofSize: 24)
         let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
         //UIGraphicsBeginImageContext(self.size)
         UIGraphicsBeginImageContextWithOptions(self.size,false,0.0)
         self.draw(in: imageRect)
-        let textRect  = CGRect(x:self.size.width - 120, y:0, width:120, height:self.size.height - 5)
+        let textRect  = CGRect(x:self.size.width - 130, y:0, width:120, height:self.size.height - 5)
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
@@ -443,10 +449,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //ツールViewのボタンの生成　[2][3][4]   [1]
         // button1の追加
-        editButton1 = UIButton(frame: CGRect(x:boundWidth - 65,y: 5, width:40, height:40))
-        editButton1.backgroundColor = UIColor.clear  // タイトルを設定する(通常時)
+        editButton1 = UIButton(frame: CGRect(x:boundWidth - 65,y: 0, width:40, height:40))
+        editButton1.backgroundColor = UIColor.clear // タイトルを設定する(通常時)
         //editButton1.setTitle("💠", for: UIControlState.normal)
-        editButton1.setImage(UIImage(named: "redUp.png"), for:UIControlState.normal)
+
+        editButton1.setImage(UIImage(named: "3Up.pdf"), for:UIControlState.normal)
         // イベントを追加する
         editButton1.addTarget(self, action: #selector(ViewController.btn1_click(sender:)), for: .touchDown)
         
@@ -499,42 +506,43 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sp:CGFloat = 10 + (boundWidth - 315)/10 //20ボタン間のスペース
         
         let bW:CGFloat = 45.0//ボタンの幅
+        let bH:CGFloat = 45.0//ボタンの高さ
         let b2W:CGFloat = 40.0//矢印ボタンの幅
         let tW:CGFloat = sp + bW//各ボタン間の距離
         let sp2:CGFloat = (boundWidth - (bW*4 + b2W*2 + sp*5))/2//両側のスペース
         let x05 = b2W + sp + sp2//cW - CGFloat(2*tW - sp/2)//左端のボタン(05)の位置
         //button5の追加
-        editButton5 = UIButton(frame: CGRect(x:x05, y:10, width:bW, height:40))
+        editButton5 = UIButton(frame: CGRect(x:x05, y:10, width:bW, height:bH))
         editButton5.backgroundColor = UIColor.clear
         editButton5.layer.cornerRadius = 8
         //editButton5.layer.masksToBounds = true
         editButton5.addTarget(self, action: #selector(ViewController.btn5_click(sender:)), for:.touchUpInside)
-        editButton5.setImage(UIImage(named: "OVRW.png"), for:UIControlState.normal)
+        editButton5.setImage(UIImage(named: "OVW2.png"), for:UIControlState.normal)
         //editButton5.setTitle("5", for: UIControlState.normal)
         myEditView.addSubview(editButton5)
  
         //button6の追加
-        editButton6 = UIButton(frame: CGRect(x:x05 + tW, y:10, width:bW, height:40))
+        editButton6 = UIButton(frame: CGRect(x:x05 + tW, y:10, width:bW, height:bH))
         editButton6.backgroundColor = UIColor.clear
         editButton6.layer.cornerRadius = 8
         editButton6.addTarget(self, action: #selector(ViewController.btn6_click(sender:)), for:.touchUpInside)
-        editButton6.setImage(UIImage(named: "INS.png"), for:UIControlState.normal)
+        editButton6.setImage(UIImage(named: "INS2.png"), for:UIControlState.normal)
         //editButton6.setTitle("6", for: UIControlState.normal)
         myEditView.addSubview(editButton6)
         //button7の追加
-        editButton7 = UIButton(frame: CGRect(x:x05 + tW*2,y: 10,width: bW, height:40))
+        editButton7 = UIButton(frame: CGRect(x:x05 + tW*2,y: 10,width: bW, height:bH))
         editButton7.backgroundColor = UIColor.clear
         editButton7.layer.cornerRadius = 8
         editButton7.addTarget(self, action: #selector(ViewController.btn7_click(sender:)), for:.touchUpInside)
-        editButton7.setImage(UIImage(named: "DEL.png"), for:UIControlState.normal)
+        editButton7.setImage(UIImage(named: "DEL2.png"), for:UIControlState.normal)
         //editButton7.setTitle("7", for: UIControlState.normal)
         myEditView.addSubview(editButton7)
         //button8の追加
-        editButton8 = UIButton(frame: CGRect(x:x05 + tW*3, y:10, width:bW,height: 40))
+        editButton8 = UIButton(frame: CGRect(x:x05 + tW*3, y:10, width:bW,height: bH))
         editButton8.backgroundColor = UIColor.clear
         editButton8.layer.cornerRadius = 8
         editButton8.addTarget(self, action: #selector(ViewController.btn8_click(sender:)), for:.touchUpInside)
-        editButton8.setImage(UIImage(named: "CLR.png"), for:UIControlState.normal)
+        editButton8.setImage(UIImage(named: "CLR2.png"), for:UIControlState.normal)
         //editButton8.setTitle("8", for: UIControlState.normal)
         myEditView.addSubview(editButton8)
         
@@ -542,14 +550,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton9.backgroundColor = UIColor.clear
         editButton9.layer.cornerRadius = 8
         editButton9.addTarget(self, action: #selector(ViewController.btn9_click(sender:)), for:.touchDown)
-        editButton9.setTitle("|<", for: UIControlState.normal)
+        editButton9.setImage(UIImage(named: "2Left.png"), for:UIControlState.normal)
+        //editButton9.setTitle("|<", for: UIControlState.normal)
         myEditView.addSubview(editButton9)
         
         editButton10 = UIButton(frame: CGRect(x:x05 + tW*4, y:5, width:40,height: 45))
         editButton10.backgroundColor = UIColor.clear
         editButton10.layer.cornerRadius = 8
         editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchDown)
-        editButton10.setTitle(">|", for: UIControlState.normal)
+        editButton10.setImage(UIImage(named: "2Right.png"), for:UIControlState.normal)
+        //editButton10.setTitle(">|", for: UIControlState.normal)
         myEditView.addSubview(editButton10)
 
         
@@ -620,13 +630,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
             //indexタイトルの作成
             titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
-            titleV.backgroundColor = UIColor.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
+            titleV.backgroundColor = UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
+                //.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
             //titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
             let tw = titleV.frame.width
             let th = titleV.frame.height*1.2
             let label1 = UILabel(frame: CGRect(x:0,y:4,width:tw/3,height:th/2))
             let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:4,width:tw/3,height:th/2))
-            let label3 = UILabel(frame: CGRect(x:tw*2/3 - 5 ,y:4,width:tw/3 - 10,height:th/2))
+            let label3 = UILabel(frame: CGRect(x:tw*2/3 - 5 ,y:4,width:tw/3 - 15,height:th/2))
             label1.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
             label2.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
             label3.font = UIFont(name: "ChalkboardSE-Bold", size: 16)//ChalkboardSE-Bold//Optima-ExtraBlack
@@ -638,7 +649,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             label3.textAlignment = .right
             //ラベルの下に白線を追加する
             let senW = UIView(frame: CGRect(x:15,y:titleV.frame.height - 7,width:titleV.frame.width - 25,height:3))
-            senW.backgroundColor = UIColor.white//gray.withAlphaComponent(0.5)
+            senW.backgroundColor = UIColor.brown//gray.withAlphaComponent(0.5)
             titleV.addSubview(label1)
             titleV.addSubview(label2)
             titleV.addSubview(label3)
@@ -797,7 +808,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[0].delCursol()
             print("retNum1: \(retNum)")
            
-            myScrollView.backgroundColor =  UIColor.orange.withAlphaComponent(0.5)
+            myScrollView.backgroundColor =  UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
+                //.orange.withAlphaComponent(0.5)
             
 
         }else{//Indexページが表示中の場合
@@ -1122,6 +1134,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //停止する事：←シフト、editパネル、OKボタン（⇒専用）、selectNo(),
             bigFlag = true
             //拡大鏡アイコンを表示する
+            editButton1.frame.size = CGSize(width:60, height:60)//ボタンサイズを変更
             editButton1.setImage(UIImage(named: "big2.pdf"), for:UIControlState.normal)
             }else{
                 print("bigSize:")
@@ -1144,7 +1157,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //線幅：元に戻す
             bigFlag = false
             //赤▲アイコンに戻す
-            editButton1.setImage(UIImage(named: "redUp.png"), for:UIControlState.normal)
+            editButton1.frame.size = CGSize(width:40, height:40)//ボタンサイズを元に戻す
+            editButton1.setImage(UIImage(named: "3Up.pdf"), for:UIControlState.normal)
                 
             }
             
@@ -2012,7 +2026,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if myEditFlag == false { return }
         editButton1.backgroundColor = UIColor.clear
         //editButton1.setTitle("💠", for: UIControlState.normal)
-        editButton1.setImage(UIImage(named: "redUP.png"), for:UIControlState.normal)
+        editButton1.setImage(UIImage(named: "3Up.pdf"), for:UIControlState.normal)
         myEditView.removeFromSuperview()
         drawableView.secondView.cursolView.removeFromSuperview()
         myEditFlag = false; editFlag = false
@@ -2032,7 +2046,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             clearSelect()//編集ツールを非選択状態にする
             editButton1.backgroundColor = UIColor.clear
             //editButton1.setTitle("⬇", for: UIControlState.normal)
-            editButton1.setImage(UIImage(named: "grayDown.png"), for:UIControlState.normal)
+            editButton1.setImage(UIImage(named: "3Down.pdf"), for:UIControlState.normal)
             //無理やり色を変えています
             editButton1.tintColor = UIColor.darkGray
             self.view.addSubview(myEditView)
@@ -2063,7 +2077,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
         }else if penColorNum == 2{
             penColorNum = 3
-            editButton2.setImage(UIImage(named: "blue.png"), for:UIControlState.normal)
+            var thirdColor:UIImage!
+            
+            switch lineColor {
+              case 0:thirdColor = UIImage(named: "blue.png")
+              case 1:thirdColor = UIImage(named: "green2.png")
+              case 2:thirdColor = UIImage(named: "brown2.png")
+              default:break
+            }
+            editButton2.setImage(thirdColor, for:UIControlState.normal)
         }else{
             penColorNum = 1
             editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)

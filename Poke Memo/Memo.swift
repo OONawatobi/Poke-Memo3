@@ -28,10 +28,13 @@ class MemoView:UIView{
        let compM = Calendar.Component.month
        let compD = Calendar.Component.day
        let y = NSCalendar.current.component(compY, from: Date() as Date)
+       let y2 = y - 2000
        let m = NSCalendar.current.component(compM, from: Date() as Date)
        let d = NSCalendar.current.component(compD, from: Date() as Date)
-       //デバグ用　let m2 = 12 ;let d2 = 15//デバグ用
-       let st = String(format: "%4d-%2d-%2d",y,m,d)
+       //デバグ用　
+        let m2 = 12 ;let d2 = 15//デバグ用
+       //let st = String(format: "%4d-%2d-%2d",y,m2,d2)
+       let st = String(format: "%2d/%2d  '%2d",m2,d2,y2)
        //日付を追加する
        let tag = pn*100 +  1
        let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView

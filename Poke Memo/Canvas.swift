@@ -346,7 +346,7 @@ class DrawableView: UIView {
             }else{//第３番目の色：設定色
                switch lineColor {
                 case 0:penC = UIColor.blue
-                case 1:penC = UIColor.green
+                case 1:penC = UIColor.rgb(r: 0, g: 147, b: 87, alpha: 1)
                 case 2:penC = UIColor.brown
                 default:break
                }
