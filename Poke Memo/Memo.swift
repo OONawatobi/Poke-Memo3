@@ -31,10 +31,9 @@ class MemoView:UIView{
        let y2 = y - 2000
        let m = NSCalendar.current.component(compM, from: Date() as Date)
        let d = NSCalendar.current.component(compD, from: Date() as Date)
-       //デバグ用　
-        let m2 = 12 ;let d2 = 15//デバグ用
+       //デバグ用　let m2 = 12 ;let d2 = 15//デバグ用
        //let st = String(format: "%4d-%2d-%2d",y,m2,d2)
-       let st = String(format: "%2d/%2d  '%2d",m2,d2,y2)
+       let st = String(format: "%2d/%2d  '%2d",m,d,y2)
        //日付を追加する
        let tag = pn*100 +  1
        let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
@@ -162,7 +161,7 @@ class MemoView:UIView{
         
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
         let gColor = UIColor.green.withAlphaComponent(0.1)
-        let wColor = UIColor.white
+        //let wColor = UIColor.white
         let cColor = UIColor.orange.withAlphaComponent(0.3)
         //Indexページの場合は色を変える
         let backColor = (isIndexMode == true) ? cColor : gColor
@@ -287,13 +286,13 @@ class MemoView:UIView{
     func memoToImgs(pn:Int) ->[UIImage]{
         var img:[UIImage] = []
         //メモ行の画像を順にimg[]にコピーする
-        var temp:CGFloat = 0
+        //var temp:CGFloat = 0:プリント文の為
         for idx in 0..<pageGyou{
             let tag = pn*100 + idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
             img.append(targetMemo.image!)
             if idx<2{//◆テストです
-            temp = targetMemo.image!.size.height
+            //temp = targetMemo.image!.size.height
             //print("◎　memo ⇒UP[]")
             //print("◆targetMemo.image!(30)のサイズ: \(temp)")
             //print("🔳cgimageのサイズ: \(targetMemo.image?.cgImage?.height)")

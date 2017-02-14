@@ -13,7 +13,7 @@ enum DashedLineType {
 }
 
 extension UIColor {
-    class func rgb(r r: Int, g: Int, b: Int, alpha: CGFloat) -> UIColor{
+    class func rgb(r: Int, g: Int, b: Int, alpha: CGFloat) -> UIColor{
         return UIColor(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: alpha)
     }
 }
@@ -305,6 +305,7 @@ var lineWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
 var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:brown]
 var autoScrollFlag = true//自動スクロールOn/Offフラグ
 var myLabel:UILabel!//自動スクロールOn/Off表示用
+var lastPage:Int = 1//最後に編集したたページ番号
 var bImage:UIImage!//ブランク画像
 //------------------------------------------------------------------------
 
@@ -512,37 +513,37 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sp2:CGFloat = (boundWidth - (bW*4 + b2W*2 + sp*5))/2//両側のスペース
         let x05 = b2W + sp + sp2//cW - CGFloat(2*tW - sp/2)//左端のボタン(05)の位置
         //button5の追加
-        editButton5 = UIButton(frame: CGRect(x:x05, y:10, width:bW, height:bH))
+        editButton5 = UIButton(frame: CGRect(x:x05, y:8, width:bW, height:bH))
         editButton5.backgroundColor = UIColor.clear
         editButton5.layer.cornerRadius = 8
         //editButton5.layer.masksToBounds = true
         editButton5.addTarget(self, action: #selector(ViewController.btn5_click(sender:)), for:.touchUpInside)
-        editButton5.setImage(UIImage(named: "OVW2.png"), for:UIControlState.normal)
+        editButton5.setImage(UIImage(named: "OVW3.png"),for:UIControlState.normal)
         //editButton5.setTitle("5", for: UIControlState.normal)
         myEditView.addSubview(editButton5)
  
         //button6の追加
-        editButton6 = UIButton(frame: CGRect(x:x05 + tW, y:10, width:bW, height:bH))
+        editButton6 = UIButton(frame: CGRect(x:x05 + tW, y:8, width:bW, height:bH))
         editButton6.backgroundColor = UIColor.clear
         editButton6.layer.cornerRadius = 8
         editButton6.addTarget(self, action: #selector(ViewController.btn6_click(sender:)), for:.touchUpInside)
-        editButton6.setImage(UIImage(named: "INS2.png"), for:UIControlState.normal)
+        editButton6.setImage(UIImage(named: "INS3.png"), for:UIControlState.normal)
         //editButton6.setTitle("6", for: UIControlState.normal)
         myEditView.addSubview(editButton6)
         //button7の追加
-        editButton7 = UIButton(frame: CGRect(x:x05 + tW*2,y: 10,width: bW, height:bH))
+        editButton7 = UIButton(frame: CGRect(x:x05 + tW*2,y: 8,width: bW, height:bH))
         editButton7.backgroundColor = UIColor.clear
         editButton7.layer.cornerRadius = 8
         editButton7.addTarget(self, action: #selector(ViewController.btn7_click(sender:)), for:.touchUpInside)
-        editButton7.setImage(UIImage(named: "DEL2.png"), for:UIControlState.normal)
+        editButton7.setImage(UIImage(named: "DEL3.png"), for:UIControlState.normal)
         //editButton7.setTitle("7", for: UIControlState.normal)
         myEditView.addSubview(editButton7)
         //button8の追加
-        editButton8 = UIButton(frame: CGRect(x:x05 + tW*3, y:10, width:bW,height: bH))
+        editButton8 = UIButton(frame: CGRect(x:x05 + tW*3, y:8, width:bW,height: bH))
         editButton8.backgroundColor = UIColor.clear
         editButton8.layer.cornerRadius = 8
         editButton8.addTarget(self, action: #selector(ViewController.btn8_click(sender:)), for:.touchUpInside)
-        editButton8.setImage(UIImage(named: "CLR2.png"), for:UIControlState.normal)
+        editButton8.setImage(UIImage(named: "CLR3.png"), for:UIControlState.normal)
         //editButton8.setTitle("8", for: UIControlState.normal)
         myEditView.addSubview(editButton8)
         
@@ -630,7 +631,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
             //indexタイトルの作成
             titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
-            titleV.backgroundColor = UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
+            titleV.backgroundColor = UIColor.rgb(r: 236, g: 223, b: 43, alpha: 1)
                 //.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
             //titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
             let tw = titleV.frame.width
@@ -656,11 +657,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             titleV.addSubview(senW)
    
             // ** メモ表示内容の初期化 **
-            let im = readPage(pn:1)//１ページ目の外部データを読み込む
-            memo[1].setMemoFromImgs(pn:1,imgs:im)
+            //設定値を読み込む
+            settingRead()//前回終了時の保存データを読み込む
+            let openPage:Int = lastPage
+            pageNum = lastPage//ページ番号を設定する
+            let im = readPage(pn:openPage)//１ページ目の外部データを読み込む
+            memo[1].setMemoFromImgs(pn:openPage,imgs:im)
             fNum = 1
             //nowGyouNoの更新
-            nowGyouNo = 1 * 100 + 1//１頁の１行目
+            nowGyouNo = openPage * 100 + 1//１頁の１行目
             myScrollView.addSubview((memo[1]))
             self.view.addSubview(myScrollView)
             myScrollView.contentOffset = CGPoint(x:0,y: 0)
@@ -721,11 +726,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
-        settingRead()//設定値を読み込む
+
         self.view.addSubview(underNav)//ナビゲーション下線を追加
-        
-        //redo2.image = UIImage(named:"redo.png")// tintColor = UIColor.white
-        
+
         
     }
     
@@ -1028,6 +1031,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("numOfUsedLine:\(numOfUsedLine(pn:pageNum))")
         //ペンモードの初期化
         penMode()//黒ペンモードにする
+        settingWite()//設定値を外部に保存する
 
     }
     
@@ -1197,11 +1201,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let colorNum = String(lineColor)
         let lineWNum = String(lineWidth)
         let autoScroll = autoScrollFlag ? "1" :"0"
+        let lPage = String(pageNum)
+        
         let ud = UserDefaults.standard
         // キーを指定してオブジェクトを保存
         ud.set(colorNum, forKey: "color")
         ud.set(lineWNum, forKey: "width")
         ud.set(autoScroll, forKey: "auto")
+        ud.set(lPage, forKey: "page")
 
         ud.synchronize()
         
@@ -1211,7 +1218,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //キーを指定してオブジェクトを読み込み
         if ud.object(forKey: "color") == nil{return}
         if ud.object(forKey: "auto") == nil{return}
-
+        if ud.object(forKey: "page") == nil{return}
+            
         let colorNum = ud.object(forKey: "color") as! String
         let lineWNum = ud.object(forKey: "width") as! String
         
@@ -1221,6 +1229,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let autoScroll = ud.object(forKey: "auto") as! String
         let at = Int(autoScroll)!
         autoScrollFlag = (at == 1) ? true : false
+        
+        let lPage = ud.object(forKey: "page") as! String
+        lastPage = Int(lPage)!
       
     }
     
@@ -1286,7 +1297,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func longPress(){
         print("longPush")
         if myScrollView.isLongPushed == false{//チャタリング防止作
-            // ** [INDEXページ] **
+            // == [INDEXページ] ==
             if isIndexMode == true{
               //登録されてない頁番号の場合は、パスする
                 //let shou:Int = nowGyouNo
@@ -1295,7 +1306,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 if Double(mx[String(nowGyouNo)]!) > 30{return}//念のため：ダメな対応
               //飛び先ページを指定
                 //-------
-                let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号:0ページの為tag番号（一桁）がページ番号を現す。
+                let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号:Int[0ページの為tag番号（一桁）がページ番号を現す。]
                 print("===========\(nextNum)====================")
                 let im = readPage(pn:nextNum!)//外部から取得する
                 fNum = 1
@@ -1313,7 +1324,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 nowGyouNo = nextNum!*100 + 1
             // ** [メモページ] **
             }else{
-            //メモページの場合
+            //  == [メモページの場合] ==
               //仮想的にeditボタンを押す
               let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号
               self.Pallete(self.pallete2)//パレットを開く
@@ -2327,7 +2338,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //Indexページでもmx[]を使用する
            mxTemp = mx[String(nowGyouNo)]
   
-
         //パレット表示中
         if isEditMode == true{
             //パレット編集ツールを閉じる
@@ -2371,7 +2381,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("🔳cg-imgサイズ：\(img.cgImage?.height)")
     */
     }
-    
+    //パレットの表示位置を変更する
     func dispPosChange(midX: CGFloat,deltaX:CGFloat){// protocol UpperToolViewDelegate
         //print("midX: \(midX)")
         let b = (bigFlag == true) ? big:1
@@ -2458,53 +2468,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          userDefault.removeObjectForKey("id")
          */
     }
- 
-    //これから読み込むUserDataに存在するページ数を取得する
-    func UserDataNum2()->Int{
-        //print(NSUserDefaults.standardUserDefaults().dictionaryRepresentation())
-        
-        let photoData = UserDefaults.standard
-        let dic: NSDictionary = photoData.dictionaryRepresentation() as NSDictionary
-        let keys = dic.allKeys
-        var kn = 0
-        for k in 0...20{
-            let key = "photos" + String(k + 1)
-            let found = keys.contains(where: { return $0 as! String == key })
-            if found == false { break}
-            kn = kn + 1
-        }
-        print("OK Google!: \(kn)")
-        return kn
-    }
 
-
-
-    //---- ページデータの読み込み・作成　-------------
- 
-     //UserDrfaultの頁数を調べる
-     let dataPn = UserDataNum2()//保管してあるページ数
-     //pageImgs[]の初期化(必要なページ分だけで作る)
-     var num:Int = 0
-     if dataPn != 0{
-     let sa = dataPn - pageImgs.count + 1
-     if sa > 0{ num = sa }else{ num = 3 }
-     for _ in 1...num{
-     createNewPageImg2()
-     }
-     //imgsに保存データを読み込む
-     for _ in 0..<dataPn{
-     //readUserData2(pn: i)
-     }
-     }else{//保存ページが1つもない場合
-     for _ in 0..<3{
-     createNewPageImg2()//pageImgs[]にappendする
-     }
-     }
-     
-     //3ページの作成：pageImgs[[30],[30],[30]]
-     for _ in 0..<3{
-     createNewPageImg2()//pageImgs[]にappendする
-     }
 */
 //-----------------------------------------------------------------------------
 

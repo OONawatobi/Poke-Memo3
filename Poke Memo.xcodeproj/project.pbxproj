@@ -42,6 +42,10 @@
 		30C8EE051E4F6DB500192B06 /* pen21.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C8EE041E4F6DB500192B06 /* pen21.png */; };
 		30C8EE071E4F6F5800192B06 /* white.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C8EE061E4F6F5800192B06 /* white.png */; };
 		30C8EE091E4F6F6500192B06 /* blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C8EE081E4F6F6500192B06 /* blue.png */; };
+		30D9DE501E52D455005B4E62 /* CLR3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9DE4F1E52D455005B4E62 /* CLR3.png */; };
+		30D9DE541E52D6BE005B4E62 /* DEL3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9DE531E52D6BE005B4E62 /* DEL3.png */; };
+		30D9DE571E52D99F005B4E62 /* OVW3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9DE551E52D99F005B4E62 /* OVW3.png */; };
+		30D9DE581E52D99F005B4E62 /* INS3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9DE561E52D99F005B4E62 /* INS3.png */; };
 		30D9F3321E13B82B00142144 /* pen2.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F3301E13B82B00142144 /* pen2.png */; };
 		30D9F3331E13B82B00142144 /* keshi.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9F3311E13B82B00142144 /* keshi.png */; };
 		30DAD8881DE5C3040068FF45 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAD8871DE5C3040068FF45 /* AppDelegate.swift */; };
@@ -110,6 +114,10 @@
 		30C8EE041E4F6DB500192B06 /* pen21.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen21.png; sourceTree = "<group>"; };
 		30C8EE061E4F6F5800192B06 /* white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = white.png; sourceTree = "<group>"; };
 		30C8EE081E4F6F6500192B06 /* blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue.png; sourceTree = "<group>"; };
+		30D9DE4F1E52D455005B4E62 /* CLR3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CLR3.png; sourceTree = "<group>"; };
+		30D9DE531E52D6BE005B4E62 /* DEL3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DEL3.png; sourceTree = "<group>"; };
+		30D9DE551E52D99F005B4E62 /* OVW3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OVW3.png; sourceTree = "<group>"; };
+		30D9DE561E52D99F005B4E62 /* INS3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = INS3.png; sourceTree = "<group>"; };
 		30D9F3301E13B82B00142144 /* pen2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen2.png; sourceTree = "<group>"; };
 		30D9F3311E13B82B00142144 /* keshi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = keshi.png; sourceTree = "<group>"; };
 		30DAD8841DE5C3040068FF45 /* Poke Memo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Poke Memo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,6 +167,10 @@
 		30C2B1841DEB24F60069A5DF /* Imgs */ = {
 			isa = PBXGroup;
 			children = (
+				30D9DE551E52D99F005B4E62 /* OVW3.png */,
+				30D9DE561E52D99F005B4E62 /* INS3.png */,
+				30D9DE531E52D6BE005B4E62 /* DEL3.png */,
+				30D9DE4F1E52D455005B4E62 /* CLR3.png */,
 				303C93141E51D08B00E465AB /* green2.png */,
 				303C93151E51D08B00E465AB /* brown2.png */,
 				303C93101E51B2DE00E465AB /* 2Left.png */,
@@ -376,7 +388,9 @@
 				30BE70B61E14BF3A00B9F52E /* green3a.png in Resources */,
 				30E326A61E474E5B00DD6686 /* lines.png in Resources */,
 				301AD3751E1F7296004B1858 /* index.png in Resources */,
+				30D9DE541E52D6BE005B4E62 /* DEL3.png in Resources */,
 				301AD36B1E1E55A2004B1858 /* redo.png in Resources */,
+				30D9DE581E52D99F005B4E62 /* INS3.png in Resources */,
 				307542A81E516DA900A82B1C /* red3.png in Resources */,
 				303C93161E51D08B00E465AB /* green2.png in Resources */,
 				30E326A41E474D1700DD6686 /* 3lines.png in Resources */,
@@ -394,6 +408,8 @@
 				306672091E4F495700A9CFAC /* redUp.png in Resources */,
 				30C8EE091E4F6F6500192B06 /* blue.png in Resources */,
 				308BDDDE1E3CDA13006F1504 /* blankX.png in Resources */,
+				30D9DE501E52D455005B4E62 /* CLR3.png in Resources */,
+				30D9DE571E52D99F005B4E62 /* OVW3.png in Resources */,
 				30D9F3321E13B82B00142144 /* pen2.png in Resources */,
 				30DEDDDA1E0D25A40051C829 /* 僕の世界.jpg in Resources */,
 				30403F401E3DFDD7004120EB /* ok@2x.png in Resources */,
