@@ -25,7 +25,7 @@ class DrawableView: UIView {
     var bup = [String:(UIImage,CGFloat)]() //["key":(img,mx)]
     //key⇒ (["0"],["1"],["2"],["7"],["8"],["temp"])
     var undoMode:Int = 0 //[0,1,2,7,8]
-    
+    var editOK:Bool = false//編集確定時の[OK]ボタン実行フラグ
     //:Undo/REDO
     func undo() {
         
@@ -56,7 +56,9 @@ class DrawableView: UIView {
           lastDrawImage = nil
           bup["temp"] = bup["1"]
           bup["1"] = bup["10"]
-          self.Delegate?.upToMemo()//パレット内容をメモに移す
+          //if editOK == false{//編集パネル非表示
+            self.Delegate?.upToMemo()//パレット内容をメモに移す
+          //}
           print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
           undoMode = 7
             
@@ -68,6 +70,7 @@ class DrawableView: UIView {
           bup["1"] = bup["temp"]
           bup["temp"] = nil
           self.Delegate?.upToMemo()//パレット内容をメモに移す
+        
           print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
           undoMode = 1
         }

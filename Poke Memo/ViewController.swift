@@ -307,6 +307,8 @@ var autoScrollFlag = true//自動スクロールOn/Offフラグ
 var myLabel:UILabel!//自動スクロールOn/Off表示用
 var lastPage:Int = 1//最後に編集したたページ番号
 var bImage:UIImage!//ブランク画像
+var helpView: HelpView! = nil//ヘルプ画面
+
 //------------------------------------------------------------------------
 
 protocol ScrollView2Delegate{//スクロールビューの操作(機能）
@@ -328,7 +330,7 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
 
 //    =======  ViewController    ========
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate{
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate, UIWebViewDelegate{
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
     var statusBarBackground:UIView!
@@ -352,7 +354,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var setV2:UIView!//設定画面
     var nColor:UIColor!//ナビゲーションバーの色
     var iColor:UIColor!//indexページのナビバーの色
-    
+    var helpTop:UIView!//ヘルプ画面topエリア
+    var jButton:UIButton!//ヘルプ画面:日本語
+    var eButton:UIButton!//ヘルプ画面:English
+    var rButton:UIButton!//ヘルプ画面:[X]閉じる
+    var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
     //var bView:UIView!//ブランクビュー
     //var setFlag:Bool = false
     //var isIndexMode:Bool! = false//Indexの表示フラグ：
@@ -386,7 +392,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
-    var items: [String] = ["","日付を追加", "表示中のページを削除", "全変更を破棄元に戻す","　","各種設定","スタートガイドを見る","                ▲ "]
+    var items: [String] = ["","日付を追加", "表示中のページを削除", "表示中のページを印刷","　","各種設定","スタートガイドを見る","                ▲ "]
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
     //var mask:UIView!
@@ -477,7 +483,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton3.layer.borderWidth = 0
         editButton3.addTarget(self, action: #selector(ViewController.btn3_click(sender:)), for:.touchUpInside)
         //editButton3.setTitle("3", for: UIControlState.normal)
-        editButton3.setImage(UIImage(named: "pen2.pdf"), for:UIControlState.normal)
+        editButton3.setImage(UIImage(named: "pen3.pdf"), for:UIControlState.normal)
         
         /** button4の追加 **/
         editButton4 = UIButton(frame: CGRect(x:125, y:5, width:30, height:30))
@@ -676,14 +682,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             tl.layer.borderWidth = 0
             tl.layer.cornerRadius = 10
             tl.layer.masksToBounds = true
-            //tl.sizeToFit()
             tl.textColor = UIColor.white
             tl.textAlignment = .center
             tl.backgroundColor = UIColor.clear
             tl.text = String(pageNum) + " /30"
             naviBar.topItem?.titleView = tl
-            //リストボタン以外にはマスクを掛ける
-            //mask = UIView(frame: CGRect(x: boundWidth - 100, y: 21, width: 100, height: 42))
             
             // **mx[]の読み込み・初期化 **
             mx = loadMx()
@@ -726,9 +729,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
-
         self.view.addSubview(underNav)//ナビゲーション下線を追加
-
         
     }
     
@@ -836,10 +837,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     //self.mask.removeFromSuperview()
                     //ステータスバーの色を変える
                     self.statusBarBackground.backgroundColor = self.nColor
-                    // ナビゲーションを透明にする処理
+                    // ナビゲーションの色を変える
                     self.setNaviBar(color: self.nColor)
-                    
-                    
 /*
  self.navigationController?.navigationBar.setBackgroundImage(UIImage(named:"blankP.png"), for: UIBarPosition.any , barMetrics: UIBarMetrics.default)
  */
@@ -1045,15 +1044,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isEditMode == true{//パレットが表示されている場合
             //カーソルモードが選択された場合
             if editFlag == true{
-                if cursolWFlag == true{
-                //カーソル幅が狭い場合では🐞する
+               if cursolWFlag == true{ //カーソル幅が有る場合(狭い場合では🐞）
  
                     //カーソル画面を撤去する
                     drawableView.secondView.cursolView.removeFromSuperview()
                     drawableView.thirdView.removeFromSuperview()
                 
                     //編集結果画面を取得する
-                    var editedView:UIImage!
+                    var editedView:UIImage!//編集結果画面View
                     if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
                        editedView = bImage//UIImage(named:"blankW.png")
                         //パレットの位置を先頭にする
@@ -1063,7 +1061,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         mx[String(nowGyouNo)] = 0
                         mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
                       
-                    }else{
+                    }else{ //編集パネル”CLR”以外の処理はココで行う
                        editedView = drawableView.secondView.editPallete(sel: myInt)
                     }
                     //編集結果画面をパレットに反映させる
@@ -1083,26 +1081,31 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     closeEditView()
                     // okボタンを押す：パレット内容をメモに移す
                     //done(done2)
-                    upToMemo()//パレット内容をメモに移す(mx[],index情報の更新も含む）
-                    //◆◆◆◆
-                    drawableView.get1VImage()
-                }else{
+                //’17/2/15修正（パレット編集処理時にはメモに反映しないように変更予定？まだ！）
+                //編集結果確定[OK]ボタンが押された場合を区別するフラグ
+                    drawableView.editOK = true//編集パネル非表示中
+                    //upToMemo()//パレット内容をメモに移す(mx[],index情報の更新も含む）
+                    drawableView.get1VImage()//◆◆◆◆
+                //
+                }else{ //カーソル幅が狭い場合）
                     print("カーソル巾がゼロです")
                     //カーソルを削除する
                     drawableView.secondView.cursolView.removeFromSuperview()
-                    //編集画面を閉じる
-                    closeEditView()
-                    
+                    closeEditView()//編集画面を閉じる
                 }
                 
-            /** パレット入力時における処理 **/
-            }else{
-            
+            /** パレット入力時における処理(編集パネル非表示）**/
+            }else
+            {
               //編集画面表示中で編集モードが選択されていない場合はパス
               if myEditFlag == true && editFlag == false{return}
+              //編集結果確定[OK]ボタンが押された場合を区別するフラグ
+              drawableView.editOK = false//編集パネル非表示
               upToMemo()//パレット画面をメモ行にコピーする
-              //◆◆◆◆
-              drawableView.get1VImage()
+
+                
+              drawableView.get1VImage()//◆◆◆◆
+                
             }
             
         // == debug2 ==========================================================
@@ -1174,7 +1177,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("@@ undo @@")
         //print("◆◆◆◆undoFLG:\(drawableView.undoMode)")
         //print("bup[10]=\(drawableView.bup["10"])")
-        if editFlag == true{return}
+        if editFlag == true{return}//編集パネル表示中は🐞
         if drawableView.undoMode == 0{return}
         drawableView.undo()
 
@@ -1700,8 +1703,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     
     }
+
     func fc3(){
         print("test3!!!!!")
+        let mW = memo[fNum].frame.size.width*2
+        let mH = memo[fNum].frame.size.height*2
+        var im = memo[fNum].GetImage()
+        im = im.ResizeUIImage(width : mW, height : mH)
+        showPrinterPicker(image:im)//印刷する
+    /*
         for n in 0...100{
             //メモに書き出した内容をパレットに読み込む:resize2(size: reSize)
             let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
@@ -1712,9 +1722,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("[\(n)]nowGyouNo:\(nowGyouNo)")
             //upToMemo()
         }
-        // 指定キー"index"の値のみを削除
-        //let userDefault = UserDefaults.standard
-        //userDefault.removeObject(forKey: "index")
+    */
     }
     
     func fc5(){ // = 設定 =
@@ -2023,10 +2031,51 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
       }
         tempDelAll = 0
     }
-
     
-    func fc6(){
+    func fc6(){//------- ヘルプ画面 ------------
         print("test6!!!!!")
+        //----TOPエリアの作成-----
+        helpTop = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:64))
+        helpTop.backgroundColor = UIColor.black
+        //
+        let hl = UILabel(frame: CGRect(x: 20, y: 10, width: 150, height: 40))
+        hl.textColor = UIColor.yellow
+        hl.textAlignment = .left
+        hl.backgroundColor = UIColor.clear
+        hl.font = UIFont(name: "ChalkboardSE-Bold", size: 26)
+        hl.text = "Start Guide"
+        //言語切替ボタンを追加:jButton,eButton
+        jButton = UIButton(frame: CGRect(x:boundWidth/2 + 20,y:30, width:60, height:40))
+        eButton = UIButton(frame: CGRect(x:boundWidth/2 + 90,y:30, width:60, height:40))
+        jButton.backgroundColor = UIColor.clear
+        eButton.backgroundColor = UIColor.clear
+        jButton.showsTouchWhenHighlighted = true
+        eButton.showsTouchWhenHighlighted = true
+        // タイトルを設定する(通常時)
+        jButton.setTitle("日本語", for: UIControlState.normal)
+        eButton.setTitle("English", for: UIControlState.normal)
+        jButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        eButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        // イベントを追加する
+        jButton.addTarget(self, action: #selector(ViewController.Ja_click(sender:)), for: .touchUpInside)
+        eButton.addTarget(self, action: #selector(ViewController.En_click(sender:)), for: .touchUpInside)
+        //戻る(終了）ボタンを追加
+        rButton = UIButton(frame: CGRect(x:boundWidth - 40,y:0, width:40, height:40))
+        rButton.setTitle("X", for: UIControlState.normal)
+        rButton.addTarget(self, action: #selector(ViewController.Re_click(sender:)), for: .touchUpInside)
+        helpTop.addSubview(hl)
+        helpTop.addSubview(jButton)
+        helpTop.addSubview(eButton)
+        helpTop.addSubview(rButton)
+        self.view.addSubview(helpTop)
+        //------helpViewの作成----------
+        if helpView == nil{
+            helpView = HelpView(frame: CGRect(x:0, y:64,width:boundWidth, height:boundHeight - 64))
+            helpView.backgroundColor = UIColor.white
+           helpView.delegate = self
+           helpView.req(lang:langFlag)
+           self.view.addSubview(helpView)
+        }
         
     }
     
@@ -2239,7 +2288,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
  
     }
-    
+    func Ja_click(sender:UIButton){
+        langFlag = 0
+        helpView.req(lang:langFlag)
+    }
+    func En_click(sender:UIButton){
+        langFlag = 1
+        helpView.req(lang:langFlag)
+    }
+    func Re_click(sender:UIButton){//ヘルプ画面を閉じる
+        helpView.removeFromSuperview()
+        helpView = nil
+        helpTop.removeFromSuperview()
+        //langFlagを保存する
+        
+    }
     
    /* -------------------　スワイプ関数　---------------------------- */
     
@@ -2434,7 +2497,48 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func shiftMX(){
         done(done2)// okボタンを押す
     }
-
+    //--------------------------------------------------------------------
+    /** AirPrint　**/
+    func showPrinterPicker(image:UIImage) {
+        // UIPrinterPickerControllerのインスタンス化
+        let printerPicker = UIPrinterPickerController(initiallySelectedPrinter: nil)
+        // UIPrinterPickerControllerをモーダル表示する
+        printerPicker.present(animated: true, completionHandler: {
+            [unowned self] printerPickerController, userDidSelect, error in
+            if (error != nil) {
+                // エラー
+                print("Error : \(error)")
+            } else {
+                // 選択したUIPrinterを取得する
+                if let printer: UIPrinter = printerPickerController.selectedPrinter {
+                    print("Printer : \(printer.displayName)")
+                    self.printToPrinter(printer: printer,pi:image)//印刷
+                } else {
+                    print("Printer is not selected")
+                }
+            }
+        })
+    }
+    
+    func printToPrinter(printer: UIPrinter,pi:UIImage) {
+        //印刷画像を用意する
+        let printImage:UIImage = pi//UIImage(named: "DEL3.png")!
+        
+        // 印刷してみる
+        //if
+            let printIntaractionController:UIPrintInteractionController = UIPrintInteractionController.shared
+        //{
+             let info = UIPrintInfo(dictionary: nil)
+             info.jobName = "Sample Print"
+             info.orientation = .portrait
+             printIntaractionController.printInfo = info
+             printIntaractionController.printingItem = printImage
+             printIntaractionController.print(to: printer, completionHandler: {
+                controller, completed, error in
+                
+            })
+        //}
+    }
     
   //----------------------------------------------------------------
   //                  旧ボタン関数(未使用）                             |

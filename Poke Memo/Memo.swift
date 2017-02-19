@@ -59,11 +59,13 @@ class MemoView:UIView{
             if debug1 == true{
                 //print("== Debug01モード ==")
               targetMemo.image = targetMemo.image?.addText(text: String(tag))
-            }else{//print("==  ==")
             }
-            if idx == 0 && pn == 0{
-                targetMemo.image = targetMemo.image?.addText(text: "INDEX")
-            }
+            
+            //if idx == 0 && pn == 0{
+            //    targetMemo.image = targetMemo.image?.addText(text: "INDEX")
+            //}
+            
+            //プリント用
             if idx == 0{
                 temp = (targetMemo.image?.size.height)!
                 temp2 = CGFloat(targetMemo.image!.cgImage!.height)
@@ -217,15 +219,20 @@ class MemoView:UIView{
             let yPos:CGFloat = topOffset2 + (leafHeight + leafMargin)*CGFloat(idx + 1) - leafHeight/2
             myLeaf.layer.position = CGPoint(x: pagePosX , y:yPos)
             
-            if pn>0{  //メモページの場合
+            if pn>0{  // == メモページの場合 ==
             //leafの枠の下線を灰色にする
               if idx == 0 || idx == pageGyou - 1{
                 myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
               }else{
-                myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 1, type: .Down)
+                myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 2, type: .Down)
               }
-            }else{  //indexページの場合
-                //myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 0.5, lineSize: 2, spaceSize: 2, type: .Down)
+                
+            }else{  // == indexページの場合 ==
+            /*
+                if idx == pageGyou - 1{
+                  myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.0)
+                }
+             */
             }
             
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330

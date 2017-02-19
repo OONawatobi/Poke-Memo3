@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "30DAD8831DE5C3040068FF45"
-               BuildableName = "Poke Memo.app"
-               BlueprintName = "Poke Memo"
-               ReferencedContainer = "container:Poke Memo.xcodeproj">
+               BuildableName = "Happy_Memo.app"
+               BlueprintName = "Happy_Memo"
+               ReferencedContainer = "container:Happy_Memo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "30DAD8971DE5C3040068FF45"
-               BuildableName = "Poke MemoTests.xctest"
-               BlueprintName = "Poke MemoTests"
-               ReferencedContainer = "container:Poke Memo.xcodeproj">
+               BuildableName = "Happy_MemoTests.xctest"
+               BlueprintName = "Happy_MemoTests"
+               ReferencedContainer = "container:Happy_Memo.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "30DAD8A21DE5C3040068FF45"
-               BuildableName = "Poke MemoUITests.xctest"
-               BlueprintName = "Poke MemoUITests"
-               ReferencedContainer = "container:Poke Memo.xcodeproj">
+               BuildableName = "Happy_MemoUITests.xctest"
+               BlueprintName = "Happy_MemoUITests"
+               ReferencedContainer = "container:Happy_Memo.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "30DAD8831DE5C3040068FF45"
-            BuildableName = "Poke Memo.app"
-            BlueprintName = "Poke Memo"
-            ReferencedContainer = "container:Poke Memo.xcodeproj">
+            BuildableName = "Happy_Memo.app"
+            BlueprintName = "Happy_Memo"
+            ReferencedContainer = "container:Happy_Memo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "30DAD8831DE5C3040068FF45"
-            BuildableName = "Poke Memo.app"
-            BlueprintName = "Poke Memo"
-            ReferencedContainer = "container:Poke Memo.xcodeproj">
+            BuildableName = "Happy_Memo.app"
+            BlueprintName = "Happy_Memo"
+            ReferencedContainer = "container:Happy_Memo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "30DAD8831DE5C3040068FF45"
-            BuildableName = "Poke Memo.app"
-            BlueprintName = "Poke Memo"
-            ReferencedContainer = "container:Poke Memo.xcodeproj">
+            BuildableName = "Happy_Memo.app"
+            BlueprintName = "Happy_Memo"
+            ReferencedContainer = "container:Happy_Memo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

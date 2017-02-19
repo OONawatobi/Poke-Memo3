@@ -28,6 +28,7 @@
 		307542A81E516DA900A82B1C /* red3.png in Resources */ = {isa = PBXBuildFile; fileRef = 307542A71E516DA900A82B1C /* red3.png */; };
 		307542AA1E516DC900A82B1C /* green3.png in Resources */ = {isa = PBXBuildFile; fileRef = 307542A91E516DC900A82B1C /* green3.png */; };
 		308BDDDE1E3CDA13006F1504 /* blankX.png in Resources */ = {isa = PBXBuildFile; fileRef = 308BDDDD1E3CDA13006F1504 /* blankX.png */; };
+		30A400CC1E5934B8007384B2 /* index3x.html in Resources */ = {isa = PBXBuildFile; fileRef = 30A400CB1E5934B8007384B2 /* index3x.html */; };
 		30BE70A81E14009D00B9F52E /* 2lines.png in Resources */ = {isa = PBXBuildFile; fileRef = 30BE70A71E14009D00B9F52E /* 2lines.png */; };
 		30BE70B31E1410E100B9F52E /* red3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30BE70B11E1410E100B9F52E /* red3.png */; };
 		30BE70B61E14BF3A00B9F52E /* green3a.png in Resources */ = {isa = PBXBuildFile; fileRef = 30BE70B51E14BF3A00B9F52E /* green3a.png */; };
@@ -42,6 +43,7 @@
 		30C8EE051E4F6DB500192B06 /* pen21.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C8EE041E4F6DB500192B06 /* pen21.png */; };
 		30C8EE071E4F6F5800192B06 /* white.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C8EE061E4F6F5800192B06 /* white.png */; };
 		30C8EE091E4F6F6500192B06 /* blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C8EE081E4F6F6500192B06 /* blue.png */; };
+		30D196141E54227A003C5AAC /* Help.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D196131E54227A003C5AAC /* Help.swift */; };
 		30D9DE501E52D455005B4E62 /* CLR3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9DE4F1E52D455005B4E62 /* CLR3.png */; };
 		30D9DE541E52D6BE005B4E62 /* DEL3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9DE531E52D6BE005B4E62 /* DEL3.png */; };
 		30D9DE571E52D99F005B4E62 /* OVW3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30D9DE551E52D99F005B4E62 /* OVW3.png */; };
@@ -59,6 +61,12 @@
 		30DEDDDC1E0D428C0051C829 /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DEDDDB1E0D428C0051C829 /* Editor.swift */; };
 		30E326A41E474D1700DD6686 /* 3lines.png in Resources */ = {isa = PBXBuildFile; fileRef = 30E326A31E474D1700DD6686 /* 3lines.png */; };
 		30E326A61E474E5B00DD6686 /* lines.png in Resources */ = {isa = PBXBuildFile; fileRef = 30E326A51E474E5B00DD6686 /* lines.png */; };
+		30F07AB61E57FFBF005EC600 /* indexEn.html in Resources */ = {isa = PBXBuildFile; fileRef = 30F07AB41E57FFBF005EC600 /* indexEn.html */; };
+		30F07AB71E57FFBF005EC600 /* indexEn.html in Resources */ = {isa = PBXBuildFile; fileRef = 30F07AB41E57FFBF005EC600 /* indexEn.html */; };
+		30F07AB81E57FFBF005EC600 /* indexEn.html in Resources */ = {isa = PBXBuildFile; fileRef = 30F07AB41E57FFBF005EC600 /* indexEn.html */; };
+		30F07AB91E57FFBF005EC600 /* indexJa.html in Resources */ = {isa = PBXBuildFile; fileRef = 30F07AB51E57FFBF005EC600 /* indexJa.html */; };
+		30F07ABA1E57FFBF005EC600 /* indexJa.html in Resources */ = {isa = PBXBuildFile; fileRef = 30F07AB51E57FFBF005EC600 /* indexJa.html */; };
+		30F07ABB1E57FFBF005EC600 /* indexJa.html in Resources */ = {isa = PBXBuildFile; fileRef = 30F07AB51E57FFBF005EC600 /* indexJa.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +108,7 @@
 		307542A71E516DA900A82B1C /* red3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = red3.png; sourceTree = "<group>"; };
 		307542A91E516DC900A82B1C /* green3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green3.png; sourceTree = "<group>"; };
 		308BDDDD1E3CDA13006F1504 /* blankX.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blankX.png; sourceTree = "<group>"; };
+		30A400CB1E5934B8007384B2 /* index3x.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index3x.html; sourceTree = "<group>"; };
 		30BE70A71E14009D00B9F52E /* 2lines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2lines.png; sourceTree = "<group>"; };
 		30BE70B11E1410E100B9F52E /* red3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = red3.png; sourceTree = "<group>"; };
 		30BE70B51E14BF3A00B9F52E /* green3a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green3a.png; sourceTree = "<group>"; };
@@ -114,29 +123,32 @@
 		30C8EE041E4F6DB500192B06 /* pen21.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen21.png; sourceTree = "<group>"; };
 		30C8EE061E4F6F5800192B06 /* white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = white.png; sourceTree = "<group>"; };
 		30C8EE081E4F6F6500192B06 /* blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue.png; sourceTree = "<group>"; };
+		30D196131E54227A003C5AAC /* Help.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help.swift; sourceTree = "<group>"; };
 		30D9DE4F1E52D455005B4E62 /* CLR3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CLR3.png; sourceTree = "<group>"; };
 		30D9DE531E52D6BE005B4E62 /* DEL3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DEL3.png; sourceTree = "<group>"; };
 		30D9DE551E52D99F005B4E62 /* OVW3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = OVW3.png; sourceTree = "<group>"; };
 		30D9DE561E52D99F005B4E62 /* INS3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = INS3.png; sourceTree = "<group>"; };
 		30D9F3301E13B82B00142144 /* pen2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen2.png; sourceTree = "<group>"; };
 		30D9F3311E13B82B00142144 /* keshi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = keshi.png; sourceTree = "<group>"; };
-		30DAD8841DE5C3040068FF45 /* Poke Memo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Poke Memo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30DAD8841DE5C3040068FF45 /* Happy_Memo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Happy_Memo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30DAD8871DE5C3040068FF45 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30DAD8891DE5C3040068FF45 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		30DAD88C1DE5C3040068FF45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		30DAD88E1DE5C3040068FF45 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		30DAD8911DE5C3040068FF45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		30DAD8931DE5C3040068FF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		30DAD8981DE5C3040068FF45 /* Poke MemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Poke MemoTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30DAD8981DE5C3040068FF45 /* Happy_MemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Happy_MemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		30DAD89C1DE5C3040068FF45 /* Poke_MemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Poke_MemoTests.swift; sourceTree = "<group>"; };
 		30DAD89E1DE5C3040068FF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		30DAD8A31DE5C3040068FF45 /* Poke MemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Poke MemoUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30DAD8A31DE5C3040068FF45 /* Happy_MemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Happy_MemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		30DAD8A71DE5C3040068FF45 /* Poke_MemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Poke_MemoUITests.swift; sourceTree = "<group>"; };
 		30DAD8A91DE5C3040068FF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30DEDDD91E0D25A40051C829 /* 僕の世界.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "僕の世界.jpg"; sourceTree = "<group>"; };
 		30DEDDDB1E0D428C0051C829 /* Editor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
 		30E326A31E474D1700DD6686 /* 3lines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3lines.png; sourceTree = "<group>"; };
 		30E326A51E474E5B00DD6686 /* lines.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lines.png; sourceTree = "<group>"; };
+		30F07AB41E57FFBF005EC600 /* indexEn.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = indexEn.html; sourceTree = "<group>"; };
+		30F07AB51E57FFBF005EC600 /* indexJa.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = indexJa.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,9 +237,9 @@
 		30DAD8851DE5C3040068FF45 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				30DAD8841DE5C3040068FF45 /* Poke Memo.app */,
-				30DAD8981DE5C3040068FF45 /* Poke MemoTests.xctest */,
-				30DAD8A31DE5C3040068FF45 /* Poke MemoUITests.xctest */,
+				30DAD8841DE5C3040068FF45 /* Happy_Memo.app */,
+				30DAD8981DE5C3040068FF45 /* Happy_MemoTests.xctest */,
+				30DAD8A31DE5C3040068FF45 /* Happy_MemoUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -235,10 +247,15 @@
 		30DAD8861DE5C3040068FF45 /* Poke Memo */ = {
 			isa = PBXGroup;
 			children = (
+				30F07AB31E574C67005EC600 /* resources */,
 				30C2B1841DEB24F60069A5DF /* Imgs */,
 				30DAD8901DE5C3040068FF45 /* LaunchScreen.storyboard */,
 				30DAD8871DE5C3040068FF45 /* AppDelegate.swift */,
+				30F07AB41E57FFBF005EC600 /* indexEn.html */,
+				30A400CB1E5934B8007384B2 /* index3x.html */,
+				30F07AB51E57FFBF005EC600 /* indexJa.html */,
 				30DAD8891DE5C3040068FF45 /* ViewController.swift */,
+				30D196131E54227A003C5AAC /* Help.swift */,
 				30DEDDDB1E0D428C0051C829 /* Editor.swift */,
 				30419DEE1DFFC58D00D22C8A /* Canvas.swift */,
 				30C2B1801DEB1DFF0069A5DF /* TouchScroll.swift */,
@@ -248,7 +265,7 @@
 				30DAD8931DE5C3040068FF45 /* Info.plist */,
 			);
 			path = "Poke Memo";
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		30DAD89B1DE5C3040068FF45 /* Poke MemoTests */ = {
 			isa = PBXGroup;
@@ -268,12 +285,19 @@
 			path = "Poke MemoUITests";
 			sourceTree = "<group>";
 		};
+		30F07AB31E574C67005EC600 /* resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		30DAD8831DE5C3040068FF45 /* Poke Memo */ = {
+		30DAD8831DE5C3040068FF45 /* Happy_Memo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 30DAD8AC1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke Memo" */;
+			buildConfigurationList = 30DAD8AC1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Happy_Memo" */;
 			buildPhases = (
 				30DAD8801DE5C3040068FF45 /* Sources */,
 				30DAD8811DE5C3040068FF45 /* Frameworks */,
@@ -283,14 +307,14 @@
 			);
 			dependencies = (
 			);
-			name = "Poke Memo";
+			name = Happy_Memo;
 			productName = "Poke Memo";
-			productReference = 30DAD8841DE5C3040068FF45 /* Poke Memo.app */;
+			productReference = 30DAD8841DE5C3040068FF45 /* Happy_Memo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		30DAD8971DE5C3040068FF45 /* Poke MemoTests */ = {
+		30DAD8971DE5C3040068FF45 /* Happy_MemoTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 30DAD8AF1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke MemoTests" */;
+			buildConfigurationList = 30DAD8AF1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Happy_MemoTests" */;
 			buildPhases = (
 				30DAD8941DE5C3040068FF45 /* Sources */,
 				30DAD8951DE5C3040068FF45 /* Frameworks */,
@@ -301,14 +325,14 @@
 			dependencies = (
 				30DAD89A1DE5C3040068FF45 /* PBXTargetDependency */,
 			);
-			name = "Poke MemoTests";
+			name = Happy_MemoTests;
 			productName = "Poke MemoTests";
-			productReference = 30DAD8981DE5C3040068FF45 /* Poke MemoTests.xctest */;
+			productReference = 30DAD8981DE5C3040068FF45 /* Happy_MemoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		30DAD8A21DE5C3040068FF45 /* Poke MemoUITests */ = {
+		30DAD8A21DE5C3040068FF45 /* Happy_MemoUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 30DAD8B21DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke MemoUITests" */;
+			buildConfigurationList = 30DAD8B21DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Happy_MemoUITests" */;
 			buildPhases = (
 				30DAD89F1DE5C3040068FF45 /* Sources */,
 				30DAD8A01DE5C3040068FF45 /* Frameworks */,
@@ -319,9 +343,9 @@
 			dependencies = (
 				30DAD8A51DE5C3040068FF45 /* PBXTargetDependency */,
 			);
-			name = "Poke MemoUITests";
+			name = Happy_MemoUITests;
 			productName = "Poke MemoUITests";
-			productReference = 30DAD8A31DE5C3040068FF45 /* Poke MemoUITests.xctest */;
+			productReference = 30DAD8A31DE5C3040068FF45 /* Happy_MemoUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -353,7 +377,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 30DAD87F1DE5C3040068FF45 /* Build configuration list for PBXProject "Poke Memo" */;
+			buildConfigurationList = 30DAD87F1DE5C3040068FF45 /* Build configuration list for PBXProject "Happy_Memo" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -366,9 +390,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				30DAD8831DE5C3040068FF45 /* Poke Memo */,
-				30DAD8971DE5C3040068FF45 /* Poke MemoTests */,
-				30DAD8A21DE5C3040068FF45 /* Poke MemoUITests */,
+				30DAD8831DE5C3040068FF45 /* Happy_Memo */,
+				30DAD8971DE5C3040068FF45 /* Happy_MemoTests */,
+				30DAD8A21DE5C3040068FF45 /* Happy_MemoUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -381,6 +405,7 @@
 				30403F3E1E3DF833004120EB /* zoom@2x.png in Resources */,
 				303C930E1E51AE1900E465AB /* CLR2.png in Resources */,
 				30DAD8921DE5C3040068FF45 /* LaunchScreen.storyboard in Resources */,
+				30A400CC1E5934B8007384B2 /* index3x.html in Resources */,
 				303C93131E51B2DE00E465AB /* 2Right.png in Resources */,
 				30DAD88F1DE5C3040068FF45 /* Assets.xcassets in Resources */,
 				307542AA1E516DC900A82B1C /* green3.png in Resources */,
@@ -419,6 +444,8 @@
 				306671F01E4F26CE00A9CFAC /* black2.png in Resources */,
 				30C8EE071E4F6F5800192B06 /* white.png in Resources */,
 				303C93121E51B2DE00E465AB /* 2Left.png in Resources */,
+				30F07AB61E57FFBF005EC600 /* indexEn.html in Resources */,
+				30F07AB91E57FFBF005EC600 /* indexJa.html in Resources */,
 				30DAD88D1DE5C3040068FF45 /* Main.storyboard in Resources */,
 				3066720A1E4F495700A9CFAC /* greenDown.png in Resources */,
 				30C2B1921DEB259D0069A5DF /* blankP.png in Resources */,
@@ -429,6 +456,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30F07ABA1E57FFBF005EC600 /* indexJa.html in Resources */,
+				30F07AB71E57FFBF005EC600 /* indexEn.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,6 +465,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30F07ABB1E57FFBF005EC600 /* indexJa.html in Resources */,
+				30F07AB81E57FFBF005EC600 /* indexEn.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30D196141E54227A003C5AAC /* Help.swift in Sources */,
 				30DEDDDC1E0D428C0051C829 /* Editor.swift in Sources */,
 				30DAD88A1DE5C3040068FF45 /* ViewController.swift in Sources */,
 				30C2B1811DEB1DFF0069A5DF /* TouchScroll.swift in Sources */,
@@ -476,12 +508,12 @@
 /* Begin PBXTargetDependency section */
 		30DAD89A1DE5C3040068FF45 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 30DAD8831DE5C3040068FF45 /* Poke Memo */;
+			target = 30DAD8831DE5C3040068FF45 /* Happy_Memo */;
 			targetProxy = 30DAD8991DE5C3040068FF45 /* PBXContainerItemProxy */;
 		};
 		30DAD8A51DE5C3040068FF45 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 30DAD8831DE5C3040068FF45 /* Poke Memo */;
+			target = 30DAD8831DE5C3040068FF45 /* Happy_Memo */;
 			targetProxy = 30DAD8A41DE5C3040068FF45 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -546,7 +578,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -590,7 +622,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -638,7 +670,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mm289.Poke-MemoTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Poke Memo.app/Poke Memo";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Happy_Memo.app/Happy_Memo";
 			};
 			name = Debug;
 		};
@@ -653,7 +685,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mm289.Poke-MemoTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Poke Memo.app/Poke Memo";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Happy_Memo.app/Happy_Memo";
 			};
 			name = Release;
 		};
@@ -688,7 +720,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		30DAD87F1DE5C3040068FF45 /* Build configuration list for PBXProject "Poke Memo" */ = {
+		30DAD87F1DE5C3040068FF45 /* Build configuration list for PBXProject "Happy_Memo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30DAD8AA1DE5C3040068FF45 /* Debug */,
@@ -697,7 +729,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		30DAD8AC1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke Memo" */ = {
+		30DAD8AC1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Happy_Memo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30DAD8AD1DE5C3040068FF45 /* Debug */,
@@ -706,7 +738,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		30DAD8AF1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke MemoTests" */ = {
+		30DAD8AF1DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Happy_MemoTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30DAD8B01DE5C3040068FF45 /* Debug */,
@@ -715,7 +747,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		30DAD8B21DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Poke MemoUITests" */ = {
+		30DAD8B21DE5C3040068FF45 /* Build configuration list for PBXNativeTarget "Happy_MemoUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30DAD8B31DE5C3040068FF45 /* Debug */,
