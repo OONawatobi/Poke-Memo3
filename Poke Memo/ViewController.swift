@@ -751,6 +751,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     //INDEXの表示・非表示
     var retNum:Int = 0
+    var changing:Bool = false
+    
     @IBAction func index(_ sender: UIBarButtonItem) {
         //拡大表示の時はパス
         if bigFlag == true{ return}
@@ -766,7 +768,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             menu(menu2)
         }
 
-        //if isEditMode == true { return }//パレットが表示中は実行しない
+        if changing == true { return }//Indexを開き切るまでは受け付けない
+        changing = true//開く(閉じる)ジェスチャーを開始する
         //memo[0]-[2]に枠を追加する
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
@@ -797,11 +800,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.tl.font = UIFont(name: "ChalkboardSE-Bold", size: 20)
                 //self.tl.font = "Cooper Std"//"HiraKakuProN-W3"//"Chalkboard SE"//"Optima-ExtraBlack"//AmericanTypewriter-Bold//"Optima-ExtraBlack"//"Chalkduster"//Euphemia UCAS
                 self.naviBar.topItem?.titleView = self.tl
-                //naviBar.topItem?.title = "--  INDEX  --"
+                //↑はこれでもOK:naviBar.topItem?.title = "--  INDEX  --"
                 //self.view.addSubview(self.mask)
                  self.myScrollView.frame = self.scrollRect_I
                 self.myScrollView.contentOffset.y = 0//スクロール位置：TOP
                 self.view.addSubview(self.titleV)
+                self.changing = false//開く(閉じる)ジェスチャーを終了する
             })
             //ステータスバーの色を変える
             statusBarBackground.backgroundColor = iColor            // ナビゲーションを変更する処理
@@ -839,6 +843,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     self.statusBarBackground.backgroundColor = self.nColor
                     // ナビゲーションの色を変える
                     self.setNaviBar(color: self.nColor)
+                    self.changing = false//開く(閉じる)ジェスチャーを終了する
 /*
  self.navigationController?.navigationBar.setBackgroundImage(UIImage(named:"blankP.png"), for: UIBarPosition.any , barMetrics: UIBarMetrics.default)
  */
@@ -1238,9 +1243,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
       
     }
     
-    //UIViewの内容をDocumentディレクトリにPDFファイルで出力する？？？？
+    // <未使用>　UIViewの内容をDocumentディレクトリにPDFファイルで出力する？？？？
     func pdfMake(vi: UIView, path: String) {
-        //UIGraphicsBeginPDFContextToFile(path, CGRect.zero, nil)
+        UIGraphicsBeginPDFContextToFile(path, CGRect.zero, nil)
         //renderView(view)
         if let context = UIGraphicsGetCurrentContext() {
             
@@ -1642,8 +1647,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if num == 4{return}
         self.menu(self.menu2)//メニューボタンを押す
     }
-    /* リストメニュー選択時の処理 */
-    func fc1(){
+    // ------------- リストメニュー選択時の処理 -------------------------- //
+    func fc1(){// [ 日付を追加する ]
         //タイトル行が空白の場合はパス
         if Int(mx[String(pageNum*100 + 1)]!)<50{
         // アラート表示
@@ -1676,9 +1681,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     */
     }
     
-    func fc2(){
+    func fc2(){// [ 現行ベージの内容を削除する ]
         print("test2!!!!!")
-        //現行ベージの内容を削除する
         //indexリストに対象の頁番号を登録を抹消する(登録済頁だけがタッチ反応する）
         mx[String(pageNum)] = 0
         
@@ -1704,7 +1708,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     }
 
-    func fc3(){
+    func fc3(){// [ 現行ページを印刷する ]
         print("test3!!!!!")
         let mW = memo[fNum].frame.size.width*2
         let mH = memo[fNum].frame.size.height*2
@@ -1725,7 +1729,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     */
     }
     
-    func fc5(){ // = 設定 =
+    func fc5(){ // [ = 設定 = ]
         print("test5!!!!!")
         //setV2 = UIView(frame: setV.frame)//初期値
         setV2 = UIView(frame:CGRect(x:0,y:0,width: 400, height: 600))//表示初期値
@@ -2032,21 +2036,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tempDelAll = 0
     }
     
-    func fc6(){//------- ヘルプ画面 ------------
+    func fc6(){// [ スタートガイド ]
         print("test6!!!!!")
         //----TOPエリアの作成-----
         helpTop = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:64))
         helpTop.backgroundColor = UIColor.black
         //
-        let hl = UILabel(frame: CGRect(x: 20, y: 10, width: 150, height: 40))
+        let hl = UILabel(frame: CGRect(x: boundWidth/2
+             - 75, y: 0, width: 150, height: 40))
         hl.textColor = UIColor.yellow
         hl.textAlignment = .left
         hl.backgroundColor = UIColor.clear
         hl.font = UIFont(name: "ChalkboardSE-Bold", size: 26)
         hl.text = "Start Guide"
         //言語切替ボタンを追加:jButton,eButton
-        jButton = UIButton(frame: CGRect(x:boundWidth/2 + 20,y:30, width:60, height:40))
-        eButton = UIButton(frame: CGRect(x:boundWidth/2 + 90,y:30, width:60, height:40))
+        jButton = UIButton(frame: CGRect(x:boundWidth - 150,y:30, width:60, height:40))
+        eButton = UIButton(frame: CGRect(x:boundWidth - 70,y:30, width:60, height:40))
         jButton.backgroundColor = UIColor.clear
         eButton.backgroundColor = UIColor.clear
         jButton.showsTouchWhenHighlighted = true
@@ -2054,14 +2059,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // タイトルを設定する(通常時)
         jButton.setTitle("日本語", for: UIControlState.normal)
         eButton.setTitle("English", for: UIControlState.normal)
-        jButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        eButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        jButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        eButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         // イベントを追加する
         jButton.addTarget(self, action: #selector(ViewController.Ja_click(sender:)), for: .touchUpInside)
         eButton.addTarget(self, action: #selector(ViewController.En_click(sender:)), for: .touchUpInside)
         //戻る(終了）ボタンを追加
-        rButton = UIButton(frame: CGRect(x:boundWidth - 40,y:0, width:40, height:40))
-        rButton.setTitle("X", for: UIControlState.normal)
+        rButton = UIButton(frame: CGRect(x:10,y:20, width:30, height:30))
+        //rButton.backgroundColor = UIColor.white
+        rButton.setImage(UIImage(named: "2Left.png"), for:UIControlState.normal)
         rButton.addTarget(self, action: #selector(ViewController.Re_click(sender:)), for: .touchUpInside)
         helpTop.addSubview(hl)
         helpTop.addSubview(jButton)
