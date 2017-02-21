@@ -256,6 +256,7 @@ class EditorView: UIView {
     
 
     func downSize(image: UIImage, scale: Int) -> UIImage {
+        print("=downSize01=")
         let ref: CGImage = image.cgImage!
         let srcWidth: Int = ref.width
         let srcHeight: Int = ref.height
@@ -265,8 +266,9 @@ class EditorView: UIView {
         let newHeight = srcHeight / myScale
         let size: CGSize = CGSize(width: newWidth, height: newHeight)
         UIGraphicsBeginImageContext(size)
+        print("=downSize02=")
         image.draw(in: CGRect(x:0,y:0,width:size.width,height:size.height))
-        
+        print("=downSize03=")
         let resizeImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return resizeImage!
