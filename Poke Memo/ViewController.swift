@@ -1716,7 +1716,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var im = memo[fNum].GetImage()
         //im = im.ResizeUIImage(width : mW, height : mH)
         im = printImage(image:im)
-        showPrinterPicker(image:im)//印刷する
+        //showPrinterPicker(image:im)//印刷する
+        savePageImage(img: im)
 
     }
     
@@ -2590,7 +2591,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         clipView02.image = clip02U
         baseView.addSubview(clipView01)
         baseView.addSubview(clipView02)
-        //baseView.backgroundColor = UIColor.red.withAlphaComponent(0.8)
+        baseView.backgroundColor = UIColor.red.withAlphaComponent(0.5)
             
         //ページ番号を挿入する
         let label = UILabel(frame: CGRect(x:baseW/2,y:30,width:100,height:50))
@@ -2608,7 +2609,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let clipView03 = UIImageView(frame:CGRect(x:0,y:100,width:image.size.width,height:image.size.height))
         clipView03.image = image
         baseView.addSubview(clipView03)
-        //baseView.backgroundColor = UIColor.yellow
+        baseView.backgroundColor = UIColor.blue.withAlphaComponent(0.3)
         //ページ番号を挿入する
         let label2 = UILabel(frame: CGRect(x:baseView.frame.width/2,y:30,width:100,height:50))
         label2.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
@@ -2620,7 +2621,28 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return retImage
     }
 
+    func savePageImage(img: UIImage) {
+        let targetImage = img
+        // UIImage の画像をカメラロールに画像を保存
+        //UIImageWriteToSavedPhotosAlbum(targetImage, nil, nil, nil)
+        UIImageWriteToSavedPhotosAlbum(targetImage, self, #selector(self.showResultOfSaveImage(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
     
+    // 保存を試みた結果をダイアログで表示
+    func showResultOfSaveImage(_ image: UIImage, didFinishSavingWithError error: NSError!, contextInfo: UnsafeMutableRawPointer) {
+        var title = "保存完了"
+        var message = "カメラロールに保存しました"
+        if error != nil {
+            title = "エラー"
+            message = "保存に失敗しました"
+        }
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        // OKボタンを追加
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        // UIAlertController を表示
+        self.present(alert, animated: true, completion: nil)
+        }
+
   //----------------------------------------------------------------
   //                  旧ボタン関数(未使用）                             |
   //----------------------------------------------------------------
