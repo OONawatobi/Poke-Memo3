@@ -392,7 +392,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
-    var items: [String] = ["","日付を追加", "表示中のページを削除", "表示中のページを印刷","　","各種設定","スタートガイドを見る","                ▲ "]
+    var items: [String] = ["","日付を追加", "表示中のページを削除", "表示中のページを保存","　","各種設定","スタートガイドを見る","                ▲ "]
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
     //var mask:UIView!
@@ -456,7 +456,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //ツールViewのボタンの生成　[2][3][4]   [1]
         // button1の追加
-        editButton1 = UIButton(frame: CGRect(x:boundWidth - 65,y: 0, width:40, height:40))
+        editButton1 = UIButton(frame: CGRect(x:boundWidth - 70,y: 5, width:50, height:30))
         editButton1.backgroundColor = UIColor.clear // タイトルを設定する(通常時)
         //editButton1.setTitle("💠", for: UIControlState.normal)
 
@@ -2497,72 +2497,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     //--------------------------------------------------------------------
     
-    /**   ======== AirPrint関連 =========　  **/
-    
-    func showPrinterPicker(image:UIImage) {
-        // UIPrinterPickerControllerのインスタンス化
-        let printerPicker = UIPrinterPickerController(initiallySelectedPrinter: nil)
-        // UIPrinterPickerControllerをモーダル表示する
-        switch traitCollection.userInterfaceIdiom {
-        case .phone:
-        printerPicker.present(animated: true, completionHandler: {
-            [unowned self] printerPickerController, userDidSelect, error in
-            if (error != nil) {
-                // エラー
-                print("Error : \(error)")
-            } else {
-                // 選択したUIPrinterを取得する
-                if let printer: UIPrinter = printerPickerController.selectedPrinter {
-                    print("Printer : \(printer.displayName)")
-                    self.printToPrinter(printer: printer,pi:image)//印刷
-                } else {
-                    print("Printer is not selected")
-                }
-            }
-        })
-        case .pad:
-            print("iPad is selected!!")
-            let rect = CGRect(x:boundWidth/2,y:boundHeight/2,width:100,height:100)
-            printerPicker.present(from: rect, in: self.view, animated: true , completionHandler: {
-                [unowned self] printerPickerController, userDidSelect, error in
-                if (error != nil) {
-                    // エラー
-                    //print("Error : \(error)")
-                } else {
-                    // 選択したUIPrinterを取得する
-                    if let printer: UIPrinter = printerPickerController.selectedPrinter {
-                        //print("Printer's URL : \(printer.URL)")
-                        self.printToPrinter(printer: printer,pi:image)
-                    } else {
-                        //print("Printer is not selected")
-                    }
-                }
-            })
-        default:break
-        }
-    }
-    
-    func printToPrinter(printer: UIPrinter,pi:UIImage) {
-        //印刷画像を用意する
-        let printImage:UIImage = pi
-        // 印刷してみる
-        let printIntaractionController:UIPrintInteractionController = UIPrintInteractionController.shared
- 
-        let info = UIPrintInfo(dictionary: nil)
-        info.jobName = "Sample Print"
-        info.orientation = .portrait
-        printIntaractionController.printInfo = info
-        printIntaractionController.printingItem = printImage
-        printIntaractionController.print(to: printer, completionHandler: {
-                controller, completed, error in
-                
-            })
-    }
+    /**   ======== photo libraly関連 =========　  **/
 
     //印刷画面のレイアウトを定義する
     func printImage(image:UIImage)->UIImage{
         var retImage = image//仮に設定しておく
-
        switch traitCollection.userInterfaceIdiom {
     //= iPhoneの場合　=　2列に分割して印刷する
     case .phone:
@@ -2571,7 +2510,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //— 切り取り関連 —
         let mh = image.size.height - topOffset
         //切り取り窓の設定（切り取り位置）
-        let rect01 = CGRect(x:0,y:topOffset*rt,width:image.size.width*rt,height:mh/2*rt)
+        let rect01 = CGRect(x:0,y:topOffset*rt,width:image.size.width*rt,height:(mh/2 + 3)*rt)
         let rect02 = CGRect(x:0,y:(topOffset + mh/2 + 3)*rt,width:image.size.width*rt,height:mh/2*rt)
        
         var clipImg01 = image.cgImage!.cropping(to:rect01)//*retinaのサイズ
@@ -2582,48 +2521,55 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //印刷レイアウトview
         let baseW:CGFloat = leafWidth*2 + 50
-        let baseH:CGFloat = mh/2 + 500
+        let baseH:CGFloat = mh/2 + 180
         var baseView = UIView(frame:CGRect(x:0,y:0,width:baseW,height:baseH))//A4サイズに対応した枠View
         //貼り付け位置の設定
-        var clipView01 = UIImageView(frame:CGRect(x:0,y:200,width:image.size.width,height:mh/2))
-        var clipView02 = UIImageView(frame:CGRect(x:baseW - leafWidth,y:200 + 3,width:image.size.width,height:mh/2))
+        var clipView01 = UIImageView(frame:CGRect(x:10,y:80,width:image.size.width,height:mh/2))
+        var clipView02 = UIImageView(frame:CGRect(x:baseW - leafWidth - 10,y:80 + 3,width:image.size.width,height:mh/2))
         clipView01.image = clip01U
         clipView02.image = clip02U
         baseView.addSubview(clipView01)
         baseView.addSubview(clipView02)
-        baseView.backgroundColor = UIColor.red.withAlphaComponent(0.5)
-            
+        //baseView.backgroundColor = UIColor.red.withAlphaComponent(0.1)
+        baseView.layer.borderColor = UIColor.black.cgColor
+        baseView.layer.borderWidth = 1.5
         //ページ番号を挿入する
-        let label = UILabel(frame: CGRect(x:baseW/2,y:30,width:100,height:50))
-        label.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
-        label.text  = String(pageNum) + " /30"
+        let label = UILabel(frame: CGRect(x:baseW/2 - 30,y:5,width:150,height:50))
+        label.font = UIFont(name: "Cooper Std", size: 24)
+        label.text  = "( " + String(pageNum) + " /30 )"
         baseView.addSubview(label)
-            
-        retImage = baseView.GetImage()
+        //サイズ調整の為縮小する(実サイズ☓２倍pix ➡1/4倍にする
+        let tempImage = baseView.GetImage()
+        retImage = downSize(image: tempImage, scale: 2)
         
     //= iPadの場合　=　1列のまま印刷する
     case .pad:
         //印刷レイアウトview
         //print("layout of iPad⬜")
-        var baseView = UIView(frame:CGRect(x:0,y:0,width:image.size.width + 50,height:image.size.height + 100))
-        let clipView03 = UIImageView(frame:CGRect(x:0,y:100,width:image.size.width,height:image.size.height))
+        var baseView = UIView(frame:CGRect(x:0,y:0,width:image.size.width + 100,height:image.size.height + 100))
+        let clipView03 = UIImageView(frame:CGRect(x:50,y:80,width:image.size.width,height:image.size.height))
         clipView03.image = image
         baseView.addSubview(clipView03)
-        baseView.backgroundColor = UIColor.blue.withAlphaComponent(0.3)
+        //baseView.backgroundColor = UIColor.blue.withAlphaComponent(0.3)
+        baseView.layer.borderColor = UIColor.black.cgColor
+        baseView.layer.borderWidth = 1.5
         //ページ番号を挿入する
-        let label2 = UILabel(frame: CGRect(x:baseView.frame.width/2,y:30,width:100,height:50))
-        label2.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
-        label2.text  = String(pageNum) + " /30"
+        let label2 = UILabel(frame: CGRect(x:baseView.frame.width/2 - 30,y:10,width:100,height:50))
+        label2.font = UIFont(name: "Cooper Std", size: 24)
+        label2.text  = "( " + String(pageNum) + " /30 )"
         baseView.addSubview(label2)
-        retImage = baseView.GetImage()
+        //サイズ調整の為縮小する(実サイズ☓２倍pix ➡1/4倍にする
+        let tempImage2 = baseView.GetImage()
+        retImage = downSize(image: tempImage2, scale: 2)
     default:break
         }
         return retImage
     }
-
+    
+    // UIImage の画像をカメラロールに画像を保存
     func savePageImage(img: UIImage) {
         let targetImage = img
-        // UIImage の画像をカメラロールに画像を保存
+        
         //UIImageWriteToSavedPhotosAlbum(targetImage, nil, nil, nil)
         UIImageWriteToSavedPhotosAlbum(targetImage, self, #selector(self.showResultOfSaveImage(_:didFinishSavingWithError:contextInfo:)), nil)
     }
@@ -2642,6 +2588,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // UIAlertController を表示
         self.present(alert, animated: true, completion: nil)
         }
+    func downSize(image: UIImage, scale: Int) -> UIImage {
+
+        let ref: CGImage = image.cgImage!
+        let srcWidth: Int = ref.width
+        let srcHeight: Int = ref.height
+        var myScale:Int!
+        let newWidth = srcWidth / scale
+        let newHeight = srcHeight / scale
+        let size: CGSize = CGSize(width: newWidth, height: newHeight)
+        //再描画をする
+        UIGraphicsBeginImageContext(size)
+        image.draw(in: CGRect(x:0,y:0,width:size.width,height:size.height))
+        let resizeImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return resizeImage!
+    }
+
 
   //----------------------------------------------------------------
   //                  旧ボタン関数(未使用）                             |
@@ -2676,6 +2639,67 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          */
     }
 
+*/
+/* ------------------  AirPrint  -------------------------------
+     func showPrinterPicker(image:UIImage) {
+     // UIPrinterPickerControllerのインスタンス化
+     let printerPicker = UIPrinterPickerController(initiallySelectedPrinter: nil)
+     // UIPrinterPickerControllerをモーダル表示する
+     switch traitCollection.userInterfaceIdiom {
+     case .phone:
+     printerPicker.present(animated: true, completionHandler: {
+     [unowned self] printerPickerController, userDidSelect, error in
+     if (error != nil) {
+     // エラー
+     print("Error : \(error)")
+     } else {
+     // 選択したUIPrinterを取得する
+     if let printer: UIPrinter = printerPickerController.selectedPrinter {
+     print("Printer : \(printer.displayName)")
+     self.printToPrinter(printer: printer,pi:image)//印刷
+     } else {
+     print("Printer is not selected")
+     }
+     }
+     })
+     case .pad:
+     print("iPad is selected!!")
+     let rect = CGRect(x:boundWidth/2,y:boundHeight/2,width:100,height:100)
+     printerPicker.present(from: rect, in: self.view, animated: true , completionHandler: {
+     [unowned self] printerPickerController, userDidSelect, error in
+     if (error != nil) {
+     // エラー
+     //print("Error : \(error)")
+     } else {
+     // 選択したUIPrinterを取得する
+     if let printer: UIPrinter = printerPickerController.selectedPrinter {
+     //print("Printer's URL : \(printer.URL)")
+     self.printToPrinter(printer: printer,pi:image)
+     } else {
+     //print("Printer is not selected")
+     }
+     }
+     })
+     default:break
+     }
+     }
+     
+     func printToPrinter(printer: UIPrinter,pi:UIImage) {
+     //印刷画像を用意する
+     let printImage:UIImage = pi
+     // 印刷してみる
+     let printIntaractionController:UIPrintInteractionController = UIPrintInteractionController.shared
+     
+     let info = UIPrintInfo(dictionary: nil)
+     info.jobName = "Sample Print"
+     info.orientation = .portrait
+     printIntaractionController.printInfo = info
+     printIntaractionController.printingItem = printImage
+     printIntaractionController.print(to: printer, completionHandler: {
+     controller, completed, error in
+     
+     })
+     }
 */
 //-----------------------------------------------------------------------------
 

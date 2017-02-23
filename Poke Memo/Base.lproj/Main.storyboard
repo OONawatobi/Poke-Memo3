@@ -13,7 +13,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Poke_Memo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Happy_Memo" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -34,7 +34,7 @@
                                 <items>
                                     <navigationItem id="gaI-wz-R0b">
                                         <barButtonItem key="leftBarButtonItem" image="index2" id="aWX-hW-h3T">
-                                            <inset key="imageInsets" minX="0.0" minY="-3" maxX="0.0" maxY="-3"/>
+                                            <inset key="imageInsets" minX="-1" minY="-3" maxX="-16" maxY="-11"/>
                                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <connections>
                                                 <action selector="index:" destination="BYZ-38-t0r" id="lRA-V3-XVW"/>

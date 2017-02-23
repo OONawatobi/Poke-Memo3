@@ -2,16 +2,18 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "filename" : "index.pdf"
     },
     {
       "idiom" : "universal",
       "filename" : "アセットindex@2x.png",
+      "unassigned" : true,
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
       "filename" : "アセットindex@3x.png",
+      "unassigned" : true,
       "scale" : "3x"
     }
   ],
