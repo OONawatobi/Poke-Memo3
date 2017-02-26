@@ -161,13 +161,31 @@ class MemoView:UIView{
         //新しく選択した行の背景に色を付ける
         print("newGyouNo:tag\(tag)")
         
+        
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
-        let gColor = UIColor.green.withAlphaComponent(0.1)
+        let gColor = UIColor.green.withAlphaComponent(0.04)
+        let gColor2 = UIColor.green.withAlphaComponent(0.15)
         //let wColor = UIColor.white
         let cColor = UIColor.orange.withAlphaComponent(0.3)
+        
+        //カーソル色の代わりに縁取り画像を使う(2/24追加）
+        let cursolView:UIView = UIView(frame: leafRect)
+        cursolView.backgroundColor = gColor
+        cursolView.layer.borderColor = gColor2.cgColor
+        cursolView.layer.borderWidth = 6
+        //中間線を追加
+        let mline = UIView(frame: CGRect(x:leafWidth/2,y:0,width:2,height:leafHeight))
+        mline.backgroundColor = gColor2
+        cursolView.addSubview(mline)
+        let cursolImg = cursolView.GetImage()
+        
         //Indexページの場合は色を変える
         let backColor = (isIndexMode == true) ? cColor : gColor
-        targetMemo.backgroundColor = backColor
+        if isIndexMode == true{
+          targetMemo.backgroundColor = backColor
+        }else{
+          targetMemo.backgroundColor = UIColor(patternImage: cursolImg)
+        }
         print("==▶mx[\(nowGyouNo)]:\(mx[String(nowGyouNo)]!)")
       
         // == debug2 ==========================================================

@@ -25,6 +25,7 @@ class DrawableView: UIView {
     var bup = [String:(UIImage,CGFloat)]() //["key":(img,mx)]
     //key⇒ (["0"],["1"],["2"],["7"],["8"],["temp"])
     var undoMode:Int = 0 //[0,1,2,7,8]
+    //1:7,2:8がペア
     var editOK:Bool = false//編集確定時の[OK]ボタン実行フラグ
     //:Undo/REDO
     func undo() {
@@ -56,9 +57,9 @@ class DrawableView: UIView {
           lastDrawImage = nil
           bup["temp"] = bup["1"]
           bup["1"] = bup["10"]
-          //if editOK == false{//編集パネル非表示
+          if editOK == false{//編集パネル非表示
             self.Delegate?.upToMemo()//パレット内容をメモに移す
-          //}
+          }
           print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
           undoMode = 7
             
@@ -69,8 +70,9 @@ class DrawableView: UIView {
           lastDrawImage = nil
           bup["1"] = bup["temp"]
           bup["temp"] = nil
-          self.Delegate?.upToMemo()//パレット内容をメモに移す
-        
+          if editOK == false{//編集パネル非表示
+            self.Delegate?.upToMemo()//パレット内容をメモに移す
+          }
           print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
           undoMode = 1
         }
@@ -248,9 +250,9 @@ class DrawableView: UIView {
         //------- 右端エリア以外にタッチされた場合 -------
         if rightFlag == false{
             
-          let currentPoint = touches.first!.location(in:self)
-          bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
-          //drawLine(path: bezierPath)
+          //??let currentPoint = touches.first!.location(in:self)
+          //??bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
+          //??drawLine(path: bezierPath)
   
           get2VImage()//second画像をbup[2]に保存：UNDO用
           //左方向への自動スクロール
@@ -281,7 +283,7 @@ class DrawableView: UIView {
         }
     // ==========================================================
         UIGraphicsEndImageContext()  //Canvasを閉じる
-        
+       
     }
     
     // タイマー開始
@@ -350,7 +352,7 @@ class DrawableView: UIView {
                switch lineColor {
                 case 0:penC = UIColor.blue
                 case 1:penC = UIColor.rgb(r: 0, g: 147, b: 87, alpha: 1)
-                case 2:penC = UIColor.brown
+                case 2:penC = UIColor.orange //gray.withAlphaComponent(0.2) // brown
                 default:break
                }
                 
@@ -364,7 +366,7 @@ class DrawableView: UIView {
         print("@@@@@@@@:::::\(penC)")
     }
  
-    // 描画処理
+    // 描画処理:セカンドviewにストロークパス(セカンドViewを含む？）をコピーする
     func drawLine(path:UIBezierPath) {
         let penColor = penC
         penColor?.setStroke()
@@ -372,7 +374,17 @@ class DrawableView: UIView {
         path.stroke()//描画する
         //タッチEnd時に画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
-        secondView.backgroundColor = UIColor(patternImage: lastDrawImage!)
+
+        secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
+    }
+    
+    //ストロークの線色を変更する
+    func eXImageColor(img:UIImage)->UIImage{
+        let imv:UIImageView = UIImageView(frame: self.frame)
+        imv.image = img.withRenderingMode(.alwaysTemplate)
+        imv.tintColor = UIColor.orange
+        lastDrawImage = imv.GetImage()
+        return imv.GetImage()
     }
     
  }

@@ -125,21 +125,21 @@ class EditorView: UIView {
         //  []◾[]:上書き||DEL , [ ][⬜]：挿入1 , [ ⬜][]：挿入2
              //  print("C @@@@@@@@@@@@@@@@@@@@@@@")
         let clip01 = CGRect(x:0,y:0 ,width:pixLeftX,height:pixHeight)
-        let clip02 = CGRect(x:pixLeftX,y:0 ,width:pixRightX - pixLeftX,height:pixHeight)
+        //let clip02 = CGRect(x:pixLeftX,y:0 ,width:pixRightX - pixLeftX,height:pixHeight)
         let clip03 = CGRect(x:pixRightX,y:0 ,width:pixWidth - pixRightX,height:pixHeight)
         let clip04 = CGRect(x:0,y:0,width:pixRightX,height:pixHeight)
         let clip05 = CGRect(x:pixLeftX,y:0,width:pixWidth - pixLeftX,height:pixHeight)
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         let pImage = drawableView.GetImage()//パレット全画面の切り取り
         let clipImage01 =  pImage.cgImage!.cropping(to: clip01)
-        let clipImage02 =  pImage.cgImage!.cropping(to: clip02)
+        //let clipImage02 =  pImage.cgImage!.cropping(to: clip02)
         let clipImage03 =  pImage.cgImage!.cropping(to: clip03)
         let clipImage04 =  pImage.cgImage!.cropping(to: clip04)
         let clipImage05 =  pImage.cgImage!.cropping(to: clip05)
         
         //CGImage　→UIImageに変換(retinaの場合は1/2倍サイズ）
         let clip01U:UIImage = downSize(image: UIImage(cgImage: clipImage01!), scale: retina)
-        let clip02U:UIImage = downSize(image: UIImage(cgImage: clipImage02!), scale: retina)
+        //let clip02U:UIImage = downSize(image: UIImage(cgImage: clipImage02!), scale: retina)
         
         let clip03U:UIImage = downSize(image: UIImage(cgImage: clipImage03!), scale: retina)
                //print("D1 @@@@@@@@@@@@@@@@@@@@@@@")

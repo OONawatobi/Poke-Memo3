@@ -260,7 +260,7 @@ let boundHeight = UIScreen.main.bounds.size.height
 //var retina:Int = 2//レティナディスプレイ対応
 let retina:Int = Int(UIScreen.main.scale)//レティナ分解能の抽出
 var infoPage:[(memoNo:Int,gyou:Int,maxUsingGyouNo:Int)]!//未使用
-var isEditMode:Bool! = false//パレットが表示されている場合：true
+var isPalleteMode:Bool! = false//パレットが表示されている場合：true
 var isIndexMode:Bool! = false//Indexの表示フラグ：true
 //エディット画面関係
 var editFlag:Bool = false//パレット編集モードが選ばれるとtrue
@@ -504,7 +504,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         /* editView([<][OVW][INS][DEL][CLR][>])を生成. */
         myEditView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 60))
-        let myEditColor = UIColor.red.withAlphaComponent(0.6)
+        let myEditColor = UIColor.red.withAlphaComponent(0.7)//rgb(r: 198, g: 54, b: 89, alpha: 0.8)
         myEditView.backgroundColor = myEditColor// underViewの背景を青色に設定
         //myEditView.alpha = 0.6// 透明度を設定
         myEditView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40 - 30)// 位置を中心に設定
@@ -730,7 +730,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
         self.view.addSubview(underNav)//ナビゲーション下線を追加
-        
+
     }
     
     //  ======= End of viewDidLoad=======
@@ -757,7 +757,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //拡大表示の時はパス
         if bigFlag == true{ return}
         //パレットが開いている時は
-        if isEditMode == true{//パレット内容を保存して閉じる
+        if isPalleteMode == true{//パレット内容を保存して閉じる
             return
         /*    done(done2)
             Pallete(pallete2)
@@ -867,7 +867,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBAction func menu(_ sender: UIBarButtonItem) {
         //indexページが開いている時は
         if isIndexMode == true { return }//Indexが表示中は実行しない
-        if isEditMode == true{//パレット内容を保存して閉じる
+        if isPalleteMode == true{//パレット内容を保存して閉じる
             done(done2)
             Pallete(pallete2)
         }
@@ -953,7 +953,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 print("mx[\(n)]= \(mx[String(n)])")
                 }
             */
-            isEditMode = false
+            isPalleteMode = false
             bigFlag = false
         }else{
         // パレットが表示されていない時パレットを表示する-----------②
@@ -993,7 +993,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         */
             
             self.toolBar.isHidden  = false//ツールバーを現す
-            isEditMode = true//パレットが表示されている場合は"true"
+            isPalleteMode = true//パレットが表示されている場合は"true"
             //編集画面非表示フラグをリセットする
             //????myEditFlag = false
             //１行目をパレットに呼び込む
@@ -1046,83 +1046,78 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             return
         }
         //---------- パレット編集時 ---------------------------
-        if isEditMode == true{//パレットが表示されている場合
-            //カーソルモードが選択された場合
-            if editFlag == true{
-               if cursolWFlag == true{ //カーソル幅が有る場合(狭い場合では🐞）
- 
-                    //カーソル画面を撤去する
-                    drawableView.secondView.cursolView.removeFromSuperview()
-                    drawableView.thirdView.removeFromSuperview()
+        if isPalleteMode == false{return}//パレットが表示されている場合
+        if editFlag == true{//カーソルモードが選択されている場合
+            if cursolWFlag == true{ //カーソル幅が有る場合(狭い場合では🐞）
+               //カーソル画面を撤去する
+                drawableView.secondView.cursolView.removeFromSuperview()
+                drawableView.thirdView.removeFromSuperview()
                 
-                    //編集結果画面を取得する
-                    var editedView:UIImage!//編集結果画面View
-                    if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
-                       editedView = bImage//UIImage(named:"blankW.png")
-                        //パレットの位置を先頭にする
-                        let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
-                        drawableView.layer.position = leftEndPoint
-                        //mx[]を更新する(0にリセット)
-                        mx[String(nowGyouNo)] = 0
-                        mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
+                //編集結果画面を取得する
+                var editedView:UIImage!//編集結果画面View
+                if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
+                    editedView = bImage//UIImage(named:"blankW.png")
+                    //パレットの位置を先頭にする
+                    let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
+                    drawableView.layer.position = leftEndPoint
+                    //mx[]を更新する(0にリセット)
+                    mx[String(nowGyouNo)] = 0
+                    mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
                       
-                    }else{ //編集パネル”CLR”以外の処理はココで行う
+                }else{ //編集パネル”CLR”以外の処理はココで行う
                        editedView = drawableView.secondView.editPallete(sel: myInt)
-                    }
-                    //編集結果画面をパレットに反映させる
-                    //カーソルを削除する
-                    drawableView.secondView.cursolView.removeFromSuperview()
-                    //画面をグリーン色にする
-                    drawableView.addSubview(drawableView.thirdView)
-                    //secondViewの背景を透明にする
-                    drawableView.secondView.backgroundColor = UIColor.clear
-                    //編集結果をパレットviewの背景に入れ替える
-                    drawableView.backgroundColor = UIColor(patternImage: editedView)
-                    
-                    //パレット入力状態のリセット
-                    editFlag = false;myInt = "NON"
-                    drawableView.lastDrawImage = nil
-                    //編集画面を閉じる
-                    closeEditView()
-                    // okボタンを押す：パレット内容をメモに移す
-                    //done(done2)
-                //’17/2/15修正（パレット編集処理時にはメモに反映しないように変更予定？まだ！）
-                //編集結果確定[OK]ボタンが押された場合を区別するフラグ
-                    drawableView.editOK = true//編集パネル非表示中
-                    //upToMemo()//パレット内容をメモに移す(mx[],index情報の更新も含む）
-                    drawableView.get1VImage()//◆◆◆◆
-                //
-                }else{ //カーソル幅が狭い場合）
-                    print("カーソル巾がゼロです")
-                    //カーソルを削除する
-                    drawableView.secondView.cursolView.removeFromSuperview()
-                    closeEditView()//編集画面を閉じる
                 }
                 
-            /** パレット入力時における処理(編集パネル非表示）**/
-            }else
-            {
-              //編集画面表示中で編集モードが選択されていない場合はパス
-              if myEditFlag == true && editFlag == false{return}
-              //編集結果確定[OK]ボタンが押された場合を区別するフラグ
-              drawableView.editOK = false//編集パネル非表示
-              upToMemo()//パレット画面をメモ行にコピーする
-
-                
-              drawableView.get1VImage()//◆◆◆◆
-                
+                //編集結果画面をパレットに反映させる
+                //カーソルを削除する
+                drawableView.secondView.cursolView.removeFromSuperview()
+                //画面をグリーン色にする
+                drawableView.addSubview(drawableView.thirdView)
+                //secondViewの背景を透明にする
+                drawableView.secondView.backgroundColor = UIColor.clear
+                //編集結果をパレットviewの背景に入れ替える
+                drawableView.backgroundColor = UIColor(patternImage: editedView)
+                    
+                //パレット入力状態のリセット
+                editFlag = false;myInt = "NON"
+                drawableView.lastDrawImage = nil
+                //編集画面を閉じる
+                closeEditView()
+                // okボタンを押す：パレット内容をメモに移す
+                //done(done2)
+                //??’17/2/15修正（パレット編集処理時にはメモに反映しないように変更予定？まだ！）
+                //編集結果確定[OK]ボタンが押された場合を区別するフラグ
+                drawableView.editOK = true//編集パネル非表示中
+                //??upToMemo()//パレット内容をメモに移す(mx[],index情報の更新も含む）
+                drawableView.get1VImage()//◆◆◆◆
+                //
+            }else{ //カーソル幅が狭い場合）
+                print("カーソル巾がゼロです")
+                //カーソルを削除する
+                drawableView.secondView.cursolView.removeFromSuperview()
+                closeEditView()//編集画面を閉じる
             }
+
+        }else{//カーソルモードが選択されていない場合(editFlag == false)
+            //編集画面表示中で編集モードが選択されていない場合はパス
+            if myEditFlag == true{return}//?? && editFlag == false{return}
             
-        // == debug2 ==========================================================
-          if debug2 == true{//@@ DEBUG2 @@
+          /**      通常の文字入力時      **/
+            //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
+            drawableView.editOK = false//編集パネル非表示の場合
+            upToMemo()//パレット画面をメモ行にコピーする
+            drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
+        }
+            
+        // == debug2 ============================
+        if debug2 == true{//@@ DEBUG2 @@
             testV.removeFromSuperview()
             drawableView.addSubview(testV)
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
-          }
-        // =====================================================================
-            
         }
-         print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
+        // =======================================
+ 
+        //print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
     }
     
 
@@ -1180,6 +1175,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func redo(_ sender: UIBarButtonItem) {
         print("@@ undo @@")
+        
         //print("◆◆◆◆undoFLG:\(drawableView.undoMode)")
         //print("bup[10]=\(drawableView.bup["10"])")
         if editFlag == true{return}//編集パネル表示中は🐞
@@ -1336,7 +1332,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               //仮想的にeditボタンを押す
               let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号
               self.Pallete(self.pallete2)//パレットを開く
-              print("isEdit: \(isEditMode)")
+              print("isEdit: \(isPalleteMode)")
               self.modalChanged(TouchNumber:nextNum!)//セルを選択
               memo[fNum].togglleCursol()
             }
@@ -1710,13 +1706,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
     func fc3(){// [ 現行ページを印刷する ]
         print("test3!!!!!")
-        let mW = memo[fNum].frame.size.width*2
-        let mH = memo[fNum].frame.size.height*2
-        
         var im = memo[fNum].GetImage()
-        //im = im.ResizeUIImage(width : mW, height : mH)
         im = printImage(image:im)
-        //showPrinterPicker(image:im)//印刷する
         savePageImage(img: im)
 
     }
@@ -2306,7 +2297,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func swipeR(){
         if isIndexMode! { return }//Indexが表示中は実行しない
-        if isEditMode! { return }//パレットが表示中は実行しない
+        if isPalleteMode! { return }//パレットが表示中は実行しない
         if pageNum == 1{ return }//１ページが最終ページ
         
         for n in 0...2{//ボーダーラインを付ける(ページめくりの時の枠）
@@ -2346,7 +2337,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func swipeL(){
         if isIndexMode! { return }
-        if isEditMode! { return }//パレットが表示中は実行しない
+        if isPalleteMode! { return }//パレットが表示中は実行しない
         if pageNum >= 30{ return }
         
         for n in 0...2{
@@ -2400,7 +2391,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            mxTemp = mx[String(nowGyouNo)]
   
         //パレット表示中
-        if isEditMode == true{
+        if isPalleteMode == true{
             //パレット編集ツールを閉じる
             if myEditFlag == true{ closeEditView()}
             
@@ -2513,8 +2504,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let rect01 = CGRect(x:0,y:topOffset*rt,width:image.size.width*rt,height:(mh/2 + 3)*rt)
         let rect02 = CGRect(x:0,y:(topOffset + mh/2 + 3)*rt,width:image.size.width*rt,height:mh/2*rt)
        
-        var clipImg01 = image.cgImage!.cropping(to:rect01)//*retinaのサイズ
-        var clipImg02 = image.cgImage!.cropping(to:rect02)
+        let clipImg01 = image.cgImage!.cropping(to:rect01)//*retinaのサイズ
+        let clipImg02 = image.cgImage!.cropping(to:rect02)
  
         let clip01U:UIImage = UIImage(cgImage: clipImg01!)
         let clip02U:UIImage = UIImage(cgImage: clipImg02!)
@@ -2522,10 +2513,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //印刷レイアウトview
         let baseW:CGFloat = leafWidth*2 + 50
         let baseH:CGFloat = mh/2 + 180
-        var baseView = UIView(frame:CGRect(x:0,y:0,width:baseW,height:baseH))//A4サイズに対応した枠View
+        let baseView = UIView(frame:CGRect(x:0,y:0,width:baseW,height:baseH))//A4サイズに対応した枠View
         //貼り付け位置の設定
-        var clipView01 = UIImageView(frame:CGRect(x:10,y:80,width:image.size.width,height:mh/2))
-        var clipView02 = UIImageView(frame:CGRect(x:baseW - leafWidth - 10,y:80 + 3,width:image.size.width,height:mh/2))
+        let clipView01 = UIImageView(frame:CGRect(x:10,y:80,width:image.size.width,height:mh/2))
+        let clipView02 = UIImageView(frame:CGRect(x:baseW - leafWidth - 10,y:80 + 3,width:image.size.width,height:mh/2))
         clipView01.image = clip01U
         clipView02.image = clip02U
         baseView.addSubview(clipView01)
@@ -2546,7 +2537,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     case .pad:
         //印刷レイアウトview
         //print("layout of iPad⬜")
-        var baseView = UIView(frame:CGRect(x:0,y:0,width:image.size.width + 100,height:image.size.height + 100))
+        let baseView = UIView(frame:CGRect(x:0,y:0,width:image.size.width + 100,height:image.size.height + 100))
         let clipView03 = UIImageView(frame:CGRect(x:50,y:80,width:image.size.width,height:image.size.height))
         clipView03.image = image
         baseView.addSubview(clipView03)
@@ -2593,7 +2584,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let ref: CGImage = image.cgImage!
         let srcWidth: Int = ref.width
         let srcHeight: Int = ref.height
-        var myScale:Int!
+        //var myScale:Int!
         let newWidth = srcWidth / scale
         let newHeight = srcHeight / scale
         let size: CGSize = CGSize(width: newWidth, height: newHeight)

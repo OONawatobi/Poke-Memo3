@@ -16,7 +16,7 @@ class HelpView:UIWebView{
     //var Delegate: HelpViewDelegate!
     // リクエストを生成する
     func req(lang:Int){
-        var pathX = (lang == 0) ? pathJPN :pathENG
+        let pathX = (lang == 0) ? pathJPN :pathENG
         //urlX = URL(string: "http://www.apple.com")!
         urlX = URL(string: pathX!)
 
