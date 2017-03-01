@@ -42,6 +42,12 @@ class MemoView:UIView{
     }
     
     /* pageImageの要素画像をmemoViewにコピーします */
+    //tag番号単位で読み込む
+    func setMemoImgByTag(tag:Int,imgs:[UIImage]){
+        let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+        targetMemo.image = imgs[pageGyou - 1]
+    }
+    //ページ単位で読み込む
     func setMemoFromImgs(pn:Int,imgs:[UIImage]){
         //tag付の空メモページを作る
         makePageWithTag(pn:pn)
@@ -256,8 +262,6 @@ class MemoView:UIView{
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
             myLeaf.image = bImage//グローバル変数：[leafWidth] x [lesfHeight]
-            ///////myLeaf.image = UIImage(named: "blank.png")//500x50
-            //print("myTag?:\(myTag)")
             myLeaf.isUserInteractionEnabled = true
             self.addSubview(myLeaf)
 

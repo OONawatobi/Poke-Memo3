@@ -23,18 +23,19 @@ class DrawableView: UIView {
     var myImageView:UIImageView!//? UIImageViewを作成する.
  //-------   undo用バックアップ  -------------
     var bup = [String:(UIImage,CGFloat)]() //["key":(img,mx)]
-    //key⇒ (["0"],["1"],["2"],["7"],["8"],["temp"])
-    var undoMode:Int = 0 //[0,1,2,7,8]
-    //1:7,2:8がペア
+    //key⇒ (["1"]-["10"],["2"]-["20"],["3"]-["30"])
+    //["1"]:パレット画面、["2"]:セカンド画面、["3"]:セカンド画面(編集パネル実行時）
+    //["10"]は["1"]のUNDO画面：他も同様
+    var undoMode:Int = 0 //[0,1,2,7,8]//1:7,2:8,3:9(編集パネル）がundo:redoのペア
     var editOK:Bool = false//編集確定時の[OK]ボタン実行フラグ
     //:Undo/REDO
     func undo() {
-        
+        print("undoMode = \(undoMode)")
         if undoMode == 2{//secondView上の処理
-          if bup["0"] == nil{return}
+          if bup["20"] == nil{return}
           print("@@ redo @@")
-          let im0 = bup["0"]?.0
-          mxTemp = bup["0"]?.1
+          let im0 = bup["20"]?.0
+          mxTemp = bup["20"]?.1
           secondView.backgroundColor = UIColor(patternImage: im0!)
           lastDrawImage = im0
           undoMode = 8
@@ -48,15 +49,12 @@ class DrawableView: UIView {
             
         }else if undoMode == 1{//okボタンが押された直後
           if bup["10"] == nil{return}
-            
-          let blankView = bImage//UIImage(named:"blankW.png")
-          secondView.backgroundColor = UIColor(patternImage: blankView!)
+          secondView.backgroundColor = UIColor.clear//(patternImage: blankView!)
           let im1 = bup["10"]?.0
           mxTemp = bup["10"]?.1
           drawableView.backgroundColor = UIColor(patternImage: im1!)
           lastDrawImage = nil
-          bup["temp"] = bup["1"]
-          bup["1"] = bup["10"]
+
           if editOK == false{//編集パネル非表示
             self.Delegate?.upToMemo()//パレット内容をメモに移す
           }
@@ -64,36 +62,71 @@ class DrawableView: UIView {
           undoMode = 7
             
         }else if undoMode == 7{//undo処理が行われた直後
-          let im1 = bup["temp"]?.0
-          mxTemp = bup["temp"]?.1
+            let im1 = bup["1"]?.0
+            mxTemp = bup["1"]?.1
           drawableView.backgroundColor = UIColor(patternImage: im1!)
           lastDrawImage = nil
-          bup["1"] = bup["temp"]
-          bup["temp"] = nil
           if editOK == false{//編集パネル非表示
             self.Delegate?.upToMemo()//パレット内容をメモに移す
           }
           print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
           undoMode = 1
+        }else if undoMode == 3{//編集パネル表示中にokボタンが押された直後のUndo
+    //return
+            if bup["30"] == nil{return}
+            print("@@ redo @@")
+            secondView.backgroundColor = UIColor.clear
+            let im1 = bup["30"]?.0
+            mxTemp = bup["30"]?.1
+            drawableView.backgroundColor = UIColor(patternImage: im1!)
+            lastDrawImage = nil
+            bup["20"] = bup["30"]//現状画面をセカンドviewのUndo画面にする
+            undoMode = 9
+            
+        }else if undoMode == 9{//undo処理が行われた直後
+            //return
+            let im1 = bup["3"]?.0
+            mxTemp = bup["3"]?.1
+            drawableView.backgroundColor = UIColor(patternImage: im1!)
+            lastDrawImage = nil
+            bup["20"] = bup["3"]//現状画面をセカンドviewのUndo画面にする
+            undoMode = 3
+            
         }
     }
     //undo関係のリセット
     func resetUndo(){
          undoMode = 0
-         //bup["0"] = nil
+         //bup["20"] = nil
          //bup["10"] = nil
          //bup["1"] = nil
-         bup["2"] = nil
-         bup["temp"] = nil
+         //bup["2"] = nil
     }
- 
+    
+    //SecondView画面(パネル編集結果）を取得する
+    func get3VImage(open:Int){//open:パネルを開く時が１、閉じる時は０
+        print("get3VImage")
+        thirdView.removeFromSuperview()//3rdViewを取り出す
+        let im = self.GetImage()
+        self.addSubview(thirdView)//前フィルタ3rdViewを追加
+        if open == 1{
+          bup["3"] = (im,mxTemp)
+          bup["30"] = (im,mxTemp)
+        }else if open == 0{
+          bup["3"] = (im,mxTemp)
+          bup["20"] = bup["3"]//編集結果画面をセカンドviewのUndo画面にする
+        }
+
+        undoMode = 3
+    }
     //SecondView画面を取得する
     func get2VImage(){
-        print("get2VImage()")
+        print("get2VImage():editOK=\(editOK)")
         if lastDrawImage == nil{return}//何も描いていない時はパス
         thirdView.removeFromSuperview()//3rdViewを取り出す
         let im = lastDrawImage//secondView.GetImage()
         self.addSubview(thirdView)//前フィルタ3rdViewを追加
+        print("◆◆")//bup[2] =lastDrawImage")
         bup["2"] = (im!,mxTemp)
         undoMode = 2
     }
@@ -105,6 +138,8 @@ class DrawableView: UIView {
         let im = self.GetImage()
         self.addSubview(thirdView)//前フィルタ3rdViewを追加
         bup["1"] = (im,mxTemp)
+        print("get1VImage:mxTemp=\(mxTemp)")
+        print("mx nowGyouNo:\(mx[String(nowGyouNo)])")
         undoMode = 1
 
     }
@@ -169,7 +204,7 @@ class DrawableView: UIView {
         //print("screenX:\(screenX)")
         //print("◆◆◆◆")
         if lastDrawImage != nil{
-          bup["0"] = (lastDrawImage,mxTemp)//)bup["2"]
+          bup["20"] = (lastDrawImage,mxTemp)//)bup["2"]
         }
         //lastXm = mx[String(nowGyouNo)]!//◆◆◆◆
         setPen()//線巾、線色の設定
@@ -184,7 +219,7 @@ class DrawableView: UIView {
         //+++++++++1:自動スクロール関係検証用
         autoFlag = false//自動スクロールをリセットする
         if timer != nil{timer.invalidate()}
-
+        myMx = 0//タッチ位置の初期化
         //+++++++++2:新タッチシステム検証用
         UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
         if lastDrawImage != nil {
@@ -240,7 +275,6 @@ class DrawableView: UIView {
         
        }
         print("shiftLeftFlag = \(shiftLeftFlag)")
-        //sCount = sCount + 1//?
     }
     
     // タッチが終わった
@@ -256,8 +290,9 @@ class DrawableView: UIView {
   
           get2VImage()//second画像をbup[2]に保存：UNDO用
           //左方向への自動スクロール
-            print("autoScrollFlag:\(autoFlag)")
-          if autoScrollFlag == true{
+            print("autoFlag:\(autoFlag):mxTemp=\(mxTemp)")
+            
+          if autoScrollFlag == true{//設定フラグ(判定フラグ:autoFlagでは無い）
              if bigFlag == false{ startTimer()}//遅延してスクロール
           }
             
@@ -290,7 +325,6 @@ class DrawableView: UIView {
     func startTimer() {
       //左方向への自動スクロール
        if autoFlag == true{
- 
           timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(DrawableView.timerAction), userInfo: nil, repeats: false)
        }
     }
@@ -385,6 +419,13 @@ class DrawableView: UIView {
         imv.tintColor = UIColor.orange
         lastDrawImage = imv.GetImage()
         return imv.GetImage()
+    }
+    let tempPallete = UIView(frame: CGRect(x:0,y:0,width:vWidth,height:vHeight))
+    func upToMemoTmp(){
+        //直前のパレット画面画像
+        //tempPallete.backgroundColor = UIColor( パレット画像
+        //memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
+        
     }
     
  }

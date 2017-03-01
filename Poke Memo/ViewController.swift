@@ -81,7 +81,20 @@ extension UIView {
         UIGraphicsEndImageContext()
         return capturedImage
     }
-    
+    func GetImage(rect:CGRect) -> UIImage{
+        // キャプチャする範囲を取得.
+        //let rect = self.bounds
+        // ビットマップ画像のcontextを作成.
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+        let context: CGContext = UIGraphicsGetCurrentContext()!
+        // 対象のview内の描画をcontextに複写する.
+        self.layer.render(in: context)
+        // 現在のcontextのビットマップをUIImageとして取得.
+        let capturedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        // contextを閉じる.
+        UIGraphicsEndImageContext()
+        return capturedImage
+    }
     
     public func addBothBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
@@ -667,7 +680,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             settingRead()//前回終了時の保存データを読み込む
             let openPage:Int = lastPage
             pageNum = lastPage//ページ番号を設定する
-            let im = readPage(pn:openPage)//１ページ目の外部データを読み込む
+            let im = readPage(pn:openPage)//im:１ページ目の外部データを読み込む
             memo[1].setMemoFromImgs(pn:openPage,imgs:im)
             fNum = 1
             //nowGyouNoの更新
@@ -913,7 +926,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // ◆◆ パレットが表示されている時パレットを消す
            //編集中のページ内容を更新する
             //myScrollView.upToImgs()//編集中のページ内容を更新する
-            let im = memo[fNum].memoToImgs(pn: pageNum)
+            let im = memo[fNum].memoToImgs(pn: pageNum)//im:
             //メモ内容を外部に保存
             writePage(pn: pageNum, imgs: im)
             //INDEX内容を外部に保存
@@ -1036,7 +1049,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //ペンモードの初期化
         penMode()//黒ペンモードにする
         settingWite()//設定値を外部に保存する
-
     }
     
     @IBAction func done(_ sender: UIBarButtonItem) {
@@ -1046,8 +1058,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             return
         }
         //---------- パレット編集時 ---------------------------
-        if isPalleteMode == false{return}//パレットが表示されている場合
-        if editFlag == true{//カーソルモードが選択されている場合
+        if isPalleteMode == false{return}//パレットが表示されて無い場合は🐞
+        if myEditFlag == true{ //編集パネルが表示されている場合
+        //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
+          drawableView.editOK = true//編集パネル表示の場合
+          if editFlag == true{//カーソルモードが選択されている場合
             if cursolWFlag == true{ //カーソル幅が有る場合(狭い場合では🐞）
                //カーソル画面を撤去する
                 drawableView.secondView.cursolView.removeFromSuperview()
@@ -1065,10 +1080,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
                       
                 }else{ //編集パネル”CLR”以外の処理はココで行う
-                       editedView = drawableView.secondView.editPallete(sel: myInt)
+                    editedView = drawableView.secondView.editPallete(sel: myInt)
+                    
                 }
                 
-                //編集結果画面をパレットに反映させる
+                // -- 編集結果画面をパレットに反映させる --
                 //カーソルを削除する
                 drawableView.secondView.cursolView.removeFromSuperview()
                 //画面をグリーン色にする
@@ -1077,20 +1093,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 drawableView.secondView.backgroundColor = UIColor.clear
                 //編集結果をパレットviewの背景に入れ替える
                 drawableView.backgroundColor = UIColor(patternImage: editedView)
-                    
+                //編集結果確定[OK]ボタンが押された場合を区別するフラグ
+                drawableView.editOK = true//??編集パネル表示中
+                //??◆◆◆◆drawableView.get3VImage(im: editedView)//??
                 //パレット入力状態のリセット
                 editFlag = false;myInt = "NON"
                 drawableView.lastDrawImage = nil
+                
                 //編集画面を閉じる
                 closeEditView()
-                // okボタンを押す：パレット内容をメモに移す
-                //done(done2)
-                //??’17/2/15修正（パレット編集処理時にはメモに反映しないように変更予定？まだ！）
-                //編集結果確定[OK]ボタンが押された場合を区別するフラグ
-                drawableView.editOK = true//編集パネル非表示中
-                //??upToMemo()//パレット内容をメモに移す(mx[],index情報の更新も含む）
-                drawableView.get1VImage()//◆◆◆◆
-                //
+                drawableView.get3VImage(open:0)//編集結果画面を保存する
+                
             }else{ //カーソル幅が狭い場合）
                 print("カーソル巾がゼロです")
                 //カーソルを削除する
@@ -1098,15 +1111,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 closeEditView()//編集画面を閉じる
             }
 
-        }else{//カーソルモードが選択されていない場合(editFlag == false)
+          }else{ return }//モードが選択されていない場合(editFlag == false)
             //編集画面表示中で編集モードが選択されていない場合はパス
-            if myEditFlag == true{return}//?? && editFlag == false{return}
+            //if myEditFlag == true{return}
             
-          /**      通常の文字入力時      **/
+        }else{ //編集パレットが非表示の場合
+        /**      通常の文字入力時      **/
             //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
             drawableView.editOK = false//編集パネル非表示の場合
             upToMemo()//パレット画面をメモ行にコピーする
             drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
+            
         }
             
         // == debug2 ============================
@@ -1123,7 +1138,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
         print("◆◆◆◆")
-        if myEditFlag == true{return}
+        if myEditFlag == true{return}//編集パレットが開いている場合は🐞
         //let big:CGFloat = 1.5//拡大率
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
             if drawableView.frame.height == vHeight{
@@ -1312,7 +1327,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //-------
                 let nextNum = nowGyouNo//myScrollView.selectedTag//タッチしたtag番号:Int[0ページの為tag番号（一桁）がページ番号を現す。]
                 print("===========\(nextNum)====================")
-                let im = readPage(pn:nextNum!)//外部から取得する
+                let im = readPage(pn:nextNum!)//im:外部から取得する
                 fNum = 1
                 memo[fNum].setMemoFromImgs(pn:nextNum!,imgs:im)
                 retNum = fNum//表示するフレーム番号
@@ -1659,7 +1674,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         mx[String(pageNum*100 + 1)]! = vWidth - 10//mx[]を右端に設定
         //mx[String(nowGyouNo)] = vWidth - 10//mx[]を右端に設定
         //編集中のページ内容を更新する
-        let im = memo[fNum].memoToImgs(pn: pageNum)
+        let im = memo[fNum].memoToImgs(pn: pageNum)//im:
         //メモ内容を外部に保存
         writePage(pn: pageNum, imgs: im)
         //INDEX内容を外部に保存
@@ -1684,7 +1699,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         delPage(pn: pageNum)
         //----- 現行ページを再読込する---------
-        let im = readPage(pn:pageNum)//現在ページの外部データを読み込む
+        let im = readPage(pn:pageNum)//im:現在ページの外部データを読み込む
         memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
         
         //------- index頁を更新する-----------------
@@ -1969,7 +1984,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
               //-- １ページを再読込する --
               pageNum = 1
-              let im = self.readPage(pn:pageNum)//現在ページの外部データを読み込む
+              let im = self.readPage(pn:pageNum)//im:現在ページの外部データを読み込む
               self.tl.text = String(pageNum) + " /30"
               self.naviBar.topItem?.titleView = self.tl//頁番号を再表示する
               memo[fNum].setMemoFromImgs(pn:pageNum,imgs:im)
@@ -2090,8 +2105,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            return
         }
 
-        if myEditFlag == false{//エディット画面を表示する
-            done(done2)// okボタンを押す
+        if myEditFlag == false{//エディット画面非表示の場合は表示する
+            //??done(done2)// okボタンを押す
+            //?? 最大文字位置を保存する：編集パネルでも使用するためここでも保存する必要あり
+            mx[String(nowGyouNo)] = mxTemp
             clearSelect()//編集ツールを非選択状態にする
             editButton1.backgroundColor = UIColor.clear
             //editButton1.setTitle("⬇", for: UIControlState.normal)
@@ -2099,7 +2116,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //無理やり色を変えています
             editButton1.tintColor = UIColor.darkGray
             self.view.addSubview(myEditView)
-            myEditFlag = true; editFlag = false//前者:エディット画面,後者:エディットモード
+            myEditFlag = true
+            editFlag = false//前者:エディット画面,後者:エディット選択モード
             //パレット画面のイベントの非透過
             drawableView.secondView.isUserInteractionEnabled = true
             //パレットボタンをリセットする
@@ -2107,12 +2125,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
             editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
             //◆◆◆◆redo対応
-            drawableView.get1VImage()
+            drawableView.undoMode = 3
+            //??drawableView.get1VImage()
+            drawableView.get3VImage(open:1)//編集前画面を保存する
             cursolWFlag = false//カーソル巾５以下フラグにリセットする
+            //??done(done2)// okボタンを押す
         }else{//エディット画面を非表示にする
             closeEditView()
             //drawableView.myMx = 0 //今回タッチした最大X座標(タイマースクロール用）
             //drawableView.autoScrollFlag = false
+            
         }
     }
     
@@ -2307,7 +2329,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var f = 0
         f = (fNum == 1) ? 2: 1
         //-------
-        let im = readPage(pn:pageNum - 1)
+        let im = readPage(pn:pageNum - 1)//im:
         memo[f].setMemoFromImgs(pn:pageNum - 1,imgs:im)
         //--------
         //memo[f] =
@@ -2348,7 +2370,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var f = 0
         f = (fNum == 1) ? 2: 1//フレームのトグル
         //-------
-        let im = readPage(pn:pageNum + 1)
+        let im = readPage(pn:pageNum + 1)//im:
         memo[f].setMemoFromImgs(pn:pageNum + 1,imgs:im)
         //--------
             UIView.transition(
@@ -2392,9 +2414,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
   
         //パレット表示中
         if isPalleteMode == true{
-            //パレット編集ツールを閉じる
-            if myEditFlag == true{ closeEditView()}
-            
+            if myEditFlag == true{ closeEditView()}//パレット編集ツールを閉じる
            //メモのスクロール位置を設定する
             scrollPos()
                 
@@ -2414,10 +2434,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let reMemo = myMemo//上記を省略した為追加した。
             drawableView.backgroundColor = UIColor(patternImage: reMemo)
             //◆◆◆◆
-            drawableView.get1VImage()//パレット画面を保存する
-            drawableView.bup["0"] = (reMemo,mx[String(nowGyouNo)]!)
+            //セカンドViewの初期画面をブランク画像として保存
+            drawableView.bup["20"] = (bImage,mx[String(nowGyouNo)]!)
+            //パレットViewの初期画面を保存
             drawableView.bup["1"] = (reMemo,mx[String(nowGyouNo)]!)
-            
+            drawableView.undoMode = 1
+            //??drawableView.get1VImage()//パレット画面を保存する
+           
             drawableView.lastDrawImage = nil//21061213に追加
             drawableView.secondView.backgroundColor = UIColor.clear
             //UNDO関連の初期化

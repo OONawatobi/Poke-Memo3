@@ -313,7 +313,9 @@ class EditorView: UIView {
         
         //mx[]より右側では編集不可（パス）
         isSpace = Double(cursolStartX) < Double(mx[String(nowGyouNo)]! - 10) ? true:false
+        //isSpace = Double(cursolStartX) < Double(mxTemp - 10) ? true:false
         print("mx:\(mx[String(nowGyouNo)]),isSpace:\(isSpace)")
+        
         if isSpace {changeMyCursolView2(curX: point.x,startX:cursolStartX)
         }else{
           changeMyCursolView2(curX: cursolStartX,startX:cursolStartX)
