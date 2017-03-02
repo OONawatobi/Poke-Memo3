@@ -266,7 +266,7 @@ extension UIImage {
 //-----　grobal constance　--------
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
 var debug1:Bool = false//デバグ用：ページタグ表示
-var debug2:Bool = true//デバグ用：mx[]表示
+var debug2:Bool = false//デバグ用：mx[]表示
 
 let boundWidth = UIScreen.main.bounds.size.width
 let boundHeight = UIScreen.main.bounds.size.height
@@ -321,7 +321,7 @@ var myLabel:UILabel!//自動スクロールOn/Off表示用
 var lastPage:Int = 1//最後に編集したたページ番号
 var bImage:UIImage!//ブランク画像
 var helpView: HelpView! = nil//ヘルプ画面
-
+var okEnable:Bool = true//OKボタンを受け付けるフラグ
 //------------------------------------------------------------------------
 
 protocol ScrollView2Delegate{//スクロールビューの操作(機能）
@@ -394,7 +394,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var tempLineW:Int = 0//設定用線幅
     var tempColor:Int = 0//設定用線色
     var tempDelAll:Int = 0//削除フラグ：１で削除
-    var tempAutoScroll = false//設定用(初期値：手動）
+    var tempAutoScroll = true//設定用(初期値：自動）
     
     /* --- リストメニュー --- */
     let ch:CGFloat = 40//セルの高さ
@@ -405,7 +405,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
-    var items: [String] = ["","日付を追加", "表示中のページを削除", "表示中のページを保存","　","各種設定","スタートガイドを見る","                ▲ "]
+    var items_Ja: [String] = ["","日付を追加", "表示ページをクリア", "JPEGファイルで書き出す","　","各種設定","スタートガイドを見る","                ▲ "]
+    var items_En: [String] = ["","Add date", "Clear display page", "Write out as JEPEG file","　","Settings","Watch the Start-Guide","                ▲ "]
+    var items:[String] = []
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
     //var mask:UIView!
@@ -498,7 +500,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton3.setTitle("3", for: UIControlState.normal)
         editButton3.setImage(UIImage(named: "pen3.pdf"), for:UIControlState.normal)
         
-        /** button4の追加 **/
+        // button4の追加
         editButton4 = UIButton(frame: CGRect(x:125, y:5, width:30, height:30))
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton4.layer.cornerRadius = 5
@@ -549,6 +551,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton6.setImage(UIImage(named: "INS3.png"), for:UIControlState.normal)
         //editButton6.setTitle("6", for: UIControlState.normal)
         myEditView.addSubview(editButton6)
+        
         //button7の追加
         editButton7 = UIButton(frame: CGRect(x:x05 + tW*2,y: 8,width: bW, height:bH))
         editButton7.backgroundColor = UIColor.clear
@@ -557,6 +560,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton7.setImage(UIImage(named: "DEL3.png"), for:UIControlState.normal)
         //editButton7.setTitle("7", for: UIControlState.normal)
         myEditView.addSubview(editButton7)
+        
         //button8の追加
         editButton8 = UIButton(frame: CGRect(x:x05 + tW*3, y:8, width:bW,height: bH))
         editButton8.backgroundColor = UIColor.clear
@@ -566,6 +570,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton8.setTitle("8", for: UIControlState.normal)
         myEditView.addSubview(editButton8)
         
+        //button9の追加
         editButton9 = UIButton(frame: CGRect(x:sp2, y:5, width:40,height: 45))
         editButton9.backgroundColor = UIColor.clear
         editButton9.layer.cornerRadius = 8
@@ -574,6 +579,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton9.setTitle("|<", for: UIControlState.normal)
         myEditView.addSubview(editButton9)
         
+        //button10の追加
         editButton10 = UIButton(frame: CGRect(x:x05 + tW*4, y:5, width:40,height: 45))
         editButton10.backgroundColor = UIColor.clear
         editButton10.layer.cornerRadius = 8
@@ -582,7 +588,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //editButton10.setTitle(">|", for: UIControlState.normal)
         myEditView.addSubview(editButton10)
 
-        
         /* ScrollViewを生成. */
         myScrollView.Delegate2 = self
         //myScrollView.Delegate3 = self
@@ -721,29 +726,39 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sen = UIView(frame: CGRect(x:10,y:ch*4.5,width:mw*0.9,height:1))
         sen.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
         tV.addSubview(sen)
-    //
         // シャドウカラー
         tV.layer.masksToBounds = false
         tV.layer.shadowColor = UIColor.gray.cgColor/* 影の色 */
         tV.layer.shadowOffset = CGSize(width:-2,height: 4)       //  シャドウサイズ
         tV.layer.shadowOpacity = 0.15 // 透明度
         tV.layer.shadowRadius = 2 // 角度(距離）
-    //
-
+        //メニュー表示viewの設定
         smv.contentSize = tV.frame.size
         smv.contentOffset = CGPoint(x:-10,y:mh)
         smv.addSubview(tV)
-        //smv.addSubview(bgV)
-        
+        //テーブルviewの設定
         tV.delegate      =   self
         tV.dataSource    =   self
         tV.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        //indexChange(tag:nowGyouNo)
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
         self.view.addSubview(underNav)//ナビゲーション下線を追加
-
+        //使用言語を調べる
+        let prefLang = NSLocale.preferredLanguages.first
+        //文字列の先頭から末尾までを取得
+        var currentIndex = prefLang?.index((prefLang?.endIndex)!, offsetBy: -2)
+        var subStr = prefLang?.substring(to:currentIndex!)
+        print("lang:\(prefLang)>\(subStr)")
+        if subStr == "ja-"{
+            print("日本語データ処理")
+            langFlag = 0
+            items = items_Ja
+        } else {
+            print("英語データ処理")
+            langFlag = 1
+            items = items_En
+        }
     }
     
     //  ======= End of viewDidLoad=======
@@ -884,7 +899,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             done(done2)
             Pallete(pallete2)
         }
-            
+
+        print("langFlag:\(langFlag)")
+        
         if isMenuMode == false{//リストが非表示の場合
             view.addSubview(smv)
             smv.contentOffset = CGPoint(x:-10,y:self.mh )
@@ -1117,6 +1134,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
         }else{ //編集パレットが非表示の場合
         /**      通常の文字入力時      **/
+            if okEnable == false{return}
+            okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
+            
             //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
             drawableView.editOK = false//編集パネル非表示の場合
             upToMemo()//パレット画面をメモ行にコピーする
@@ -1619,7 +1639,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("セルを選択しました！ #\(indexPath.row)!")
         let num = indexPath.row
         let itm = items[num]
-        let msg = "実行してもいいですか？"
+        let msg = (langFlag == 0) ? "実行してもいいですか？":"Are you sure run it?"
         //--------------------------
         if num == 5{
             fc5()//設定画面を開く
@@ -1644,7 +1664,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            })
       
         // キャンセルボタン
-        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+        var cancel = (langFlag == 0) ? "キャンセル":"Cancel"
+        let cancelAction: UIAlertAction = UIAlertAction(title: cancel, style: UIAlertActionStyle.cancel, handler:{
             // ボタンが押された時の処理を書く（クロージャ実装）
             (action: UIAlertAction!) -> Void in print("Cancel")
             })
@@ -1664,8 +1685,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if Int(mx[String(pageNum*100 + 1)]!)<50{
         // アラート表示
         let alert = UIAlertView()
-        alert.title = "タイトルが未記入です！"
-        alert.message = "１行目にタイトルを記載して下さい。"
+        alert.title = (langFlag == 0) ? "タイトルが未記入です！":"Title is blank!"
+        alert.message = (langFlag == 0) ? "１行目にタイトルを記載して下さい。":"Write the title on the first line."
         alert.addButton(withTitle: "OK")
         alert.show();
         return
@@ -1719,7 +1740,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     }
 
-    func fc3(){// [ 現行ページを印刷する ]
+    func fc3(){// [ 現行ページをJPEGファイル出力する ]
         print("test3!!!!!")
         var im = memo[fNum].GetImage()
         im = printImage(image:im)
@@ -1729,7 +1750,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func fc5(){ // [ = 設定 = ]
         print("test5!!!!!")
-        //setV2 = UIView(frame: setV.frame)//初期値
+        //設定項目名の定義
+        let sT_Ja:[String] = ["決定","戻る","線の太さ","線の色","自動スクロール","全ページを削除","削除する","実行しない"]
+        let sT_En:[String] = ["Set","Cancel","Line-WIDTH","LINE-COLOR","AUTO-SCROLL","DELETE-ALL(PAGES)","DLETE-ALL","NO ACTION"]
+        var sT = (langFlag == 0) ? sT_Ja:sT_En//言語による切り替え
+        
         setV2 = UIView(frame:CGRect(x:0,y:0,width: 400, height: 600))//表示初期値
         setV2.backgroundColor = UIColor.white
         setV2.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.53)
@@ -1743,7 +1768,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setButtonY.backgroundColor = UIColor.orange.withAlphaComponent(0.80)
         setButtonY.layer.cornerRadius = 8
         setButtonY.addTarget(self, action: #selector(ViewController.okBtn(sender:)), for:.touchUpInside)
-        setButtonY.setTitle("Set", for: UIControlState.normal)
+        setButtonY.setTitle(sT[0], for: UIControlState.normal)
         //setButtonN.tintColor = UIColor.lightGray
         
         //キャンセルボタン
@@ -1753,7 +1778,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //setButtonN.layer.borderColor = UIColor.red.cgColor
         //setButtonN.layer.borderWidth = 1
         setButtonN.addTarget(self, action: #selector(ViewController.cancelBtn(sender:)), for:.touchUpInside)
-        setButtonN.setTitle("Cancel", for: UIControlState.normal)
+        setButtonN.setTitle(sT[1], for: UIControlState.normal)
         //setButtonN.tintColor = UIColor.lightGray
         //------- セグメント01---------------------------------------------------
         // 表示する配列を作成する.
@@ -1801,7 +1826,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         // 表示する配列を作成する.
         let myArrayB: NSArray = ["Blue","Green","Orange"]
-        let sWB:CGFloat = 50
+                let sWB:CGFloat = 50
         // SegmentedControlを作成する.
         let scB: UISegmentedControl = UISegmentedControl(items: myArrayB as [AnyObject])
         let scBoxB = UIView(frame: CGRect(x:130,y:280 - 60,width:sWB*3,height:sWB))
@@ -1828,10 +1853,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // イベントを追加する.
         scB.addTarget(self, action: #selector(segconChangedB(segcon:)), for: UIControlEvents.valueChanged)
  
-        //------- セグメント03(Boxなし)---------------------------------------------
+        //------- セグメント03(Boxなし)-----------------------
         
         // 表示する配列を作成する.
-        let myArrayC: NSArray = ["DLETE-ALL","NO ACTION"]
+        let myArrayC: NSArray = [sT[6],sT[7]]//["DLETE-ALL","NO ACTION"]
         let sWC:CGFloat = 120
         // SegmentedControlを作成する.
         let scC: UISegmentedControl = UISegmentedControl(items: myArrayC as [AnyObject])
@@ -1845,7 +1870,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         scC.selectedSegmentIndex = 1
         // イベントを追加する.
         scC.addTarget(self, action: #selector(segconChangedC(segcon:)), for: UIControlEvents.valueChanged)
-        //------------セグメントSw(Boxなし)----------------------------------------
+        //------------セグメントSw(Boxなし)------------------------------
         // Swicthを作成する.
         let mySwicth: UISwitch = UISwitch()
         mySwicth.layer.position = CGPoint(x: cv.frame.width/2, y: cv.frame.height/2 + 100)
@@ -1859,15 +1884,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myLabel = UILabel(frame: CGRect(x:cv.frame.width/2 + 60,y: 330,width:100,height:40))
         myLabel.text = autoScrollFlag ? "[ ON  ]" : "[ OFF ]"
         
-        //--------------------------------------------------------------------------
+        //--------------------------------------------------------------
         // Labelを作成.
         let lb1: UILabel = UILabel(frame: CGRect(x:20,y:50,width:120,height:40))
         //lb1.backgroundColor = UIColor.yellow
-        lb1.text = "LINE-WIDTH"
+        lb1.text = sT[2]//"LINE-WIDTH"
         // Labe2を作成.
         let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220 - 60,width:120,height:40))
         //lb2.backgroundColor = UIColor.yellow
-        lb2.text = "LINE-COLOR"
+        lb2.text = sT[3]//"LINE-COLOR"
         let lb2a: UILabel = UILabel(frame: CGRect(x:20,y:280 - 60,width:30,height:30))
         lb2a.backgroundColor = UIColor.black
         lb2a.layer.masksToBounds = true
@@ -1881,11 +1906,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //lb2c.backgroundColor = UIColor.black
         // LabeSwを作成.
         let lbSw: UILabel = UILabel(frame: CGRect(x:20,y:270 + 20,width:250,height:40))
-        lbSw.text = "AUTO-SCROLL"
+        lbSw.text = sT[4]//"AUTO-SCROLL"
         // Labe3を作成.
         let lb3: UILabel = UILabel(frame: CGRect(x:20,y:370 + 30,width:250,height:40))
         //lb3.backgroundColor = UIColor.yellow
-        lb3.text = "DELETE-ALL(PAGES)"
+        lb3.text = sT[5]//"DELETE-ALL(PAGES)"
         //コンテナに追加する
         scBox.addSubview(sc)
         scBoxB.addSubview(scB)
@@ -1895,7 +1920,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         cv.addSubview(self.setButtonN)
         cv.addSubview(self.setButtonY)
         cv.addSubview(lb1)
-        cv.addSubview(lb2);cv.addSubview(lb2a);cv.addSubview(lb2b);cv.addSubview(lb2c)
+        cv.addSubview(lb2);cv.addSubview(lb2a);cv.addSubview(lb2b)
+        cv.addSubview(lb2c)
         cv.addSubview(lb3)
         cv.addSubview(lbSw)
         cv.addSubview(mySwicth)
@@ -1966,8 +1992,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func okBtn(sender:UIButton){
         print("okBtn：\(tempDelAll)")
       if tempDelAll == 1{//全削除が選択された場合
-        let itm = "全ページの内容を削除します"
-        let msg = "本当に実行しても宜しいですか？"
+        var itm = (langFlag == 0) ? "全ページの内容を削除します":"Delete contents of all pages"
+        let msg = (langFlag == 0) ? "本当に実行しても宜しいですか？":"Are you sure run it?"
         let alert: UIAlertController = UIAlertController(title: itm, message: msg, preferredStyle:  UIAlertControllerStyle.alert)
         
         // OKボタン
@@ -2009,7 +2035,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         })
         
         // キャンセルボタン
-        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+        var cancel:String = (langFlag == 0) ? "キャンセル":"Cancel"
+        let cancelAction: UIAlertAction = UIAlertAction(title: cancel, style: UIAlertActionStyle.cancel, handler:{
             // ボタンが押された時の処理を書く（クロージャ実装）
             (action: UIAlertAction!) -> Void in print("Cancel")
         })
@@ -2100,6 +2127,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func btn1_click(sender:UIButton){
         print("** btn1_click()")
+        okEnable = true//メイン画面のokボタンの受付を許可する
         if bigFlag == true{
            zoom(zoom2)
            return
@@ -2301,18 +2329,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     func Ja_click(sender:UIButton){
         langFlag = 0
+        //表示言語を切り替える
+        items = items_Ja
+        tV.reloadData()
         helpView.req(lang:langFlag)
     }
     func En_click(sender:UIButton){
         langFlag = 1
+        items = items_En
+        tV.reloadData()
         helpView.req(lang:langFlag)
     }
     func Re_click(sender:UIButton){//ヘルプ画面を閉じる
         helpView.removeFromSuperview()
         helpView = nil
         helpTop.removeFromSuperview()
-        //langFlagを保存する
-        
     }
     
    /* -------------------　スワイプ関数　---------------------------- */
@@ -2590,11 +2621,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     // 保存を試みた結果をダイアログで表示
     func showResultOfSaveImage(_ image: UIImage, didFinishSavingWithError error: NSError!, contextInfo: UnsafeMutableRawPointer) {
-        var title = "保存完了"
-        var message = "カメラロールに保存しました"
+        var title = (langFlag == 0) ?"JPEG形式で保存完了":"Saving in JPEG format completed"
+        var message = (langFlag == 0) ?"カメラロール [写真]）に保存しました":"saved  to the camera-roll [Photos]"
         if error != nil {
-            title = "エラー"
-            message = "保存に失敗しました"
+            title = (langFlag == 0) ?"エラー!":"error!"
+            message = (langFlag == 0) ?"保存に失敗しました":"Saving failed"
         }
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         // OKボタンを追加
