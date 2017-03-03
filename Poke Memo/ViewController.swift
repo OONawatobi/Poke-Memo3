@@ -747,8 +747,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //使用言語を調べる
         let prefLang = NSLocale.preferredLanguages.first
         //文字列の先頭から末尾までを取得
-        var currentIndex = prefLang?.index((prefLang?.endIndex)!, offsetBy: -2)
-        var subStr = prefLang?.substring(to:currentIndex!)
+        let currentIndex = prefLang?.index((prefLang?.endIndex)!, offsetBy: -2)
+        let subStr = prefLang?.substring(to:currentIndex!)
         print("lang:\(prefLang)>\(subStr)")
         if subStr == "ja-"{
             print("日本語データ処理")
@@ -1664,7 +1664,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            })
       
         // キャンセルボタン
-        var cancel = (langFlag == 0) ? "キャンセル":"Cancel"
+        let cancel = (langFlag == 0) ? "キャンセル":"Cancel"
         let cancelAction: UIAlertAction = UIAlertAction(title: cancel, style: UIAlertActionStyle.cancel, handler:{
             // ボタンが押された時の処理を書く（クロージャ実装）
             (action: UIAlertAction!) -> Void in print("Cancel")
@@ -1992,7 +1992,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func okBtn(sender:UIButton){
         print("okBtn：\(tempDelAll)")
       if tempDelAll == 1{//全削除が選択された場合
-        var itm = (langFlag == 0) ? "全ページの内容を削除します":"Delete contents of all pages"
+        let itm = (langFlag == 0) ? "全ページの内容を削除します":"Delete contents of all pages"
         let msg = (langFlag == 0) ? "本当に実行しても宜しいですか？":"Are you sure run it?"
         let alert: UIAlertController = UIAlertController(title: itm, message: msg, preferredStyle:  UIAlertControllerStyle.alert)
         
@@ -2035,7 +2035,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         })
         
         // キャンセルボタン
-        var cancel:String = (langFlag == 0) ? "キャンセル":"Cancel"
+        let cancel:String = (langFlag == 0) ? "キャンセル":"Cancel"
         let cancelAction: UIAlertAction = UIAlertAction(title: cancel, style: UIAlertActionStyle.cancel, handler:{
             // ボタンが押された時の処理を書く（クロージャ実装）
             (action: UIAlertAction!) -> Void in print("Cancel")

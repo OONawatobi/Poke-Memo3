@@ -174,7 +174,7 @@ class DrawableView: UIView {
     }
     //--------------------　描画プログラム　---------------------------------/
     var rightFlag:Bool = false
-    let rightArea:CGFloat = 20//右側エリア境界位置
+    let rightArea:CGFloat = 10//右側エリア境界位置
     var shiftLeftFlag:Bool = false
     var shiftDownFlag:Bool = false
     var X_color = 0
@@ -183,6 +183,8 @@ class DrawableView: UIView {
     //var sCount:Int16 = 0//?
     var timer:Timer!
     var myMx:CGFloat = 0 //今回タッチした最大X座標(タイマースクロール用）
+    var timerFlag:Bool = false//タイマー起動中:true
+    
     
     // タッチされた
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
@@ -250,20 +252,21 @@ class DrawableView: UIView {
 
         //自動スクロール機能
         if bigFlag == false{
-          //myMx最大値を取得
+          //myMx最大値を取得:今回のタッチの最大値、
           myMx = max(myMx,currentPoint.x)
-          if myMx >= mxTemp{
+          if myMx >= mxTemp{//既に書かれた文字よりも右へ越えた場合だけ処理する(タイマー起動中も🐞）
             let midX = self.frame.midX //スクリーンViewから見たパレット中心X座標
             let screenX = myMx + (midX - vWidth/2)    // 画面座標に変
-            autoFlag =  screenX > (boundWidth - rightArea*3) ? true:false
+            autoFlag =  screenX > (boundWidth - rightArea*6) ? true:false
           }
+          if timerFlag == true{autoFlag = true}//タイマー稼働中は自動スクロールする
         }
         
        //---- 右端エリアモード ----
        }else{
         print(" is rightArea!!")
         
-       //左シフトの判定
+       //左シフトの判定（手動）
         let dX = lastPoint.x - currentPoint.x
         print(" is rightArea!!")
         let dY = lastPoint.y - currentPoint.y
@@ -275,7 +278,7 @@ class DrawableView: UIView {
         print("dx = \(dX), dY = \(dY)")
         
        }
-        print("shiftLeftFlag = \(shiftLeftFlag)")
+        //print("shiftLeftFlag = \(shiftLeftFlag):Timer\(timerFlag)")
     }
     
     // タッチが終わった
@@ -292,9 +295,8 @@ class DrawableView: UIView {
           get2VImage()//second画像をbup[2]に保存：UNDO用
           //左方向への自動スクロール
             print("autoFlag:\(autoFlag):mxTemp=\(mxTemp)")
-            
           if autoScrollFlag == true{//設定フラグ(判定フラグ:autoFlagでは無い）
-             if bigFlag == false{ startTimer()}//遅延してスクロール
+             if bigFlag == false{ startTimer()}//遅延してスクロール(autoFlagを判定）
           }
             
         //------- 右端エリアにタッチされた場合 -------
@@ -327,20 +329,23 @@ class DrawableView: UIView {
       //左方向への自動スクロール
        if autoFlag == true{
           timer = Timer.scheduledTimer(timeInterval: 0.6, target: self, selector: #selector(DrawableView.timerAction), userInfo: nil, repeats: false)
+         timerFlag = true//タイマー起動中
+        print("startTimer:\(timerFlag)")
        }
     }
 
     ///タイマーアップ時の処理
     func timerAction(){
-        if autoFlag == false {return}
+        //if autoFlag == false {return}//不要では？
         scrollLeft()
         myMx = 0//スクロール実施後、タッチ最大ｘをリセット
+        print("timerAction:\(timerFlag)")
     }
     /// 左方向へのスクロール
     func scrollLeft(){
         
-        // 左方向へのシフトを実施する:画面の５分の１だけ左側に表示する
-        var dsX = vWidth/2 - mxTemp + boundWidth/5
+        // 左方向へのシフトを実施する:画面の５-7分の１だけ左側に表示する
+        var dsX = vWidth/2 - mxTemp + boundWidth/7
         //右端制限
         dsX = dsX < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):dsX
         //左端制限
@@ -350,6 +355,7 @@ class DrawableView: UIView {
         UIView.animate(withDuration: 0.3, animations: {
             () -> Void in
             self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
+            self.timerFlag = false//タイマーフラグのリセット
         })
         //シフトスクロールした後にOKボタンを押さない様にする
         //理由：①ボケ回数を減らす為、②ペン色が変わらない様にする
