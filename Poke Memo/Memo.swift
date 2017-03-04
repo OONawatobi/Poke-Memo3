@@ -169,7 +169,7 @@ class MemoView:UIView{
         
         
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
-        let gColor = UIColor.green.withAlphaComponent(0.04)
+        let gColor = UIColor.green.withAlphaComponent(0.06)
         let gColor2 = UIColor.green.withAlphaComponent(0.15)
         //let wColor = UIColor.white
         let cColor = UIColor.orange.withAlphaComponent(0.3)
@@ -178,7 +178,7 @@ class MemoView:UIView{
         let cursolView:UIView = UIView(frame: leafRect)
         cursolView.backgroundColor = gColor
         cursolView.layer.borderColor = gColor2.cgColor
-        cursolView.layer.borderWidth = 6
+        cursolView.layer.borderWidth = 8
         //中間線を追加
         let mline = UIView(frame: CGRect(x:leafWidth/2,y:0,width:2,height:leafHeight))
         mline.backgroundColor = gColor2

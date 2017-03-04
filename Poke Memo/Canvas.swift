@@ -47,11 +47,16 @@ class DrawableView: UIView {
           lastDrawImage = im2
           undoMode = 2
             
-        }else if undoMode == 1{//okボタンが押された直後
+        }else if undoMode == 1 {//okボタンが押された直後
           if bup["10"] == nil{return}
           secondView.backgroundColor = UIColor.clear//(patternImage: blankView!)
           let im1 = bup["10"]?.0
           mxTemp = bup["10"]?.1
+          //[10]と[1]を入れ替える
+            bup["temp"] = bup["10"]
+            bup["10"] = bup["1"]
+            bup["1"] = bup["temp"]
+            
           drawableView.backgroundColor = UIColor(patternImage: im1!)
           lastDrawImage = nil
 
@@ -59,18 +64,8 @@ class DrawableView: UIView {
             self.Delegate?.upToMemo()//パレット内容をメモに移す
           }
           print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
-          undoMode = 7
-            
-        }else if undoMode == 7{//undo処理が行われた直後
-            let im1 = bup["1"]?.0
-            mxTemp = bup["1"]?.1
-          drawableView.backgroundColor = UIColor(patternImage: im1!)
-          lastDrawImage = nil
-          if editOK == false{//編集パネル非表示
-            self.Delegate?.upToMemo()//パレット内容をメモに移す
-          }
-          print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
           undoMode = 1
+            
         }else if undoMode == 3{//編集パネル表示中にokボタンが押された直後のUndo
     //return
             if bup["30"] == nil{return}
@@ -93,15 +88,29 @@ class DrawableView: UIView {
             undoMode = 3
             
         }
+        /*
+        else if undoMode == 7{//undo処理が行われた直後
+            let im1 = bup["1"]?.0
+            mxTemp = bup["1"]?.1
+            drawableView.backgroundColor = UIColor(patternImage: im1!)
+            lastDrawImage = nil
+            if editOK == false{//編集パネル非表示
+                self.Delegate?.upToMemo()//パレット内容をメモに移す
+            }
+            print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
+            undoMode = 1
+        */
     }
     //undo関係のリセット
-    func resetUndo(){
+    /*
+     func resetUndo(){
          undoMode = 0
          //bup["20"] = nil
          //bup["10"] = nil
          //bup["1"] = nil
          //bup["2"] = nil
-    }
+     }
+    */
     
     //SecondView画面(パネル編集結果）を取得する
     func get3VImage(open:Int){//open:パネルを開く時が１、閉じる時は０
@@ -159,7 +168,7 @@ class DrawableView: UIView {
         // ++ thirdViewの初期化：背景を緑色にする、先頭と末尾に印を追加する ++
         thirdView = UIView(frame: secondView.frame)
         thirdView.backgroundColor = UIColor(patternImage: myImg!)
-        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.15), width: 15)
+        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.25), width: 15)
         thirdView.isUserInteractionEnabled = false //イベントの透過
         self.addSubview(secondView)
         self.addSubview(thirdView)

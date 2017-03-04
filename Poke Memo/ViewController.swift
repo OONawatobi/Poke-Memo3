@@ -372,6 +372,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var eButton:UIButton!//ヘルプ画面:English
     var rButton:UIButton!//ヘルプ画面:[X]閉じる
     var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
+    var numBar:UIView!//INDEXページの左端ライン
     //var bView:UIView!//ブランクビュー
     //var setFlag:Bool = false
     //var isIndexMode:Bool! = false//Indexの表示フラグ：
@@ -410,6 +411,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var items:[String] = []
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
+    var underNav:UIView!//ナビゲーションバー下の半透明バー
     //var mask:UIView!
     
     override func viewDidLoad() {
@@ -427,7 +429,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //ナビゲーションバーの色を変える
         setNaviBar(color: nColor)
         //ナビゲーションバーの下線（半透明）
-        let underNav = UIView(frame: CGRect(x:0,y:64 - 5,width:boundWidth,height:8))
+        underNav = UIView(frame: CGRect(x:0,y:64 - 5,width:boundWidth,height:8))
         underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
         
         //ブランクleafを作成する
@@ -449,16 +451,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         /** underViewを生成. **/
         //underFlag = false// 表示・非表示のためのフラグ
-        underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
+        underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
         underView.backgroundColor = UIColor.green// underViewの背景を青色に設定
         underView.alpha = 0.33// 透明度を設定
-        underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 10 )// 位置を中心に設定
+        underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 15 )// 位置を中心に設定
         underView.addBottomBorderWithColor(color: UIColor.black, width:2)
         /** upperViewを生成. **/
-        upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 20))// underViewを生成.
+        upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
         upperView.backgroundColor = UIColor.green
         upperView.alpha = 0.33// 透明度を設定
-        upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 + 10)// 位置を中心に設定
+        upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 + 15)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
         
         /** myToolView ([色][ペン][消しゴム][▲])を生成. **/
@@ -600,7 +602,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
         scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  ,width:leafWidth, height:boundHeight - 20 - 44 - 10 - 44 )//toolViewだけが表示されている場合
-        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:110  ,width:leafWidth, height:boundHeight - 110 )//index表示されている場合
+        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:110  ,width:leafWidth, height:boundHeight - 115 )//index表示されている場合
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -611,9 +613,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myScrollView.showsHorizontalScrollIndicator = false// 横スクロールバー非表示
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
         //myScrollView.directionalLockEnabled = true
-        
+        //枠線を追加する
         myScrollView.backgroundColor = UIColor.white
-        
+        myScrollView.layer.borderColor = UIColor.yellow.cgColor
+        myScrollView.layer.borderWidth = 0//枠線を見えなくする
         //------------ スワイプ認識登録　------------
         //右スワイプ
         let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.swipeR))
@@ -654,18 +657,25 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             indexImgs = readPage(pn:0)//0ページ目の外部データを読み込む
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
             //indexタイトルの作成
-            titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
-            titleV.backgroundColor = UIColor.rgb(r: 236, g: 223, b: 43, alpha: 1)
+            //titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
+            titleV = UIImageView(frame: CGRect(x:0, y:64,width:boundWidth,height:topOffset*2))
+            titleV.backgroundColor = iColor//UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
+
+            //darkGray
+            //rgb(r: 236, g: 223, b: 43, alpha: 1)
                 //.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
             //titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
             let tw = titleV.frame.width
             let th = titleV.frame.height*1.2
-            let label1 = UILabel(frame: CGRect(x:0,y:4,width:tw/3,height:th/2))
-            let label2 = UILabel(frame: CGRect(x:tw/2 - tw/6,y:4,width:tw/3,height:th/2))
-            let label3 = UILabel(frame: CGRect(x:tw*2/3 - 5 ,y:4,width:tw/3 - 15,height:th/2))
+            let label1 = UILabel(frame: CGRect(x:0,y:8,width:tw/3,height:th/2))
+            let label2 = UILabel(frame: CGRect(x:tw/2 - tw/5,y:9,width:tw/3,height:th/2))
+            let label3 = UILabel(frame: CGRect(x:tw*2/3 - 5 ,y:8,width:tw/3 - 15,height:th/2))
             label1.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
             label2.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
             label3.font = UIFont(name: "ChalkboardSE-Bold", size: 16)//ChalkboardSE-Bold//Optima-ExtraBlack
+            label1.textColor = UIColor.white
+            label2.textColor = UIColor.white
+            label3.textColor = UIColor.white
             label1.text = "　page"
             label2.text = "title"
             label3.text = "update"
@@ -678,7 +688,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             titleV.addSubview(label1)
             titleV.addSubview(label2)
             titleV.addSubview(label3)
-            titleV.addSubview(senW)
+            //titleV.addSubview(senW)
+
    
             // ** メモ表示内容の初期化 **
             //設定値を読み込む
@@ -714,7 +725,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //テーブルビュー初期化、関連付け
         mh = ch * CGFloat(cn)//メニューの高さ＝セルの高さ☓セル数
         let w = boundWidth
-        tV.frame         =   CGRect(x:0, y:0, width:mw + 20 , height:mh)
+        tV.frame = CGRect(x:0, y:0, width:mw + 20 , height:mh)
         smv = UIScrollView(frame: CGRect(x:w - mw - 10 ,y:65,width:mw + 20,height:mh - 30))
         smv.backgroundColor = UIColor.clear
         tV.separatorColor = UIColor.clear//セパレータ無し
@@ -803,7 +814,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
         }
-        
+        //左端ライン
+        if numBar == nil{
+          numBar = UIView(frame: CGRect(x:0,y:0,width:45,height:myScrollView.contentSize.height))
+          numBar.backgroundColor = UIColor.brown.withAlphaComponent(0.2)
+        }
         var opt = UIViewAnimationOptions.transitionFlipFromLeft
         if isIndexMode == false{//Indexページが非表示の場合
             myScrollView.contentOffset.y = -40//スクロール位置：TOP
@@ -836,7 +851,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.changing = false//開く(閉じる)ジェスチャーを終了する
             })
             //ステータスバーの色を変える
-            statusBarBackground.backgroundColor = iColor            // ナビゲーションを変更する処理
+            statusBarBackground.backgroundColor = iColor
+            underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.0)
+            // ナビゲーションを変更する処理
             self.setNaviBar(color: iColor)
             isIndexMode = true
             fNum = 0
@@ -846,7 +863,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            
             myScrollView.backgroundColor =  UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
                 //.orange.withAlphaComponent(0.5)
-            
+            myScrollView.layer.borderWidth = 2//枠線を付ける
+            myScrollView.addSubview(numBar)
 
         }else{//Indexページが表示中の場合
             print("index else**")
@@ -871,6 +889,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     self.statusBarBackground.backgroundColor = self.nColor
                     // ナビゲーションの色を変える
                     self.setNaviBar(color: self.nColor)
+                    self.titleV.removeFromSuperview()
+                    self.underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
+                    
                     self.changing = false//開く(閉じる)ジェスチャーを終了する
 /*
  self.navigationController?.navigationBar.setBackgroundImage(UIImage(named:"blankP.png"), for: UIBarPosition.any , barMetrics: UIBarMetrics.default)
@@ -882,13 +903,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("retNum: \(retNum)")
             fNum = retNum
             myScrollView.backgroundColor =  UIColor.clear
+            myScrollView.layer.borderWidth = 0//枠線を消す
             myScrollView.contentOffset.y = 0//スクロール位置：TOP
-
+            numBar.removeFromSuperview()
+            numBar = nil
             //タイトルの設定
             //naviBar.topItem?.title = String(pageNum) + " /30"
             //let p:String = String(pageNum) + " /30"
             //myScrollView.backgroundColor =  UIColor.orange.withAlphaComponent(0.2)
-            titleV.removeFromSuperview()
+            
         }
     }
     
@@ -1134,7 +1157,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
         }else{ //編集パレットが非表示の場合
         /**      通常の文字入力時      **/
-            if okEnable == false{return}
+            //if okEnable == false{return}
             okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
             
             //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
@@ -2475,7 +2498,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView.lastDrawImage = nil//21061213に追加
             drawableView.secondView.backgroundColor = UIColor.clear
             //UNDO関連の初期化
-            drawableView.resetUndo()
+            drawableView.undoMode = 0 // resetUndo()
             
         }else if isIndexMode == true{
         //パレット非表示の場合
