@@ -421,7 +421,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
         //ステータスバーの色を変える
         nColor = UIColor.init(red: 0, green: 0.4, blue: 1, alpha: 1)
-        iColor = UIColor.brown
+        iColor = UIColor.init(white: 0.92, alpha: 1)
         
         statusBarBackground = UIView(frame: CGRect(x:0 ,y: 0, width:self.view.frame.width, height:UIApplication.shared.statusBarFrame.height))
         statusBarBackground.backgroundColor = nColor
@@ -658,13 +658,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[0].setIndexView()//タグを付ける、メモの作成(indexページ)
             //indexタイトルの作成
             //titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
-            titleV = UIImageView(frame: CGRect(x:0, y:64,width:boundWidth,height:topOffset*2))
-            titleV.backgroundColor = iColor//UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
+            titleV = UIImageView(frame: CGRect(x:0, y:62,width:boundWidth,height:topOffset*2))
+            titleV.backgroundColor = UIColor.brown//UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
 
             //darkGray
             //rgb(r: 236, g: 223, b: 43, alpha: 1)
                 //.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
             //titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
+            //タイトルview下の半透明マスク
+            let underTV = UIView(frame: CGRect(x:0,y:topOffset*2 - 5,width:boundWidth,height:8))
+            underTV.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
+            
             let tw = titleV.frame.width
             let th = titleV.frame.height*1.2
             let label1 = UILabel(frame: CGRect(x:0,y:8,width:tw/3,height:th/2))
@@ -689,7 +693,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             titleV.addSubview(label2)
             titleV.addSubview(label3)
             //titleV.addSubview(senW)
-
+            titleV.addSubview(underTV)
    
             // ** メモ表示内容の初期化 **
             //設定値を読み込む
@@ -814,7 +818,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
         }
-        //左端ライン
+        //左端ライン？不要？
         if numBar == nil{
           numBar = UIView(frame: CGRect(x:0,y:0,width:45,height:myScrollView.contentSize.height))
           numBar.backgroundColor = UIColor.brown.withAlphaComponent(0.2)
@@ -840,12 +844,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                 
                 self.tl.text = "INDEX"
+                self.tl.textColor = UIColor.black
                 self.tl.font = UIFont(name: "ChalkboardSE-Bold", size: 20)
                 //self.tl.font = "Cooper Std"//"HiraKakuProN-W3"//"Chalkboard SE"//"Optima-ExtraBlack"//AmericanTypewriter-Bold//"Optima-ExtraBlack"//"Chalkduster"//Euphemia UCAS
                 self.naviBar.topItem?.titleView = self.tl
                 //↑はこれでもOK:naviBar.topItem?.title = "--  INDEX  --"
                 //self.view.addSubview(self.mask)
-                 self.myScrollView.frame = self.scrollRect_I
+                self.myScrollView.frame = self.scrollRect_I
                 self.myScrollView.contentOffset.y = 0//スクロール位置：TOP
                 self.view.addSubview(self.titleV)
                 self.changing = false//開く(閉じる)ジェスチャーを終了する
@@ -861,10 +866,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[0].delCursol()
             print("retNum1: \(retNum)")
            
-            myScrollView.backgroundColor =  UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
+            myScrollView.backgroundColor =  UIColor.white//rgb(r: 235, g: 201, b: 118, alpha: 1)
                 //.orange.withAlphaComponent(0.5)
-            myScrollView.layer.borderWidth = 2//枠線を付ける
-            myScrollView.addSubview(numBar)
+            myScrollView.layer.borderWidth = 0//枠線を付ける
+            //myScrollView.addSubview(numBar)
 
         }else{//Indexページが表示中の場合
             print("index else**")
@@ -889,6 +894,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     self.statusBarBackground.backgroundColor = self.nColor
                     // ナビゲーションの色を変える
                     self.setNaviBar(color: self.nColor)
+                    self.tl.textColor = UIColor.white
                     self.titleV.removeFromSuperview()
                     self.underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
                     
@@ -1248,13 +1254,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func setNaviBar(color:UIColor) {
        print("setNaviBar")
         var tColor = UIColor.white
+        var listColor = UIColor.white
         self.naviBar.barTintColor = color
+        
         //indexページでリストボタン(左側）以外のボタンを見えなくする
         if color == iColor{
             tColor = iColor
         }
+
          self.naviBar.items?.first?.rightBarButtonItem?.tintColor  = tColor
          self.menu2.tintColor = tColor
+        if color == iColor{
+            listColor = UIColor.gray//indexページのリストアイコンの色
+        }
+         self.naviBar.items?.first?.leftBarButtonItem?.tintColor = listColor
     }
 
     //設定値の外部保存
@@ -1489,11 +1502,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             ,height:leafHeight - 4))
         img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3 - 2,y:0,width:leafHeight*4/3 - 8,height:leafHeight))
         //枠線,色,角丸
-        img01.layer.borderWidth = 1
-        img01.layer.borderColor = UIColor.purple.withAlphaComponent(0.3).cgColor
+        img01.layer.borderWidth = 2
+        img01.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         img01.layer.cornerRadius = 3
-        cont02.layer.borderWidth = 3
-        cont02.layer.borderColor = UIColor.purple.withAlphaComponent(0.1).cgColor
+        cont02.layer.borderWidth = 2
+        cont02.layer.borderColor = UIColor.purple.withAlphaComponent(0.4).cgColor
         cont02.layer.cornerRadius = 10
         cont02.layer.masksToBounds = true
         
@@ -1502,9 +1515,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         img03.layer.cornerRadius = 20
 
         img01.backgroundColor = UIColor.clear
-        cont02.backgroundColor = UIColor.white.withAlphaComponent(0.8)//purple.withAlphaComponent(0.1)
-        img03.backgroundColor = UIColor.purple.withAlphaComponent(0.1)
-        
+        cont02.backgroundColor = UIColor.purple.withAlphaComponent(0.05)//white.withAlphaComponent(0.8)
+        img03.backgroundColor = UIColor.purple.withAlphaComponent(0.2)
+
         //Viewの内容を作成
         //パレット全画面の切り取り????
         let tag:Int = pn*100 + usedNum

@@ -428,7 +428,9 @@ class DrawableView: UIView {
         secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
     }
     
-    //ストロークの線色を変更する
+    
+ /*
+    //ストロークの線色を変更する//使用しているの？
     func eXImageColor(img:UIImage)->UIImage{
         let imv:UIImageView = UIImageView(frame: self.frame)
         imv.image = img.withRenderingMode(.alwaysTemplate)
@@ -436,6 +438,8 @@ class DrawableView: UIView {
         lastDrawImage = imv.GetImage()
         return imv.GetImage()
     }
+ */
+/*
     let tempPallete = UIView(frame: CGRect(x:0,y:0,width:vWidth,height:vHeight))
     func upToMemoTmp(){
         //直前のパレット画面画像
@@ -443,6 +447,6 @@ class DrawableView: UIView {
         //memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
         
     }
-    
+*/
  }
  
