@@ -346,6 +346,11 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate, UIWebViewDelegate{
     
+    //ステータスバーを非表示にする
+    //override var prefersStatusBarHidden: Bool { return true }
+    //ステータスバーの文字色を白色にする
+    //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
+    
     //var indexFView:UIView!//インデックスメニュー作成評価用
     var statusBarBackground:UIView!
     let myScrollView = TouchScrollView()//UIScrollView()
@@ -368,6 +373,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var setV2:UIView!//設定画面
     var nColor:UIColor!//ナビゲーションバーの色
     var iColor:UIColor!//indexページのナビバーの色
+    var iColor2:UIColor!//indexページのナビバーの下の色（項目バー）
     var helpTop:UIView!//ヘルプ画面topエリア
     var jButton:UIButton!//ヘルプ画面:日本語
     var eButton:UIButton!//ヘルプ画面:English
@@ -420,11 +426,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.backgroundColor = UIColor.white
         //本機種の解像度
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
-        
-        //NAVバー、ステータスバーの色を作成
-        nColor = UIColor.init(red: 0, green: 0.4, blue: 1, alpha: 1)
+        //NAVバー、ステータスバーの色を作成 95,144,191 0,145,197
+        //nColor = UIColor.init(red: 0, green: 0.4, blue: 1, alpha: 1)
+        nColor = UIColor.rgb(r: 0,g: 130, b: 255, alpha: 1)
         //Indexバーの色を作成
-        iColor = UIColor.rgb(r: 243, g: 240, b: 219, alpha: 1) //init(white: 0.92, alpha: 1)
+        iColor = UIColor.rgb(r: 208,g: 113, b: 68, alpha: 1) //init(white: 0.92, alpha: 1)78,157,121  (r: 208,g: 113, b: 68, alpha: 1)
+        iColor2 = UIColor.rgb(r: 242, g: 177, b: 106, alpha: 1)
+        
         //ステータスバーの色を変える
         statusBarBackground = UIView(frame: CGRect(x:0 ,y: 0, width:self.view.frame.width, height:UIApplication.shared.statusBarFrame.height))
         statusBarBackground.backgroundColor = nColor
@@ -662,15 +670,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //indexタイトルの作成
             //titleV = UIImageView(frame: CGRect(x:(boundWidth - leafWidth)/2, y:70,width:myScrollView.frame.width,height:topOffset*2))
             titleV = UIImageView(frame: CGRect(x:0, y:62,width:boundWidth,height:topOffset*2))
-            titleV.backgroundColor = UIColor.brown//UIColor.rgb(r: 235, g: 201, b: 118, alpha: 1)
-
+            titleV.backgroundColor = iColor2//UIColor.brown
             //darkGray
             //rgb(r: 236, g: 223, b: 43, alpha: 1)
                 //.orange.withAlphaComponent(0.5)// init(white: 1, alpha: 1)
             //titleV.addBottomBorderWithColor(color: UIColor.orange, width: 0.8)
             //タイトルview下の半透明マスク
-            let underTV = UIView(frame: CGRect(x:0,y:topOffset*2 - 5,width:boundWidth,height:8))
-            underTV.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
+            let underTV = UIView(frame: CGRect(x:0,y:topOffset*2 - 3,width:boundWidth,height:6))
+            underTV.backgroundColor = UIColor.init(white: 0.6, alpha:0.2)
             
             let tw = titleV.frame.width
             let th = titleV.frame.height*1.2
@@ -813,7 +820,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpTop.addSubview(jButton)
         helpTop.addSubview(eButton)
         helpTop.addSubview(rButton)
-        
+
     }
     
     //  ======= End of viewDidLoad=======
@@ -889,17 +896,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //self.tl.font = "Cooper Std"//"HiraKakuProN-W3"//"Chalkboard SE"//"Optima-ExtraBlack"//AmericanTypewriter-Bold//"Optima-ExtraBlack"//"Chalkduster"//Euphemia UCAS
                 self.naviBar.topItem?.titleView = self.tl
                 //↑はこれでもOK:naviBar.topItem?.title = "--  INDEX  --"
+                    //ステータスバーの色を変える
+                    self.statusBarBackground.backgroundColor = self.iColor
+                    self.underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.0)
+                    // ナビゲーションを変更する処理
+                    self.setNaviBar(color: self.iColor)
                 //self.view.addSubview(self.mask)
                 self.myScrollView.frame = self.scrollRect_I
                 self.myScrollView.contentOffset.y = 0//スクロール位置：TOP
                 self.view.addSubview(self.titleV)
                 self.changing = false//開く(閉じる)ジェスチャーを終了する
             })
-            //ステータスバーの色を変える
-            statusBarBackground.backgroundColor = iColor
-            underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.0)
-            // ナビゲーションを変更する処理
-            self.setNaviBar(color: iColor)
+            
             isIndexMode = true
             fNum = 0
             
@@ -1296,7 +1304,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          self.naviBar.items?.first?.rightBarButtonItem?.tintColor  = tColor
          self.menu2.tintColor = tColor
         if color == iColor{
-            listColor = UIColor.gray//indexページのリストアイコンの色
+            listColor = UIColor.white//indexページのリストアイコンの色
         }
          self.naviBar.items?.first?.leftBarButtonItem?.tintColor = listColor
     }
@@ -2141,7 +2149,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            helpFrame.layer.position.x = -boundWidth/2
            self.view.addSubview(helpFrame)
         //アニメーション
-        UIView.animate(withDuration: 0.8, animations: {
+        UIView.animate(withDuration: 0.5, animations: {
             helpFrame.layer.position.x = boundWidth/2
         }, completion: {(Bool) -> Void in
         })
