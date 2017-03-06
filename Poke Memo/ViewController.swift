@@ -14,7 +14,7 @@ enum DashedLineType {
 
 extension UIColor {
     class func rgb(r: Int, g: Int, b: Int, alpha: CGFloat) -> UIColor{
-        return UIColor(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: alpha)
+        return UIColor(red: CGFloat(r)/255.0, green: CGFloat(g)/255.0, blue: CGFloat(b)/255.0, alpha: alpha)
     }
 }
 
@@ -321,6 +321,7 @@ var myLabel:UILabel!//自動スクロールOn/Off表示用
 var lastPage:Int = 1//最後に編集したたページ番号
 var bImage:UIImage!//ブランク画像
 var helpView: HelpView! = nil//ヘルプ画面
+let helpFrame = UIView(frame: CGRect(x:0,y:0,width:boundWidth,height:boundHeight))
 var okEnable:Bool = true//OKボタンを受け付けるフラグ
 //------------------------------------------------------------------------
 
@@ -419,10 +420,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.backgroundColor = UIColor.white
         //本機種の解像度
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
-        //ステータスバーの色を変える
-        nColor = UIColor.init(red: 0, green: 0.4, blue: 1, alpha: 1)
-        iColor = UIColor.init(white: 0.92, alpha: 1)
         
+        //NAVバー、ステータスバーの色を作成
+        nColor = UIColor.init(red: 0, green: 0.4, blue: 1, alpha: 1)
+        //Indexバーの色を作成
+        iColor = UIColor.rgb(r: 243, g: 240, b: 219, alpha: 1) //init(white: 0.92, alpha: 1)
+        //ステータスバーの色を変える
         statusBarBackground = UIView(frame: CGRect(x:0 ,y: 0, width:self.view.frame.width, height:UIApplication.shared.statusBarFrame.height))
         statusBarBackground.backgroundColor = nColor
         self.view.addSubview(statusBarBackground)
@@ -774,6 +777,43 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             langFlag = 1
             items = items_En
         }
+        /**  -- ヘルプ画面の作成  --  **/
+        //----TOPエリアの作成-----
+        helpTop = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:64))
+        helpTop.backgroundColor = UIColor.black
+        //
+        let hl = UILabel(frame: CGRect(x: boundWidth/2
+            - 75, y: 0, width: 150, height: 40))
+        hl.textColor = UIColor.yellow
+        hl.textAlignment = .left
+        hl.backgroundColor = UIColor.clear
+        hl.font = UIFont(name: "ChalkboardSE-Bold", size: 26)
+        hl.text = "Start Guide"
+        //言語切替ボタンを追加:jButton,eButton
+        jButton = UIButton(frame: CGRect(x:boundWidth - 150,y:30, width:60, height:40))
+        eButton = UIButton(frame: CGRect(x:boundWidth - 70,y:30, width:60, height:40))
+        jButton.backgroundColor = UIColor.clear
+        eButton.backgroundColor = UIColor.clear
+        jButton.showsTouchWhenHighlighted = true
+        eButton.showsTouchWhenHighlighted = true
+        // タイトルを設定する(通常時)
+        jButton.setTitle("日本語", for: UIControlState.normal)
+        eButton.setTitle("English", for: UIControlState.normal)
+        jButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        eButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        // イベントを追加する
+        jButton.addTarget(self, action: #selector(ViewController.Ja_click(sender:)), for: .touchUpInside)
+        eButton.addTarget(self, action: #selector(ViewController.En_click(sender:)), for: .touchUpInside)
+        //戻る(終了）ボタンを追加
+        rButton = UIButton(frame: CGRect(x:10,y:20, width:30, height:30))
+        //rButton.backgroundColor = UIColor.white
+        rButton.setImage(UIImage(named: "2Left.png"), for:UIControlState.normal)
+        rButton.addTarget(self, action: #selector(ViewController.Re_click(sender:)), for: .touchUpInside)
+        helpTop.addSubview(hl)
+        helpTop.addSubview(jButton)
+        helpTop.addSubview(eButton)
+        helpTop.addSubview(rButton)
+        
     }
     
     //  ======= End of viewDidLoad=======
@@ -1041,15 +1081,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //アニメ動作終了
                 self.animeFlag = false//アニメ動作終了宣言
              } // ++++  ココまで  ++++
-            //パレットビューを作成する
-        /* 上（アニメの前）に移動しました
-            drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
-        
-            drawableView.Delegate = self
-            let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44 - 1)
-            drawableView.layer.position = leftEndPoint
-            drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
-        */
             
             self.toolBar.isHidden  = false//ツールバーを現す
             isPalleteMode = true//パレットが表示されている場合は"true"
@@ -2099,51 +2130,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func fc6(){// [ スタートガイド ]
         print("test6!!!!!")
-        //----TOPエリアの作成-----
-        helpTop = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:64))
-        helpTop.backgroundColor = UIColor.black
-        //
-        let hl = UILabel(frame: CGRect(x: boundWidth/2
-             - 75, y: 0, width: 150, height: 40))
-        hl.textColor = UIColor.yellow
-        hl.textAlignment = .left
-        hl.backgroundColor = UIColor.clear
-        hl.font = UIFont(name: "ChalkboardSE-Bold", size: 26)
-        hl.text = "Start Guide"
-        //言語切替ボタンを追加:jButton,eButton
-        jButton = UIButton(frame: CGRect(x:boundWidth - 150,y:30, width:60, height:40))
-        eButton = UIButton(frame: CGRect(x:boundWidth - 70,y:30, width:60, height:40))
-        jButton.backgroundColor = UIColor.clear
-        eButton.backgroundColor = UIColor.clear
-        jButton.showsTouchWhenHighlighted = true
-        eButton.showsTouchWhenHighlighted = true
-        // タイトルを設定する(通常時)
-        jButton.setTitle("日本語", for: UIControlState.normal)
-        eButton.setTitle("English", for: UIControlState.normal)
-        jButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-        eButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-        // イベントを追加する
-        jButton.addTarget(self, action: #selector(ViewController.Ja_click(sender:)), for: .touchUpInside)
-        eButton.addTarget(self, action: #selector(ViewController.En_click(sender:)), for: .touchUpInside)
-        //戻る(終了）ボタンを追加
-        rButton = UIButton(frame: CGRect(x:10,y:20, width:30, height:30))
-        //rButton.backgroundColor = UIColor.white
-        rButton.setImage(UIImage(named: "2Left.png"), for:UIControlState.normal)
-        rButton.addTarget(self, action: #selector(ViewController.Re_click(sender:)), for: .touchUpInside)
-        helpTop.addSubview(hl)
-        helpTop.addSubview(jButton)
-        helpTop.addSubview(eButton)
-        helpTop.addSubview(rButton)
-        self.view.addSubview(helpTop)
         //------helpViewの作成----------
-        if helpView == nil{
-            helpView = HelpView(frame: CGRect(x:0, y:64,width:boundWidth, height:boundHeight - 64))
-            helpView.backgroundColor = UIColor.white
+        if helpView != nil{return}
+           helpView = HelpView(frame: CGRect(x:0, y:64,width:boundWidth, height:boundHeight - 64))
+           helpView.backgroundColor = UIColor.white
            helpView.delegate = self
            helpView.req(lang:langFlag)
-           self.view.addSubview(helpView)
-        }
-        
+           helpFrame.addSubview(helpView)
+           helpFrame.addSubview(helpTop)
+           helpFrame.layer.position.x = -boundWidth/2
+           self.view.addSubview(helpFrame)
+        //アニメーション
+        UIView.animate(withDuration: 0.8, animations: {
+            helpFrame.layer.position.x = boundWidth/2
+        }, completion: {(Bool) -> Void in
+        })
+
     }
     
    /* ----------------------　ボタン関数　-----------------------------*/
@@ -2377,9 +2379,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpView.req(lang:langFlag)
     }
     func Re_click(sender:UIButton){//ヘルプ画面を閉じる
-        helpView.removeFromSuperview()
-        helpView = nil
-        helpTop.removeFromSuperview()
+        //アニメーション
+        UIView.animate(withDuration: 0.5, animations: {
+            helpFrame.layer.position.x = -boundWidth/2
+        }, completion: {(Bool) -> Void in
+            helpView.removeFromSuperview()
+            helpView = nil
+            self.helpTop.removeFromSuperview()
+            
+        })
     }
     
    /* -------------------　スワイプ関数　---------------------------- */
