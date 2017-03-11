@@ -222,14 +222,17 @@ extension UIImage {
         //UIGraphicsBeginImageContext(self.size)
         UIGraphicsBeginImageContextWithOptions(self.size,false,0.0)
         self.draw(in: imageRect)
-        let textRect  = CGRect(x:self.size.width - 130, y:0, width:120, height:self.size.height - 5)
+        let textRect  = CGRect(x:self.size.width - 130, y:0, width:120, height:self.size.height - 30)
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
             NSForegroundColorAttributeName: UIColor.gray,
             NSParagraphStyleAttributeName: textStyle
         ]
-        
+        //くり抜き?日付エリアを透明にする
+        let context: CGContext = UIGraphicsGetCurrentContext()!
+        context.clear(textRect)
+        //日付を追加する
         text.draw(in: textRect, withAttributes: textFontAttributes)
         let newImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext()
@@ -379,6 +382,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var eButton:UIButton!//ヘルプ画面:English
     var rButton:UIButton!//ヘルプ画面:[X]閉じる
     var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
+    var hl:UILabel!//ヘルプ画面のタイトル
     var numBar:UIView!//INDEXページの左端ライン
     //var bView:UIView!//ブランクビュー
     //var setFlag:Bool = false
@@ -413,8 +417,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var smv:UIScrollView!//メニューリストテーブルを入れるスクロール箱
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
-    var items_Ja: [String] = ["","日付を追加", "表示ページをクリア", "JPEGファイルで書き出す","　","各種設定","スタートガイドを見る","                ▲ "]
-    var items_En: [String] = ["","Add date", "Clear display page", "Write out as JEPEG file","　","Settings","Watch the Start-Guide","                ▲ "]
+    var items_Ja: [String] = ["","日付を追加", "表示ページをクリア", "JPEGファイルで出力","　","各種設定","スタートガイドを見る","                ▲ "]
+    var items_En: [String] = ["","Add date", "Clear display page", "Write out as JPEG file","　","Settings","Watch the Start-Guide","                ▲ "]
     var items:[String] = []
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
@@ -687,9 +691,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             label1.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
             label2.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
             label3.font = UIFont(name: "ChalkboardSE-Bold", size: 16)//ChalkboardSE-Bold//Optima-ExtraBlack
-            label1.textColor = UIColor.white
-            label2.textColor = UIColor.white
-            label3.textColor = UIColor.white
+            label1.textColor = iColor//UIColor.white
+            label2.textColor = iColor//UIColor.white
+            label3.textColor = iColor//UIColor.white
             label1.text = "　page"
             label2.text = "title"
             label3.text = "update"
@@ -740,8 +744,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         mh = ch * CGFloat(cn)//メニューの高さ＝セルの高さ☓セル数
         let w = boundWidth
         tV.frame = CGRect(x:0, y:0, width:mw + 20 , height:mh)
-        smv = UIScrollView(frame: CGRect(x:w - mw - 10 ,y:65,width:mw + 20,height:mh - 30))
+        smv = UIScrollView(frame: CGRect(x:w - mw - 10 ,y:65,width:mw + 20,height:mh - 0))
         smv.backgroundColor = UIColor.clear
+        //smv.bounces = false//スクロールをバウンドさせない
         tV.separatorColor = UIColor.clear//セパレータ無し
         tV.rowHeight = 40
         tV.layer.cornerRadius = 8.0//角丸にする
@@ -765,6 +770,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tV.delegate      =   self
         tV.dataSource    =   self
         tV.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
@@ -789,13 +795,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpTop = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:64))
         helpTop.backgroundColor = UIColor.black
         //
-        let hl = UILabel(frame: CGRect(x: boundWidth/2
-            - 75, y: 0, width: 150, height: 40))
+        hl = UILabel(frame: CGRect(x: boundWidth/2
+            - 100, y: 5, width: 200, height: 40))
         hl.textColor = UIColor.yellow
         hl.textAlignment = .left
         hl.backgroundColor = UIColor.clear
-        hl.font = UIFont(name: "ChalkboardSE-Bold", size: 26)
-        hl.text = "Start Guide"
+        hl.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
+        hl.text = (langFlag == 0) ? "スタートガイド":"Start-Guide"
+        hl.textAlignment = .center
+        let cancel:String = (langFlag == 0) ? "キャンセル":"Cancel"
         //言語切替ボタンを追加:jButton,eButton
         jButton = UIButton(frame: CGRect(x:boundWidth - 150,y:30, width:60, height:40))
         eButton = UIButton(frame: CGRect(x:boundWidth - 70,y:30, width:60, height:40))
@@ -812,7 +820,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         jButton.addTarget(self, action: #selector(ViewController.Ja_click(sender:)), for: .touchUpInside)
         eButton.addTarget(self, action: #selector(ViewController.En_click(sender:)), for: .touchUpInside)
         //戻る(終了）ボタンを追加
-        rButton = UIButton(frame: CGRect(x:10,y:20, width:30, height:30))
+        rButton = UIButton(frame: CGRect(x:20,y:20, width:30, height:30))
         //rButton.backgroundColor = UIColor.white
         rButton.setImage(UIImage(named: "2Left.png"), for:UIControlState.normal)
         rButton.addTarget(self, action: #selector(ViewController.Re_click(sender:)), for: .touchUpInside)
@@ -820,7 +828,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpTop.addSubview(jButton)
         helpTop.addSubview(eButton)
         helpTop.addSubview(rButton)
-
+        
     }
     
     //  ======= End of viewDidLoad=======
@@ -829,7 +837,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+/*
+    func pinchZoom(sender:UIPinchGestureRecognizer){
+        print("zoomOut!")
+        //helpView.transform = CGAffineTransform(
+    }
+*/
     @IBOutlet weak var naviBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var menu2: UIBarButtonItem!
@@ -1541,11 +1554,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             ,height:leafHeight - 4))
         img03 = UIImageView(frame:CGRect(x:leafWidth - leafHeight*4/3 - 2,y:0,width:leafHeight*4/3 - 8,height:leafHeight))
         //枠線,色,角丸
-        img01.layer.borderWidth = 2
+        img01.layer.borderWidth = 3
         img01.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         img01.layer.cornerRadius = 3
         cont02.layer.borderWidth = 2
-        cont02.layer.borderColor = UIColor.purple.withAlphaComponent(0.4).cgColor
+        cont02.layer.borderColor = UIColor.purple.withAlphaComponent(0.2).cgColor
         cont02.layer.cornerRadius = 10
         cont02.layer.masksToBounds = true
         
@@ -1554,7 +1567,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         img03.layer.cornerRadius = 20
 
         img01.backgroundColor = UIColor.clear
-        cont02.backgroundColor = UIColor.purple.withAlphaComponent(0.05)//white.withAlphaComponent(0.8)
+        cont02.backgroundColor = UIColor.yellow.withAlphaComponent(0.05)//white.withAlphaComponent(0.8)
         img03.backgroundColor = UIColor.purple.withAlphaComponent(0.2)
 
         //Viewの内容を作成
@@ -2142,7 +2155,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if helpView != nil{return}
            helpView = HelpView(frame: CGRect(x:0, y:64,width:boundWidth, height:boundHeight - 64))
            helpView.backgroundColor = UIColor.white
+           helpView.layer.borderColor = UIColor.lightGray.cgColor
+           helpView.layer.borderWidth = 1
            helpView.delegate = self
+           helpView.scalesPageToFit = true
+/*
+        var pinch:UIPinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action:"pinchZoom:")
+        helpView.addGestureRecognizer(pinch)
+ */
            helpView.req(lang:langFlag)
            helpFrame.addSubview(helpView)
            helpFrame.addSubview(helpTop)
@@ -2378,12 +2398,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //表示言語を切り替える
         items = items_Ja
         tV.reloadData()
+        hl.text = (langFlag == 0) ? "スタートガイド":"Start-Guide"
         helpView.req(lang:langFlag)
     }
     func En_click(sender:UIButton){
         langFlag = 1
         items = items_En
         tV.reloadData()
+        hl.text = (langFlag == 0) ? "スタートガイド":"Start-Guide"
         helpView.req(lang:langFlag)
     }
     func Re_click(sender:UIButton){//ヘルプ画面を閉じる

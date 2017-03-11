@@ -1,67 +1,155 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<!DOCTYPE html>
+<html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="Content-Style-Type" content="text/css">
-
-<title>TOSHIBA CANVIO SLIMメニュー</title>
-
-<link rel="stylesheet" type="text/css" href="CANVIO/autorun/web/css/common_style.css" />
-
-<link rel="icon" href="CANVIO/autorun/CANVIO.ico" />
-<link rel="shortcut icon" href="CANVIO/autorun/CANVIO.ico" />
-
+    <meta charset="UTF-8">
+    <title>Start Guide</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style> 
+		img#top {}
+		img#top {
+			float:left;
+			margin: 0px 10px 6px 0px;
+			border: 1px solid #ff00ff;
+			border-radius: 6px;
+		}
+		h3.line {border-bottom: 2px solid blue;}
+		p {font-size: 120%;}
+    </style>
 </head>
-
 <body>
-<div id="wrapper">
-<!-- header領域 -->
-<div class="header">
-<div class="header_logo"><a href="http://www.toshiba.co.jp/" target="_blank"><img src="CANVIO/autorun/web/img/logo.jpg" width="145" height="70" alt="TOSHIBA leading innovation" /></a></div>
- <!-- navi領域 -->
-<div class="nav">
-<ul>
-<li><a href="#" class="current">Mac用ソフトウェア</a></li>
-<li><a href="CANVIO/autorun/manual-m.html" class="navi">インストールマニュアル</a></li>
-<li><a href="CANVIO/autorun/support-m.html" class="navi">カスタマー・サポート</a></li>
-</ul>
-</div>
-<!--ここまで-->
-</div>
-<!--ここまで-->
+<!--
+    header:
+    footer:
+    nav: ナビゲーション
+    article: 独立しているコンテンツ
+    aside: 副次的なコンテンツ
+    section: それ以外の塊
+    h1-h6: 見出し
+-->
+<!--
+    p: 段落
+    hr: 水平線
+    pre: 改行や字下げ
+    blockquote: 引用
+    div: スタイリング
+-->
+   <header>
+    <!--<h1>スタートガイド3</h1>-->
+    <img id="top" src= "happy_icon3z.png" width= "40" height= "40" alt= "葉" />
 
+    <h3>初めてお使いの方はまずはこのガイドをお読み下さい</h3>
 
-<!-- 本文ここから-->
-<div id="main_body">
-<div id="left_box">
-<div class="left-img"><img src="CANVIO/autorun/web/img/SLIM.png" alt="CANVIO CONNECT" width="333" height="291" /></div>
-</div>
-<div id="right_box">
-<div class="title">Mac用NTFSドライバー</div>
-<div class="selsect"><a href="CANVIO/Mac Driver/Tuxera NTFS for Mac.dmg" target="_blank">Tuxera NTFS for Mac</a></div>
-<div class="title">クラウドソフトウェア</div>
-<div class="selsect"><a href="CANVIO/Pogoplug PC/Mac/Pogoplug PC for Mac.dmg" target="_blank">Pogoplug<span class="sup">&reg;</span> PC for Mac</a></div>
-<div class="title">Password tool</div>
-<div class="selsect"><a href="CANVIO/HDD Password tool/Mac" target="_blank">Password tool for Mac</a></div>
-
-
-<div class="sl-cou"><p>※Mac OS Xでのインストール方法<br />
-インストールをするソフトウェア名をデスクトップに「ドラッグ&amp;ドロップ」してください。表示されたアイコンをダブルクリックしてインストールをしてください。インストール方法は「インストールマニュアル」をご参照ください。 </p>
-</div>
-</div>
-</div>
-
-<!--ここまで-->
-<!--footer領域 -->
-<div class="footer">
-<p>※Mac は、米国および他の国々で登録されたApple Inc. の商標です。　※Pogoplugは米国およびその他の国におけるCloud Engines, Inc. の商標または登録商標です。　※CANVIOは、株式会社東芝の商標です。
-</p>
-<p class="copy">Copyright &copy; <span class="comp">2013 TOSHIBA CORPORATION. All Rights Reserved.</span></p>
-
-</div>
-<!--ここまで-->
-</div>
+        <p>
+         手書き文字入力のメモ帳アプリ、HappyMemo をご利用いただき、ありがとうございます。指先でも正しく文字が書ける「拡大入力パレット」と「入力した文章を編集する機能」との融合により、軽快ながらメモ帳に必要な実用性を実現します。
+		</p>     
+        <ul>
+            <li><a href="#j01">はじめに</a></li>
+            <li><a href="#j02">操作画面とボタンの説明</a></li>
+            <li><a href="#j03">基本操作</a></li>
+            <li><a href="#j04">使い方のヒント ジェスチャー操作</a></li>
+            <li><a href="#j05">編集パネルについて</a></li>
+            <li><a href="#j06">ページ内容の書き出しについて</a></li>
+            <li><a href="#j07">その他　関連情報</a></li>
+        </ul>
+    </header>
+    <section id="j01">
+        <h3 class="line" >はじめに</h3>
+        <p>
+            <em>HappyMemo は、新しいタイプの文章エディターです。アナログ（画像）文字を扱うため独自の機能が幾つか備わっています。</em>
+		</p>     
+        <h4>- 入力パレット -</h4>
+        　<img src= "hello.png"  width ="250">
+        <p>   		
+            　文字を書く時は入力専用のエリア（パレット）が現れます。パレットサイズは表示文字の４倍もあるのでスマホ画面ではその一部分しか見られません。その為、表示文字の前後を見るにはパレット上部に在るスクロールバーをなぞってパレット全体を左右にシフトします。
+            <br>
+            　また、パレット下にある "<strong>Zoom</strong>"ボタン をタッチすると更にパレットサイズが1.5倍になります。この機能は、複雑な漢字などを書く場合に有効な手段となります。
+        </p>
+		<h4>- 書き終えた文章の編集 -</h4>        
+        <p>    
+            　Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
+            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
+        </p>
+        <h4>- 豊富なジェスチャー操作 -</h4> 
+        <p>        
+            　このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
+            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
+        </p>
+    </section>
+    <section id="j02">
+        <h3 class="line">操作画面とボタンの説明 </h3>     
+        <h4>Brackets のプロジェクト</h4>
+        <p>
+            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
+            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
+        </p>
+        <p>
+            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
+            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
+        </p>     
+    </section>
+    <section id="j03">
+        <h3 class="line">基本操作</h3>         
+        <h4>Brackets のプロジェクト</h4>
+        <p>
+            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
+            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
+        </p>
+        <p>
+            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
+            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
+        </p>
+    </section>
+    <section id="j04">
+        <h3>使い方のヒント！</h3>   
+        <h4>Brackets のプロジェクト</h4>
+        <p>
+            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
+            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
+        </p>
+        <p>
+            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
+            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
+        </p>
+     
+    </section>
+    <section id="j05">
+        <h3 class="line">編集パネルについて </h3>     
+        <h4>Brackets のプロジェクト</h4>
+        <p>
+            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
+            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
+        </p>
+        <p>
+            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
+            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
+        </p> 
+    </section>  
+    <section id="j06">
+        <h3 class="line">ページ内容の書き出しについて </h3>       
+        <h4>Brackets のプロジェクト</h4>
+        <p>
+            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
+            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
+        </p>
+        <p>
+            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
+            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
+        </p>
+    </section>
+    <section id="j07">
+        <h3 class="line">その他　関連情報 </h3>
+       
+        <h4>Brackets のプロジェクト</h4>
+        <p>
+            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
+            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
+        </p>
+        <p>
+            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
+            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
+        </p>
+    </section>
 </body>
 </html>
+
 

@@ -34,7 +34,7 @@ class MemoView:UIView{
        //デバグ用　let m2 = 12 ;let d2 = 15//デバグ用
        //let st = String(format: "%4d-%2d-%2d",y,m2,d2)
        let st = String(format: "%2d/%2d  '%2d",m,d,y2)
-       //日付を追加する
+       //日付を追加する2+2+2+1+2:
        let tag = pn*100 +  1
        let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
        targetMemo.image = targetMemo.image?.addText_Date(text: st)
@@ -172,8 +172,7 @@ class MemoView:UIView{
         let gColor = UIColor.green.withAlphaComponent(0.06)
         let gColor2 = UIColor.green.withAlphaComponent(0.15)
         //let wColor = UIColor.white
-        let cColor = UIColor.orange.withAlphaComponent(0.3)
-        
+        let cColor = UIColor.rgb(r: 234, g: 204, b: 99, alpha: 0.4)//orange.withAlphaComponent(0.2) 234,204,99
         //カーソル色の代わりに縁取り画像を使う(2/24追加）
         let cursolView:UIView = UIView(frame: leafRect)
         cursolView.backgroundColor = gColor
