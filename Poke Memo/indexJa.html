@@ -4,17 +4,73 @@
     <meta charset="UTF-8">
     <title>Start Guide</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <style> 
-		img#top {}
-		img#top {
-			float:left;
+    <style type="text/css">
+ <!--
+	img {margin: 5px 10px 10px 30px;}
+		img.left {margin: 5px 10px 10px 0px;}
+	img#top {
+		    float:left;
 			margin: 0px 10px 6px 0px;
-			border: 1px solid #ff00ff;
+			border: 1px solid #ff8800;
 			border-radius: 6px;
 		}
-		h3.line {border-bottom: 2px solid blue;}
-		p {font-size: 120%;}
-    </style>
+	img.icon {
+		margin: 0px 0px 0px 0px;
+		vertical-align: baseline;
+		}
+		img.icon2 {
+		margin: 0px 0px 0px 0px;
+		vertical-align: middle;
+		}
+		img.icon3 {
+			float:left;
+			margin: 0px 10px 0px 10px;
+			border: 1px solid #ff8800;
+			border-radius: 4px;
+		}
+	.center {
+			text-align: center;
+		}
+		
+	h3.line {border-bottom: 2px solid blue;}
+		h4 {font-size: 120%;}
+	p {font-size: 120%;}
+	p#title {font-size: 100%;}
+	p.hr {border-bottom: 1px dashed gray;}
+	pre {font-size: 120%;}
+	div.right {text-align: right; font-size: 80%;}
+	div.left {text-align: center; font-size: 100%;margin: 0px;}
+	div.s {font-size:90%}
+	a.left {text-decoration:none;color:red;}
+	li { margin-bottom: 5px;}
+	em.s {font-size: 100%;}
+	span {color: red}
+	u {font-size: 90%;}
+		
+	table {	
+		border-collapse: collapse;
+		text-align: left;
+		line-height: 1.5;
+	}
+	table tr {
+			width: 100%;
+    		margin:20px 10 10px;
+    		border-top: 1px solid gray;
+			border-bottom: 2px solid gray;
+			border-left: 1px solid gray;
+    		border-spacing:0;
+	}
+	table th {
+		border-right: 1px solid gray;
+		text-align: center;
+		}
+	table td {
+		border-right: 1px solid gray;
+		}	
+
+ -->
+	</style>
+
 </head>
 <body>
 <!--
@@ -35,120 +91,751 @@
 -->
    <header>
     <!--<h1>スタートガイド3</h1>-->
-    <img id="top" src= "happy_icon3z.png" width= "40" height= "40" alt= "葉" />
+    <img id="top" src= "appA5.png" width= "40" height= "40" alt= "葉" />
 
     <h3>初めてお使いの方はまずはこのガイドをお読み下さい</h3>
 
-        <p>
-         手書き文字入力のメモ帳アプリ、HappyMemo をご利用いただき、ありがとうございます。指先でも正しく文字が書ける「拡大入力パレット」と「入力した文章を編集する機能」との融合により、軽快ながらメモ帳に必要な実用性を実現します。
+        <p id="title">
+         手書き文字入力のメモ帳アプリ、HappyMemo をご利用いただき、ありがとうございます。指先でも楽に文字が書ける「拡大入力パレット」と「入力した文を編集する機能」を採用する事により、軽快ながらメモ帳に必要な実用性を実現しています。
 		</p>     
         <ul>
             <li><a href="#j01">はじめに</a></li>
             <li><a href="#j02">操作画面とボタンの説明</a></li>
             <li><a href="#j03">基本操作</a></li>
-            <li><a href="#j04">使い方のヒント ジェスチャー操作</a></li>
+            <li><a href="#j04">ジェスチャー操作</a></li>
             <li><a href="#j05">編集パネルについて</a></li>
-            <li><a href="#j06">ページ内容の書き出しについて</a></li>
-            <li><a href="#j07">その他　関連情報</a></li>
-        </ul>
+            <li><a href="#j06">取り消しボタンの使い方</a></li>
+            <li><a href="#j07">使い方のヒント 他</a></li>
+        </ul><br><br><br>
     </header>
     <section id="j01">
+       <div class="left"><a class="left"  href="#title">△</a></div>
         <h3 class="line" >はじめに</h3>
         <p>
-            <em>HappyMemo は、新しいタイプの文章エディターです。アナログ（画像）文字を扱うため独自の機能が幾つか備わっています。</em>
+            <em>HappyMemo は、キーボードを使わない新しいタイプのメモ帳です。<br>
+            アナログ（画像）文字を扱うため、以下のような独自の機能が幾つか備わっています。</em>
 		</p>     
-        <h4>- 入力パレット -</h4>
-        　<img src= "hello.png"  width ="250">
+        <h4>1) 入力パレット </h4>
+        <img class="left" src= "all.png"  width ="400" alt="入力画面">
         <p>   		
-            　文字を書く時は入力専用のエリア（パレット）が現れます。パレットサイズは表示文字の４倍もあるのでスマホ画面ではその一部分しか見られません。その為、表示文字の前後を見るにはパレット上部に在るスクロールバーをなぞってパレット全体を左右にシフトします。
+            文字を書く時は、下から現れる入力用のエリア（入力パレット）を使用します。<br>
+            パレットサイズは表示文字の４倍もあるのでスマホ画面ではその一部分しか見られません。<br>
+            その為、表示文字の前後を見るにはパレット上部に在るスクロールバーをなぞってパレット全体を左右にスクロールできます。
             <br>
-            　また、パレット下にある "<strong>Zoom</strong>"ボタン をタッチすると更にパレットサイズが1.5倍になります。この機能は、複雑な漢字などを書く場合に有効な手段となります。
+            また、パレット下にある "<strong>ZOOM</strong>"ボタン をタップすると更にパレットサイズが1.5倍になります。この機能は、複雑な漢字などを書く場合に有効な手段となります。
         </p>
-		<h4>- 書き終えた文章の編集 -</h4>        
+		<h4>2) 書き終えた文章の編集 </h4>        
         <p>    
-            　Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
-            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
+			HappyMemo には、一旦書き終えた文字や文章を修正・編集する機能があります。入力パレット上部のスクロールバーの右端の<span style="color:#ff0000"> ▲ </span>をタップすると赤色半透明の"編集パネル"が現れます。<br>
+       		このパネルには４種類の編集モード（上書き、挿入、削除、クリア）がアイコンで配置されていますので、この中から必要な方法を選んで編集することができます。もちろん以前に書いた文も同様に編集できます。
         </p>
-        <h4>- 豊富なジェスチャー操作 -</h4> 
+        例）上書き(OVW)モード：<br>
+		<img  src= "editPanel02.png"  width ="250" alt="編集パネル画面">
+        <h4>3) 豊富なジェスチャー操作</h4> 
         <p>        
-            　このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
-            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
-        </p>
-    </section>
-    <section id="j02">
-        <h3 class="line">操作画面とボタンの説明 </h3>     
-        <h4>Brackets のプロジェクト</h4>
-        <p>
-            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
-            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
-        </p>
-        <p>
-            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
-            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
-        </p>     
-    </section>
-    <section id="j03">
-        <h3 class="line">基本操作</h3>         
-        <h4>Brackets のプロジェクト</h4>
-        <p>
-            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
-            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
-        </p>
-        <p>
-            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
-            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
-        </p>
-    </section>
-    <section id="j04">
-        <h3>使い方のヒント！</h3>   
-        <h4>Brackets のプロジェクト</h4>
-        <p>
-            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
-            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
-        </p>
-        <p>
-            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
-            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
-        </p>
-     
-    </section>
-    <section id="j05">
-        <h3 class="line">編集パネルについて </h3>     
-        <h4>Brackets のプロジェクト</h4>
-        <p>
-            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
-            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
-        </p>
-        <p>
-            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
-            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
+            軽快な操作環境を実現するために HappyMemoでは幾つかのジェスチャー操作”が用意されています。<br>
+            
+            例えば、
+			<br>"<strong>スワイプ</strong>" 動作：<br>
+			<em class="s">・ページめくりを行います。</em><br>
+			"<strong>長押し</strong>" 動作： <br>
+			<em class="s">・選択したメモ行の内容をパレットに表示します。</em>
+			<br>"<strong>エッジスワイプ</strong>" 動作： <br>
+			<em class="s">・入力し易いようにパレット位置を自動調整します。</em><br>
+			
+			<br><em class="s">その他、パレットの表示/非表示や改行操作などもジェスチャーで対応しています。</em>
         </p> 
-    </section>  
+    </section>
+
+    <section id="j02">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">操作画面とボタンの説明 </h3>  
+        <p>
+            <em>HappyMemo では、メモ画面とインデックス画面の２つの画面が基本画面となります。<br>
+            アプリを起動すると前回の最終編集ページのメモ画面が開きます。
+            その後このメモ画面の上に "パレット" や "編集パネル"を開いて入力作業を行います。
+            </em>
+		</p>     
+        		<h4>-- 起動画面 --</h4>
+        <img  src= "m1b.png"  width ="250" alt="起動画面">
+       	<pre>
+  [1]：入力パレット ON/Off ボタン
+  [2]：メニュー ボタン
+  [3]：ページ番号（表示のみ）
+  [4]：インデックス表示 ボタン
+       	</pre>
+        		<h4>-- 入力パレット --</h4>
+        <img  class="left" src= "m2x1.png"  width ="300" alt="入力パレット">
+        <pre>
+  [5]：行選択カーソル
+  [6]：入力パレット
+  [7]：確定 ボタン
+  [8]：パレット拡大 ボタン	
+  [9]：Undo/redo ボタン
+  [10]：スクロールバー
+  [11]：編集パネル表示 ボタン
+  [12]：ペン色切り替えボタン
+  [13]：ペン選択 ボタン
+  [14]：修正ペン選択 ボタン			
+        </pre>
+        		<h4>-- 編集パネル --</h4>
+        <img  class="left" src= "m3x1.png"  width ="300" alt="入力パレット">
+       	<pre>
+  [15]："上書き" 編集ボタン
+  [16]："挿入" 編集ボタン
+  [17]："部分削除" 編集ボタン
+  [18]："全クリア" 編集ボタン	
+  [19]："文頭へ" カーソル拡張ボタン
+  [20]："文末へ" カーソル拡張ボタン		
+
+  - ボタン[11]は編集パネルが表示されると、
+    "パネルを閉じる" ボタンになる。
+        </pre>
+        		<h4>-- インデックス画面 --</h4>
+       <img  class="left" src= "m6x1.png"  width ="300" alt="m6x1.png">
+       	<pre>
+  [21]：各ページ内容が目次として
+        表示される
+  [22]：ページ番号
+  [23]：各ページの最終更新日
+
+  - ボタン[4]を押すと、インデックスを閉
+    じて元の "メモページ" に戻る。</pre>
+                <h4>-- メニュー画面 --</h4>
+       <img  class="left" src= "m4i1.png"  width ="300" alt="m4i1.png">
+       	<pre>
+  [25]：今日の日付を１行目に追加
+  [26]：現行ページ内容をクリアする
+  [27]：現行ページをJpegファイルで保存
+  [28]：設定画面を開く	
+  [29]：スタートガイドを開く
+  [30]：メニューを閉じる		
+        </pre>
+        		<h4>-- 設定画面 --</h4>
+        <img  src= "m5x1.png"  width ="200" alt="m5x1.png">
+  <br>
+  [文字線の太さ]：<br>　細線、標準（初期値）、太線 から選択<br>
+  [文字の色]：<br>　３番目の色を選択（初期値：青）<br>
+  [自動スクロール]：<br>　On: 使用する（初期値) / Off: 使用しない<br>
+  [全ページ削除]：<br>　全ページの内容のクリア、及び設定内容の初期化を実行する<br>	
+  <br>
+ - 設定を変更後、"決定" で更値が保存されます。
+  "戻る" を選ぶと変更内容はキャンセルされます。
+       		
+        		<h4>-- スタートガイド画面 --</h4>
+        <img  class="left" src= "m71.png"  width ="300" alt="help画面"><br>
+
+        <pre>
+  [31]：画面のTopまでスクロールする
+  [32]：メモページに戻る
+  [33]：表示言語を日本語にする
+  [34]：表示言語を英語にする		
+        </pre>
+         - 文中の<span class="red"> △ </span>マークをタップするとTopメニューに戻ります。
+        (<span class="red"> ◁ </span>マークの場合はセクションメニューに戻ります。)<br>
+        <img  src= "3red.png"  width ="250" alt="3red">
+        <br><br><br><br>    
+    </section>    
+	
+    <section id="j03">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">基本操作</h3>  
+        <p>
+            <em>ここでは、HappyMemo の基本的な使い方を説明します。
+            </em>
+		</p> 
+        <ol>
+            <li><a href="#j011">希望するページに移動する</a></li>
+            <li><a href="#j012">入力行をパレットに表示する</a></li>
+            <li><a href="#j013">パレットに文字を書く</a></li>
+            <li><a href="#j014">書いた文字を確定する</a></li>
+            <li><a href="#j015">パレットをスクロールする</a></li>
+            <li><a href="#j016">文字を追加する</a></li>
+            <li><a href="#j017">改行する</a></li>
+            <li><a href="#j018">文字線の種類を変更する</a></li>
+            <li><a href="#j019">書き終えた文字を修正する</a></li>
+            <li><a href="#j020">パレットを閉じる</a></li>
+            <li><a href="#j021">タイトルに日付を付ける</a></li>
+            <li><a href="#j022">ページ内容を消去する</a></li>
+            <li><a href="#j023">ページ内容を保存する</a></li>
+        </ol><br>
+		<p class="hr"></p> 
+
+        <div class="left" id="j011"><a class="left" href="#j03">◁</a></div> 
+        <h4 id="j011x">-- 1. 希望するページに移動する --</h4>
+		
+       		<em class="s">
+       		以下に示すように、ページを開くには３種類の方法があります。
+       		これらの方法を適時組み合わせて希望するページに移動します。</em><br><br>
+        	① アプリ起動時には、前回最後に編集(入力、修正)されたページが表示されます。<br>
+        <p><img src= "open.png" width ="200" alt="open"></p>
+        
+        	② ページめくりで移動する。<br>
+        	- 右から左にスワイプ：次ページに進む<br>
+        <p><img src= "swipeL.png"  width ="200" alt="swipeL"></p>
+		
+        	- 左から右にスワイプ：前ページに戻る<br>
+        <p><img src= "swipeR.png"  width ="200" alt="swipeR"></p>
+        
+        	③ インデックス(目次)から移動する。<br>
+        	- 上部の
+        	 <img  class="icon" src= "ind_ico.png"  width ="20" alt="ind_ico.png"> 
+        	 アイコンンをタップするとインデックスページが開きます。<br>
+        <p><img src= "selindex.png"  width ="200" alt="selindex.png"></p>
+        
+        	- インデックスページを上下にスクロールして目的のページ番号を探します。<br>
+        <p><img src= "m6x2.png"  width ="200" alt="m6x2.png"></p>
+        
+        	- 目的のページタイトルを長押し(１秒以上)するとそのページに移動します。<br>
+        <p><img src= "m6x3.png"  width ="200" alt="m6x3.png"></p>
+		
+        	- 長押しをせずに再び 
+        	<img  class="icon" src= "ind_ico2.png"  width ="20" alt="ind_ico2.png">
+        	アイコンンをタップした場合は、元のメモページに戻ります。<br>
+        <p><img src= "m6x4.png"  width ="200" alt="m6x4.png"></p>
+		
+        
+        <div class="left" id="j012"><a class="left" href="#j03">◁</a></div>       
+        <h4 id="j012x"> -- 2. 入力行をパレットに表示する --</h4>
+        
+        	<em class="s">メモページのメニューバー右端のパレット表示ボタンにタップすると画面の下から入力パレットが出てきます。<br>
+        	この時、"カーソル" の位置は１行目にあり、その内容がパレットに拡大表示されます。</em><br><br>
+        <p><img src= "m2x3.png"  width ="200" alt="m2x3.png"></p>
+		      
+        - メモページ上で、これから文字入力したい "行" をタップすると "カーソル"はその行に移動し、パレットにその内容が表示されます。（無論、空白行の場合は何も表示されません）<br>次にこのパレットに文字を書いて(描いて)いきます。<br><br>
+        	<img  src= "m2x4.png"  width ="200" alt="m2x4.png"><br>
+        <div class="s">
+        		[H]:パレットの先頭マーク<br>
+        		[G]:ガードエリア<br>　(書き始めが不可のエリア)
+        </div><br>   	
+		
+        <div class="left" id="j013"><a class="left" href="#j03">◁</a></div>
+        <h4 id="j013x">-- 3. パレットに文字を書く --</h4>
+        
+        
+        	<em class="s">パレットの入力エリア（上下ガードエリアに挟まれたエリア内）に
+        	文字を書きます。<br></em><br>
+        	※パレットの内容はこの時点では、まだメモページに反映されていません。
+        	描いた文字、文が正しくない場合は続けて修正を行います。<br>
+			<em class="s">（ → 9.書き終えた文字を修正する)<br></em>
+        <p><img  src= "m4xp05.png"  width ="200" alt="m4xp05.png"></p> 
+        - パレット下の"<strong>ZOOM</strong>"ボタンをタップすると、パレット画面が拡大表示されます。
+        複雑な漢字や細かな文字を書く場合などに使いうと楽に入力ができます。
+        <p><img  src= "big.png"  width ="200" alt="big.png"></p> 
+        - 表示サイズをもとに戻すには、再度、"<strong>ZOOM</strong>"ボタンをタップするか
+        <img  class="icon2" src= "big_ico.png"  width ="30" alt="big_ico.png">
+        をタップします。
+           
+        <div class="left" id="j014"><a class="left" href="#j03">◁</a></div>
+        <h4 id="j014x">-- 4. 書いた文字を確定する --</h4>
+        
+        <em class="s">
+        	スクリーン右下の OK ボタンをタップするとパレット内容がメモページにコピーされます。<br>
+           </em><br>
+           ※この時点で修正箇所が見つかった場合はパレット上で再度修正作業を行います。
+           修正が終わったら、再び OK ボタンをタップしメモページに反映させます。<br>
+        <p><img src= "m4xp06.png"  width ="200" alt="m4xp06.png"></p> 
+              
+        <div class="left" id="j015"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j015x">-- 5. パレットをスクロールする --</h4>
+        
+            <em class="s">
+            続けて文字を追加しますが、文字を書く場所を確保するためにパレット上部の
+            スクロールバーをスクロールして、パレット内容を左にシフトします。<br>	
+            </em>
+        <p><img  src= "m4xp07.png"  width ="200" alt="m4xp07.png"></p> 
+        
+
+        <div class="left" id="j016"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j016x">-- 6. 文字を追加する --</h4>
+        
+			<em class="s">
+			追加の文を書き足します。この時点では、追加文はまだメモページに反映されていません。
+			<br>
+			</em>
+        	
+        	<img  src= "m4xp08.png"  width ="200" alt="m4xp08.png"><br> 
+     		- スクリーン右下の"<strong>OK</strong>"ボタンをタップすると追加した文字がメモページにコピーされます。
+       		同様にして追加の文字を続けて書いて行きます。<br>
+        <p><img  src= "m4xp09.png"  width ="200" alt="m4xp09.png"></p> 
+              
+        <div class="left" id="j017"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j017x">-- 7. 改行するる --</h4>
+        
+			<em class="s">
+			選択行の変更や改行する場合は、パレットを開いたまま希望する"メモ行"をタップします。
+			<br></em>	
+        	
+        <p><img  src= "m4xp10.png"  width ="200" alt="m4xp10.png"></p>
+        
+             <div class="left" id="j018"><a class="left" href="#j03">◁</a></div>
+             <h4 id="j018x">-- 8. 文字線の種類を変更する --</h4>
+         
+         (1) <em class="s">文字色の変更はパレット上部左端の”水滴”マークをタップします。</em><br>
+		  
+		    - タップする度に
+         <img  class="icon" src= "col1_ico.png"  width ="20" alt="col1_ico.png">
+          → <img  class="icon" src= "col2_ico.png"  width ="20" alt="col2_ico.png">
+          → <img  class="icon" src= "col3_ico.png"  width ="20" alt="col3_ico.png">
+          → <img  class="icon" src= "col1_ico.png"  width ="20" alt="col1_ico.png">
+         (戻る) と変化します。
+          <p><img  src= "m4xp11.png"  width ="200" alt="m4xp11.png"></p> 
+         
+         (2) <em class="s">文字の線幅の変更は設定画面から行います。</em><br>
+		  
+				- スクリーン上のメニューバーのメニューアイコン
+				<img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+				から”各種設定”を選びます。
+		 
+          <p><img  src= "m4xp13.png"  width ="200" alt="m4xp13.png"></p> 
+		  
+            - "各種設定"画面の[線の太さ]項目の
+            　"thin" 、 "normal" 、 "thic"　の３つの中から希望する太さを選択し、[決定]ボタンをタップします。
+          
+          <p><img  src= "m4xp14.png"  width ="200" alt="m4xp14.png"></p> 
+               
+             <div class="left" id="j019"><a class="left" href="#j03">◁</a></div>
+             <h4 id="j019x">-- 9. 書き終えた文字を修正する --</h4>
+             	- 描いた文字を編集する方法は主に２つあります。<br>
+             	(1) <em class="s">"修正ペン" で不要箇所を修正する方法。</em><br>
+             	<p>
+             	<img  class="icon" src= "w_ico.png"  width ="30" alt="w_ico.png">アイコンをタップすると
+             	線色が背景色に変わります。この状態で上書きすると"消しゴム"として使えます、細い箇所を作業する場合には
+             	線幅を"細い線"に変更します。<br>
+             	</p>
+              <img  src= "white2.png"  width ="200" alt="ovwx.png">
+              <br>修正が済んだら、<img  class="icon" src= "pen.png"  width ="20" alt="insx.png">アイコンを
+              タップして再び"ペンモード"に戻します。そして必要な線を描画・追加します。
+              <p></p>
+             	(2) <em class="s">"編集パネル" で文字や文を編集する方法。</em><br>         	
+             	<em class="s">　※詳細は、→ ・<u>編集パネルについて</u> (Topメニュー)をご覧ください。<br></em>
+             	ここでは、基本的な手順を説明します。<br><br>
+             	① パレット上部の <img class="icon" src="3_ico.png" width ="20" alt="3_ico.png">
+             	アイコンをタップして、編集パネルを開聞く。<br>
+             	②　編集モード:<br>
+             	"OVW(上書)" , "INS(挿入)" , "DEL(削除)" , "CLR(空白)" の中から希望するモードを選択します。
+             	
+              <p><img  src= "edits.png"  width ="200" alt="edits.png"></p>
+				③ 次に、パレット上でドラッグ操作してカーソル幅(編集する範囲)を調整します。
+              <p><img  src= "cursol.png"  width ="200" alt="cursol.png"></p>
+				④ パレット下の"<strong>OK</strong>"ボタンをタップすると、編集が開始されパレットに結果が表示されます。
+              <p><img  src= "editOk.png"  width ="200" alt="editOk.png"></p>
+             	※ "編集結果" は"編集モード" によって異なります。<br>
+             	　以下は編集結果の例です。<br><br>
+             	　＜上書きモード＞	
+              <p><img  src= "ovwx.png"  width ="200" alt="ovwx.png"></p>
+              　　＜挿入モード＞
+              <p><img  src= "insx.png"  width ="200" alt="insx.png"></p> 
+              　　＜削除モード＞
+              <p><img  src= "delx.png"  width ="200" alt="delx.png"></p>
+              　　＜空白モード＞
+              <p><img  src= "clrx.png"  width ="200" alt="clrx.png"></p> 
+              
+               - 編集結果を確認して、修正の追加が必要な場合は同様な作業を繰り返します。編集が完了したら
+               "<strong>OK</strong>"ボタンをタップして、パレット内容をメモページに反映させます。
+                <div class="left" id="j020"><a class="left" href="#j03">◁</a></div>
+               
+               <h4 id="j020x">-- 10. パレットを閉じる --</h4>
+               <em class="s">
+				一通りの文字入力が終わったら、一旦パレットを閉じます。パレットを閉じるには
+               - スクリーン上のメニューバーのパレットアイコン
+				<img  class="icon" src= "pal_ico.png"  width ="20" alt="pal_ico.png">
+				をタップします。<br>
+              ※ 又、パレットが表示されている時に、<u>任意の"メモ行"を長押しする</u>事でも同様にパレットを閉じる事ができます。
+               </em>
+               <div class="left" id="j021"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j021x">-- 11. タイトルに日付を付ける --</h4>
+           	   <em class="s">
+           	   	メモページの先頭の行(１行目)は"タイトル行"として利用する事もできます。<br>
+           	   	その場合には、タイトル行に日付を付加してページ単位での日付管理をする事ができるようになっています。
+			   </em><br>
+          	   - 日付を追加するには、スクリーン上のメニューバーのメニューアイコン
+				<img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+				から”日付を追加”を選びます。１行目の右端に今日の日付が追加されます。
+          	   <p><img  src= "date.png"  width ="200" alt="date.png"></p>
+           	   <div class="left" id="j022"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j022x">-- 12. ページ内容を消去する --</h4>
+				(1)<em class="s">開いているページの内容を消去する場合</em><br>
+               - スクリーン上のメニューバーのメニューアイコン
+				<img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+				から”表示ページをクリア”を選びます。<br>
+               開いているページの全行(30行)の内容は全て空白になります。<br><br>
+                (2)<em class="s">全ページの内容の全てを消去する方法</em><br>
+                
+		  
+				- スクリーン上のメニューバーのメニューアイコン
+				<img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+				から”各種設定”を選びます。<br><br>
+            	- "各種設定"画面の[全ページを削除]項目で、 "削除する"を選んで[決定]ボタンをタップします。
+          		<p><img  src= "delAll.png"  width ="200" alt="delAll.png"></p> 
+                <p><img  src= "delAll2.png"  width ="200" alt="delAll2.png"></p>
+                
+                <em class="s">※ 実行すると、全ページの内容を全て消去し、各種設定値もリセットされてしまいますので
+                注意して実施してください。</em><br>
+                
+               <div class="left" id="j023"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j023x">-- 13. ページ内容を保存する --</h4>
+			   <em class="s">ページに書かれた内容は無条件で全て保存されますが、開いているページについては
+			   外部に画像ファイル(jpeg形式)で保存することができます。</em><br>
+			   - スクリーン上のメニューバーのメニューアイコン
+				<img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+				から”JPEGで出力”を選びます。<br><br>
+			  - 確認ダイアログが現れますので、OKすると以下の完了メセージが表示されます。再度OKします。<br>
+			  <p><img  src= "jpeg.png"  width ="200" alt="jpeg.png"></p>
+			  - ファイルは"写真"フォルダに保存されます。書式はiPhoneの場合は以下となります。<br>
+			  ※ インターフェイス環境が整っていれば、このファイルを開いて印刷やメール送信することができます。
+			  <p><img  src= "photos.png"  width ="150" alt="photos.png"></p>
+	</section>
+ 
+    <section id="j04">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">ジェスチャー操作</h3>
+        <em>本アプリでは軽快な操作を実現するために、多くのジェスチャー操作が用意されています。<br>
+             以下に、HappyMemoで用意されているジェスチャー操作を説明します。</em>
+              
+        <h4>メモページ画面で使うジェスチャー</h4>
+
+        <p>① <em class="s">画面のスクロール：<br>
+        ☆ <u>メモページ画面で上下にスワイプする。</u></em></p>
+        <p><img  src= "ges2.png"  width ="200" alt="ges2.png"></p>
+        - 画面上で縦にスワイプすると、メモページの表示内容をスクロールすることができます。
+
+		<p>② <em class="s">ページめくり：<br>
+			☆ <u>メモページ画面で左右にスワイプする。</u></em></p>
+		<p><img  src= "ges1.png"  width ="200" alt="ges1.png"></p>
+		        - 画面上で横にスワイプすると、メモページを前後に移動することができます。<br>
+        　・左方向スワイプ：次のページに進む。<br>
+        　・右方向スワイプ；前のページに戻る　
+        　
+		<p>③ <em class="s">パレットを表示する：<br>
+			☆ <u>対象となるメモ行を長押しする。</u></em></p>
+		<p><img  src= "openP.png"  width ="200" alt="openP.png"></p>
+		- パレットが表示されていない場合、メモ行を長押し(Long press)すると、<br>
+		[パレットを開く] + [選択行の内容を表示] の２つのアクションが一度に実行されます。
+		<p>④ <em class="s">パレットをスクロールする：<br>
+			☆ <u>スクロールバーをスワイプする</u></em></p>
+		<p><img  src= "ges4z.png"  width ="200" alt="ges4z.png"></p>
+		- パレット上部のスクロールバーを左右にスワイプするとパレットの表内容が前後にスクロールされます。
+		<p>⑤ <em class="s">パレットをスクロールする２：<br>
+			☆ <u>パレット右端をエッジスワイプ(←)する</u></em></p>
+		<p><img  src= "ges5.png"  width ="200" alt="ges5.png"></p>
+		- パレット画面の右端を外から中にスワイプします。<br>
+		パレットが自動で左方向にスクロールされ、書かれた文の末尾が画面の左端に表示される位置まで移動します。
+		この機能により、文末へ続けて文字を追加する場合には特に効果的です。<br>
+		<p>⑥ <em class="s">パレットをスクロールする３：<br>
+			☆ <u>自動スクロール機能を使う</u></em></p>
+		- 描画線が右端のエリア( 下図 A の領域 )内に入った場合、
+		タッチアップのタイミングでパレットが左方向に自動でスクロールします。
+		<p><img  src= "gesA1.png"  width ="200" alt="gesA1.png"></p>	
+		- 自動スクローツは、文の末尾が画面の左端まで移動します。
+		これにより文字を続けて追加する時、素早く作業できます。<br>
+		※ "自動スクロール"	機能を停止するには、メニューリストの"各種設定"から設定をOFFにします。
+		(デフォルト：ON）	
+		<p><img  src= "gesA2.png"  width ="200" alt="gesA2.png"></p>
+		<p>⑦ <em class="s">改行する：<br>
+			☆ <u>メモ行をタップ</u></em></p>
+		- パレットが表示されている状態のままで、メモページの任意の"行"をタップすると
+		"行カーソル"はタップ先に移動し、その内容がパレットに表示されます。<br>
+		※ パレット表示内容をメモ行にコピー（"<strong>OK</strong>"ボタンをタップ）する前に
+		メモ行を変更した場合には、パレット表示内容はキャンセルされてしまいますので
+		注意してください。
+		<p><img  src= "ges6.png"  width ="200" alt="ges6.png"></p>
+		<p>⑧ <em class="s">改行する２：<br>
+			☆ <u>エッジスワイプ(↓)</u></em></p>
+		- パレット表示画面の右端エリア内で下に向かってスライド動作(スワイプ)すると、
+		"行カーソル"が１段下に移動してその内容がパレットに表示されます。<br>
+		※ このジェスチャー動作では⑦と異なり、直前のパレット表示内容は
+		確定前であっても自動で"メモ行"にコピーされるので、<br>
+		[パレット内容の確定] + [改行] の処理が１つの動作で行えます。
+		
+		<p><img  src= "ges7.png"  width ="200" alt="ges7.png"></p>
+		<p>⑨ <em class="s">パレットを閉じる長押し：<br>
+       		☆ <u>任意のメモ行を長押しする。</u></em></p>
+       	- パレットが表示されている状態で"メモ行"を長押し(Long press)すると、
+       	パレットを閉じることができます。
+        <p><img  src= "closeP.png"  width ="200" alt="closeP.png"></p>
+
+        <h4>インデックスページ画面で使うジェスチャー</h4>        
+        <p>① <em class="s">画面のスクロール(上下方向)：<br>
+        	☆ <u>インデックス画面でスワイプ(↑↓)する。</u></em></p>
+        - メモページと同様に、画面上で上下ににスワイプすると、表示内容をスクロールすることができます。
+
+        <p><img  src= "gesI01.png"  width ="200" alt="gesI01.png"></p>
+        <p>② <em class="s">ページを開く：<br>
+       		☆ <u>開きたいページタイトルを長押しする。</u></em></p>
+        - 目的のページタイトルを長押し(１秒以上)するとそのページ番号のメモページに移動します。<br>
+		<p><img  src= "gesI02.png"  width ="200" alt="gesI02.png"></p>
+    </section>
+
+    <section id="j05">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">編集パネルについて </h3> 
+            <em>Happymemoで扱う文字は、いわゆる"線画"ですが、この"編集パネル"を用いて普通のテキスト文字の編集のように
+            "上書き"、"挿入"、"文字削除" などの編集作業を行う事ができます。</em>
+         
+          <h4>編集パネルの開き方</h4> 
+          編集パネルを開くには、入力パレット上部のスクロールバーの右端の<span style="color:#ff0000"> ▲ </span>をタップすると赤色半透明の"編集パネル"が現れます。<br>  
+           <p><img  class="left" src= "editPanel.png"  width ="250" alt="editPanel.png"></p>
+          
+        <h4>編集パネル画面のアイコンの種類と機能</h4>
+        <em class="s">[ 編集モード選択ボタン ]</em><br>
+        	<p><img  class="icon3" src= "m3x2ovw.png"  width ="30" alt="m3x2ovw.png"></p>
+        	<strong>OVW</strong>："上書きモード" を選択<br>(over write)
+        	<p><img  class="icon3" src= "m3x2ins.png"  width ="30" alt="m3x2ins.png"></p>
+        	<strong>INS</strong>："挿入モード" を選択<br>(insert)
+        	<p><img  class="icon3" src= "m3x2del.png"  width ="30" alt="m3x2del.png"></p>
+        	<strong>DEL</strong>："削除モード" を選択<br>(delete)
+        	<p><img  class="icon3" src= "m3x2clr.png"  width ="30" alt="m3x2clr.png"></p>
+        	<strong>CLR</strong>："空白モード" を選択<br>(clear)<br><br>
+        <em class="s">[ 編集範囲の拡張ボタン ]</em>
+        	<p><img  class="icon3" src= "m3x2top.png"  width ="30" alt="m3x2top.png"></p>
+        	：カーソル位置を"文頭へ"変更する<br>
+        	<p><img  class="icon3" src= "m3x2end.png"  width ="30" alt="m3x2end.png"></p>
+        	：カーソル位置を"文末へ"変更する<br><br>
+
+         <h4>パレットカーソル(編集範囲)とは？</h4>
+         
+         <em class="s">
+         	"編集モード"をどれか１つ選んでパレット上を "ドラッグ" すると、画面に矩形カーソルが形成されます。
+         	(以降、Palette-cursolと称する)<br>
+         	カーソルの形状は、ドラッグの開始位置と終了位置で囲まれた矩形となります。<br><br>尚、ドラッグを繰り返した場合
+         	は最終ドラッグによるカーソルだけが画面上に残李ます。<br>
+         	従って、カーソル位置を変更するには新たにドラッグを行います。
+         </em><br>
+         
+        <p><img src="m3x2cur.png" width ="200" alt="m3x2cur.png"></p>
+ 
+          - そして、書かれた文の編集したい箇所にこのカーソルを被せて、選択されたの編集処理を実行します。
+
+         <h4>編集作業の手順</h4>
+		 <em class="s">
+		 	次に、具体的にパレットに書かれた文字を編集する手順について説明します。
+		 </em>
+         <br><br>
+        	① 最初に、編集対象の"メモ行"を選んでパレットに表示させ、スクロールバーの
+           	<img class="icon2" src="3Up.png" width ="20" alt="3Up.png">
+           	をタップして"編集パネル"を開きます。<br>
+            ② 続けて、編集パネルのアイコンをタップしてこれから実行したい"編集モード"を選びます。<br>
+			③ 次に、パレット上でドラッグ操作してカーソル領域(編集したい箇所)を調整します。<br>
+			④ 最後に、パレット右下の"<strong>OK</strong>"ボタンをタップして編集処理を実行させます。<br>
+      		（編集結果がパレットに表示されます）
+         <h4>実施例</h4>
+         <em class="s">
+         	編集前の"メモ行"の内容は、<br>
+         	" I have <strong>a Pineapple-pen</strong>." となっています。<br>
+         	これを最終的に、<br>
+         	" I have <strong>an Apple-pen</strong>." に 変更します。<br> 
+         	<em> この変更処理をいろんな編集モードを使って行う例を以下に紹介します。</em><br>
+	
+         </em><br><br>
+         ＜最初の内容＞<br>
+         編集パネルはすでに開いた状態から始めます。
+         <p><img  src= "edit01.png"  width ="250" alt="edit01.png"></p>
+         まず、"Pineapple"の一部、"Pine"を削除します。<br>
+         スクロールバーをスライドさせて、"Pine"をパレットに表示させます。
+         <p><img  src= "edit02.png"  width ="250" alt="edit02.png"></p>
+         ＜不要な文字の削除＞<br>
+         編集パネルの
+         <img class="icon" src="m3x2del.png" width ="25" alt="m3x2del.png">
+         をタップして"削除"モードを選びます。続けてパレット画面でドラッグして黒色のカーソルを作成します。
+         <br>"Pine"の文字をを覆い隠すようにして、<strong>OK</strong>ボタンをタップします。
+         <p><img  src= "edit03.png"  width ="250" alt="edit03.png"></p>
+         これでパレット上では、"Pine"の文字が削除されました。(この時、編集パレットは自動で閉じられます。)<br>
+         次に、"apple"の先頭文字を大文字にします。
+         <p><img  src= "edit04.png"  width ="250" alt="edit04.png"></p>
+          ＜文字の入れ替え＞<br>
+         <img class="icon2" src="3Up.png" width ="20" alt="3Up.png">
+         をタップして"編集パネル"を開きます。<br>
+         編集パネルの
+         <img class="icon" src="m3x2ovw.png" width ="25" alt="m3x2ovw.png">
+         をタップして"上書き"モードを選びます。今度は白色のカーソルがドラッグによって作成されます。
+         
+         <p><img  src= "edit05.png"  width ="250" alt="edit05.png"></p>
+         "apple"の先頭文字"a"をを覆い隠すようにして、<strong>OK</strong>ボタンをタップします。
+         今度は、"a"が"空白"スペースに変わります。(編集パレットは自動で閉じられます。)
+         <p><img  src= "edit06.png"  width ="250" alt="edit06.png"></p>
+         編集パネルが閉じられると、自動でペン入力モード"になるので、大文字"A"をこのスペース部分に書き加えます。
+         <p><img  src= "edit07.png"  width ="250" alt="edit07.png"></p>
+         再度、(<strong>OK</strong>をタップ)します。パレット表示内容がメモページにコピーされます。
+         そして、行全体の内容を確かめることができます。
+         <p><img  src= "edit08.png"  width ="250" alt="edit08.png"></p>        
+         ここで、"a"を"an"に変更する事が必要になりましたので、"a"と"Apple-Pen"の間に"n"を書き加えます。<br><br>
+         ＜文の位置をずらす＞<br>
+         しかし今度は、"an"と"Apple"との間が詰まりすぎてしまうのでこの間にスペースを追加します。<br><br>
+          
+          再び、<img class="icon2" src="3Up.png" width ="20" alt="3Up.png">
+          をタップして"編集パネル"を開きます。<br>
+          次に、編集パネルの
+         <img class="icon" src="m3x2ins.png" width ="25" alt="m3x2ins.png">
+         をタップして"挿入"モードを選びます。今度は半透明のカーソルがドラッグによって作成されます。 	
+         <p><img  src= "edit09.png"  width ="250" alt="edit09.png"></p>
+         挿入したいスペース分だけ半透明カーソル巾を調整して、"<strong>OK</strong>"をタップします。<br>
+         この結果、パレット表示では "Apple"以降の文字全体が、このカーソル巾だけ右側にシフトします。
+         <p><img  src= "edit10.png"  width ="250" alt="edit10.png"></p>
+         ＜パレット内容をメモに書き出す＞<br>
+         行全体の内容を確かめるために一旦、パレット表示内容を確定("<strong>OK</strong>"をタップ)してメモページ
+         に反映（コピー）させます。<br>
+         これで、編集目標である "I have an Apple-Pen."になりました。
+         <p><img  src= "edit11.png"  width ="250" alt="edit11.png"></p>
+         <h4>◇その他、よく使う編集操作の事例</h4>
+        <strong>１.</strong> 文章の頭を字下げする方法<br>
+        
+        編集パネルを開いて
+         <img class="icon" src="m3x2ins.png" width ="25" alt="m3x2ins.png">
+         をタップして"挿入"モードを選びます。
+         パレットの左端からドラッグして、字下げ分だけカーソルを作成します。
+         <p><img  src= "edit12.png"  width ="250" alt="edit12.png"></p>
+         "<strong>OK</strong>"ボタンを続けて<u>２度</u> 押してメモページに書き出して確認します。<br>
+         カーソル巾だけ字下げが行われていることがわかります。
+         <p><img  src= "edit13.png"  width ="250" alt="edit13.png"></p>
+         
+         <strong>２.</strong> 
+         <img  class="icon" src= "m3x2top.png"  width ="25" alt="m3x2top.png">
+         と
+         <img  class="icon" src= "m3x2end.png"  width ="25" alt="m3x2end.png">
+          の使い方<br><br>
+          パレット画面にカーソルが表示されている場合には、編集パネルの
+          <img  class="icon" src= "m3x2top.png"  width ="15" alt="m3x2top.png">
+         または
+         <img  class="icon" src= "m3x2end.png"  width ="15" alt="m3x2end.png">
+         をタップするとカーソルの一端が文頭、または文末にまで拡張されます。<br>
+         ※ 文頭、文末がパレット画面に表示されていなくても良いです。<br>
+         以下は１例として、「文の途中から文末までを削除する」場合を説明します。<br><br>
+         まず、編集パネルを開いて"削除"モードにします。<br>
+         削除したいエリアの開始位置からドラッグしてカーソルを形成します。カーソル巾は
+         任意で構いません。<br>
+         
+         <p><img  src= "edit14.png"  width ="250" alt="edit14.png"></p> 
+          次に、
+         <img  class="icon" src= "m3x2end.png"  width ="15" alt="m3x2end.png">
+         をタップします。パレット表示ではわかりませんがカーソルの右端が文末にまで拡張されます。
+         <p><img  src= "edit15.png"  width ="250" alt="edit15.png"></p> 
+          "<strong>OK</strong>"ボタンを押すと。カーソル領域がパレット画面上で削除されます。
+         <p><img  src= "edit16.png"  width ="250" alt="edit16.png"></p>
+          再度 "<strong>OK</strong>"ボタンを押すと、パレット画面がメモ行に反映されます。
+          "Apple"から文末までが削除されたことが確認できます。 
+         <p><img  src= "edit17.png"  width ="250" alt="edit17.png"></p>
+         ※ もう一方の <img  class="icon" src= "m3x2top.png"  width ="20" alt="m3x2top.png">
+         についても同様に用います。ただし、この場合にはカーソルの一端は"文頭"に拡張されます。<br><br>
+         
+         <strong>３.</strong>
+         "<strong>CLR</strong>"モードの使い方<br>
+         編集パネルの
+         <img  class="icon" src="m3x2clr.png"  width ="25" alt="m3x2clr.png">
+         アイコンをタップして、"空白"モードを選びます。<br>
+         "<strong>OK</strong>"ボタンを押すと、パレットの全ての文字が消去されます。<br>
+         続けてもう一度 "<strong>OK</strong>"ボタンを押すと、今度はパレット内容が
+         メモ行に反映され、編集中のメモ行は空白行になります。
+         <p><img  src= "edit18.png"  width ="250" alt="edit18.png"></p>
+         <h4>編集のやり直し</h4>
+         <em class="s">
+         編集パネル操作で編集した結果が予想と違ったので元に戻したい場合があります。
+		 </em>
+		 編集パネルで編集処理( "<strong>OK</strong>"ボタン 
+		 を押して実行 )直後であれば、
+		 パレット画面左下にある "取り消し"ボタン
+		 <img  class="icon" src="undo_ico.png"  width ="20" alt="undo_ico.png"> 
+		 をタップすると、編集前の状態になります。<br>
+		 <p><img  src= "edit19.png"  width ="250" alt="edit19.png"></p>
+		 <em class="s">※詳細は、→ ・<u>取り消し"ボタンの使い方</u> (Topメニュー)をご覧ください。</em>
+
+    </section><br><br> 
+
     <section id="j06">
-        <h3 class="line">ページ内容の書き出しについて </h3>       
-        <h4>Brackets のプロジェクト</h4>
-        <p>
-            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
-            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
-        </p>
-        <p>
-            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
-            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
-        </p>
-    </section>
-    <section id="j07">
-        <h3 class="line">その他　関連情報 </h3>
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">取り消しボタンの使い方 </h3> 
+        <em>
+        パレットが開いている時だけ現れる、パレット下部バーの左端にある
+        <img  class="icon" src="undo_ico.png"  width ="25" alt="undo_ico.png">
+        アイコンが "取り消し"ボタンです。直近の文字入力処理をキャンセルする事ができます。
+		</em><br>
+        このボタンの機能・特徴は、タップする度にパレット表示内容を "１つ前の状態" に戻す事ができる事です。
+        （従って、続けて２度タップした場合は、元の状態に戻ります。）<br>
+        これを図で表すと次のようになります。
        
-        <h4>Brackets のプロジェクト</h4>
-        <p>
-            Brackets を使用して独自のコードを記述するには、自分のファイルを格納したフォルダーを開きます。
-            現時点で開いているフォルダーが Brackets によって「プロジェクト」として処理され、そのフォルダー内のファイルのみがコードヒント、ライブプレビュー、クイック編集などの機能で使用されます。
-        </p>
-        <p>
-            このサンプルプロジェクトを終了し、コードを編集する準備ができたら、左側のサイドバーのドロップダウンを使用してフォルダーを切り替えます。この時点で、ドロップダウンには「はじめに」が表示され、現在表示されているファイルが格納されたフォルダーが選択されています。ドロップダウンで「フォルダーを開く...」を選択して、使用するフォルダーを開きます。
-            ドロップダウンを使用して、このサンプルプロジェクトが含まれるフォルダーなど、以前に開いたフォルダーに切り替えることもできます。
-        </p>
+         <p><img  src= "undo03.png"  width ="200" alt="undo03.png"></p>     
+        <h4> "１つ前の状態" とは？</h4>
+        <em>
+            本アプリでは、この "取り消し"ボタンが有効になる状況(ステータス)は３種類あります。
+            そして、各状況(ステータス)に応じて "１つ前の状態" はそれぞれ異ったものになります。<br>
+            "ステータス"は,次の３つに区別されます。<br>
+        </em><br>
+               
+            １）<strong>文字入力時</strong>： <em class="s">パレットに手書き入力している状況。</em><br>
+            ２）<strong>編集処理時</strong>： <em class="s">編集パネルで文字編集をしている状況。</em><br>
+            ３）<strong>書き出し時</strong>： <em class="s">パレットの内容をメモ行にコピーしている状況。</em><br><br>
+            
+            ※表にまとめると以下のようになります。
+		
+        <table>
+		<tr>
+		<th></th>
+		<th>ステータス</th>
+		<th>"１つ前の状態"</th>
+		</tr>
+		<tr>
+		<td>1</td>
+		<td>[ 文字入力時 ]<br>タッチアップした<u>直後</u></td>
+		<td>最終<u>ストローク</u>を描く前の状態</td>
+		</tr>
+		<tr>
+		<td>2</td>
+		<td>[ 編集処理時 ]<br><strong>OK</strong>を押して、編集結果が表示された<u>直後</u></td>
+		<td><u>編集パネル</u>を開く前のパレット表示内容</td>
+		</tr>
+		<tr>
+		<td>3</td>
+		<td>[ 書き出し時 ]<br><strong>OK</strong>を押して、パレット内容をメモにコピーした<u>直後</u></td>
+		<td>コピーする前の<u>メモ行の内容</u></td>
+		</tr>
+		</table>
+		<h4> 具体的な事例<br>
+		<img  class="icon" src="undo_ico.png"  width ="25" alt="undo_ico.png">
+		をタップした時
+		</h4>
+		１）文字入力している場合<br>
+		※ 最終ストロークがキャンセルされます。
+		<p><img  src= "undo02.png"  width ="250" alt="undo02.png"></p>
+  		２）編集パネルを使用している場合<br>
+  		 ※ 編集パネルでの操作結果がキャンセルされます。
+   		<p><img  src= "undo01.png"  width ="250" alt="undo01.png"></p>
+   		３）パレット内容をメモに反映させる場合<br>
+   		※ メモ行の内容"ABC"の後ろに"def"を追加します。<br>
+   		- パレット上で"def"を描きます。
+   		<p><img  src= "undo04.png"  width ="200" alt="undo04.png"></p>
+   		- ここで、"<strong>OK</strong>"ボタンをタップすると、パレット内容がメモ行に反映されます。
+   		<p><img  src= "undo05.png"  width ="200" alt="undo05.png"></p>
+   		- この直後に、"取り消し"ボタン
+   		<img  class="icon" src="undo_ico.png"  width ="20" alt="undo_ico.png"> 
+   		をタップすると、直前に<u>メモ行に反映された内容</u>がキャンセルされます。<br>
+   		※ パレットには、改めて "メモ行"の内容が表示されます。
+   		<p><img  src= "undo06.png"  width ="200" alt="undo06.png"></p>
+   		
     </section>
+    
+    <section id="j07">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">使い方のヒント！ 他  </h3> 
+
+		<h4>本アプリの活用例</h4>
+           - 覚書メモ<br>
+           - Todoリスト<br>
+           - 講義を聞きとりながらのメモ<br>
+           - スケジュール<br>
+           - 文章などの下書き<br>
+           - 速記<br>
+           - ちょとした記録、日記など<br>
+            
+        <h4>今後のアプリ改善予定</h4>
+       
+            - iPad mini,iPhone向けの横向き画面に対応。<br>
+            - メモページの編集機能の強化。<br>
+            - メモ帳の複数化。<br>
+            などを予定しています。<br><br>
+
+    </section>
+    		
+			<div class="left"><a class="left"  href="#title">△ Topに戻る</a></div>
 </body>
 </html>
 

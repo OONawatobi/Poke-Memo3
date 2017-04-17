@@ -19,7 +19,7 @@ extension UIColor {
 }
 
 extension UIView {
-    
+    @discardableResult
     func drawDashedLine(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber, type: DashedLineType) -> UIView {
         let dashedLineLayer: CAShapeLayer = CAShapeLayer()
         dashedLineLayer.frame = self.bounds
@@ -318,7 +318,7 @@ let big:CGFloat = 1.5//拡大率
 //var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
 
 var lineWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
-var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:brown]
+var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:purple]
 var autoScrollFlag = true//自動スクロールOn/Offフラグ
 var myLabel:UILabel!//自動スクロールOn/Off表示用
 var lastPage:Int = 1//最後に編集したたページ番号
@@ -418,7 +418,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var tV: UITableView  =   UITableView()//++テーブルビューインスタンス作成
     //++テーブルに表示するセル配列
     var items_Ja: [String] = ["","日付を追加", "表示ページをクリア", "JPEGファイルで出力","　","各種設定","スタートガイドを見る","                ▲ "]
-    var items_En: [String] = ["","Add date", "Clear display page", "Write out as JPEG file","　","Settings","Watch the Start-Guide","                ▲ "]
+    var items_En: [String] = ["","Add date", "Clear display page", "Export as JPEG file","　","Settings","Watch the Start-Guide","                ▲ "]
     var items:[String] = []
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
@@ -430,9 +430,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.backgroundColor = UIColor.white
         //本機種の解像度
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
-        //NAVバー、ステータスバーの色を作成 95,144,191 0,145,197
+        //NAVバー、ステータスバーの色を作成 95,144,191 0,145,197 51-102-204 0-130-255
         //nColor = UIColor.init(red: 0, green: 0.4, blue: 1, alpha: 1)
-        nColor = UIColor.rgb(r: 0,g: 130, b: 255, alpha: 1)
+        nColor = UIColor.rgb(r: 51,g: 102, b: 204, alpha: 1)
         //Indexバーの色を作成
         iColor = UIColor.rgb(r: 208,g: 113, b: 68, alpha: 1) //init(white: 0.92, alpha: 1)78,157,121  (r: 208,g: 113, b: 68, alpha: 1)
         iColor2 = UIColor.rgb(r: 242, g: 177, b: 106, alpha: 1)
@@ -536,7 +536,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         /* editView([<][OVW][INS][DEL][CLR][>])を生成. */
         myEditView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 60))
-        let myEditColor = UIColor.red.withAlphaComponent(0.7)//rgb(r: 198, g: 54, b: 89, alpha: 0.8)
+        let myEditColor = UIColor.rgb(r: 255, g: 0, b:80, alpha: 0.66)
+        //red.withAlphaComponent(0.7)
+        //rgb(r: 198, g: 54, b: 89, alpha: 0.8)
         myEditView.backgroundColor = myEditColor// underViewの背景を青色に設定
         //myEditView.alpha = 0.6// 透明度を設定
         myEditView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40 - 30)// 位置を中心に設定
@@ -803,7 +805,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         hl.font = UIFont(name: "ChalkboardSE-Bold", size: 24)
         hl.text = (langFlag == 0) ? "スタートガイド":"Start-Guide"
         hl.textAlignment = .center
-        let cancel:String = (langFlag == 0) ? "キャンセル":"Cancel"
+        //let cancel:String = (langFlag == 0) ? "キャンセル":"Cancel"
         //言語切替ボタンを追加:jButton,eButton
         jButton = UIButton(frame: CGRect(x:boundWidth - 150,y:30, width:60, height:40))
         eButton = UIButton(frame: CGRect(x:boundWidth - 70,y:30, width:60, height:40))
@@ -854,7 +856,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     //INDEXの表示・非表示
     var retNum:Int = 0
-    var changing:Bool = false
+    var changing:Bool = false//indexアニメとメニューアニメの両方で共有
+    //→animeFlag(Palette)
     
     @IBAction func index(_ sender: UIBarButtonItem) {
         //拡大表示の時はパス
@@ -868,11 +871,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         */
         }
         if isMenuMode == true{
-            menu(menu2)
+           return
+            // menu(menu2)//メニューが開き始めと開いている間は受け付けないように変更した4/4
         }
-
+        //windowの開閉中は"changing = true"として他のwindowは開けなくする
         if changing == true { return }//Indexを開き切るまでは受け付けない
         changing = true//開く(閉じる)ジェスチャーを開始する
+        
         //memo[0]-[2]に枠を追加する
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
@@ -983,13 +988,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func menu(_ sender: UIBarButtonItem) {
+
+        if animeFlag == true {return}
         //indexページが開いている時は
         if isIndexMode == true { return }//Indexが表示中は実行しない
         if isPalleteMode == true{//パレット内容を保存して閉じる
             done(done2)
             Pallete(pallete2)
         }
-
+        //windowの開閉中は"changing = true"として他のwindowは開けなくする
+        if changing == true { return }//Indexを開き切るまでは受け付けない
+        changing = true//開く(閉じる)ジェスチャーを開始する
+        
         print("langFlag:\(langFlag)")
         
         if isMenuMode == false{//リストが非表示の場合
@@ -998,9 +1008,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             UIScrollView.animate(withDuration: 0.3, animations: {
                 () -> Void in
                 self.smv.contentOffset = CGPoint(x:-10,y:40)
-            })
-            isMenuMode = true
-            
+                
+            }){ (Bool) -> Void in  // アニメーション完了時の処理
+            self.changing = false//開く(閉じる)ジェスチャーを終了する
+            self.isMenuMode = true
+            }
             //◯ボタンの画像を入れ替える
              //menu2.setBackgroundImage(UIImage(named: "enn2.png"), for:UIControlState.normal, style: UIBarButtonItemStyle.plain, barMetrics:UIBarMetrics.compact)
             
@@ -1010,6 +1022,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.smv.contentOffset = CGPoint(x:-10,y:self.mh)
             }){ (Bool) -> Void in  // アニメーション完了時の処理
                 self.smv.removeFromSuperview()
+                self.changing = false//開く(閉じる)ジェスチャーを終了する
             }
             isMenuMode = false
             
@@ -1020,7 +1033,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
     var animeFlag:Bool = false//アニメ中はtrue
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
-        
+        if changing == true { return}//メニューのアニメ中は実行しない。
         if animeFlag { return}//アニメ中は実行しない
         //if isMenuMode == true{ return }//リストメニュー表示中は実行しない
         if isMenuMode == true{
@@ -1258,7 +1271,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             bigFlag = true
             //拡大鏡アイコンを表示する
             editButton1.frame.size = CGSize(width:60, height:60)//ボタンサイズを変更
-            editButton1.setImage(UIImage(named: "big2.pdf"), for:UIControlState.normal)
+            editButton1.setImage(UIImage(named: "bigW.pdf"), for:UIControlState.normal)
             }else{
                 print("bigSize:")
                 let cx = drawableView.center.x
@@ -1558,7 +1571,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         img01.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         img01.layer.cornerRadius = 3
         cont02.layer.borderWidth = 2
-        cont02.layer.borderColor = UIColor.purple.withAlphaComponent(0.2).cgColor
+        cont02.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         cont02.layer.cornerRadius = 10
         cont02.layer.masksToBounds = true
         
@@ -1568,7 +1581,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
         img01.backgroundColor = UIColor.clear
         cont02.backgroundColor = UIColor.yellow.withAlphaComponent(0.05)//white.withAlphaComponent(0.8)
-        img03.backgroundColor = UIColor.purple.withAlphaComponent(0.2)
+        img03.backgroundColor = UIColor.purple.withAlphaComponent(0.15)
 
         //Viewの内容を作成
         //パレット全画面の切り取り????
@@ -1913,7 +1926,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //------- セグメント02---------------------------------------------------
         
         // 表示する配列を作成する.
-        let myArrayB: NSArray = ["Blue","Green","Orange"]
+        let myArrayB: NSArray = ["Blue","Green","Brown"]
                 let sWB:CGFloat = 50
         // SegmentedControlを作成する.
         let scB: UISegmentedControl = UISegmentedControl(items: myArrayB as [AnyObject])
@@ -2360,12 +2373,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView.secondView.changeMyCursolView2(curX: cEnd, startX:cStart)
            
         }else{
-        //パレットの表示位置をリセットする
+        /*
+            //パレットの表示位置をリセットする
             //アニメーション動作をさせる
             UIView.animate(withDuration: 0.3, animations: {
             () -> Void in
             drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - 44 - vHeight/2)
             })
+        */
         }
     }
     
@@ -2385,11 +2400,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
             
         }else{
-        //パレットの表示位置を末尾にする
+        /*
+            //パレットの表示位置を末尾にする
             UIView.animate(withDuration: 0.3, animations: {
             () -> Void in
             drawableView.layer.position = CGPoint(x:boundWidth - vWidth/2, y:boundHeight - 44 - vHeight/2)
-          })
+            })
+         */
         }
  
     }

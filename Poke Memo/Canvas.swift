@@ -402,7 +402,9 @@ class DrawableView: UIView {
                switch lineColor {
                 case 0:penC = UIColor.blue
                 case 1:penC = UIColor.rgb(r: 0, g: 147, b: 87, alpha: 1)
-                case 2:penC = UIColor.orange //gray.withAlphaComponent(0.2) // brown
+                case 2:penC = UIColor.brown
+                //rgb(r: 50, g: 0, b: 0, alpha: 1)
+               //gray.withAlphaComponent(0.2) // brown
                 default:break
                }
                 

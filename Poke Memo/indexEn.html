@@ -1,114 +1,968 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+<head>
+    <meta charset="UTF-8">
+    <title>Start Guide</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style type="text/css">
+ <!--
+	img {margin: 5px 10px 10px 30px;}
+		img.left {margin: 5px 10px 10px 0px;}
+	img#top {
+		    float:left;
+			margin: 0px 10px 6px 0px;
+			border: 1px solid blue;
+			border-radius: 6px;
+		}
+	img.icon {
+		margin: 0px 0px 0px 0px;
+		vertical-align: baseline;
+		}
+		img.icon2 {
+		margin: 0px 0px 0px 0px;
+		vertical-align: middle;
+		}
+		img.icon3 {
+			float:left;
+			margin: 0px 10px 0px 10px;
+			border: 1px solid #ff8800;
+			border-radius: 4px;
+		}
+	.center {
+			text-align: center;
+		}
+		
+	h3.line {border-bottom: 2px solid blue;}			
+		h4.line {border-bottom: 1px solid gray;}
+		h4 {font-size: 110%;}
+	p {font-size: 120%;}
+	p#title {font-size: 100%;}
+	p.hr {border-bottom: 1px dashed gray;}
+	pre {font-size: 120%;}
+	div.right {text-align: right; font-size: 80%;}
+	div.left {text-align: center; font-size: 100%;margin: 0px;}
+	div.s {font-size:90%;}
+	strong.b {font-size:150%;}
+	a.left {text-decoration:none;color:red;}
+	li { margin-bottom: 5px;}
+	em.s {font-size: 100%;}
+	span {color: red}
+	u {font-size: 90%;}
+		
+	table {	
+		border-collapse: collapse;
+		text-align: left;
+		line-height: 1.5;
+	}
+	table tr {
+			width: 100%;
+    		margin:20px 10 10px;
+    		border-top: 1px solid gray;
+			border-bottom: 2px solid gray;
+			border-left: 1px solid gray;
+    		border-spacing:0;
+	}
+	table th {
+		border-right: 1px solid gray;
+		text-align: center;
+		}
+	table td {
+		border-right: 1px solid gray;
+		}	
 
-    <title>Jumbotron Template for Bootstrap</title>
+ -->
+	</style>
 
-    <!-- Bootstrap core CSS -->
-    <link href="./stylesheets/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!--
+    header:
+    footer:
+    nav: ナビゲーション
+    article: 独立しているコンテンツ
+    aside: 副次的なコンテンツ
+    section: それ以外の塊
+    h1-h6: 見出し
+-->
+<!--
+    p: 段落
+    hr: 水平線
+    pre: 改行や字下げ
+    blockquote: 引用
+    div: スタイリング
+-->
+   <header>
+    <!--<h1>スタートガイド3</h1>-->
+    <img id="top" src= "guide.png" width= "40" height= "40" alt= "葉" />
 
-    <!-- Custom styles for this template -->
-    <link href="./stylesheets/jumbotron.css" rel="stylesheet">
-  </head>
+    <h3>First of all, please read this guide first</h3>
 
-  <body>
+        <p id="title">
+        <br>
+        <strong class="b">T</strong>hank you for using Notepad application for handwritten character input, 
+        <strong>HappyMemo</strong>. <br>
+        By adopting "Input palette of enlarged size" and "Function to edit input sentence",
+        you can easily draw characters even at your fingertips and realize the necessary practicality for notepad.
+		</p>     
+        <ul>
+            <li><a href="#j01">Introduction</a></li>
+            <li><a href="#j02">Screen and Button</a></li>
+            <li><a href="#j03">Basic operation</a></li>
+            <li><a href="#j04">Gesture operation</a></li>
+            <li><a href="#j05">About the Edit-Panel</a></li>
+            <li><a href="#j06">Usage of cancel button</a></li>
+            <li><a href="#j07">What is this app used for?</a></li>
+        </ul><br><br>
+    </header>
+    <section id="j01">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line" >Introduction</h3>
+        <p>
+            <em><strong>HappyMemo</strong> is a new type of notepad that does not use a keyboard.<br>
+            In order to handle analog (image) characters, there are several unique functions as below.</em>
+		</p>     
+        <h4>1) Input-Palette </h4>
+        <img class="left" src= "all.png"  width ="400" alt="入力画面">
+        <p>   		
+            When drawing characters, use the input area (Input-Palette) appearing from the bottom. <br>
+            Since the pallet size is four times the memo line, 
+            only a part of it can be seen on the smart screen.<br>
+            Therefore, to see the entire memo line, scroll the palette itself left 
+            and right by tracing the scroll bar at the top of the palette.
+            <br>
+            If you tap the <strong>ZOOM</strong> button under the palette, the pallet size will be 1.5 times more.<br>
+            This function is an effective means for writing complicated kanji etc.
+        </p>
+		<h4>2) Correct the written characters </h4>        
+        <p>    
+			<strong>HappyMemo</strong> has a function to correct once written letters and sentences.<br>
+      		Tap <span style="color:#ff0000"> ▲ </span> on the right end of the scroll bar at the top of the Input-Palette to display a red translucent "Edit-Panel".<br>
+       		Four types of edit modes (overwrite, insert, delete, clear) are arranged on this panel with icons, and you can select and edit the necessary method from this.Of course you can edit already written sentence as well.
+        </p>
+         for example :<br>
+         Overwrite (OVW) mode：<br>
+		<img  src= "editPanel02.png"  width ="250" alt="editPanel02.png">
+        <h4>3) Various gesture operations</h4> 
+        <p>        
+            To realize light operation, <strong>HappyMemo</strong> offers several gesture operations.<br>
+            For example,<br>
+            
+			<br>"<strong>SWIPE</strong>" gesture :<br>
+			-<em class="s">Page turning action</em><br>
+			　
+			<br>"<strong>Long press</strong>" gesture :<br>
+			-<em class="s">Display selected memo line on palette</em><br>
+			<br>"<strong>Edge Swipe</strong>" gesture :<br>
+			-Automatically adjust the pallet position for easy input.<br>
+			
+			<br>In addition, there are also gestures such as 
+       		display/non-display of pallet and line feed operation.
+        </p> 
+    </section>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <form class="navbar-form navbar-right">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
-        </div><!--/.navbar-collapse -->
-      </div>
-    </nav>
+    <section id="j02">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">Screen and Button</h3>  
+        <p>
+            <em>In <strong>HappyMemo</strong>, the two screens, 
+            the memo screen and the index screen, are the basic screen.</em><br>
+            When you start up the application, the last edit page opens.<br>
+            Then, open "Input-Palette" or "Edit-Panel" on this memo screen,
+             and start the input work.
+            
+		</p>     
+        		<h4>- Startup screen -</h4>
+        <img  src= "m1bE.png"  width ="250" alt="起動画面">
+       	<pre>
+  [1]：Input-Panel ON/Off Button
+  [2]：menu Button
+  [3]：page Number（Display only）
+  [4]：Index-page display Button
+       	</pre>
+        		<h4>- Input-Palette -</h4>
+        <img  class="left" src= "m2x1E.png"  width ="300" alt="m2x1E.png">
+        <pre>
+  [5]：Line selection Curso
+  [6]：Input-Palette
+  [7]：OK Button
+  [8]：Palette magnifying Button	
+  [9]：Undo/redo Button
+  [10]：Scroll-Bar
+  [11]：Edit-Panel On/Off Button
+  [12]：Pen color change Button
+  [13]：Pen mode selection Button
+  [14]：Correction-pen selection Button		
+        </pre>
+        		<h4>- Edit-Panel -</h4>
+        <img  class="left" src= "m3x1.png"  width ="300" alt="入力パレット">
+       	<pre>
+  [15]："Over Write" mode Button 
+  [16]："Insert" mode Button
+  [17]："Delete" mode Button
+  [18]："Clear" mode Button	
+  [19]：To the beginning of the sentence
+  [20]：To the beginning of the sentence	
+  		</pre>
+  		<em class="s">[11]：When the Edit-Panel is displayed, 
+       the button changes to "Close Panel" button.
+		</em>     
+        		<h4>- Index Page -</h4>
+       <img  class="left" src= "m6x1.png"  width ="300" alt="m6x1.png">
+       	<pre>
+  [21]：Each page content is displayed 
+        as a table of contents
+  [22]：Page Number
+  [23]：Last update date of each page
+		</pre>
+  <em class="s">Tap the button [4] to close the index and return to the original "memo page".</em>
+            	<h4>- Menu Screen -</h4>
+       <img  class="left" src= "m4i1E.png"  width ="300" alt="m4i1E.png">
+       	<pre>
+  [25]：Add today's date to the first line
+  [26]：Clear all current page contents
+  [27]：Save the current page as a Jpeg file
+  [28]：Open the "Setting screen"	
+  [29]：Open the <strong>Start-Guide</strong>
+  [30]：Close the this menu	
+        </pre>
+        		<h4>- Setting Screen-</h4>
+        <img  src= "m5x1E.png"  width ="200" alt="m5x1E.png">
+  <br>
+  [Drawing line Width]：<br>　thin line, standard (default), thick line<br>
+  [Drawing line color]：<br>　Select the third color (default: blue)<br>
+  [Auto scroll]：<br>　On: Used (Initial value)/ Off: Not used<br>
+  [Delete all pages]：<br>　Clear the contents of all pages and initialize settings<br>	
+  <br>
+ 		<em class="s">After changing the setting, the new value is saved with "<strong>Set</strong>".
+  Changing contents will be canceled if you select "<strong>Cancel</strong>".
+		</em>     		
+        		<h4>- Start-Guide -</h4>
+        <img  class="left" src= "m71E.png"  width ="300" alt="help画面"><br>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+        <pre>
+  [31]：Scroll to the top of the screen
+  [32]：Return to memo page
+  [33]：Select Japanese
+  [34]：Select English		
+        </pre>
+        <em class="s">Tap the</em>
+        <span class="red"> △ </span>
+        <em class="s">mark in the document to return to the Top menu.
+        (In the case of </em>
+        <span class="red"> ◁ </span> 
+        <em class="s">mark, it returns to the section menu.)<br>
+   		</em>
+		<br><br>    
+    </section>    
+	
+    <section id="j03">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">Basic operation</h3>  
+        <p>
+            <em>Here, we will explain the basic usage of <strong>HappyMemo</strong>.
+            </em>
+		</p> 
+        <ol>
+            <li><a href="#j011">Move to the desired page</a></li>
+            <li><a href="#j012">Display page line in palette</a></li>
+            <li><a href="#j013">Write characters on the palette</a></li>
+            <li><a href="#j014">Update page line</a></li>
+            <li><a href="#j015">Scroll the palette</a></li>
+            <li><a href="#j016">Add characters</a></li>
+            <li><a href="#j017">Begin a new line</a></li>
+            <li><a href="#j018">Change drawing pen</a></li>
+            <li><a href="#j019">Correct the written characters</a></li>
+            <li><a href="#j020">Close the Input-Pallet</a></li>
+            <li><a href="#j021">Add date to title line</a></li>
+            <li><a href="#j022">delete page contents</a></li>
+            <li><a href="#j023">Save the page contents</a></li>
+        </ol><br>
+		<p class="hr"></p> 
 
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-          Launch demo modal
-        </button>
-      </div>
-    </div>
+        <div class="left" id="j011"><a class="left" href="#j03">◁</a></div> 
+        <h4 id="j011x">1. Move to the desired page</h4>
+		
+       		<em class="s">There are three ways to open a page as follows.
+       		Then combine these methods to go to the desired page.</em><br><br>
+       		
+       		
+        	① When launching this application, the last edited (input, modified) page is displayed.<br>
+        <p><img src= "open.png" width ="200" alt="open"></p>
+        
+        	② Move by <strong>page turning gesture</strong>.<br>
+        	[Swipe from right to left] : <br>
+        	- Go to next page<br>
+        <p><img src= "swipeL.png"  width ="200" alt="swipeL"></p>
+		
+        	[Swipe from left to right]：<br>
+        	- Back to previous page<br>
+        <p><img src= "swipeR.png"  width ="200" alt="swipeR"></p>
+        
+        	③ Move from index (table of contents).<br> 
+        	 <em class="s">Tap the 
+        	 <img  class="icon" src= "ind_ico.png"  width ="20" alt="ind_ico.png">
+        	 icon in the top bar of memo page to open the index page.
+			 </em><br>
+        <p><img src= "selindex.png"  width ="200" alt="selindex.png"></p>
+        
+        	- Scroll up and down the index page to find the desired page number.<br>
+        <p><img src= "m6x2.png"  width ="200" alt="m6x2.png"></p>
+        
+        	- If you press and hold that page title (more than 1 second) it will go to that page.<br>
+        <p><img src= "m6x3.png"  width ="200" alt="m6x3.png"></p>
+		
+        	- Tap the 
+        	<img  class="icon" src= "ind_ico2.png"  width ="20" alt="ind_ico2.png">
+        	icon again to return to the original memo page.<br>
+        <p><img src= "m6x4.png"  width ="200" alt="m6x4.png"></p>
+		
+        
+        <div class="left" id="j012"><a class="left" href="#j03">◁</a></div>       
+        <h4 id="j012x">2. Display page line in palette</h4>
+        
+        	<em class="s">Tap the 
+        	<img  class="icon" src= "pal_ico.png"  width ="20" alt="pal_ico.png">
+        	icon at the right end of the menu bar of the memo page.<br>
+        	The input palette appears from the bottom of the screen.</em><br><br>
+        	- Then, the first line is selected and the contents are enlarged on the palette.<br>
+        <p><img src= "m2x3.png"  width ="200" alt="m2x3.png"></p>
+		      
+        - On the memo page, when you tap the target "line", the "green" cursor moves to that line 
+        and its contents are displayed on the palette.<br>
+		(Of course, nothing is displayed in the case of a blank line.)<br> 
+       	Next I will write (draw) characters on this palette.<br><br>
+        	<img  src= "m2x4.png"  width ="200" alt="m2x4.png"><br>
+        <div class="s">
+        		[H]:Start mark of pallet<br>
+        		[G]:Guard bar <br>(Area where writing start is impossible)
+        </div><br>   	
+		
+        <div class="left" id="j013"><a class="left" href="#j03">◁</a></div>
+        <h4 id="j013x">3. Write characters on the palette</h4>
+        
+        
+        	<em class="s">The input area of ​​the pallet is within the area sandwiched 
+        	between the upper guard bar and lower guard bar.<br>
+			And write characters here.<br></em><br>
+        	※ At this timing, the contents of the palette are not reflected in the memo page yet.<br>
+       		If the drawn characters are incorrect, we will continue to make corrections.<br>
+			<em class="s">( See <strong>9.Correct the written characters</strong>)<br></em>
+        <p><img  src= "m4xp05.png"  width ="200" alt="m4xp05.png"></p> 
+        - Tap the <strong> ZOOM </strong> button under the palette to enlarge 
+        the palette screen further.<br>
+        You can enter comfortably if you use it for writing complicated kanji and fine characters.
+        <p><img  src= "big.png"  width ="200" alt="big.png"></p> 
+        - To restore the display size, tap the <strong> ZOOM </strong> button again, or tap the 
+        <img  class="icon2" src= "big_ico.png"  width ="30" alt="big_ico.png">
+        icon.<br><br>
+          
+           
+        <div class="left" id="j014"><a class="left" href="#j03">◁</a></div>
+        <h4 id="j014x">4. Update page line</h4>
+        
+        <em class="s">
+        	Tap the <strong>OK</strong> button at the bottom right of the screen to copy the contents of the palette onto the memo page.<br>
+           </em><br>
+           ※If you find a correction point at this time, please correct it on the pallet again.
+           When correction is completed, tap the <strong>OK</strong> button again to reflect it on the memo page.<br>
+        <p><img src= "m4xp06.png"  width ="200" alt="m4xp06.png"></p> 
+              
+        <div class="left" id="j015"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j015x">5. Scroll the palette</h4>
+        
+            <em class="s">
+            When you continue adding characters, scroll the "Scroll-Bar" at the top of the palette 
+            to secure the place to write letters. 
+            (Shift palette contents to the left)<br>	
+            </em>
+        <p><img  src= "m4xp07.png"  width ="200" alt="m4xp07.png"></p> 
+        
 
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-       </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-      </div>
+        <div class="left" id="j016"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j016x">6. Add characters</h4>
+        
+			<em class="s">
+			You can add additional sentences here. However, 
+			it is not reflected onto the memo page yet.
+			<br>
+			</em>
+        	
+        	<img  src= "m4xp08.png"  width ="200" alt="m4xp08.png"><br> 
+     		- Tap the <strong> OK </strong> button in the lower right of the screen 
+     		to copy the added characters to the memo page.<br>
+			After that, you can continue to write additional characters in the same way.<br>
+        <p><img  src= "m4xp09.png"  width ="200" alt="m4xp09.png"></p> 
+              
+        <div class="left" id="j017"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j017x">7. Begin a new line</h4>
+        
+			<em class="s">
+			If you want to change the selection line or line break, 
+			hold the palette open and tap the next "memo line".
+			<br></em>	
+        	
+        <p><img  src= "m4xp10.png"  width ="200" alt="m4xp10.png"></p>
+        
+             <div class="left" id="j018"><a class="left" href="#j03">◁</a></div>
+             <h4 id="j018x">8. Change drawing pen</h4>
+         
+         (1) To change the drawing line color, 
+         	tap the "water drop" mark at the top left of the palette.
+         	<br><br>
+		  
+		  <em>Every time you tap it changes as follows</em><br><br>
+         <img  class="icon" src= "col1_ico.png"  width ="20" alt="col1_ico.png">
+          → <img  class="icon" src= "col2_ico.png"  width ="20" alt="col2_ico.png">
+          → <img  class="icon" src= "col3_ico.png"  width ="20" alt="col3_ico.png">
+          → ※<br>
+         ※<em>(Return to the first color)</em>
+          <p><img  src= "m4xp11.png"  width ="200" alt="m4xp11.png"></p> 
+         
+         (2) Change the drawing line width from the "Setting screen".<br><br>
+		  
+				- Select "<strong>Settings</strong>" from the menu icon 
+				<img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+				on the menu bar on the screen.
+		 
+          <p><img  src= "m4xp13E.png"  width ="200" alt="m4xp13E.png"></p> 
+		  
+            - In the "LINE WIDTH" item on the "Settings-Screen"
+ 			Select the desired width from "thin", "normal", "thic", and tap the "Decide" button.
+          
+          <p><img  src= "m4xp14E.png"  width ="200" alt="m4xp14E.png"></p> 
+               
+             <div class="left" id="j019"><a class="left" href="#j03">◁</a></div>
+             <h4 id="j019x">9. Correct the written characters</h4>
+             	<em>There are two main ways to edit the drawn characters.</em><br><br>
+             	(1) Erase unnecessary lines with "Correction-pen".<br>
+             	<p>
+             	
+             	- Tap the
+             	<img  class="icon" src= "w_ico.png"  width ="30" alt="w_ico.png">
+             	icon to change the line color to the background color. Overwriting in this state can be used as an "eraser".<br>
+             	When editing a thin part, change the thickness of the line to "thin".<br>
+             	</p>
+              <img  src= "white2.png"  width ="200" alt="white2.png">
+              <br>
+              After correcting, tap the  
+              <img  class="icon" src= "pen.png"  width ="20" alt="insx.png">
+              icon and return to "pen mode" again. Then draw and add the necessary lines.
+             
+              <p></p>
+             	(2) Edit characters with "Edit-Panel"<br> 
+             	 This section explains the basic procedure.<br>
+             	<em class="s">( See <strong> "About the Edit-Panel"</strong>/Top menu)<br></em> 
+             	<br>
+             	
+             	① Tap the 
+             	 <img class="icon" src="3_ico.png" width ="20" alt="3_ico.png">
+             	icon at the top of the palette to display the Edit-Panel.<br><br>
+             	
+             	② Select the desired mode from the four types of edit mode:<br>
+             	 <strong>OVW </strong>(overwrite), <strong>INS</strong> (insert),
+             	  <strong>DEL </strong>(delete), <strong>CLR </strong>(blank).
+             	
+              <p><img  src= "edits.png"  width ="200" alt="edits.png"></p>
+				③ Next, drag on the palette to adjust the cursor width (range to be edited).
+              <p><img  src= "cursol.png"  width ="200" alt="cursol.png"></p>
+				④ Tap the "<strong> OK </strong>" button under the palette 
+             		to start editing and display the results on the palette.
+              <p><img  src= "editOk.png"  width ="200" alt="editOk.png"></p>
+             	※ <em>"Edit result" differs depending on "edit mode". 
+             	The following is an example of the editing result.</em><br><br>
+             	<strong>Overwrite mode:</strong>	
+              <p><img  src= "ovwx.png"  width ="200" alt="ovwx.png"></p>
+                <strong>Insert mode:</strong>
+              <p><img  src= "insx.png"  width ="200" alt="insx.png"></p> 
+                <strong>Delete mode:</strong>
+              <p><img  src= "delx.png"  width ="200" alt="delx.png"></p>
+                <strong>Blank mode:</strong>
+              <p><img  src= "clrx.png"  width ="200" alt="clrx.png"></p> 
+              
+               - Check the editing result and repeat the similar work if necessary.<br><br>
+               - When editing is completed, tap the <strong> OK </strong> button 
+               to copy the palette contents to the memo page.<br><br>
+                <div class="left" id="j020"><a class="left" href="#j03">◁</a></div>
+               
+               <h4 id="j020x">10. Close the Input-Pallet</h4>
+                <em class="s">
+				Once you have finished entering characters, close the palette once.<br><br>
+				</em>
+				- To close the palette tap the palette icon 
+             	<img class = "icon" src = "pal_ico.png" width = "20" alt = "pal_ico.png"> 
+             	on the menu bar on the screen.<br><br>
+             	
+              <em>※ Also, when the palette is displayed, you can also close the pallet 
+              by pressing and holding any memo line.
+               </em><br>
+               <div class="left" id="j021"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j021x">11. Add date to title line</h4>
+           	   <em class="s">
+           	   	The first line of the page can also be used as a "title line". In that case, you can attach a date to the title line.
+			   </em><br><br>
+          	   - To add a date, select "Add date" from the menu bar menu 
+          	   <img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+          	   on the screen. Today's date is added to the right end of the first line.
 
-      <hr>
+          	   <p><img  src= "date.png"  width ="200" alt="date.png"></p>
+           	   <div class="left" id="j022"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j022x">12. delete page contents</h4>
+				(1) Delete the contents of<strong> an open page</strong><br>
+               - Choose "<strong>Clear Display Page</strong>" from the menu 
+               <img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+                 on the menu bar on the screen. <br>
+                 All the contents of all the lines (30 lines) of the open page become blank.  
+               
+               <br><br>
+                (2) Delete all contents of <strong>all pages</strong><br>
+                 - Choose "<strong>Settings</strong>" from the menu 
+               <img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+                 on the menu bar on the screen. <br>
+            	Open the "<strong>Settings</strong>" screen, select "Delete-All" in the "Delete-All Pages" item, and tap the [Set] button.
+          		<p><img  src= "delAllE.png"  width ="200" alt="delAllE.png"></p> 
+                <p><img  src= "delAll2E.png"  width ="200" alt="delAll2E.png"></p>
+                
+                <em class="s">※ If executed, all contents of all pages will be erased and various set values ​​will be reset, so please be careful.</em><br>
+                
+               <div class="left" id="j023"><a class="left" href="#j03">◁</a></div>
+               <h4 id="j023x">13. Save the page contents</h4>
+			   <em class="s">The contents written on the page are normally all saved automatically. In addition, open pages can be saved as external image files (jpeg format)</em><br><br>
+			    - Choose "<strong>Export as JPEG file</strong>" from the menu 
+               <img  class="icon" src= "men_ico.png"  width ="20" alt="men_ico.png">
+                 on the menu bar on the screen. <br><br>
+			  <em>A confirmation dialog will appear. When you are done, the following completion message will be displayed. I will do it again.</em><br>
+			  <p><img  src= "jpegE.png"  width ="200" alt="jpegE.png"></p>
+			  - The file is saved in the "Photo" folder. The format is as follows for iPhone.<br>
+			  <em>※ If the interface environment meets, 
+			  you can open this file and print it or send it via e-mail.</em>
+			  <p><img  src= "photos.png"  width ="150" alt="photos.png"></p>
+	</section>
+ 
+    <section id="j04">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">Gesture operation</h3>
+        <p><em>Many gesture operations are prepared with this application to realize light operation.
+ 		<br>The gesture operations available in HappyMemo are explained below.</em></p>
+              
+        <h4>- Gesture on Memo-page screen -</h4>
 
-      <footer>
-        <p>&copy; Company 2014</p>
-      </footer>
-    </div> <!-- /container -->
+        <p>① Scrolling the screen:<br>
+        * <u>Swipe up and down on the memo page screen.</u>
+        </p>
+        <p><img  src= "ges2.png"  width ="200" alt="ges2.png"></p>
+        <em>Swipe vertically on the memo page screen 
+        to scroll through the display contents.
+		</em>
+		
+		<p>② Page turning：<br>
+		* <u>Swipe left and right on the page screen.</u>
+		</p>
+		<p><img  src= "ges1.png"  width ="200" alt="ges1.png"></p>
+		 <em>Swipe horizontally on the memo page screen 
+       		to move the page back and forth.</em><br>
+       		
+        　- Swipe left: Go to the next page.<br>
+        　- Swipe right; return to the previous page.
+        　
+		<p>③ Display palette:<br>
+		* <u>Long press the target memo line.</u></p>
+		<p><img  src= "openP.png"  width ="200" alt="openP.png"></p>
+		<em>If you press and hold a memo line when the palette is not displayed, 
+		two actions, "Open Palette" and "Show Contents of Selected Line" 
+		are executed at once.
+		</em>
+		<p>④ Scroll the palette <strong>1</strong>：<br>
+		* <u>Swipe the <strong>Scroll-Bar</strong></u></p>
+		<p><img  src= "ges4z.png"  width ="200" alt="ges4z.png"></p>
+		<em>Swipe the "scroll-bar" at the top of the palette left or right 
+		to scroll the entire palette screen left and right.</em>
+		
+		<p>⑤ Scroll the palette <strong>2</strong>：<br>
+		* <u><strong>Edge swipe</strong>(←) at the right end of the palette</u>
+		</p>
+		<p><img  src= "ges5.png"  width ="200" alt="ges5.png"></p>
+		<em>Swipe the right edge of the palette from the outside to the inside.</em><br>
+		- The palette is automatically scrolled to the left and the end of the sentence 
+		moves near the left edge of the screen<br><br>
+		<em>※ This function is particularly effective when adding characters continuously 
+		to the end of a sentence.</em><br>
+		<p>⑥ Scroll the palette <strong>3</strong>：<br>
+		* <u>AUTO-SCROLL function</u></p>
+		<em>When the drawing line enters the right end area (area A in the figure below), 
+		the palette will automatically scroll to the left direction at the touch up timing.
+		</em>
+		<p><img  src= "gesA1.png"  width ="200" alt="gesA1.png"></p>	
+		- Automatic scrolling moves the end of the sentence near the left edge of the screen.<br>
+		This allows you to quickly and comfortably add characters in sequence.<br><br>
+		
+		<em>※ To stop the "AUTO-SCROLL" function, turn off the setting  from "<strong>Settings</strong>" in the menu list.
+		(Default：ON）</em>	
+		<p><img  src= "gesA2.png"  width ="200" alt="gesA2.png"></p>
+		<p>⑦ Begin on a new line <strong>1</strong>：<br>
+		* <u>Tap a memo line</u></p>
+		<em>When the palette is displayed, tapping the memo line moves the "green cursor" to the selection destination and its contents are displayed on the palette.</em><br><br>
+		
+		<em>※ Please note that if you change the memo line before reflecting the contents of the palette 
+		on the memo line, the contents of the palette will be canceled.</em>
+		<p><img  src= "ges6.png"  width ="200" alt="ges6.png"></p>
+		<p>⑧ Begin on a new line <strong>2</strong>：<br>
+		* <u>Edge Swipe(↓)</u></p>
+		<em>When you slide down (swipe) in the right end area of ​​the palette screen, the "green cursor" moves down one step and its contents are displayed on the palette.</em><br><br>
+		
+		<em>※ Unlike ⑦ in this gesture motion, the contents of the previous palette display are automatically copied to "memo line" even before it is confirmed. <br>
+		You can process [Confirm Palette Contents] + [Line feed] with one action.</em>
+		
+		<p><img  src= "ges7.png"  width ="200" alt="ges7.png"></p>
+		<p>⑨ Close the pallet：<br>
+       	* <u>Touch and hold any memo line.</u></p>
+       	- You can close the pallet by long pressing any "memo line" while the palette is displayed.
+        <p><img  src= "closeP.png"  width ="200" alt="closeP.png"></p>
 
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-          </div>
-          <div class="modal-body">
-            ...
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
+        <h4>- Gesture on Index-page screen -</h4>        
+        <p>① Scroll the screen (up and down)：<br>
+        * <u>Swipe (↑ ↓) on the index screen.</u></p>
+        <em>You can scroll the display contents by swiping up and down on the screen like the Memo-page screen.
+		</em>
+        <p><img  src= "gesI01.png"  width ="200" alt="gesI01.png"></p>
+        <p>② Open the target page：<br>
+       	* <u>Press and hold the page title you want to open.</u></p>
+        <em>If you press and hold the desired page-title line(more than 1 second), 
+        it will move to the Memo-page of that page number.</em><br>
+		<p><img  src= "gesI02.png"  width ="200" alt="gesI02.png"></p>
+    </section>
 
+    <section id="j05">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">About the Edit-Panel</h3> 
+            <p><em>The character handled by <strong>HappyMemo</strong> is so-called "line drawing", 
+            but you can perform editing work such as 
+            "<strong>overwrite</strong>", "<strong>insert</strong>", "<strong>delete</strong>" etc. 
+            by using the "<strong>Edit-Panel</strong>" of this application,
+            like an ordinary text editor
+            </em></p>
+         
+          <h4>How to open the Edit-Panel</h4> 
+          - Tap <span style = "color: # ff0000"> ▲ </span>button at the right end of the scroll bar 
+          at the top of the "Palette" to display a red translucent "Edit-Panel".<br>  
+           <p><img  class="left" src= "editPanel.png"  width ="250" alt="editPanel.png"></p>
+          
+        <h4>Icon types and functions on the Edit-Panel</h4>
+        <em class="s">[ Mode selection button ]</em><br>
+        	<p><img  class="icon3" src= "m3x2ovw.png"  width ="30" alt="m3x2ovw.png"></p>
+        	<strong>OVW</strong>：" Overwrite mode "<br>
+        	<p><img  class="icon3" src= "m3x2ins.png"  width ="30" alt="m3x2ins.png"></p>
+        	<strong>INS</strong>：" Insert mode "<br>
+        	<p><img  class="icon3" src= "m3x2del.png"  width ="30" alt="m3x2del.png"></p>
+        	<strong>DEL</strong>：" Delete mode "<br>
+        	<p><img  class="icon3" src= "m3x2clr.png"  width ="30" alt="m3x2clr.png"></p>
+        	<strong>CLR</strong>：" Blank mode "<br><br><br>
+        <em class="s">[ Edit range expansion button ]</em>
+        	<p><img  class="icon3" src= "m3x2top.png"  width ="30" alt="m3x2top.png"></p>
+        	" To the beginning of the sentence "<br>
+        	<p><img  class="icon3" src= "m3x2end.png"  width ="30" alt="m3x2end.png"></p>
+        	" To the end of the sentence "<br><br>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="./javascripts/bootstrap.min.js"></script>
-  </body>
+         <h4>What is Palette-cursor ?</h4>
+
+         	If you select one of "edit mode" and "drag" on the palette, 
+         	a rectangular cursor will be formed on the screen. (hereinafter referred to as Palette-cursol)<br>
+         	- The shape of the cursor is a rectangle surrounded by the start and end points of the drag. <br><br>
+         	<em>In addition, when repeating the drag, only the cursor by the final drag remains on the screen. <br>
+         	Therefore, you can change the cursor position by dragging a new line.<br>
+         	</em>
+        <p><img src="m3x2cur.png" width ="200" alt="m3x2cur.png"></p>
+ 
+          - Then, place the Palette-cursor on the part of the written sentence you want to edit, 
+          and execute the selected editing process.
+
+         <h4>Procedure of editing work</h4>
+		 <em class="s">
+		 	The detailed procedure for editing the characters written on the palette is explained below.
+		 </em>
+         <br><br>
+        	① First, select the "memo line" to edit and display it on the palette, tap 
+          	<img class="icon2" src="3Up.png" width ="20" alt="3Up.png">button
+          	 on the scroll bar to open "Edit-Panel".<br><br>
+            ② Next, tap the icon in the Edit-Panel and select "edit mode" you want to run from now.<br><br>
+			③ Drag on the palette to adjust the range of the cursor (the part you want to edit).<br><br>
+			④ Finally, touch the "<strong> OK </strong>" button at the bottom right of the palette to execute the editing process. <br>
+				<em>(Editing results will be displayed on the palette immediately)</em>
+         <h4 class="line">Reference example</h4>
+         	The content of "memo line" before editing is<br> 
+         	" I have <strong> a Pineapple-pen </strong>. ", 
+         	Ultimately change this to <br>
+         	" I have <strong> an Apple-pen </strong>. "<br><br> 
+         	<em>Below is an example of how to perform this change processing 
+         	using various edit modes.</em><br><br>
+
+         <em><u>Content before editing</u></em><br>
+         <em class="s">The Edit-Panel is already open.</em>
+         <p><img  src= "edit01.png"  width ="250" alt="edit01.png"></p>
+         1) First, remove "Pine" from "Pineapple".<br>
+         Slide the scroll bar to display "Pine" on the palette.
+         <p><img  src= "edit02.png"  width ="250" alt="edit02.png"></p>
+		<em><u>Delete unnecessary characters</u></em><br>
+         2) Tap the
+         <img class="icon" src="m3x2del.png" width ="25" alt="m3x2del.png"> icon
+         on the Edit-Panel to select "Delete" mode. Next, drag on the palette screen to create a black cursor.<br>
+         Then tap the <strong> OK </strong> button to hide the "Pine" character with this cursor.
+         <p><img  src= "edit03.png"  width ="250" alt="edit03.png"></p>
+         On this palette, the character "Pine" has been deleted. 
+         (At this time, the edit pallet is closed automatically.)<br>
+         
+         <p><img  src= "edit04.png"  width ="250" alt="edit04.png"></p>
+		<em><u>Replacing characters</u><br>
+          Next, capitalize the first character of "apple".</em><br><br>
+         3) Tap the
+         <img class="icon2" src="3Up.png" width ="20" alt="3Up.png">button
+         to open "Edit-Panel".<br>
+         Then, tap the
+         <img class="icon" src="m3x2ovw.png" width ="25" alt="m3x2ovw.png"> icon
+         in the Edit-Panel to select "Overwrite" mode. 
+         This time a white cursor is created by dragging.
+         <p><img  src= "edit05.png"  width ="250" alt="edit05.png"></p>
+         Hide the first letter "a" with a white cursor and tap 
+         the <strong> OK </strong> button.
+		 This time "a" will change to "blank" space.
+         (The edit pallet is automatically closed.)
+         <p><img  src= "edit06.png"  width ="250" alt="edit06.png"></p>
+         4) When the Edit-Panel is closed, 
+         It automatically switches to pen-input mode,
+         so add the capital character" A "to this space.
+         <p><img  src= "edit07.png"  width ="250" alt="edit07.png"></p>
+         Again (tap <strong> OK </strong>) button. 
+         The palette display contents are copied to the memo page.
+         And you can check the contents of the entire line.
+         <p><img  src= "edit08.png"  width ="250" alt="edit08.png"></p>
+         5) Here you can see that it is necessary to change "a" to "an".<br>
+         So add "n" between "a" and "Apple-Pen".<br>
+		　<br>
+		 <em><u>Move position of sentence</u></em><br>
+          <em>However, this time, since the space between "an" and "Apple" is too narrow, 
+          it became necessary to add space between them.</em><br><br>
+          6) Tap 
+          <img class="icon2" src="3Up.png" width ="20" alt="3Up.png"> button
+          again to open "Edit-Panel".<br>
+          Next, tap 
+          <img class="icon" src="m3x2ins.png" width ="25" alt="m3x2ins.png">
+          on the Edit-Panel and select "Insert" mode. 
+          Now a translucent cursor is created by dragging.	
+         <p><img  src= "edit09.png"  width ="250" alt="edit09.png"></p>
+         7) Adjust the translucent cursor width by the amount of space you want to insert.
+		 <br>Then, tap the <strong> OK </strong> button.<br>
+         As a result, 
+         the characters following "Apple"  moves to the right by this cursor width
+         in the palette display.
+         <p><img  src= "edit10.png"  width ="250" alt="edit10.png"></p>
+         <em><u>Check the entire characters</u></em><br><br>
+         8) To confirm the editing progress, tap the <strong> OK </strong> button.
+         The palette display contents are reflected (copied) on the memo page.<br>
+         With this, I got "<strong>I have an Apple-Pen.</strong>"<br>
+         (Which is the editing goal) 
+         <p><img  src= "edit11.png"  width ="250" alt="edit11.png"></p>
+         <h4 class="line">◇ Editing operation tips ◇</h4>
+        <strong>１.How to indent line characters</strong><br>
+        
+        - Open the Edit-Panel and tap the
+        <img class="icon" src="m3x2ins.png" width ="25" alt="m3x2ins.png"> icon 
+        to select "Insert" mode.<br>
+		Drag from the left edge of the palette and create a cursor for the indentation.
+
+         <p><img  src= "edit12.png"  width ="250" alt="edit12.png"></p>
+         - Tap the <strong>OK</strong> button <u>twice</u>
+         to write it out on the memo page and confirm.
+ 		 You can see that indentation is done by the width of the cursor.
+         <p><img  src= "edit13.png"  width ="250" alt="edit13.png"></p>
+         
+         <strong>２. 
+         How to use the 
+         <img  class="icon" src= "m3x2top.png"  width ="25" alt="m3x2top.png">
+          and
+         <img  class="icon" src= "m3x2end.png"  width ="25" alt="m3x2end.png">
+             icon</strong><br>
+          <em>These two icons on the Edit-Panel can be used only when 
+          the cursor is displayed on the palette screen.</em> <br><br> 
+          - Tap the
+          <img  class="icon" src= "m3x2top.png"  width ="15" alt="m3x2top.png">
+          or 
+          <img  class="icon" src= "m3x2end.png"  width ="15" alt="m3x2end.png">
+          icon ,to extend one end of the cursor 
+          to the "<strong>beginning of the sentence</strong>" 
+          or to the "<strong>end of the sentence</strong>".<br>
+          
+         <em>(※ It does not matter if <u>the beginning of a sentence</u> 
+         or <u>the end of a sentence</u> is not displayed on the palette screen.)
+         </em><br><br>
+         <em>The following explains the case of "Delete from the middle of a sentence 
+         to the end of a sentence" as an example.</em><br><br>
+         ① First, open the Edit-Panel and select <u>Delete mode</u>.<br><br>
+         ② Drag from the beginning of the range you want to delete,
+          and create a cursor.
+		 The size of the cursor can be set to any small size.<br>
+         
+         <p><img  src= "edit14.png"  width ="250" alt="edit14.png"></p> 
+         ③ Then tap the
+         <img  class="icon" src= "m3x2end.png"  width ="15" alt="m3x2end.png"> icon.<br>
+		<em>Although it is not displayed on the palette, 
+        the right end of the cursor is expanded to the end of the sentence.
+		</em>
+         <p><img  src= "edit15.png"  width ="250" alt="edit15.png"></p> 
+         ④ Tap the <strong>OK</strong> button. The cursor area is deleted on the palette screen.
+         <p><img  src= "edit16.png"  width ="250" alt="edit16.png"></p>
+         <em>If you tap the "<strong> OK </strong>" button again, 
+          the palette screen will be reflected on the memo line.<br>
+		You can confirm that "Apple" to the end of the sentence have been deleted.
+         </em>
+         <p><img  src= "edit17.png"  width ="250" alt="edit17.png"></p>
+         <em>※ Use the same for the other 
+          <img  class="icon" src= "m3x2top.png"  width ="20" alt="m3x2top.png">
+         as well.<br>
+		However, in this case one end of the cursor is expanded to "beginning of sentence". 
+        </em>。<br><br>
+         
+         <strong>３.
+         How to use blank-mode</strong><br>
+         ① Tap the 
+         <img  class="icon" src="m3x2clr.png"  width ="25" alt="m3x2clr.png">
+         icon on the Edit-Panel to select "blank" mode.<br><br>
+         ② Tap the "<strong> OK </strong>" button to erase all the characters on the palette.<br><br>
+         ③ Tap the "<strong> OK </strong>" button <u>again</u>.<br>
+         The contents of the palette are reflected on the memo line,
+         That is, the memo line is a blank line.
+         <p><img  src= "edit18.png"  width ="250" alt="edit18.png"></p>
+         <strong>4.Cancel editing result</strong><br>
+
+         <em class="s">
+         Since the result edited by the edit panel operation is different 
+         from the prediction, you may want to undo it.
+		 </em><br><br>
+		 - Immediately after the edit result is displayed on the palette,<br>
+		 By tapping the 
+		 <img  class="icon" src="undo_ico.png"  width ="20" alt="undo_ico.png">	 button
+		 at the bottom left of the screen you can cancel the editing result.<br>
+		 It returns to the state before editing.
+		<br>
+		 <p><img  src= "edit19.png"  width ="250" alt="edit19.png"></p>
+		<em class="s">( See <strong>"Usage of cancel button"</strong>/Top menu)</em><br><br><br>
+    </section> 
+
+    <section id="j06">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">Usage of cancel button</h3> 
+        <em>
+        The "<strong> Undo-Button </strong>"  
+        <img  class="icon" src="undo_ico.png"  width ="25" alt="undo_ico.png"> 
+        on the bottom-bar of the palette is the "Undo/Redo" button.
+		It only appears when the palette is open.<br>
+		You can cancel the previous editing process.
+		</em><br><br>
+       
+        Each time you tap this button, 
+        the display contents of the palette will return to "<strong>previous state</strong>".<br>
+		(Therefore, if you tap twice consecutively,
+		the display content will return to its original state)<br><br>
+		<em>The figure below shows this function.</em>
+       
+         <p><img  src= "undo03E.png"  width ="200" alt="undo03E.png"></p>     
+        <h4>What is the "previous state" ？</h4>
+        <em>
+           Three conditions (situation) are necessary for this "cancel" button 
+           to be effective in this application.
+			And, depending on each "<strong>situation</strong>", the "<strong>previous state</strong>" is different.<br><br>
+           - Three kinds of situations are distinguished as shown below.<br>
+        </em><br>
+               
+            １）<strong>character drawing</strong>： <br>
+            <em class="s"> A situation where you are handwriting on the palette.</em><br><br>
+            ２）<strong>characters editing</strong>： <br>
+            <em class="s">A situation of editing characters on the Edit-Panel.</em><br><br>
+            ３）<strong>reflecting onto memo</strong>： <br>
+            <em class="s">A situation immediately after copying the contents of the palette 
+            to the memo line.</em><br><br>
+            
+           <em>※ It is summarized in the table as follows.</em>
+		
+        <table>
+		<tr>
+		<th></th>
+		<th>Situation</th>
+		<th>Previous State</th>
+		</tr>
+		<tr>
+		<td>1</td>
+		<td>*<strong>character drawing</strong><br><em class="s">Immediately after touch up</em></td>
+		<td><strong>before drawing final stroke</strong></td>
+		</tr>
+		<tr>
+		<td>2</td>
+		<td>*<strong>characters editing</strong><br>
+		<em class="s">Tap the 
+		<strong>OK</strong>
+		and immediately after the editing result is displayed.</em>
+		<td><strong>Palette contents before editing begins</strong></td>
+		</tr>
+		<tr>
+		<td>3</td>
+			<td>*<strong>reflecting onto memo</strong><br>
+		<em class="s">Immediately after tapping 
+		<strong>OK</strong>
+		and copying the palette to the memo</em></td>
+		<td><strong>Contents of memo line before copying</strong></td>
+		</tr>
+		</table>
+		<br><br>
+		<h4 class="line"> 
+		Example when tapping
+		<img  class="icon2" src="undo_ico.png"  width ="25" alt="undo_ico.png">
+		 button
+		</h4>
+		
+		１）<strong>When handwriting on the palette</strong><br>
+		<em>※ Final stroke canceled.</em>
+		<p><img  src= "undo02.png"  width ="250" alt="undo02.png"></p>
+		２）<strong>When using the edit panel</strong><br>
+		<em>※ The operation result on the edit panel is canceled.</em>
+   		<p><img  src= "undo01.png"  width ="250" alt="undo01.png"></p>
+		３）<strong>When reflecting the contents of the palette on the memo line</strong><br>
+   		<em>※ First, add "def" after the contents "ABC" of memo line.</em><br>
+   		- Draw "def" on the palette.
+   		<p><img  src= "undo04.png"  width ="200" alt="undo04.png"></p>
+   		- Here, when the <strong>OK</strong> button is tapped, 
+   		the contents of the palette are reflected in the memo line.
+   		<p><img  src= "undo05.png"  width ="200" alt="undo05.png"></p>
+   		- Immediately after this, if you tap the 
+   		<img  class="icon2" src="undo_ico.png"  width ="20" alt="undo_ico.png"> button, 
+   		the contents reflected immediately before the memo line are canceled.
+   		<br><br>
+   		- On the palette, the contents of "memo line" will be displayed again.
+   		<p><img  src= "undo06.png"  width ="200" alt="undo06.png"></p>
+   		
+    </section>
+    
+    <section id="j07">
+       <div class="left"><a class="left"  href="#title">△</a></div>
+        <h3 class="line">What is this app used for?</h3> 
+
+		<h4>Application example</h4>
+           - Memorandum Notes<br>
+           - Todo list<br>
+           - Notes while listening to lectures<br>
+           - Schedule chart<br>
+           - Drafts such as composition<br>
+           - shorthand<br>
+           - Easy record, diary etc<br>
+            
+        <h4>Future improvement plan</h4>
+		<em>We are planning such as.</em><br><br>
+            - Landscape orientation for iPad mini and iPhone<br>
+            - Improved editing function of memo page<br>
+            - Manage multiple notepads<br>
+            <br><br>
+
+    </section>
+    		
+			<div class="left"><a class="left"  href="#title">△ Back to Top</a></div>
+</body>
 </html>
+
+

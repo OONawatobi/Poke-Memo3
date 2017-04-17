@@ -247,11 +247,12 @@ class MemoView:UIView{
               if idx == 0 || idx == pageGyou - 1{
                 myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
               }else{
+                
                 myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 2, type: .Down)
               }
                 
             }else{  // == indexページの場合 ==
-            /*
+            /* //何もしない
                 if idx == pageGyou - 1{
                   myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.0)
                 }
