@@ -423,6 +423,7 @@ class DrawableView: UIView {
         let penColor = penC
         penColor?.setStroke()
         path.lineWidth = penW//ペン幅を指定する
+        path.lineCapStyle = .square
         path.stroke()//描画する
         //タッチEnd時に画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!

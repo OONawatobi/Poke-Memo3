@@ -1226,7 +1226,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //編集画面表示中で編集モードが選択されていない場合はパス
             //if myEditFlag == true{return}
             
-        }else{ //編集パレットが非表示の場合
+        }else{ //編集パネルが非表示の場合
         /**      通常の文字入力時      **/
             //if okEnable == false{return}
             okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
