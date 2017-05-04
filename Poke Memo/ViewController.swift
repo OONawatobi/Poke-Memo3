@@ -217,12 +217,21 @@ extension UIImage {
     }
     func addText_Date(text:String)-> UIImage{
         let text = text
-        let font = UIFont.boldSystemFont(ofSize: 24)
+        var font = UIFont.boldSystemFont(ofSize: 24)
+        let font2 = UIFont.boldSystemFont(ofSize: 72)
+        
         let imageRect = CGRect(x:0,y:0,width:self.size.width,height:self.size.height)
         //UIGraphicsBeginImageContext(self.size)
         UIGraphicsBeginImageContextWithOptions(self.size,false,0.0)
         self.draw(in: imageRect)
-        let textRect  = CGRect(x:self.size.width - 130, y:0, width:120, height:self.size.height - 30)
+        var textRect  = CGRect(x:self.size.width - 130, y:0, width:120, height:self.size.height - 30)
+        let textRect2  = CGRect(x:self.size.width - 390, y:0, width:360, height:self.size.height - 90)
+        //メモ画面のサイズに応じて日付位置と文字サイズを切り替える
+        if self.size.height > vHeight/2{
+            font = font2
+            textRect = textRect2
+        }
+        
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
@@ -309,9 +318,11 @@ var editorView:EditorView! = nil//エディター画面
 let vHeight: CGFloat = leafHeight*4 //180 //手書きビューの高さ@@@@@@@@
 var vWidth:CGFloat! = leafWidth*4 //(vHeight/leafHeight)
 var maxPosX:CGFloat! = 0//描画したｘ座標の最大値
-var mx  = [String: CGFloat]()//[Tag番号:maxPosX]
+var mx = [String: CGFloat]()//[Tag番号:maxPosX]
 //var mxs:[[String: CGFloat]] = [[:]]//mxs.count = 30
 var mxTemp:CGFloat!//mxの一時保存（メモに書き出すときにmxにコピーする）
+var resn = [String:Int]()//+-+ [Tag番号:リサイズ回数]
+var m2pFlag = false//+-+ メモ行をパレットに呼び込むとtrue-2回目以後はfalse
 var bigFlag = false//パレット拡大時：(true)
 let big:CGFloat = 1.5//拡大率
 //var maxPosX = [[CGFloat]]()
@@ -739,7 +750,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             // **mx[]の読み込み・初期化 **
             mx = loadMx()
-            
+            resn = loadResn()//+-+ リサイズ回数を初期化
         }
         //---------- リストメニュ−　---------
         //テーブルビュー初期化、関連付け
@@ -1053,6 +1064,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             writePage(pn:0, imgs:indexImgs)
             //mx[]の内容を外部に保存する
             updataMx(my:mx)
+            upResn(my: resn)//+-+
           
            //++ パレットを閉じるアニメーション
             self.etcBarDisp(disp: 0)//underView等を削除する
@@ -1134,12 +1146,27 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     ///  ** パレット入力時における[OK]ボタン処理 **
     func upToMemo(){  //パレット内容をメモに反映させる
+        print("okEnble:\(okEnable)")//+-
+        print("undoMode:\(drawableView.undoMode)")//+-
+        if drawableView.undoMode == 1{okEnable = true}//+-
+        if okEnable == false{return}else{okEnable = false}//+-
+        if m2pFlag == true{//+-+
+           m2pFlag = false
+           resn[String(nowGyouNo)] = resn[String(nowGyouNo)]! + 1
+        }
+        print("●------reszNum:\(resn[String(nowGyouNo)])")//+-+
         drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
         let palImage = drawableView.GetImage()
         let myImage1 = palImage.ResizeUIImage(width: vWidth/3, height: vHeight/3)
         print("fNum:\(fNum) ,tag: \(nowGyouNo)")
         // メモにパレット内容を書き込む
-        memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
+        let rn = resn[String(nowGyouNo)]!//+-+
+        if rn < 5 {
+           memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
+        }else{
+           memo[fNum].addMemo(img: palImage,tag:nowGyouNo)//+-+
+           print("resizeNum:\(rn)")
+        }
         // 最大文字位置を保存する
         mx[String(nowGyouNo)] = mxTemp
         //drawableView.reAddSubView()//(secondView)を付加する
@@ -1189,7 +1216,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     //mx[]を更新する(0にリセット)
                     mx[String(nowGyouNo)] = 0
                     mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
-                      
+                    //+-+ resn[]を更新する(0にリセット)
+                    resn[String(nowGyouNo)] = 0
+                    m2pFlag = true//+-+ リサイズ回数追加を可能とする（リセット）
+
                 }else{ //編集パネル”CLR”以外の処理はココで行う
                     editedView = drawableView.secondView.editPallete(sel: myInt)
                     
@@ -1214,6 +1244,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //編集画面を閉じる
                 closeEditView()
                 drawableView.get3VImage(open:0)//編集結果画面を保存する
+                //+- メイン画面のokボタンの受付を許可する
+                okEnable = true//+-
                 
             }else{ //カーソル幅が狭い場合）
                 print("カーソル巾がゼロです")
@@ -1229,7 +1261,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }else{ //編集パネルが非表示の場合
         /**      通常の文字入力時      **/
             //if okEnable == false{return}
-            okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
+            //+- okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
             
             //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
             drawableView.editOK = false//編集パネル非表示の場合
@@ -1310,6 +1342,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if editFlag == true{return}//編集パネル表示中は🐞
         if drawableView.undoMode == 0{return}
         drawableView.undo()
+        //okEnable = true//+-
 
     }
 //=================================================================
@@ -1588,8 +1621,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let tag:Int = pn*100 + usedNum
         let rt = CGFloat(retina)
         let targetIV = memo[fNum].viewWithTag(tag) as! UIImageView
-        let tImage = targetIV.image
+        var tImage = targetIV.image
         //ピクセル画像のサイズ:leaf画像サイズを変更した場合は要サイズ調整!
+        //+-+ tImage画面サイズが複数の場合にも対応する必要がある
+        //+-+ いつでもtImageのサイズをパレットの1/3に変換する
+        tImage = tImage?.ResizeUIImage(width: vWidth/3, height: vHeight/3)
+        
         let pixWidth:CGFloat = vWidth/3 * rt//leafWidth! * rt
         let pixHeight:CGFloat = vHeight/3 * rt//leafHeight * rt
         //切り取りサイズ
@@ -1645,6 +1682,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
    /* -------------------　mx[]更新関係　---------------------------- */
     
     ///該当するページのmx[]値をリセットする(0を指定すると全頁をリセット）
+    /* mx[] */
     func clearMx(pn:Int){
       if pn != 0{
          for n in 0..<pageGyou{
@@ -1660,6 +1698,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
       }
     }
+    
+    /* resn[] リサイズ回数 */
+    func clearResn(pn:Int){//+-+
+        if pn != 0{
+            for n in 0..<pageGyou{
+                let tg = pn*100 + n + 1
+                resn[String(tg)] = 0
+            }
+        }else{
+            for a in 1...30{
+                for n in 0..<pageGyou{
+                    let tg = a*100 + n + 1
+                    resn[String(tg)] = 0
+                }
+            }
+        }
+    }
+
 
     //対象ページの非空白行のうち一番小さい行番号を返す
     //全行空白行の場合は０を返す
@@ -1679,8 +1735,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     //Dictionary型のデータの読込
-    func loadMx()->[String:CGFloat]{
-
+    /* mx[] */
+    func loadMx()->[String:CGFloat]{//imageのprogramから流用したため変数名が変？
         var img:[String:CGFloat] = mx 
         let photoData = UserDefaults.standard
         photoData.synchronize()
@@ -1710,15 +1766,51 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return img
     }
     
-    //Dictionary型のデータを保存
-    func updataMx(my:[String:CGFloat]){
+    /* resn[] リサイズ回数 */
+    func loadResn()->[String:Int]{//+-+ imageのprogramから流用したため変数名が変？
+        var img:[String:Int] = resn
+        let photoData = UserDefaults.standard
+        photoData.synchronize()
+        let photosName:String = "resize"//保存名
+        //NSData から画像配列を取得する
+        print("bb bb")
+        if photoData.dictionary(forKey: photosName) != nil{
+            img = photoData.dictionary(forKey: photosName) as! [String : Int]
 
+        //indexデータが保存されていない場合
+        }else{
+            print("bb bb")
+            //resn[]の初期化
+            for p in 1...30{//1-30ページ
+                for g in 0...30{//1-30行
+                    let s = String(p*100 + g)
+                    img[s] = 0
+                }
+            }
+        }
+        return img
+    }
+
+    
+    //Dictionary型のデータを保存
+    /* mx[] */
+    func updataMx(my:[String:CGFloat]){
         let photoData: UserDefaults = UserDefaults.standard
         let photosName:String = "index" //保存名を決定
         let dataImg:[String:CGFloat] = my
         photoData.set(dataImg, forKey: photosName)
         photoData.synchronize()
     }
+    
+    /* resn[] リサイズ回数 */
+    func upResn(my:[String:Int]){//+-+
+        let photoData: UserDefaults = UserDefaults.standard
+        let photosName:String = "resize" //保存名を決定
+        let dataImg:[String:Int] = my
+        photoData.set(dataImg, forKey: photosName)
+        photoData.synchronize()
+    }
+
     
    /* ---------------　リストメニューtableView関連　------------------　*/
     
@@ -1827,6 +1919,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //------- index頁を更新する-----------------
         clearMx(pn:pageNum)//該当するページのmx[]値をリセット
         updataMx(my:mx)//mx[]のデータを外部に保存
+        clearResn(pn: pageNum)//+-+
+        upResn(my: resn)//+-+
+        
         //現行頁(空白)情報をindex頁に反映させる
         //インデックス情報を更新する
         let uNum = numOfUsedLine(pn:pageNum)//入力行最小値を取得
@@ -2103,9 +2198,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             (action: UIAlertAction!) -> Void in
             
             //---- ページ削除処理の実行 ----
-              print("前ページの内容を削除します!!!!")
+              print("全ページの内容を削除します!!!!")
               self.delPage(pn: 0)//全ページ削除する
               self.clearMx(pn: 0)//全ページのmx[]をリセットする
+              self.clearResn(pn: 0)//+-+ 全ページのresn[]をリセットする
               //現行ベージの内容を削除する
               self.delPage(pn: pageNum)
             
@@ -2206,7 +2302,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func btn1_click(sender:UIButton){
         print("** btn1_click()")
-        okEnable = true//メイン画面のokボタンの受付を許可する
+        //+- okEnable = true//メイン画面のokボタンの受付を許可する
         if bigFlag == true{
            zoom(zoom2)
            return
@@ -2536,7 +2632,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
   
         //パレット表示中
         if isPalleteMode == true{
-            if myEditFlag == true{ closeEditView()}//パレット編集ツールを閉じる
+            if myEditFlag == true{ closeEditView()}//編集パネルを閉じる
            //メモのスクロール位置を設定する
             scrollPos()
                 
@@ -2567,7 +2663,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             drawableView.secondView.backgroundColor = UIColor.clear
             //UNDO関連の初期化
             drawableView.undoMode = 0 // resetUndo()
-            
+            okEnable = false//+- メモ読み込み時に一旦、書き込み不可にする（リセット）
+            m2pFlag = true//+-+ メモ読み込み時に一旦、リサイズ回数追加を可能とする（リセット）
         }else if isIndexMode == true{
         //パレット非表示の場合
             memo[fNum].selectedNo(tagN:nowGyouNo)
