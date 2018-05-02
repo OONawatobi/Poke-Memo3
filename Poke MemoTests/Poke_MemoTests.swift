@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Poke_Memo
+@testable import Happy_Memo
 
 class Poke_MemoTests: XCTestCase {
     

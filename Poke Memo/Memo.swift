@@ -11,7 +11,7 @@ import UIKit
 class MemoView:UIView{
     var memoNum:Int = 0
     let mWidth :CGFloat! = leafWidth// boundWidth - 20：メモクラスの幅
-    let mHeight :CGFloat! = boundHeight//メモクラスの高さ
+    //let mHeight :CGFloat! = boundHeight//メモクラスの高さ
     let leafRect:CGRect = CGRect(x:0,y:0,width:leafWidth,height:leafHeight)
     //var blankImg:UIImage!//leaf画像の初期値
     
@@ -40,6 +40,15 @@ class MemoView:UIView{
        targetMemo.image = targetMemo.image?.addText_Date(text: st)
         
     }
+    /* 子メモが空白でない場合に、ベース行に三角マークを追加する */
+    func add3Mark(baseTag:Int,del:Bool){
+        let tag = baseTag
+        print("●●add3Mark")
+        let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+        let st = "▷"
+        print("st:▽")
+        targetMemo.image = targetMemo.image?.addText_Mark(text: st,del:del)
+    }
     
     /* pageImageの要素画像をmemoViewにコピーします */
     //tag番号単位で読み込む
@@ -50,12 +59,13 @@ class MemoView:UIView{
     //ページ単位で読み込む
     func setMemoFromImgs(pn:Int,imgs:[UIImage]){
         //tag付の空メモページを作る
-        makePageWithTag(pn:pn)
+           makePageWithTag(pn:pn)
         
         //pageImgs[指定ページ]の内容をメモページに取り込む
         var temp:CGFloat = 0
         var temp2:CGFloat = 0
-        for idx in 0..<pageGyou{
+        let gyou = (imgs.count < pageGyou) ? imgs.count : pageGyou//+-+-
+        for idx in 0..<gyou{
             let tag = pn*100 + idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
             //print("bbbbbbbbbbb:\(pn)")
@@ -83,6 +93,27 @@ class MemoView:UIView{
         print("◎　[]⇒メモ：targetMemo.image = imgs[idx]")
         print("◆targetMemo.image?サイズ：\(temp):setMemoFromImgs(pn,imgs[])")
          print("◇CGImage.size:\(temp2)")
+
+    }
+    //+-+- $ -- 子メモの場合 --
+    func setMemoFromImgs2(bt:Int,imgs:[UIImage]){
+        //tag付の空メモページを作る
+        makePageWithTag2(bTag:bt)//子メモの場合
+        
+        //pageImgs[指定ページ]の内容をメモページに取り込む
+        for idx in 0..<pageGyou2{//pageGyou2:子メモの行数（８）
+            let tag = bt*100 + idx + 1
+            let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+            //print("bbbbbbbbbbb:\(pn)")
+            
+            targetMemo.image = imgs[idx]
+            //タグ番号を画像に合成する：試験用
+            if debug1 == true{
+                //print("== Debug01モード ==")
+                targetMemo.image = targetMemo.image?.addText(text: String(tag))
+            }
+        }
+
     }
 
     func setIndexView(){//最新版1201
@@ -91,33 +122,29 @@ class MemoView:UIView{
         makePageWithTag(pn:0)
         
         //空白の画像をメモページに取り込む
-      
-        for idx in 0..<pageGyou{
+        for idx in 0..<maxPageNum{
             let tag = pn*100 + idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
             
             targetMemo.image = bImage//UIImage(named: "blankW.png")
             //タグ番号を画像に合成する：試験用
-            targetMemo.image = targetMemo.image?.addText(text: String(tag))
-            //Indexページ固有の処理
-            if pn == 0{
-                //targetMemo.image = targetMemo.image?.addText(text: "INDEX")
-            }
-            
+            //+-+-+targetMemo.image = targetMemo.image?.addText(text: String(tag))
         }
     }
     
     func setIndexFromImgs(imgs:[UIImage]){
         //tag付の空メモページを作る
-        //makePageWithTag(pn:pn)
+            //makePageWithTag(pn:pn)
         //pageImgs[指定ページ]の内容をメモページに取り込む
-        for idx in 0..<pageGyou{
+        for idx in 0..<maxPageNum{
             let tag = idx + 1
             let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
             targetMemo.image = indexImgs[idx]
             //タグ番号を画像に合成する：試験用
             targetMemo.image = targetMemo.image?.addText(text: String(tag))
+            print("\(tag)")
         }
+        print("\(self.layer.bounds.width)")
     }
 
 
@@ -128,7 +155,7 @@ class MemoView:UIView{
        
         print("◎パレット⇒メモ：targetMemo.image = パレットのimg")
         print("◆imgサイズ：\(img.size.height):addMemo(img,tag)")
-        print("🔳cg-imgサイズ：\(img.cgImage?.height)")
+        print("🔳cg-imgサイズ：\(String(describing: img.cgImage?.height))")
         //targetMemo.layer.borderColor = UIColor.redColor().CGColor
     }
     
@@ -164,10 +191,18 @@ class MemoView:UIView{
             subview.alpha = 1// 透明度を設定
         }
 
+        //+-+-子メモに背景色をつける(戻す)
+        for subview in subMemo.subviews{
+            subview.backgroundColor = UIColor.clear
+            subview.alpha = 1// 透明度を設定
+        }
+        
+        if childFlag == true{//+-+-
+          subMemoView.backgroundColor = childColor
+        }
+        
         //新しく選択した行の背景に色を付ける
-        print("newGyouNo:tag\(tag)")
-        
-        
+        print("newGyouNo:tag\(tagN)")
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
         let gColor = UIColor.green.withAlphaComponent(0.06)
         let gColor2 = UIColor.green.withAlphaComponent(0.15)
@@ -183,24 +218,25 @@ class MemoView:UIView{
         mline.backgroundColor = gColor2
         cursolView.addSubview(mline)
         let cursolImg = cursolView.GetImage()
-        
         //Indexページの場合は色を変える
         let backColor = (isIndexMode == true) ? cColor : gColor
         if isIndexMode == true{
           targetMemo.backgroundColor = backColor
         }else{
           targetMemo.backgroundColor = UIColor(patternImage: cursolImg)
+        
         }
-        print("==▶mx[\(nowGyouNo)]:\(mx[String(nowGyouNo)]!)")
+        //print("==▶mx[\(nowGyouNo)]:\(mx[String(nowGyouNo)]!)")
       
         // == debug2 ==========================================================
           if debug2 == true{//@@ DEBUG2 @@
             testV.layer.position = CGPoint(x: 0, y:vHeight/2 )
             print("** nowGyouNo: \(nowGyouNo)")
-            print("◆imgサイズ：\(targetMemo.image?.size.height)")
-            print("🔳cg-imgサイズ：\(targetMemo.image?.cgImage?.height)")
+            print("◆imgサイズ：\(String(describing: targetMemo.image?.size.height))")
+            print("🔳cg-imgサイズ：\(String(describing: targetMemo.image?.cgImage?.height))")
           }
         // ====================================================================
+    
     }
     
     func clearBackgroundColor(){
@@ -223,20 +259,17 @@ class MemoView:UIView{
     }
     
     func makePageWithTag(pn:Int){//pn=0:indexページ
-        //-- ブランク画像をを作成する --
-    /*
-        let blankView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
-        blankImg = blankView.GetImage()
-    */
+
         //一旦、サブビューを削除する
         removeAllSubviews(parentView: self)
         //self.removeFromSuperview()
         
         //indexページだけtopOffsetを大きくする
         let topOffset2:CGFloat = (pn == 0) ?topOffset/2:topOffset
-
+        let gnum = (pn == 0) ? maxPageNum : pageGyou
+        
         let pagePosX = (leafWidth)/2 //フレームの中点ｘ座標
-        for idx in 0..<pageGyou {
+        for idx in 0..<gnum {
             let myLeaf = Leaf(frame: leafRect)//リーフの初期化
             myLeaf.backgroundColor = UIColor.clear
             let yPos:CGFloat = topOffset2 + (leafHeight + leafMargin)*CGFloat(idx + 1) - leafHeight/2
@@ -252,22 +285,50 @@ class MemoView:UIView{
               }
                 
             }else{  // == indexページの場合 ==
-            /* //何もしない
-                if idx == pageGyou - 1{
-                  myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.0)
-                }
-             */
+            //何もしない
             }
             
             let myTag = (pn)*100 + idx + 1// tagをつける.101-130|201-230|301-330
             myLeaf.tag = myTag
-            myLeaf.image = bImage//グローバル変数：[leafWidth] x [lesfHeight]
+            myLeaf.image = bImage//グローバル変数：[leafWidth] x [lesfHeight]+-+-10x10に変更
             myLeaf.isUserInteractionEnabled = true
             self.addSubview(myLeaf)
 
             //print("tagNo = \(retView.tag)")
         }
     }
+    
+    func makePageWithTag2(bTag:Int){//+-+- $子メモページの初期化:bTagはtag番号101とか3032
+    
+        //一旦、サブビューを削除する
+        removeAllSubviews(parentView: self)
+        //indexページだけtopOffsetを大きくする
+        let topOffset2:CGFloat = 0
+        let pagePosX = (leafWidth)/2 //フレームの中点ｘ座標
+        for idx in 0..<pageGyou2 {
+            let myLeaf = Leaf(frame: leafRect)//リーフの初期化
+            myLeaf.backgroundColor = UIColor.clear
+            let yPos:CGFloat = topOffset2 + (leafHeight + leafMargin)*CGFloat(idx + 1) - leafHeight/2
+            myLeaf.layer.position = CGPoint(x: pagePosX , y:yPos)
+ 
+                //leafの枠の下線を灰色にする
+                if idx == pageGyou2 - 1{
+                    myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.0)
+                }else{
+                    myLeaf.drawDashedLine(color: UIColor.red.withAlphaComponent(0.3), lineWidth: 0.5, lineSize: 4, spaceSize: 0, type: .Down)
+                }
+  
+            let myTag = bTag*100 + idx + 1//$ tagをつける.10101-10108|303201-303208
+            myLeaf.tag = myTag
+            myLeaf.image = bImage//グローバル変数：[leafWidth] x [lesfHeight]+-+-10x10に変更
+            myLeaf.isUserInteractionEnabled = true
+            self.addSubview(myLeaf)
+            
+            //print("tagNo = \(retView.tag)")
+        }
+
+    }
+    
 //         ----------　メモの行編集関係 ！ScrollViewでは？--------------
     
     /* 指定行のメモを削除する(Tag番号を付け替える）★今V.は非使用 */
@@ -331,6 +392,17 @@ class MemoView:UIView{
         //print("◆targetMemo.image!(30)のサイズ: \(temp)")
         return img
     }
+    //* 子メモ(leaf)[m]からメモ画像:[UIImage]を作成する */
+    func memoToImgs2(pn:Int) ->[UIImage]{//pn:親のtag番号　203
+        var img:[UIImage] = []
+        //メモ行の画像を順にimg[]にコピーする
+        for idx in 0..<pageGyou2{
+            let tag = pn*100 + idx + 1//$10
+            let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
+            img.append(targetMemo.image!)
+        }
+        return img
+    }
 
     //----------------------------------------
     
@@ -349,6 +421,8 @@ class MemoView:UIView{
            cursolMode = false
         }else{}
     }
+    
+
  //=========================== 未使用　======================================
     /*
      //* メモ(leaf)[m]をメモ画像:pageImgs[n]にUPする */

@@ -148,7 +148,7 @@ class DrawableView: UIView {
         self.addSubview(thirdView)//前フィルタ3rdViewを追加
         bup["1"] = (im,mxTemp)
         print("get1VImage:mxTemp=\(mxTemp)")
-        print("mx nowGyouNo:\(mx[String(nowGyouNo)])")
+        print("mx nowGyouNo:\(String(describing: mx[String(nowGyouNo)]))")
         undoMode = 1
 
     }
@@ -411,7 +411,8 @@ class DrawableView: UIView {
             }
         //消しゴムモード
         }else{
-            penC = UIColor.white
+            //+-+-子メモの場合はchildColorにする
+            penC = (nowGyouNo>1000) ? childColor : UIColor.white
             penW = 15//消しゴムの巾
         }
         
