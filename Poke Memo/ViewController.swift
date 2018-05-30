@@ -2649,8 +2649,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }///
     func btn3_click(sender:UIButton){
         print("btn3_clicked!：ペンモード")
-        closeEditView()//パレット編集画面を閉じる
-        penMode()
+        if drawableView.X_color != 0{//ペンモード以外の場合
+            closeEditView()//パレット編集画面を閉じる
+            penMode()
+        }else{
+          print("既にペンモードですよ！！")
+        }
     }
     
     func btn4_click(sender:UIButton){

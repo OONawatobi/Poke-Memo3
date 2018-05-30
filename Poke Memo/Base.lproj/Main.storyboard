@@ -34,7 +34,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="O6e-WY-fYM"/>
                                     <barButtonItem image="ZOOM" style="plain" id="0pA-9X-3Vt">
                                         <inset key="imageInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="-4"/>
-                                        <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="tintColor" red="0.1019607843" green="0.1019607843" blue="0.1019607843" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="zoom:" destination="BYZ-38-t0r" id="HvZ-LX-Z3S"/>
                                         </connections>
