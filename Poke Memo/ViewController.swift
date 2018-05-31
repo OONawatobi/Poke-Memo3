@@ -443,6 +443,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
     var hl:UILabel!//ヘルプ画面のタイトル
     var numBar:UIView!//INDEXページの左端ライン
+    var trf:Bool = false//WC：タイマーフラグ（ペンボタンのdouble-click対応）
     //var bView:UIView!//ブランクビュー
     //var setFlag:Bool = false
     //var isIndexMode:Bool! = false//Indexの表示フラグ：
@@ -2636,16 +2637,38 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
+    func penWclicked(){
+        print("☑️☑️double-clickされました！！")
+        trf = false
+        switch lineWidth {
+            case 0:lineWidth = 2
+            case 1:lineWidth = 0
+            case 2:lineWidth = 1
+            default:break
+        }
+        penMode()//
+    }///WC
     func penMode(){
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
-        drawableView.X_color = 0//ペンモード[黒色、赤色、青色]
+        drawableView.X_color = 0//ペンモード[黒色、赤色、青色?]
         penColorNum = 1//黒色
         editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         editButton3.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton3.layer.borderWidth = 0.5
         editButton4.layer.borderWidth = 0
+        // //WC
+         var penImg:UIImage!
+         switch lineWidth {
+         case 0:penImg = UIImage(named: "pen0.pdf")
+         case 1:penImg = UIImage(named: "pen3.pdf")
+         case 2:penImg = UIImage(named: "pen1.pdf")
+         default:break
+         }
+         editButton3.setImage(penImg, for:UIControlState.normal)
+         //
+        
     }///
     func btn3_click(sender:UIButton){
         print("btn3_clicked!：ペンモード")
@@ -2653,7 +2676,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             closeEditView()//パレット編集画面を閉じる
             penMode()
         }else{
-          print("既にペンモードですよ！！")
+          print("既にペンモードですよ！！")//WC
+          if trf == true{penWclicked()}
+          else{
+            trf = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){self.trf = false}
+            }
+            
+            
         }
     }
     
