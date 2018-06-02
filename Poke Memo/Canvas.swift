@@ -412,7 +412,7 @@ class DrawableView: UIView {
         //消しゴムモード
         }else{
             //+-+-子メモの場合はchildColorにする
-            penC = (nowGyouNo>1000) ? childColor : UIColor.white
+            penC = (nowGyouNo>10000) ? childColor : UIColor.white
             penW = 15//消しゴムの巾
         }
         

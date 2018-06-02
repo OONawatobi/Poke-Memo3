@@ -1098,10 +1098,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if animeFlag == true {return}
         //indexページが開いている時は
         if isIndexMode == true { return }//Indexが表示中は実行しない
+        //パレットの表示中は実行しない
+        if isPalleteMode == true { return }
+        //上記の変更理由：パレット表示中にペン幅を変更できるようになった為
+        /* 20180603に変更
         if isPalleteMode == true{//パレット内容を保存して閉じる
             done(done2)
             Pallete(pallete2)
         }
+         */
         //windowの開閉中は"changing = true"として他のwindowは開けなくする
         if changing == true { return }//Indexを開き切るまでは受け付けない
         changing = true//開く(閉じる)ジェスチャーを開始する
