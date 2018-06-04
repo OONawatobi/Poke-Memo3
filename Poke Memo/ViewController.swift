@@ -554,6 +554,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         underView.alpha = 0.33// 透明度を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 15 )// 位置を中心に設定
         underView.addBottomBorderWithColor(color: UIColor.black, width:2)
+        underView.isUserInteractionEnabled = false//タッチ情報を後ろにスルーする
         /** upperViewを生成. **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
         upperView.backgroundColor = UIColor.green
@@ -1209,7 +1210,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }else{
         // パレットが表示されていない時パレットを表示する-----------②
             //パレットビューを作成・初期化する
-            //
+            //zoom2.tintColor = UIColor.red
+            
              drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
              drawableView.Delegate = self
              let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44 - 1)
@@ -2932,7 +2934,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isIndexMode == true {
             longPress()//+-+-$$
         return }//index表示中は実行しない
-        if drawableView != nil { return }//パレット表示中は実行しない
+        //if drawableView != nil { return }//パレット表示中は実行しない
         
         print("wClick():childFlag=\(childFlag)")
         if childFlag == false{
