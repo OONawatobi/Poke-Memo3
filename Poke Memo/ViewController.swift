@@ -554,7 +554,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         underView.alpha = 0.33// 透明度を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 15 )// 位置を中心に設定
         underView.addBottomBorderWithColor(color: UIColor.black, width:2)
-        underView.isUserInteractionEnabled = false//タッチ情報を後ろにスルーする
+        underView.isUserInteractionEnabled = false//タッチ情報を後ろにスルーする™™
         /** upperViewを生成. **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
         upperView.backgroundColor = UIColor.green
