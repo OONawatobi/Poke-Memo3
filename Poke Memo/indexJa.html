@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Start Guide</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <style type="text/css">
- <!--
+ <style>
 	img {margin: 5px 10px 10px 30px;}
 		img.left {margin: 5px 10px 10px 0px;}
 	img#top {
@@ -13,6 +12,9 @@
 			margin: 0px 10px 6px 0px;
 			border: 1px solid #ff8800;
 			border-radius: 6px;
+		}
+	 img#top2 {
+			border: 1px solid gray;
 		}
 	img.icon {
 		margin: 0px 0px 0px 0px;
@@ -54,7 +56,7 @@
 	}
 	table tr {
 			width: 100%;
-    		margin:20px 10 10px;
+    		margin:20px 10px 10px;
     		border-top: 1px solid gray;
 			border-bottom: 2px solid gray;
 			border-left: 1px solid gray;
@@ -63,13 +65,13 @@
 	table th {
 		border-right: 1px solid gray;
 		text-align: center;
+		background-color: yellow
 		}
 	table td {
 		border-right: 1px solid gray;
 		}	
 
- -->
-	</style>
+</style>
 
 </head>
 <body>
@@ -105,7 +107,8 @@
             <li><a href="#j04">ジェスチャー操作</a></li>
             <li><a href="#j05">編集パネルについて</a></li>
             <li><a href="#j06">取り消しボタンの使い方</a></li>
-            <li><a href="#j07">使い方のヒント 他</a></li>
+            <li><a href="#j07">使い方のヒント</a></li>
+            <li><a href="#j08">Ver 1.2.0で変更されたところ</a></li>
         </ul><br><br><br>
     </header>
     <section id="j01">
@@ -770,25 +773,25 @@
         <table>
 		<tr>
 		<th></th>
-		<th>ステータス</th>
-		<th>"１つ前の状態"</th>
+		<th>ステータス</th><th>"１つ前の状態"に戻す</th>
 		</tr>
 		<tr>
 		<td>1</td>
-		<td>[ 文字入力時 ]<br>タッチアップした<u>直後</u></td>
-		<td>最終<u>ストローク</u>を描く前の状態</td>
+		<td>　<strong>文字入力時</strong>　</td>
+		<td>　最終<u>ストローク</u>を描く前の状態に戻す</td>
 		</tr>
 		<tr>
 		<td>2</td>
-		<td>[ 編集処理時 ]<br><strong>OK</strong>を押して、編集結果が表示された<u>直後</u></td>
-		<td><u>編集パネル</u>を開く前のパレット表示内容</td>
+		<td>　<strong>編集処理時</strong>　</td>
+		<td>　<u>編集パネル</u>を開く前のパレット表示内容に戻す　</td>
 		</tr>
 		<tr>
 		<td>3</td>
-		<td>[ 書き出し時 ]<br><strong>OK</strong>を押して、パレット内容をメモにコピーした<u>直後</u></td>
-		<td>コピーする前の<u>メモ行の内容</u></td>
+		<td>　<strong>書き出し時</strong>　</td>
+		<td>　コピーする前の<u>メモ行の内容に戻す</u></td>
 		</tr>
 		</table>
+		
 		<h4> 具体的な事例<br>
 		<img  class="icon" src="undo_ico.png"  width ="25" alt="undo_ico.png">
 		をタップした時
@@ -826,14 +829,27 @@
            - 速記<br>
            - ちょとした記録、日記など<br>
            - 縦書き（俳句など）<br><br>
-            <img  src= "haiku.png"  width ="150" alt="haiku.png">
+            <img  src= "haiku.png"  width ="150" alt="haiku.png"><br><br>
+    </section>
+    
+    <section id="j08">        
             
-        <h4>今後のアプリ改善予定</h4>
+        <h3 class="line">ver 1.2.0で変更された点</h3>
        
-            - iPad mini,iPhone向けの横向き画面に対応。<br>
-            - メモページの編集機能の強化。<br>
-            - メモ帳の複数化。<br>
-            などを予定しています。<br><br>
+            1. iPhoneXのノッチ画面に対応した。<br>
+            2. メモページの行数を30行から32行に拡張した。<br>
+            3. 入力パレットを開いた状態で、文字線の種類(太さ）が選べるようになった。<br>
+            　- ペンモードの時、ペンボタンを<u>ダブルクリック</u>する度に線幅が順次、変更される。
+            　<p><img src= "penchange.png"  width ="200" alt="penchange.png"></p><br>
+            4. メモページの各行に紐つけされた子メモ(８行)を追加できるようになった。<br>
+            　- 空白でない行を<u>ダブルクリック</u>するとその真下に8行だけの小さなメモが開きます。<br>
+            　- 子メモを閉じるには、子メモ上を<u>ダブルクリック</u>します。<br>
+            　<p><img id="top2"   src= "childJPN.png"  width ="200" alt="childJPN.png"></p>
+            　<p><img  src= "childJPN2.png"  width ="200" alt="childJPN2.png"></p><br>
+            　- 子メモについてもメモページに入力する場合と同様な方法で手書き入力ができます。<br>
+            　- 子メモに何かしらの記載がある場合には、親行の右端に赤色の三角マークが表示されます。<br>
+            　- 親行の内容をクリアする（空白行になる）と子メモの内容は強制的に削除されます。<br>    
+            <br><br>
 
     </section>
     		

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Start Guide</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <style type="text/css">
- <!--
+    
+  <style>
 	img {margin: 5px 10px 10px 30px;}
 		img.left {margin: 5px 10px 10px 0px;}
 	img#top {
@@ -13,6 +13,9 @@
 			margin: 0px 10px 6px 0px;
 			border: 1px solid blue;
 			border-radius: 6px;
+		}
+	 img#top2 {
+			border: 1px solid gray;
 		}
 	img.icon {
 		margin: 0px 0px 0px 0px;
@@ -56,7 +59,7 @@
 	}
 	table tr {
 			width: 100%;
-    		margin:20px 10 10px;
+    		margin:20px 10px 10px;
     		border-top: 1px solid gray;
 			border-bottom: 2px solid gray;
 			border-left: 1px solid gray;
@@ -65,13 +68,13 @@
 	table th {
 		border-right: 1px solid gray;
 		text-align: center;
+		background-color: yellow;
 		}
 	table td {
 		border-right: 1px solid gray;
 		}	
 
- -->
-	</style>
+</style>
 
 </head>
 <body>
@@ -90,6 +93,8 @@
     pre: 改行や字下げ
     blockquote: 引用
     div: スタイリング
+    <a href="http://www.mm289.com/happymemo/indexJa.html">Japanese</a>
+    /<a href="http://www.mm289.com/happymemo/indexEn.html">English</a>
 -->
    <header>
     <!--<h1>スタートガイド3</h1>-->
@@ -99,11 +104,11 @@
 
         <p id="title">
         <br>
-        <strong class="b">T</strong>hank you for using Notepad application for handwritten character input, 
-        <strong>HappyMemo</strong>. <br>
+        <strong class="b">T</strong>hank you for using <strong>HappyMemo</strong>
+        (Notepad application for handwritten character input). <br>
         By adopting "Input palette of enlarged size" and "Function to edit input sentence",
         you can easily draw characters even at your fingertips and realize the necessary practicality for notepad.
-		</p>     
+		</p>    
         <ul>
             <li><a href="#j01">Introduction</a></li>
             <li><a href="#j02">Screen and Button</a></li>
@@ -112,7 +117,9 @@
             <li><a href="#j05">About the Edit-Panel</a></li>
             <li><a href="#j06">Usage of cancel button</a></li>
             <li><a href="#j07">What is this app used for?</a></li>
+            <li><a href="#j08">Changes in ver 1.2.0</a></li>
         </ul><br><br>
+        
     </header>
     <section id="j01">
        <div class="left"><a class="left"  href="#title">△</a></div>
@@ -642,7 +649,7 @@
             </em></p>
          
           <h4>How to open the Edit-Panel</h4> 
-          - Tap <span style = "color: # ff0000"> ▲ </span>button at the right end of the scroll bar 
+          - Tap <span style = "color: #ff0000"> ▲ </span>button at the right end of the scroll bar 
           at the top of the "Palette" to display a red translucent "Edit-Panel".<br>  
            <p><img  class="left" src= "editPanel.png"  width ="250" alt="editPanel.png"></p>
           
@@ -891,7 +898,7 @@
 		<tr>
 		<td>1</td>
 		<td>*<strong>character drawing</strong><br><em class="s">Immediately after touch up</em></td>
-		<td><strong>before drawing final stroke</strong></td>
+		<td><strong>　before drawing final stroke</strong></td>
 		</tr>
 		<tr>
 		<td>2</td>
@@ -899,7 +906,7 @@
 		<em class="s">Tap the 
 		<strong>OK</strong>
 		and immediately after the editing result is displayed.</em>
-		<td><strong>Palette contents before editing begins</strong></td>
+		<td><strong>　Palette contents before editing begins</strong></td>
 		</tr>
 		<tr>
 		<td>3</td>
@@ -907,7 +914,7 @@
 		<em class="s">Immediately after tapping 
 		<strong>OK</strong>
 		and copying the palette to the memo</em></td>
-		<td><strong>Contents of memo line before copying</strong></td>
+		<td><strong>　Contents of memo line before copying</strong></td>
 		</tr>
 		</table>
 		<br><br>
@@ -949,15 +956,27 @@
            - Notes while listening to lectures<br>
            - Schedule chart<br>
            - Drafts such as composition<br>
-           - shorthand<br>
-           - Easy record, diary etc<br>
+           - Shorthand Writing(stenograph)<br>
+           - Easy record, diary etc<br><br>
+         </section>
+    
+    <section id="j08">        
             
-        <h4>Future improvement plan</h4>
-		<em>We are planning such as.</em><br><br>
-            - Landscape orientation for iPad mini and iPhone<br>
-            - Improved editing function of memo page<br>
-            - Manage multiple notepads<br>
-            <br><br>
+        <h3 class="line">Changes in ver 1.2.0</h3>
+       
+            1. It corresponds to notch screen of iPhoneX.<br>
+            2. The number of lines on the memo page has been extended from 30 lines to 32 lines.<br>
+            3. Even when the input palette is opened, the line width of input characters can now be selected.<br>
+		- In the pen mode, the line width is sequentially changed each time the pen button is <strong>double clicked</strong>.
+           <p><img src= "penchange.png"  width ="200" alt="penchange.png"></p>
+            4. You can now add child notes (8 lines) tied to each line of the memo page.<br>
+		- By <strong>double tapping</strong> a non-blank line, a small memo of only 8 rows opens just below it.<br>
+		- To close the small memo, <strong>double click</strong> that child note.
+           <p><img id="top2"   src= "childEng.png"  width ="200" alt="childEng.png"></p>
+           <p><img  src= "childEng2.png"  width ="200" alt="childEng2.png"></p><br>
+            　- You can also enter handwritten notes for child notes in the same way.<br>
+            　- If there is something written in the child memo, a red triangle mark is displayed at the right end of the parent note.<br>
+            　- If the contents of the parent note are cleared (become a blank memo), the content of the child memo is forcibly deleted.<br>
 
     </section>
     		
