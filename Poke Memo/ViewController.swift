@@ -532,6 +532,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         subMemoView = UIView(frame: CGRect(x: 0, y:0 , width: leafWidth, height:(leafHeight + leafMargin)*CGFloat(pageGyou2) + leafMargin))
         subMemoView.layer.borderColor = UIColor.gray.withAlphaComponent(0.9).cgColor
         subMemoView.layer.borderWidth = 1.5
+        subMemoView.layer.cornerRadius = 10.0//角丸にする20180614追加
         //+-+- シャドウカラー
         subMemoView.layer.masksToBounds = false
         subMemoView.layer.shadowColor = UIColor.black.cgColor/* 影の色 */
@@ -731,7 +732,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //長押し認識登録
         let longPush = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPress))
         // 長押し-最低2秒間は長押しする.
-        longPush.minimumPressDuration = 0.6
+        longPush.minimumPressDuration = 0.5//0.6から変更20180614
         myScrollView.addGestureRecognizer(longPush)
         
         //+-+-ダブルクリック認識登録
@@ -754,6 +755,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //+-+- 子メモの初期化$
             let childFrame = CGRect(x:0,y: 0,width:leafWidth*1,height: (leafHeight + leafMargin)*CGFloat(pageGyou2))
             subMemo = MemoView(frame: childFrame)
+            subMemo.layer.cornerRadius = 10.0//角丸にする20180614追加
             subMemo.layer.borderColor = childColor.cgColor
             subMemo.layer.borderWidth = leafMargin*1.2
             
