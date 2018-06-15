@@ -390,7 +390,7 @@ class DrawableView: UIView {
             switch lineWidth {
                case 0:penW = 5
                case 1:penW = 7
-               case 2:penW = 9
+               case 2:penW = 10
                default:break
             }
             penC = UIColor.black

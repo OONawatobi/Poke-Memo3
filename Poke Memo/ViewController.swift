@@ -957,7 +957,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var done2: UIBarButtonItem!
     @IBOutlet weak var zoom2: UIBarButtonItem!
     @IBOutlet weak var redo2: UIBarButtonItem!
-    
+ 
     //INDEXの表示・非表示
     var retNum:Int = 0
     var changing:Bool = false//indexアニメとメニューアニメの両方で共有
@@ -1234,6 +1234,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.view.addSubview(drawableView)
                 self.etcBarDisp(disp: 1)//underView等」を追加する
                 //self.toolBar.isHidden  = false//ツールバーを現す
+                //self.setToolBar(color:UIColor.blue)//iPadMiniに対応：20180614追加中止（ツールバーボタンーのTintを黒色に、バーボタンtintをdefaultに設定したら解決した）
                 //アニメ動作終了
                 self.animeFlag = false//アニメ動作終了宣言
              } // ++++  ココまで  ++++
@@ -1474,6 +1475,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 //=================================================================
 //                        その他の関数
 //=================================================================
+    // ツールバーアイコンの色を黒色にする
+    func setToolBar(color:UIColor) {
+        print("setToolBar")
+        //self.done2.tintColor = color//OKボタンの色を変更する
+        self.done2.image = UIImage(named: "ok.png")?.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        self.zoom2.image = UIImage(named: "zoom.png")?.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        //png画像を要する：self.redo2.image = UIImage(named: "undo.png")?.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        //self.toolBar.barTintColor = UIColor.red//ナビバーの色を変更する
+    }
     // ナビゲーションの背景色を変える
     func setNaviBar(color:UIColor) {
        print("setNaviBar")
