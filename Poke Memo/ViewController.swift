@@ -1488,24 +1488,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func setNaviBar(color:UIColor) {
        print("setNaviBar")
         var tColor = UIColor.white//初期化
-        //var listColor = UIColor.white//初期化
         self.naviBar.barTintColor = color//ナビバーの色を変更する        
         //indexページでリストボタン(左側）以外のボタンを見えなくする
+        self.pallete2.isEnabled = true//パレットボタンを表示20180616
+        self.menu2.isEnabled = true//メニューボタンを表示20180616
         if color == iColor{
             tColor = iColor
             print("iColor")
+            self.pallete2.isEnabled = false//20180616
+            self.menu2.isEnabled = false//20180616
+            self.navigationItem.rightBarButtonItem?.tintColor = tColor
         }
          //self.naviBar.items?.first?.rightBarButtonItem?.tintColor  = tColor
-        
          self.pallete2.tintColor = tColor
          self.menu2.tintColor = tColor
-        
-    /*
-        if color == iColor{
-            listColor = UIColor.white//indexページのリストアイコンの色
-        }
-         self.naviBar.items?.first?.leftBarButtonItem?.tintColor = listColor
-    */
+
     }
 
     //設定値の外部保存
