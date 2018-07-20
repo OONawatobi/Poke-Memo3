@@ -313,6 +313,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var th:CGFloat = 44//ツールバーの高さ 20180720
 var subMemoView:UIView!//+-+- 子メモの入るエリア
 var subMemo:MemoView! = nil//+-+-子メモ本体
 var posOffset:CGFloat = 50//+-+-　上記エリアの縦位置
@@ -498,7 +499,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             boundHeight = boundHeight - 34//safeareaのbottom
             helpFrame = UIView(frame: CGRect(x:0,y:44,width:boundWidth,height:boundHeight - 78))
           }
-        
+
         //-----------------------------------------------
         //本機種の解像度
         print("　〓retina scale〓 :\(UIScreen.main.scale)")
@@ -1240,6 +1241,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
              } // ++++  ココまで  ++++
             
             self.toolBar.isHidden  = false//ツールバーを現す
+            //ツールバーの高さを検出する 20180720追加
+            th = self.toolBar.frame.height
+            print("〓toolbar.height〓 th:\(th)")
             isPalleteMode = true//パレットが表示されている場合は"true"
             //編集画面非表示フラグをリセットする
             //????myEditFlag = false

@@ -288,6 +288,7 @@ class DrawableView: UIView {
         
        }
         //print("shiftLeftFlag = \(shiftLeftFlag):Timer\(timerFlag)")
+
     }
     
     // タッチが終わった
@@ -330,7 +331,7 @@ class DrawableView: UIView {
         }
     // ==========================================================
         UIGraphicsEndImageContext()  //Canvasを閉じる
-       
+
     }
     
     // タイマー開始
@@ -426,10 +427,11 @@ class DrawableView: UIView {
         path.lineWidth = penW//ペン幅を指定する
         path.lineCapStyle = .square
         path.stroke()//描画する
+  
         //タッチEnd時に画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
-
         secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
+        //print(":::::func drawLine")
     }
     
     
