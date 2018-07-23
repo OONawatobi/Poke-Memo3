@@ -364,7 +364,7 @@ class DrawableView: UIView {
         //アニメーション動作をさせる
         UIView.animate(withDuration: 0.3, animations: {
             () -> Void in
-            self.layer.position = CGPoint(x:dsX, y:boundHeight - 44 - vHeight/2)
+            self.layer.position = CGPoint(x:dsX, y:boundHeight - th - vHeight/2)
             self.timerFlag = false//タイマーフラグのリセット
         })
         //シフトスクロールした後にOKボタンを押さない様にする

@@ -313,7 +313,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
-var th:CGFloat = 44//ツールバーの高さ 20180720
+var th:CGFloat = 46//ツールバーの高さ 20180720本当は"46"
 var subMemoView:UIView!//+-+- 子メモの入るエリア
 var subMemo:MemoView! = nil//+-+-子メモ本体
 var posOffset:CGFloat = 50//+-+-　上記エリアの縦位置
@@ -543,10 +543,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
         /** spaceViewを生成(透明：タッチ緩衝の為) **/
         //underViewの下側
-        spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - 44 - vHeight , width: boundWidth, height: 10))
+        spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight , width: boundWidth, height: 10))
         spaceView1.backgroundColor = UIColor.clear
         //underViewの上側
-        spaceView2 = UIView(frame: CGRect(x: 0, y:boundHeight - 44 - vHeight - 40 - 20, width: boundWidth, height: 20))
+        spaceView2 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight - 40 - 20, width: boundWidth, height: 20))
         spaceView2.backgroundColor = UIColor.clear
         
         /** underViewを生成. **/
@@ -554,14 +554,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
         underView.backgroundColor = UIColor.green// underViewの背景を青色に設定
         underView.alpha = 0.33// 透明度を設定
-        underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 15 )// 位置を中心に設定
+        underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 15 )// 位置を中心に設定
         underView.addBottomBorderWithColor(color: UIColor.black, width:2)
         underView.isUserInteractionEnabled = false//タッチ情報を後ろにスルーする™™
         /** upperViewを生成. **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
         upperView.backgroundColor = UIColor.green
         upperView.alpha = 0.33// 透明度を設定
-        upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 + 15)// 位置を中心に設定
+        upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th + 15)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
         
         /** myToolView ([色][ペン][消しゴム][▲])を生成. **/
@@ -627,7 +627,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //rgb(r: 198, g: 54, b: 89, alpha: 0.8)
         myEditView.backgroundColor = myEditColor// underViewの背景を青色に設定
         //myEditView.alpha = 0.6// 透明度を設定
-        myEditView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40 - 30)// 位置を中心に設定
+        myEditView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th - 40 - 30)// 位置を中心に設定
         //---------------------------------------
         //Editbuttonの追加 [9]　[5][6][7][8] [10]
         let sp:CGFloat = 10 + (boundWidth - 315)/10 //20ボタン間のスペース
@@ -697,14 +697,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myScrollView.Delegate2 = self
         //myScrollView.Delegate3 = self
         //パレット表示されていない場合
-        scrollRect = CGRect(x:(boundWidth - leafWidth)/2, y:70 + sBarX ,width:leafWidth, height:boundHeight - 20 - 44 - 10 - sBarX )
+        scrollRect = CGRect(x:(boundWidth - leafWidth)/2, y:70 + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 10 - sBarX )
         
         //パレット表示されている場合
-        scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50)//最後の50は目で見て調整した
+        scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 44 - vHeight - 50)//最後の50は目で見て調整した
         //パレット表示されている場合
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
-        scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - 44 - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
-        scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  + sBarX ,width:leafWidth, height:boundHeight - 20 - 44 - 10 - 44 )//toolViewだけが表示されている場合
+        scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
+        scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 10 - 44 )//toolViewだけが表示されている場合
         scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:110 + sBarX ,width:leafWidth, height:boundHeight - 115 - sBarX )//index表示されている場合
         
         myScrollView.frame = scrollRect
@@ -1174,9 +1174,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             self.etcBarDisp(disp: 0)//underView等を削除する
             UIView.animate(withDuration:0.2, animations: {
                 () -> Void in
-                self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + 44 - 40/2)
+                self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + th - 40/2)
                 let nowPosx = drawableView.layer.position.x//表示中の位置
-                drawableView.layer.position = CGPoint(x:nowPosx , y:boundHeight + 44 - 40/2 + vHeight/2)
+                drawableView.layer.position = CGPoint(x:nowPosx , y:boundHeight + th - 40/2 + vHeight/2)
                 self.myScrollView.frame = self.scrollRect_T// メモframeの値を設定する
 
             }){
@@ -1217,18 +1217,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
              drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
              drawableView.Delegate = self
-             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44 - 1)
+             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 1)
              drawableView.layer.position = leftEndPoint
              drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
              drawableView.setSecondView()//編集ツールの追加とおｌBar
              //
             self.view.addSubview(myToolView)
-            myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - 44 - 40/2)// 位置を中心に設定：画面の外に位置する
+            myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 40/2)// 位置を中心に設定：画面の外に位置する
             self.myScrollView.frame = self.scrollRect_T
             //+++ パレットを開くアニメーション　+++
             UIView.animate(withDuration:0.4, animations: {
                 () -> Void in
-                self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )//++ 位置を中心に設定
+                self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th - 40/2 )//++ 位置を中心に設定
                 self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
             }){
             (Bool) -> Void in
@@ -1242,7 +1242,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             self.toolBar.isHidden  = false//ツールバーを現す
             //ツールバーの高さを検出する 20180720追加
-            th = self.toolBar.frame.height
+            //th = self.toolBar.frame.height
             print("〓toolbar.height〓 th:\(th)")
             isPalleteMode = true//パレットが表示されている場合は"true"
             //編集画面非表示フラグをリセットする
@@ -1334,7 +1334,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     print("----CLR---")
                     editedView = bImage//UIImage(named:"blankW.png")
                     //パレットの位置を先頭にする
-                    let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 44)
+                    let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
                     drawableView.layer.position = leftEndPoint
                     //mx[]を更新する(0にリセット)
                     mx[String(nowGyouNo)] = 0
@@ -1423,9 +1423,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 let cx = drawableView.center.x
                 
                 drawableView.transform = CGAffineTransform(scaleX: big, y: big)//拡大率を2倍にする
-                drawableView.layer.position = CGPoint(x: big*cx, y:boundHeight - 44 - big*vHeight/2 )
+                drawableView.layer.position = CGPoint(x: big*cx, y:boundHeight - th - big*vHeight/2 )
             //myEditViewの再描画
-                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 - sa )
+                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th - 40/2 - sa )
                 etcBarDisp(disp:0)//マスクビューを非表示にする
             //スクロールviewを合わせる
                 myScrollView.frame = self.scrollRect_B// メモframeの値を設定する
@@ -1439,16 +1439,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 print("bigSize:")
                 let cx = drawableView.center.x
                 drawableView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)//元に戻す場合
-                drawableView.layer.position = CGPoint(x: cx/big, y:boundHeight - 44 - vHeight/2 - 1)
+                drawableView.layer.position = CGPoint(x: cx/big, y:boundHeight - th - vHeight/2 - 1)
             //パレットの左右端の制限
                 var cx2 = drawableView.center.x//パレットの中点のｘ座標
                 //右端制限
                 cx2 = cx2 < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):cx2
                 //左端制限
                 cx2 = cx2 > vWidth/2 ? vWidth/2:cx2
-                drawableView.layer.position = CGPoint(x: cx2, y:boundHeight - 44 - vHeight/2)
+                drawableView.layer.position = CGPoint(x: cx2, y:boundHeight - th - vHeight/2)
             //myEditViewの再描画
-                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - 44 - 40/2 )
+                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th - 40/2 )
                 etcBarDisp(disp:1)//マスクビューの再追加
             //スクロールviewを元に戻す
                 myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
@@ -2798,7 +2798,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //アニメーション動作をさせる
             UIView.animate(withDuration: 0.3, animations: {
             () -> Void in
-            drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - 44 - vHeight/2)
+            drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - th - vHeight/2)
             })
         */
         }
@@ -2824,7 +2824,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //パレットの表示位置を末尾にする
             UIView.animate(withDuration: 0.3, animations: {
             () -> Void in
-            drawableView.layer.position = CGPoint(x:boundWidth - vWidth/2, y:boundHeight - 44 - vHeight/2)
+            drawableView.layer.position = CGPoint(x:boundWidth - vWidth/2, y:boundHeight - th - vHeight/2)
             })
          */
         }
@@ -2985,7 +2985,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[fNum].selectedNo(tagN: nowGyouNo)
    print("######4")
            //パレットの表示位置をリセットする
-            drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - 44 - vHeight/2)
+            drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - th - vHeight/2)
 
            //パレット表示用にリサイズする(extension)？読み込む画像はどこから？myMemo
            //上のreadMemo(tag: nowGyouNo)の中ですでにリサイズしている為以下省略する
@@ -3032,7 +3032,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var midX2 = midX
         let topX:CGFloat = (b*vWidth/2)
         let lastX:CGFloat = (boundWidth - b*vWidth/2)
-        let pY:CGFloat = (boundHeight - b*vHeight/2 - 44)//パレットのセンター座標
+        let pY:CGFloat = (boundHeight - b*vHeight/2 - th)//パレットのセンター座標
         
         let dir = deltaX>=0 ? 1 : 0 //0:右へシフト,1:左へシフト
         //先頭へシフトする場合
