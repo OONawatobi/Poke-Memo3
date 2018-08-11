@@ -181,7 +181,7 @@ class MemoView:UIView{
         //return leafImage
     }
     
-    /* 選択した行のメモの背景に色を付ける */
+    /* 選択した行のメモの背景にカーソル色を付ける */
     func selectedNo(tagN:Int) {
         //表示中のフレーム番
         print("*** selectedNo(tag:Int) ***")
