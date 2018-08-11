@@ -321,8 +321,8 @@ var childFlag = false//+-+- 子メモが開いている時はtrue
 var oyaGyou:Int = 101//メモページの親行番号
 let childColor = UIColor.rgb(r: 250, g: 230, b: 240, alpha: 1)
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
-var debug1:Bool = false//デバグ用：ページタグ表示
-var debug2:Bool = false//デバグ用：mx[]表示
+var debug1:Bool = true//デバグ用：ページタグ表示
+var debug2:Bool = true//デバグ用：mx[]表示
 
 let boundWidth = UIScreen.main.bounds.size.width
 var boundHeight = UIScreen.main.bounds.size.height
@@ -1301,7 +1301,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
           indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
           mx[String(pageNum)] = 1//indexリストに対象の頁番号を登録する
         }else{
-          mx[String(pageNum)] = 0
+            if pageNum < 40{ //間違って行のmxを削除しないための保護
+                print("mx[String(pageNum)]A:\(String(pageNum))")
+                mx[String(pageNum)] = 0
+            }
           indexImgs[pageNum - 1] = bImage//空白の画像をインデックス頁に貼り付ける
         }
         //非空白行の最上値
@@ -2179,7 +2182,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         
         //indexリストに対象の頁番号を登録を抹消する(登録済頁だけがタッチ反応する）
-        mx[String(pageNum)] = 0
+        if pageNum < 40{ //間違って行のmxを削除しないための保護
+            print("mx[String(pageNum)]B:\(String(pageNum))")
+            mx[String(pageNum)] = 0
+        }
         
         delPage(pn: pageNum)
         //----- 現行ページを再読込する---------
@@ -2200,7 +2206,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
             mx[String(pageNum)] = 1//indexリストに対象の頁番号を登録する
         }else{ //全行が空白行の場合
+            if pageNum < 40{ //間違って行のmxを削除しないための保護
+            print("mx[String(pageNum)]C:\(String(pageNum))")
             mx[String(pageNum)] = 0
+            }
             indexImgs[pageNum - 1] = bImage//空白の画像をインデックス頁に貼り付ける
         }
         //+-+- ---- 本ページの子メモ内容を全て削除する$ -----
@@ -3201,6 +3210,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if childFlag == true{return}
         //空白行の場合は子メモは開かない
         if mx[String(nowGyouNo)]!<10{return}
+        //print("●◉●\(mx[String(nowGyouNo)])")
         //子メモを開く
         oyaGyou = nowGyouNo//親行を記憶する
         childFlag = true
