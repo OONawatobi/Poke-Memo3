@@ -181,7 +181,8 @@ class DrawableView: UIView {
     func reAddSubView(){//secondViewの追加
         self.addSubview(secondView)
     }
-    //--------------------　描画プログラム　---------------------------------/
+    //=====================　描画プログラム　======================//
+    
     var rightFlag:Bool = false
     let rightArea:CGFloat = 10//右側エリア境界位置
     var shiftLeftFlag:Bool = false
@@ -233,8 +234,8 @@ class DrawableView: UIView {
         if timer != nil{timer.invalidate()}
         myMx = 0//タッチ位置の初期化
         //+++++++++2:新タッチシステム検証用
-        UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く
-        if lastDrawImage != nil {
+        UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く ▼▼
+        if lastDrawImage != nil {//タッチEnd時に画面を背景にコピーするつもりだった？
             lastDrawImage.draw(at:CGPoint.zero)
         }
 
@@ -252,7 +253,7 @@ class DrawableView: UIView {
         //mx最大値を取得
         mxTemp = max(mxTemp,currentPoint.x)
     
-        //中間点を作成
+        //中間点を作成  ▼▼
         let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
         bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
 
@@ -330,7 +331,7 @@ class DrawableView: UIView {
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2)
         }
     // ==========================================================
-        UIGraphicsEndImageContext()  //Canvasを閉じる
+        UIGraphicsEndImageContext()  //Canvasを閉じる　▼▼
 
     }
     

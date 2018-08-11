@@ -313,6 +313,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var callig = false//カリグラフィモード時：true
 var th:CGFloat = 46//ツールバーの高さ 20180720本当は"46"
 var subMemoView:UIView!//+-+- 子メモの入るエリア
 var subMemo:MemoView! = nil//+-+-子メモ本体
@@ -1301,7 +1302,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
           indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
           mx[String(pageNum)] = 1//indexリストに対象の頁番号を登録する
         }else{
-            if pageNum < 40{ //間違って行のmxを削除しないための保護
+            if pageNum <= maxPageNum{ //間違って行のmxを削除しないための保護
                 print("mx[String(pageNum)]A:\(String(pageNum))")
                 mx[String(pageNum)] = 0
             }
@@ -2182,7 +2183,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         
         //indexリストに対象の頁番号を登録を抹消する(登録済頁だけがタッチ反応する）
-        if pageNum < 40{ //間違って行のmxを削除しないための保護
+        if pageNum <= maxPageNum{ //間違って行のmxを削除しないための保護
             print("mx[String(pageNum)]B:\(String(pageNum))")
             mx[String(pageNum)] = 0
         }
@@ -2206,7 +2207,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             indexImgs[pageNum - 1] = indexChange(pn: pageNum,usedNum:uNum )
             mx[String(pageNum)] = 1//indexリストに対象の頁番号を登録する
         }else{ //全行が空白行の場合
-            if pageNum < 40{ //間違って行のmxを削除しないための保護
+            if pageNum <= maxPageNum{ //間違って行のmxを削除しないための保護
             print("mx[String(pageNum)]C:\(String(pageNum))")
             mx[String(pageNum)] = 0
             }
