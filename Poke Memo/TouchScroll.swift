@@ -113,7 +113,7 @@ class UpperToolView: UIView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         // 2点以上のlineしか保存する必要なし
         //if currentLine?.points.count > 1 {//lines.append(currentLine!)//Ver02}
-        
+        self.Delegate.ok2()
     }
     
 }

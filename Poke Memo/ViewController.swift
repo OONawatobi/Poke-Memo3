@@ -19,7 +19,7 @@ extension UIColor {
 }
 
 extension UIView {
-    @discardableResult
+    @discardableResult//返り値を使わないことを許可する
     func drawDashedLine(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber, type: DashedLineType) -> UIView {
         let dashedLineLayer: CAShapeLayer = CAShapeLayer()
         dashedLineLayer.frame = self.bounds
@@ -61,6 +61,63 @@ extension UIView {
         }
         
         self.layer.addSublayer(dashedLineLayer)
+        return self
+    }
+    //20180812作成
+    func addCursolLine(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber,posX:CGFloat,lenX:CGFloat) -> UIView {
+        self.layer.sublayers = nil//既存の下線を削除する
+        //**破線を引く**
+        let dashedLineLayer: CAShapeLayer = CAShapeLayer()
+        dashedLineLayer.frame = self.bounds
+        dashedLineLayer.strokeColor = UIColor.gray.cgColor
+        dashedLineLayer.lineWidth = lineWidth
+        dashedLineLayer.lineDashPattern = [lineSize, spaceSize]
+        let path: CGMutablePath = CGMutablePath()
+        //case .Down:
+        path.move(to: CGPoint(x: 0, y: self.frame.size.height))
+        path.addLine(to: CGPoint(x: self.frame.size.width, y: self.frame.size.height))
+        dashedLineLayer.path = path
+        self.layer.addSublayer(dashedLineLayer)
+        if lenX != 0{  //lineWidth==0の場合はカーソルだけ削除する
+        //**カーソル線を引く**
+        let cursolLayer = CALayer()
+        cursolLayer.backgroundColor = color.cgColor
+        cursolLayer.frame = CGRect(x:posX, y:self.frame.size.height - lineWidth,width:lenX, height:lineWidth)
+
+        self.layer.addSublayer(cursolLayer)
+        }
+        return self
+    }
+    //20180813作成:下線が実践の場合
+    func addCursolLine2(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber,posX:CGFloat,lenX:CGFloat) -> UIView {
+        self.layer.sublayers = nil//既存の下線を削除する
+        //**実線を引く**
+        let border = CALayer()
+        border.backgroundColor = UIColor.gray.cgColor
+        border.frame = CGRect(x:0, y:self.frame.size.height - 1.5,width:
+            self.frame.size.width, height:1.5)
+        self.layer.addSublayer(border)
+        /**破線を引く**
+        let dashedLineLayer: CAShapeLayer = CAShapeLayer()
+        dashedLineLayer.frame = self.bounds
+        dashedLineLayer.strokeColor = UIColor.gray.cgColor
+        dashedLineLayer.lineWidth = lineWidth
+        dashedLineLayer.lineDashPattern = [lineSize, spaceSize]
+        let path: CGMutablePath = CGMutablePath()
+        //case .Down:
+        path.move(to: CGPoint(x: 0, y: self.frame.size.height))
+        path.addLine(to: CGPoint(x: self.frame.size.width, y: self.frame.size.height))
+        dashedLineLayer.path = path
+        self.layer.addSublayer(dashedLineLayer)
+         */
+        if lenX != 0{  //lineWidth==0の場合はカーソルだけ削除する
+            //**カーソル線を引く**
+            let cursolLayer = CALayer()
+            cursolLayer.backgroundColor = color.cgColor
+            cursolLayer.frame = CGRect(x:posX, y:self.frame.size.height - lineWidth,width:lenX, height:lineWidth)
+            
+            self.layer.addSublayer(cursolLayer)
+        }
         return self
     }
 }
@@ -133,7 +190,7 @@ extension UIView {
             self.frame.size.width, height:width)
         self.layer.addSublayer(border)
     }
-
+/*
     public func changeBottomBorder(color: UIColor, width: CGFloat) {
         self.layer.sublayers = nil
         let border = CALayer()
@@ -142,7 +199,7 @@ extension UIView {
             self.frame.size.width,height:width)
         self.layer.addSublayer(border)
     }
-    
+*/
 }
 extension UIImage {
         
@@ -322,9 +379,8 @@ var childFlag = false//+-+- 子メモが開いている時はtrue
 var oyaGyou:Int = 101//メモページの親行番号
 let childColor = UIColor.rgb(r: 250, g: 230, b: 240, alpha: 1)
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
-var debug1:Bool = true//デバグ用：ページタグ表示
-var debug2:Bool = true//デバグ用：mx[]表示
-
+var debug1:Bool = false//デバグ用：ページタグ表示
+var debug2:Bool = false//デバグ用：mx[]表示
 let boundWidth = UIScreen.main.bounds.size.width
 var boundHeight = UIScreen.main.bounds.size.height
 //var retina:Int = 2//レティナディスプレイ対応
@@ -348,6 +404,7 @@ let maxPageNum:Int = 30//未使用
 var pageGyou:Int = 32//メモページの行数
 var pageGyou2:Int = 8//子メモページの行数
 var nowGyouNo:Int! = 1//編集中の行番号(tag番号）
+//var lastGyouNo:Int! = 1//直前の行番号(tag番号）20180812追加-不要
 var maxUsingGyouNo:Int! = 0//メモが記載されている一番下の行番号//現在、未使用
 //-----メモ---------
 //var memoView:MemoView! = nil//メモ本体
@@ -396,12 +453,14 @@ protocol ScrollView2Delegate{//スクロールビューの操作(機能）
 
 protocol UpperToolViewDelegate{//upperビューの操作(機能）
     func dispPosChange(midX: CGFloat,deltaX:CGFloat)
+    func ok2()
 }
 
 protocol DrawableViewDelegate{//パレットビューの操作(機能）
     func selectNextGyou()
     func shiftMX()
     func upToMemo()
+    func ok2()
 }
 
 
@@ -1160,6 +1219,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //----------------------------------------------①
         if drawableView != nil {
         // ◆◆ パレットが表示されている時パレットを消す
+           //メモカーソルを消す
+            memoCursol(disp: 0)
            //編集中のページ内容を更新する
             //myScrollView.upToImgs()//編集中のページ内容を更新する
             let im = memo[fNum].memoToImgs(pn: pageNum)//im:
@@ -1239,6 +1300,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //self.setToolBar(color:UIColor.blue)//iPadMiniに対応：20180614追加中止（ツールバーボタンーのTintを黒色に、バーボタンtintをdefaultに設定したら解決した）
                 //アニメ動作終了
                 self.animeFlag = false//アニメ動作終了宣言
+                //メモカーソルを表示する
+                self.memoCursol(disp: 1)
              } // ++++  ココまで  ++++
             
             self.toolBar.isHidden  = false//ツールバーを現す
@@ -1311,7 +1374,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //非空白行の最上値
         print("numOfUsedLine:\(numOfUsedLine(pn:pageNum))")
         //ペンモードの初期化
-        penMode()//黒ペンモードにする
+        //penMode()//黒ペンモードにする★20180813
         settingWite()//設定値を外部に保存する
     }
     
@@ -1397,12 +1460,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /**      通常の文字入力時      **/
             //if okEnable == false{return}
             //+- okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
-            
-            //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
-            drawableView.editOK = false//編集パネル非表示の場合
-            upToMemo()//パレット画面をメモ行にコピーする
-            drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
-            
+            ok2()
+           
         }
             
         // == debug2 ============================
@@ -1415,7 +1474,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
  
         //print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
     }
-    
+   
+    func ok2(){
+        //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
+        drawableView.editOK = false//編集パネル非表示の場合
+        upToMemo()//パレット画面をメモ行にコピーする
+        drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
+        //メモカーソル位置の更新
+        memoCursol(disp: 1)
+    }
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
         print("◆◆◆◆")
@@ -2975,6 +3042,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if bigFlag == true{
             zoom(zoom2)//倍率を元に戻す
         }
+            //タッチ行を登録する前に、直前の行番号を記憶する★20180813
+            memoCursol(disp: 0)//現在の行カーソルを削除する
             nowGyouNo = TouchNumber
             //print("nowGyouNo?: \(nowGyouNo)")
         
@@ -2993,6 +3062,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
            //選択されたセルに色を付ける
             memo[fNum].selectedNo(tagN: nowGyouNo)
+
    print("######4")
            //パレットの表示位置をリセットする
             drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - th - vHeight/2)
@@ -3034,6 +3104,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("🔳cg-imgサイズ：\(img.cgImage?.height)")
     */
         print("######7")
+        //メモカーソルを表示する★20180812
+        memoCursol(disp: 1)
     }
     //パレットの表示位置を変更する
     func dispPosChange(midX: CGFloat,deltaX:CGFloat){// protocol UpperToolViewDelegate
@@ -3059,6 +3131,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if midX > topX{ midX2 = topX}
         if midX < lastX{ midX2 = lastX}
         drawableView.layer.position = CGPoint(x: midX2, y:pY)
+        memoCursol(disp: 1)//★20180813
+        
     }
     /* ------------------------ デリゲート関数　-------------------------- */
     
@@ -3077,9 +3151,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("上へスクロール")
         }
     }
+    func test(){
+        print("test")
+        memoCursol(disp: 1)
+    }
     
     func selectNextGyou() {//$$$$
         print("selectNextGyou")
+        
+        //lastGyouNo = nowGyouNo//★20180812追加
+        memoCursol(disp: 0)//★20180812追加
         done(done2)// okボタンを押す
         print("nowGyouNo2:\(nowGyouNo)")
         if nowGyouNo<10000 && nowGyouNo%100 < pageGyou{
@@ -3317,6 +3398,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let userDefault = UserDefaults.standard
         userDefault.removeObject(forKey: photosName)
     }
+    
  /* ---------------------pageGyouNo, baseGyou $$$----------------------
      (<10000)       (>10000)
      01p:101-132    child:10101-10108,13201-13208
@@ -3324,7 +3406,26 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
      20p:2001-2032  child:200101-200108,203201-203208
      30p:3001-3032  child:300101-300108,303201-303208
  ---------------------------------------------------------------- */
-
+    func memoCursol(disp:Int){
+        if isPalleteMode == true{
+        print("+nowGyouNo: \(nowGyouNo)")
+        let pos = (vWidth/2 - drawableView.layer.position.x)/4
+            print("palette pos: \(pos), allW: \(vWidth)")
+            var len = boundWidth/4
+        //選択されたセルを探す
+        let targetMemo:UIView = memo[fNum].viewWithTag(nowGyouNo)!
+            if disp == 0{ len = 0}
+        //１行目と３２行目の下線は実践、他は破線
+            if nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
+                print("aaaaaaaaaa")
+                targetMemo.addCursolLine2(color: UIColor.black, lineWidth: 1.8, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+            }else{
+                print("bbbbbbbbb")
+                targetMemo.addCursolLine(color: UIColor.black, lineWidth: 1, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+            }
+        }
+    }
+    
   //----------------------------------------------------------------
   //                  旧ボタン関数(未使用）                             |
   //----------------------------------------------------------------

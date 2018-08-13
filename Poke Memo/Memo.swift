@@ -266,7 +266,7 @@ class MemoView:UIView{
         
         //indexページだけtopOffsetを大きくする
         let topOffset2:CGFloat = (pn == 0) ?topOffset/2:topOffset
-        let gnum = (pn == 0) ? maxPageNum : pageGyou
+        let gnum = (pn == 0) ? maxPageNum : pageGyou//indexページは30行、メモは32行
         
         let pagePosX = (leafWidth)/2 //フレームの中点ｘ座標
         for idx in 0..<gnum {
@@ -277,9 +277,9 @@ class MemoView:UIView{
             
             if pn>0{  // == メモページの場合 ==
             //leafの枠の下線を灰色にする
-              if idx == 0 || idx == pageGyou - 1{
+              if idx == 0 || idx == pageGyou - 1{//1行目と32行目は実線、他は破線
                 myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.5)
-              }else{
+              }else{//破線
                 
                 myLeaf.drawDashedLine(color: UIColor.gray, lineWidth: 1, lineSize: 2, spaceSize: 2, type: .Down)
               }

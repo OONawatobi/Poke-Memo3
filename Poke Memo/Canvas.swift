@@ -200,14 +200,14 @@ class DrawableView: UIView {
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
         print("touchbegan")
         okEnable = true//メイン画面のokボタンの受付を許可する
-        
         let currentPoint = touches.first!.location(in: self)
         print("currentPoint.x: \(currentPoint.x)")
         bezierPath = UIBezierPath()
         bezierPath.lineWidth = 1.0
         bezierPath.move(to:currentPoint)
         lastPoint = currentPoint
-        
+//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
         //右側エリアに入っているか判定
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
@@ -244,23 +244,23 @@ class DrawableView: UIView {
     // タッチが動いた
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         //print("touchesMoved\(sCount)")
-        
-        if bezierPath.isEmpty == true { return }//タッチされていない場合(Pathが初期化前)はパス
         let currentPoint = touches.first!.location(in:self)//  @ self:UIView @
-        
-       //---- 通常モード ----
+        if bezierPath.isEmpty == true { return }//タッチされていない場合(Pathが初期化前)はパス　？これって必要？
+    
+    //---- 通常モード ----
        if rightFlag == false{
         //mx最大値を取得
         mxTemp = max(mxTemp,currentPoint.x)
     
-        //中間点を作成  ▼▼
+        //中間点を作成
+    //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
         let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
         bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
 
         drawLine(path:bezierPath)
         lastPoint = currentPoint
-
-        //自動スクロール機能
+    //▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+        //自動スクロール機能向け処理
         if bigFlag == false{
           //myMx最大値を取得:今回のタッチの最大値、
           myMx = max(myMx,currentPoint.x)
@@ -272,7 +272,7 @@ class DrawableView: UIView {
           if timerFlag == true{autoFlag = true}//タイマー稼働中は自動スクロールする
         }
         
-       //---- 右端エリアモード ----
+    //---- 右端エリアモード ----
        }else{
         print(" is rightArea!!")
         
@@ -302,7 +302,9 @@ class DrawableView: UIView {
           //??let currentPoint = touches.first!.location(in:self)
           //??bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
           //??drawLine(path: bezierPath)
-  
+//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+            
           get2VImage()//second画像をbup[2]に保存：UNDO用
           //左方向への自動スクロール
             print("autoFlag:\(autoFlag):mxTemp=\(mxTemp)")
@@ -370,7 +372,9 @@ class DrawableView: UIView {
         })
         //シフトスクロールした後にOKボタンを押さない様にする
         //理由：①ボケ回数を減らす為、②ペン色が変わらない様にする
-        //self.Delegate?.shiftMX()// [ok]ボタンを押す:view.done(done2)
+        //      ↑書き出したメモを再読み込みしなければOK,②は止めてもいいかも
+        self.Delegate.ok2()// [ok2]ボタンを押す:view.done(done2)★20180813
+ 
     }
     
     func resetContext(context: CGContext) {
@@ -428,7 +432,9 @@ class DrawableView: UIView {
         path.lineWidth = penW//ペン幅を指定する
         path.lineCapStyle = .square
         path.stroke()//描画する
-  
+//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+        
         //タッチEnd時に画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
         secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
