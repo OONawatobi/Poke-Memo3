@@ -3352,12 +3352,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func childMemoClose(ngn:Int){//+-+- 子メモを閉じる$
         print("----childMemoClose-----\(nowGyouNo)")
         if childFlag == false{return}
-        if ngn<10000{return}//子メモ内をWクリックした時だけ処理する//1000
-        /*
-        //ベースのtag番号を計算する
-        let baseTag:Int = ngn/100//10
-        print("baseTag:\(baseTag)")
-        */
+        //if ngn<10000{return}//子メモ内をWクリックした時だけ処理する//1000
+        //親行をクリックしたときだけ
+        if ngn != oyaGyou{return}
         let baseTag:Int = oyaGyou
         //子メモが全空白かどうかをチェックする
         let x = checkUsedLine(tag:baseTag)
