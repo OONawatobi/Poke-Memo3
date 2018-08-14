@@ -377,7 +377,8 @@ var subMemo:MemoView! = nil//+-+-子メモ本体
 var posOffset:CGFloat = 50//+-+-　上記エリアの縦位置
 var childFlag = false//+-+- 子メモが開いている時はtrue
 var oyaGyou:Int = 101//メモページの親行番号
-let childColor = UIColor.rgb(r: 250, g: 230, b: 240, alpha: 1)
+//let childColor = UIColor.rgb(r: 250, g: 230, b: 240, alpha: 1)
+let childColor = UIColor.rgb(r: 234, g: 204, b: 99, alpha: 0.8)//indexカーソルの色８
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
 var debug1:Bool = false//デバグ用：ページタグ表示
 var debug2:Bool = false//デバグ用：mx[]表示
@@ -1475,7 +1476,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
     }
    
-    func ok2(){
+    func ok2(){//★2018081314
+        if bigFlag {return}//拡大表示中はメモ行に反映させない
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
         drawableView.editOK = false//編集パネル非表示の場合
         upToMemo()//パレット画面をメモ行にコピーする
@@ -1489,7 +1491,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if myEditFlag == true{return}//編集パレットが開いている場合は🐞
         //let big:CGFloat = 1.5//拡大率
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
-            if drawableView.frame.height == vHeight{
+            if drawableView.frame.height == vHeight{ //非拡大モード
                 print("normalSize:")
                 let cx = drawableView.center.x
                 
@@ -1506,7 +1508,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //拡大鏡アイコンを表示する
             editButton1.frame.size = CGSize(width:60, height:60)//ボタンサイズを変更
             editButton1.setImage(UIImage(named: "bigW.pdf"), for:UIControlState.normal)
-            }else{
+            }else{ //拡大画面モード
                 print("bigSize:")
                 let cx = drawableView.center.x
                 drawableView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)//元に戻す場合
@@ -1529,10 +1531,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //赤▲アイコンに戻す
             editButton1.frame.size = CGSize(width:40, height:40)//ボタンサイズを元に戻す
             editButton1.setImage(UIImage(named: "3Up.pdf"), for:UIControlState.normal)
-                
+                ok2()//★20180814:oomを閉じたときにメモ行を更新する
             }
             
-     //
+     //★20180814 メモカーソルを更新する
+        memoCursol(disp: 1)//カーソル幅と位置をzoom画面ように更新する
         
     }
     
@@ -3020,7 +3023,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func wClick(){//+-+-
-        //return//+-+- ◆◆子メモ機能を無効にする
+        if bigFlag {return}//+-+- ◆◆子メモ機能を無効にする
         if isIndexMode == true {
             longPress()//+-+-$$
         return }//index表示中は実行しない
@@ -3040,7 +3043,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("TouchNumber:@\(TouchNumber)")
         print("fNum:\(fNum)")
         if bigFlag == true{
-            zoom(zoom2)//倍率を元に戻す
+            return//★20180814 ←zoom(zoom2)//倍率を元に戻す
         }
             //タッチ行を登録する前に、直前の行番号を記憶する★20180813
             memoCursol(disp: 0)//現在の行カーソルを削除する
@@ -3131,6 +3134,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if midX > topX{ midX2 = topX}
         if midX < lastX{ midX2 = lastX}
         drawableView.layer.position = CGPoint(x: midX2, y:pY)
+        //スクロールするとメモカーソルが更新される
         memoCursol(disp: 1)//★20180813
         
     }
@@ -3309,7 +3313,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //let rect1:CGRect = CGRect(x:0, y:0, width:leafWidth, height:5)//$$
         let rect2:CGRect = CGRect(x:0, y:0, width:leafWidth, height:(leafHeight + leafMargin)*CGFloat(pageGyou2) + leafMargin)//$$
         subMemoView.frame = rect2//$$ アニメーション時はrect1を使用する
-        posOffset = topOffset + (leafHeight + leafMargin)*CGFloat(tag%100) //- leafMargin //- leafHeight/2
+        posOffset = topOffset + (leafHeight + leafMargin)*CGFloat(tag%100) + 5//- leafMargin //- leafHeight/2
         let cvHeigt:CGFloat = subMemoView.layer.bounds.height
         subMemoView.layer.position.y = posOffset + cvHeigt/2
         subMemoView.backgroundColor = childColor
@@ -3406,19 +3410,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func memoCursol(disp:Int){
         if isPalleteMode == true{
         print("+nowGyouNo: \(nowGyouNo)")
-        let pos = (vWidth/2 - drawableView.layer.position.x)/4
+        let zm:CGFloat = bigFlag ? 1.5 : 1.0//★20180814
+        var len =  boundWidth/4/zm
+        let add = bigFlag ? len : 0//★20180814
+        let pos = (vWidth/2 - drawableView.layer.position.x)/4/zm + add
             print("palette pos: \(pos), allW: \(vWidth)")
-            var len = boundWidth/4
+        //var len = boundWidth/4/zm
         //選択されたセルを探す
         let targetMemo:UIView = memo[fNum].viewWithTag(nowGyouNo)!
             if disp == 0{ len = 0}
         //１行目と３２行目の下線は実践、他は破線
             if nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
-                print("aaaaaaaaaa")
-                targetMemo.addCursolLine2(color: UIColor.black, lineWidth: 1.8, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                print("aaaaaaaaaa:\(zm)")
+                targetMemo.addCursolLine2(color: UIColor.magenta, lineWidth: 2.0, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }else{
-                print("bbbbbbbbb")
-                targetMemo.addCursolLine(color: UIColor.black, lineWidth: 1, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                print("bbbbbbbbb:\(zm)")
+                targetMemo.addCursolLine(color: UIColor.magenta, lineWidth: 1, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }
         }
     }
