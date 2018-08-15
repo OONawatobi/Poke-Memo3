@@ -24,7 +24,7 @@ extension UIView {
         let dashedLineLayer: CAShapeLayer = CAShapeLayer()
         dashedLineLayer.frame = self.bounds
         dashedLineLayer.strokeColor = color.cgColor
-        dashedLineLayer.lineWidth = lineWidth
+        dashedLineLayer.lineWidth = 1.0//lineWidth
         dashedLineLayer.lineDashPattern = [lineSize, spaceSize]
         let path: CGMutablePath = CGMutablePath()
         
@@ -88,6 +88,7 @@ extension UIView {
         }
         return self
     }
+
     //20180813作成:下線が実践の場合
     func addCursolLine2(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber,posX:CGFloat,lenX:CGFloat) -> UIView {
         self.layer.sublayers = nil//既存の下線を削除する
@@ -97,19 +98,27 @@ extension UIView {
         border.frame = CGRect(x:0, y:self.frame.size.height - 1.5,width:
             self.frame.size.width, height:1.5)
         self.layer.addSublayer(border)
-        /**破線を引く**
-        let dashedLineLayer: CAShapeLayer = CAShapeLayer()
-        dashedLineLayer.frame = self.bounds
-        dashedLineLayer.strokeColor = UIColor.gray.cgColor
-        dashedLineLayer.lineWidth = lineWidth
-        dashedLineLayer.lineDashPattern = [lineSize, spaceSize]
-        let path: CGMutablePath = CGMutablePath()
-        //case .Down:
-        path.move(to: CGPoint(x: 0, y: self.frame.size.height))
-        path.addLine(to: CGPoint(x: self.frame.size.width, y: self.frame.size.height))
-        dashedLineLayer.path = path
-        self.layer.addSublayer(dashedLineLayer)
-         */
+        
+        if lenX != 0{  //lineWidth==0の場合はカーソルだけ削除する
+            //**カーソル線を引く**
+            let cursolLayer = CALayer()
+            cursolLayer.backgroundColor = color.cgColor
+            cursolLayer.frame = CGRect(x:posX, y:self.frame.size.height - lineWidth,width:lenX, height:lineWidth)
+            
+            self.layer.addSublayer(cursolLayer)
+        }
+        return self
+    }
+    //20180815作成:下線が実践の場合(子メモ用）
+    func addLineForChild(color: UIColor, lineWidth: CGFloat,posX:CGFloat,lenX:CGFloat,spaceX:CGFloat) -> UIView {
+        self.layer.sublayers = nil//既存の下線を削除する
+        //**実線を引く**
+        let border = CALayer()
+        border.backgroundColor = UIColor.red.withAlphaComponent(0.6).cgColor
+        border.frame = CGRect(x:spaceX, y:self.frame.size.height - 1.0,width:
+            self.frame.size.width - spaceX*2, height:0.5)
+        self.layer.addSublayer(border)
+        
         if lenX != 0{  //lineWidth==0の場合はカーソルだけ削除する
             //**カーソル線を引く**
             let cursolLayer = CALayer()
@@ -317,7 +326,7 @@ extension UIImage {
         var textRect  = CGRect(x:self.size.width - 15, y:self.size.height/4, width:25, height:self.size.height/2)
         let textRect2  = CGRect(x:self.size.width - 45, y:self.size.height/4, width:75, height:self.size.height/2)
         //+-+-let textRect2  = CGRect(x:self.size.width - 60 - 15, y:self.size.height/4, width:75, height:self.size.height/2)
-        //メモ画面のサイズに応じて文字サイズを切り替える
+        //メモ画面のサイズに応じて文字サイズを切り替える//?何をしてるの、必要？★
         if self.size.height > vHeight/2{
             font = font2
             textRect = textRect2
@@ -326,15 +335,18 @@ extension UIImage {
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
-            NSForegroundColorAttributeName: UIColor.red,
+            NSForegroundColorAttributeName: UIColor.red.withAlphaComponent(0.4) ,
             NSParagraphStyleAttributeName: textStyle
         ]
         if del == true{
-        //くり抜き?エリアを透明にする
+            //くり抜き?エリアを透明にする
             let context: CGContext = UIGraphicsGetCurrentContext()!
             context.clear(textRect)
         }else{
-        //マークを追加する
+            //くり抜き?エリアを透明にする
+            let context: CGContext = UIGraphicsGetCurrentContext()!
+            context.clear(textRect)
+            //マークを追加する
             text.draw(in: textRect, withAttributes: textFontAttributes)
         }
         let newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -378,7 +390,8 @@ var posOffset:CGFloat = 50//+-+-　上記エリアの縦位置
 var childFlag = false//+-+- 子メモが開いている時はtrue
 var oyaGyou:Int = 101//メモページの親行番号
 //let childColor = UIColor.rgb(r: 250, g: 230, b: 240, alpha: 1)
-let childColor = UIColor.rgb(r: 234, g: 204, b: 99, alpha: 0.8)//indexカーソルの色８
+let childColor = UIColor.rgb(r: 255, g: 247, b: 221, alpha: 1)//indexカーソルの色８
+//rgb(r: 255, g: 252, b: 244, alpha: 1)
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
 var debug1:Bool = false//デバグ用：ページタグ表示
 var debug2:Bool = false//デバグ用：mx[]表示
@@ -591,17 +604,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         testV.layer.position = CGPoint(x: 0, y:vHeight/2 )
         
         //+-+-子メモの初期化
+        //仮に設定
         subMemoView = UIView(frame: CGRect(x: 0, y:0 , width: leafWidth, height:(leafHeight + leafMargin)*CGFloat(pageGyou2) + leafMargin))
-        subMemoView.layer.borderColor = UIColor.gray.withAlphaComponent(0.9).cgColor
+        /*
+        subMemoView.layer.borderColor = UIColor.blue.withAlphaComponent(0.9).cgColor
         subMemoView.layer.borderWidth = 1.5
         subMemoView.layer.cornerRadius = 10.0//角丸にする20180614追加
-        //+-+- シャドウカラー
+        */
+       /* //+-+- シャドウカラー
         subMemoView.layer.masksToBounds = false
         subMemoView.layer.shadowColor = UIColor.black.cgColor/* 影の色 */
         subMemoView.layer.shadowOffset = CGSize(width:0,height: 1)//  シャドウサイズ
         subMemoView.layer.shadowOpacity = 0.5 // 透明度
         subMemoView.layer.shadowRadius = 8 // 角度(距離）
-
+        */
         /** spaceViewを生成(透明：タッチ緩衝の為) **/
         //underViewの下側
         spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight , width: boundWidth, height: 10))
@@ -815,11 +831,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let memo2 = MemoView(frame: memoFrame)
             memo = [memo0,memo1,memo2]
             //+-+- 子メモの初期化$
-            let childFrame = CGRect(x:0,y: 0,width:leafWidth*1,height: (leafHeight + leafMargin)*CGFloat(pageGyou2))
+            let childFrame = CGRect(x:0,y: 0,width:leafWidth*1,height: (leafHeight + leafMargin)*CGFloat(pageGyou2) + 10)
             subMemo = MemoView(frame: childFrame)
             subMemo.layer.cornerRadius = 10.0//角丸にする20180614追加
-            subMemo.layer.borderColor = childColor.cgColor
-            subMemo.layer.borderWidth = leafMargin*1.2
+            subMemo.layer.borderColor = UIColor.gray.cgColor//childColor.cgColor
+            subMemo.layer.borderWidth = 2//leafMargin*1.2
             
             // メモページの背景色をつける:トランジション時だけ背景色に透明度をつける為
             for n in 0...2{
@@ -1027,7 +1043,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func index(_ sender: UIBarButtonItem) {
         //子メモが表示されている時は
-        if childFlag == true{ return}
+        //★20180815 if childFlag == true{ return}
         //拡大表示の時はパス
         if bigFlag == true{ return}
         //パレットが開いている時は
@@ -1055,6 +1071,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //=== ページが非表示の場合 ===
         if isIndexMode == false{
+           //★20180815子メモが開いている場合は子メモを閉じる
+            if childFlag == true{ childMemoClose(ngn: oyaGyou)}
+
             //表示サイズを変更する
             myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(maxPageNum + memoLowerMargin/2) + topOffset)
             myScrollView.contentOffset.y = -40//スクロール位置：TOP
@@ -2944,8 +2963,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isPalleteMode! { return }//パレットが表示中は実行しない
         if pageNum == 1{ return }//１ページが最終ページ
         //+-+- 子メモが表示されている時は
-        if childFlag == true{ return}
-
+        //if childFlag == true{ return}
+        //★20180815子メモが開いている場合は子メモを閉じる
+        if childFlag == true{ childMemoClose(ngn: oyaGyou)}
         for n in 0...2{//ボーダーラインを付ける(ページめくりの時の枠）
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
@@ -2986,8 +3006,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isPalleteMode! { return }//パレットが表示中は実行しない
         if pageNum >= 30{ return }
         //+-+- 子メモが表示されている時は
-        if childFlag == true{ return}
-
+        //if childFlag == true{ return}
+        //★20180815子メモが開いている場合は子メモを閉じる
+        if childFlag == true{ childMemoClose(ngn: oyaGyou)}
+        
         for n in 0...2{
             memo[n].layer.borderColor = UIColor.gray.cgColor
             memo[n].layer.borderWidth = 1
@@ -3311,13 +3333,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("777777777")
         subMemoView.removeFromSuperview()//一旦、子メモを削除する
         //let rect1:CGRect = CGRect(x:0, y:0, width:leafWidth, height:5)//$$
-        let rect2:CGRect = CGRect(x:0, y:0, width:leafWidth, height:(leafHeight + leafMargin)*CGFloat(pageGyou2) + leafMargin)//$$
+        let rect2:CGRect = CGRect(x:0, y:0, width:leafWidth, height:(leafHeight + leafMargin)*CGFloat(pageGyou2) + leafMargin + 5)//$$
         subMemoView.frame = rect2//$$ アニメーション時はrect1を使用する
         posOffset = topOffset + (leafHeight + leafMargin)*CGFloat(tag%100) + 5//- leafMargin //- leafHeight/2
         let cvHeigt:CGFloat = subMemoView.layer.bounds.height
         subMemoView.layer.position.y = posOffset + cvHeigt/2
-        subMemoView.backgroundColor = childColor
-        subMemo.backgroundColor = UIColor.clear
+        subMemoView.backgroundColor = UIColor.clear
+        subMemo.backgroundColor = childColor
+        //+-+- シャドウカラー
+         subMemoView.layer.masksToBounds = false
+         subMemoView.layer.shadowColor = UIColor.black.cgColor/* 影の色 */
+         subMemoView.layer.shadowOffset = CGSize(width:0,height: 1)//  シャドウサイズ
+         subMemoView.layer.shadowOpacity = 0.5 // 透明度
+         subMemoView.layer.shadowRadius = 15 //←8 角度(距離）
+         //
         subMemoView.addSubview(subMemo)//$$ アニメーション時は削除
         memo[fNum].addSubview(subMemoView)
         print("nowGyouNo:\(nowGyouNo)")
@@ -3407,25 +3436,29 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
      20p:2001-2032  child:200101-200108,203201-203208
      30p:3001-3032  child:300101-300108,303201-303208
  ---------------------------------------------------------------- */
-    func memoCursol(disp:Int){
+    func memoCursol(disp:Int){//★20180812:メモにカーソルを表示(1),非表示(0)
         if isPalleteMode == true{
         print("+nowGyouNo: \(nowGyouNo)")
         let zm:CGFloat = bigFlag ? 1.5 : 1.0//★20180814
         var len =  boundWidth/4/zm
-        let add = bigFlag ? len : 0//★20180814
-        let pos = (vWidth/2 - drawableView.layer.position.x)/4/zm + add
-            print("palette pos: \(pos), allW: \(vWidth)")
-        //var len = boundWidth/4/zm
+        let pos = (vWidth*zm/2 - drawableView.layer.position.x)/4/zm
+            //let add = bigFlag ? len : 0//★20180814
+            //let pos = (vWidth/2 - drawableView.layer.position.x)/4/zm + add
+            //   print("palette pos: \(pos), allW: \(vWidth)")
         //選択されたセルを探す
         let targetMemo:UIView = memo[fNum].viewWithTag(nowGyouNo)!
             if disp == 0{ len = 0}
         //１行目と３２行目の下線は実践、他は破線
-            if nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
+            //let clr = UIColor.rgb(r: 0, g: 141, b: 183, alpha: 1)
+            if nowGyouNo > 10000{
+                targetMemo.addLineForChild(color: UIColor.red, lineWidth: 1.5, posX: pos, lenX: len,spaceX: 7)
+            }else if
+                nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
                 print("aaaaaaaaaa:\(zm)")
-                targetMemo.addCursolLine2(color: UIColor.magenta, lineWidth: 2.0, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                targetMemo.addCursolLine2(color: UIColor.blue, lineWidth: 2.2, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }else{
                 print("bbbbbbbbb:\(zm)")
-                targetMemo.addCursolLine(color: UIColor.magenta, lineWidth: 1, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                targetMemo.addCursolLine(color: UIColor.blue, lineWidth: 1.8, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }
         }
     }

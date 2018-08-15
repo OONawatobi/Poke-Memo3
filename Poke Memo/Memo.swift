@@ -45,7 +45,7 @@ class MemoView:UIView{
         let tag = baseTag
         print("●●add3Mark")
         let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
-        let st = "▷"
+        let st = "▶︎"//"▷"★20180815
         print("st:▽")
         targetMemo.image = targetMemo.image?.addText_Mark(text: st,del:del)
     }
@@ -305,19 +305,22 @@ class MemoView:UIView{
         //indexページだけtopOffsetを大きくする
         let topOffset2:CGFloat = 0
         let pagePosX = (leafWidth)/2 //フレームの中点ｘ座標
-        for idx in 0..<pageGyou2 {
+        for idx in 0..<pageGyou2 { //0-7
             let myLeaf = Leaf(frame: leafRect)//リーフの初期化
             myLeaf.backgroundColor = UIColor.clear
             let yPos:CGFloat = topOffset2 + (leafHeight + leafMargin)*CGFloat(idx + 1) - leafHeight/2
             myLeaf.layer.position = CGPoint(x: pagePosX , y:yPos)
- 
-                //leafの枠の下線を灰色にする
+             //leafの枠の下線を灰赤色にする
+            myLeaf.addLineForChild(color: UIColor.blue, lineWidth: 1.0,posX:10,lenX:0, spaceX: 7)//poXはここでは不要★20180815
+            //myLeaf.drawDashedLine(color: UIColor.red.withAlphaComponent(0.3), lineWidth: 0.5, lineSize: 4, spaceSize: 0, type: .Down)
+            /*   //leafの枠の下線を灰色にする
                 if idx == pageGyou2 - 1{
                     myLeaf.addBottomBorderWithColor(color: UIColor.gray, width: 1.0)
                 }else{
                     myLeaf.drawDashedLine(color: UIColor.red.withAlphaComponent(0.3), lineWidth: 0.5, lineSize: 4, spaceSize: 0, type: .Down)
                 }
-  
+              */
+            
             let myTag = bTag*100 + idx + 1//$ tagをつける.10101-10108|303201-303208
             myLeaf.tag = myTag
             myLeaf.image = bImage//グローバル変数：[leafWidth] x [lesfHeight]+-+-10x10に変更
