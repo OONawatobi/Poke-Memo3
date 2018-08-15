@@ -70,7 +70,7 @@ extension UIView {
         let dashedLineLayer: CAShapeLayer = CAShapeLayer()
         dashedLineLayer.frame = self.bounds
         dashedLineLayer.strokeColor = UIColor.gray.cgColor
-        dashedLineLayer.lineWidth = lineWidth
+        dashedLineLayer.lineWidth = 1.0//lineWidth
         dashedLineLayer.lineDashPattern = [lineSize, spaceSize]
         let path: CGMutablePath = CGMutablePath()
         //case .Down:
@@ -114,7 +114,7 @@ extension UIView {
         self.layer.sublayers = nil//既存の下線を削除する
         //**実線を引く**
         let border = CALayer()
-        border.backgroundColor = UIColor.red.withAlphaComponent(0.6).cgColor
+        border.backgroundColor = UIColor.red.withAlphaComponent(0.5).cgColor
         border.frame = CGRect(x:spaceX, y:self.frame.size.height - 1.0,width:
             self.frame.size.width - spaceX*2, height:0.5)
         self.layer.addSublayer(border)
@@ -390,8 +390,8 @@ var posOffset:CGFloat = 50//+-+-　上記エリアの縦位置
 var childFlag = false//+-+- 子メモが開いている時はtrue
 var oyaGyou:Int = 101//メモページの親行番号
 //let childColor = UIColor.rgb(r: 250, g: 230, b: 240, alpha: 1)
-let childColor = UIColor.rgb(r: 255, g: 247, b: 221, alpha: 1)//indexカーソルの色８
-//rgb(r: 255, g: 252, b: 244, alpha: 1)
+//let childColor = UIColor.rgb(r: 255, g: 247, b: 221, alpha: 1)//indexカーソルの色８
+let childColor = UIColor.rgb(r: 255, g: 252, b: 244, alpha: 1)
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
 var debug1:Bool = false//デバグ用：ページタグ表示
 var debug2:Bool = false//デバグ用：mx[]表示
@@ -3451,14 +3451,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //１行目と３２行目の下線は実践、他は破線
             //let clr = UIColor.rgb(r: 0, g: 141, b: 183, alpha: 1)
             if nowGyouNo > 10000{
-                targetMemo.addLineForChild(color: UIColor.red, lineWidth: 1.5, posX: pos, lenX: len,spaceX: 7)
+                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 1.5, posX: pos, lenX: len,spaceX: 7)
             }else if
                 nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
                 print("aaaaaaaaaa:\(zm)")
-                targetMemo.addCursolLine2(color: UIColor.blue, lineWidth: 2.2, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                targetMemo.addCursolLine2(color: UIColor.blue, lineWidth: 1.7, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }else{
                 print("bbbbbbbbb:\(zm)")
-                targetMemo.addCursolLine(color: UIColor.blue, lineWidth: 1.8, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                targetMemo.addCursolLine(color: UIColor.blue, lineWidth: 1.5, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }
         }
     }
