@@ -335,7 +335,7 @@ extension UIImage {
         let textStyle = NSMutableParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         let textFontAttributes = [
             NSFontAttributeName: font,
-            NSForegroundColorAttributeName: UIColor.red.withAlphaComponent(0.4) ,
+            NSForegroundColorAttributeName: UIColor.magenta.withAlphaComponent(1.0) ,
             NSParagraphStyleAttributeName: textStyle
         ]
         if del == true{
@@ -390,8 +390,8 @@ var posOffset:CGFloat = 50//+-+-　上記エリアの縦位置
 var childFlag = false//+-+- 子メモが開いている時はtrue
 var oyaGyou:Int = 101//メモページの親行番号
 //let childColor = UIColor.rgb(r: 250, g: 230, b: 240, alpha: 1)
-//let childColor = UIColor.rgb(r: 255, g: 247, b: 221, alpha: 1)//indexカーソルの色８
-let childColor = UIColor.rgb(r: 255, g: 252, b: 244, alpha: 1)
+let childColor = UIColor.rgb(r: 253, g: 250, b: 228, alpha: 1)//255,252,244:薄薄黄色
+//252,249,227:薄黄色//255,242,244:薄赤紫//255,247,217:indexカーソルの色
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
 var debug1:Bool = false//デバグ用：ページタグ表示
 var debug2:Bool = false//デバグ用：mx[]表示
@@ -757,7 +757,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton9.backgroundColor = UIColor.clear
         editButton9.layer.cornerRadius = 8
         editButton9.addTarget(self, action: #selector(ViewController.btn9_click(sender:)), for:.touchDown)
-        editButton9.setImage(UIImage(named: "2Left.png"), for:UIControlState.normal)
+        editButton9.setImage(UIImage(named: "2Left2.png"), for:UIControlState.normal)
         //editButton9.setTitle("|<", for: UIControlState.normal)
         myEditView.addSubview(editButton9)
         
@@ -766,7 +766,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton10.backgroundColor = UIColor.clear
         editButton10.layer.cornerRadius = 8
         editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchDown)
-        editButton10.setImage(UIImage(named: "2Right.png"), for:UIControlState.normal)
+        editButton10.setImage(UIImage(named: "2Right2.png"), for:UIControlState.normal)
         //editButton10.setTitle(">|", for: UIControlState.normal)
         myEditView.addSubview(editButton10)
 
@@ -1497,6 +1497,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
    
     func ok2(){//★2018081314
         if bigFlag {return}//拡大表示中はメモ行に反映させない
+        if myEditFlag {return}//編集パレット表示中はメモ行に反映させない
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
         drawableView.editOK = false//編集パネル非表示の場合
         upToMemo()//パレット画面をメモ行にコピーする
@@ -3455,7 +3456,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }else if
                 nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
                 print("aaaaaaaaaa:\(zm)")
-                targetMemo.addCursolLine2(color: UIColor.blue, lineWidth: 1.7, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                targetMemo.addCursolLine2(color: UIColor.blue, lineWidth: 2.0, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }else{
                 print("bbbbbbbbb:\(zm)")
                 targetMemo.addCursolLine(color: UIColor.blue, lineWidth: 1.5, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)

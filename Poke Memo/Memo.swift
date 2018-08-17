@@ -45,7 +45,7 @@ class MemoView:UIView{
         let tag = baseTag
         print("●●add3Mark")
         let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
-        let st = "▶︎"//"▷"★20180815
+        let st = "∇"//"▶︎"//★20180815"▷"
         print("st:▽")
         targetMemo.image = targetMemo.image?.addText_Mark(text: st,del:del)
     }
