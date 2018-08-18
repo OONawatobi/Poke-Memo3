@@ -11,6 +11,13 @@ import UIKit
 class DrawableView: UIView {
     var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
+    var lastPenW:CGFloat = 1//直前のペン幅
+    var sliderN:CGFloat = 7//スライダー番号
+    var k_dt:CGFloat = 0//
+    var k_z:CGFloat = 1.0//象限別のペン幅係数
+    var lastMovDistance:CGFloat = 0//直前のポイント間の距離
+    var movDistance:CGFloat = 0//ポイント間の距離
+    var lastMidPoint:CGPoint!//★20180818
     var lastDrawImage: UIImage!
     var lastXm:CGFloat = 0//一つ前のxm[]の値
     var lastPoint:CGPoint!//++++++++
@@ -198,6 +205,7 @@ class DrawableView: UIView {
     
     // タッチされた
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
+         callig = true
         print("touchbegan")
         okEnable = true//メイン画面のokボタンの受付を許可する
         let currentPoint = touches.first!.location(in: self)
@@ -207,6 +215,7 @@ class DrawableView: UIView {
         bezierPath.move(to:currentPoint)
         lastPoint = currentPoint
 //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+        if callig { lastMidPoint = currentPoint}
 //▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
         //右側エリアに入っているか判定
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
@@ -245,8 +254,12 @@ class DrawableView: UIView {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         //print("touchesMoved\(sCount)")
         let currentPoint = touches.first!.location(in:self)//  @ self:UIView @
-        if bezierPath.isEmpty == true { return }//タッチされていない場合(Pathが初期化前)はパス　？これって必要？
-    
+        /* ★20180817 削除してみる、問題なさそうに思う
+        if bezierPath.isEmpty == true {
+        print("◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️")
+        return }//タッチされていない場合(Pathが初期化前)はパス　？これって必要？
+        */
+ 
     //---- 通常モード ----
        if rightFlag == false{
         //mx最大値を取得
@@ -254,11 +267,48 @@ class DrawableView: UIView {
     
         //中間点を作成
     //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
-        bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
-
-        drawLine(path:bezierPath)
-        lastPoint = currentPoint
+        if !callig{
+            let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
+            bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
+            drawLine(path:bezierPath)
+            lastPoint = currentPoint
+        }else{
+            // ● 中間点を作成
+            let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
+            let mid2Point = CGPoint(x: (lastMidPoint.x + midPoint.x)/2, y: (lastMidPoint.y + midPoint.y)/2)
+            let addPoint = CGPoint(x: (lastPoint.x + mid2Point.x)/2, y: (lastPoint.y + mid2Point.y)/2)
+            //移動量の抽出
+            let deltX = currentPoint.x - lastPoint.x
+            let deltY = currentPoint.y - lastPoint.y
+            movDistance = abs(_: (deltX - deltY))
+            let k_dt = sqrt(pow(deltX,2) + pow(deltY,2))//変化量の長さがの２乗
+            // 座標軸を左に45度回転させる
+            let dtx = (deltX - deltY)*0.7
+            let dty = (deltX + deltY)*0.7
+            
+            //移動量ベクトルの象限判定（1,2,3,4)
+            var zone:Int = 2                           // 4 | 1
+            if dtx >= 0 { zone = (dty < 0) ? 1 : 2 }   //  —+—
+            else{ zone = (dty >= 0) ? 3 : 4}           // 3 | 2
+            //線幅調整値の計算（象限別）
+            switch zone {
+            case 1: k_z = 2 - (dtx - dty)/k_dt     //1-0.6
+            case 2: k_z = 1
+            case 3: k_z = (dty - dtx)/k_dt    //1-1.4
+            case 4: k_z = 1
+            default: k_z = 1
+            }
+            // ● 描画実行
+            bezierPath.removeAllPoints()
+            bezierPath.move(to: lastMidPoint)
+            bezierPath.addLine(to:addPoint)
+            bezierPath.addLine(to:midPoint)
+            drawLine2(path:bezierPath)
+            lastPoint = currentPoint
+            lastMidPoint = midPoint
+            lastMovDistance = movDistance
+            
+        }
     //▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
         //自動スクロール機能向け処理
         if bigFlag == false{
@@ -432,15 +482,35 @@ class DrawableView: UIView {
         path.lineWidth = penW//ペン幅を指定する
         path.lineCapStyle = .square
         path.stroke()//描画する
-//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-        
         //タッチEnd時に画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
         secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
         //print(":::::func drawLine")
     }
-    
+    //非ベジエ描画プログラム
+    func drawLine2(path:UIBezierPath) {
+        let penColor = penC
+        penColor?.setStroke()
+        //  path.lineWidth = penW//ペン幅を指定する
+        path.lineCapStyle =   .round//.butt//.square//
+        if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
+        //★修正ペンモード時はベジェモードとする？？モード切替時に行う？ここには来ない！
+        //penw = gPw
+        //ペン幅を指定する
+        var v_z = k_dt*sliderN * (0.25 + (penW - 7)/25)     //k_dt：△l 速度が大きい場合のみ作用させる
+        v_z = v_z >= penW ? penW : v_z      //0.5--1.0
+        var w = k_dt >= 5 ? penW * k_z - v_z : penW * k_z       //今回の線幅計算値
+        w = w < 1 ? 1 : w
+        let w2 = (lastPenW + w)/2 //1つ前の線幅との平均をとる
+        path.lineWidth = w2
+        lastPenW  = w2
+        //描画する
+        path.stroke()
+        
+        //タッチEnd時に画面を背景にコピーする
+        lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
+        secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
+    }
     
  /*
     //ストロークの線色を変更する//使用しているの？
