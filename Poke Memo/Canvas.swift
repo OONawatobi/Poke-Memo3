@@ -12,11 +12,9 @@ class DrawableView: UIView {
     var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
     var lastPenW:CGFloat = 1//直前のペン幅
-    var sliderN:CGFloat = 7//スライダー番号
+    var sliderN:CGFloat = 2//スライダー番号
     var k_dt:CGFloat = 0//
     var k_z:CGFloat = 1.0//象限別のペン幅係数
-    var lastMovDistance:CGFloat = 0//直前のポイント間の距離
-    var movDistance:CGFloat = 0//ポイント間の距離
     var lastMidPoint:CGPoint!//★20180818
     var lastDrawImage: UIImage!
     var lastXm:CGFloat = 0//一つ前のxm[]の値
@@ -205,7 +203,6 @@ class DrawableView: UIView {
     
     // タッチされた
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
-         callig = true
         print("touchbegan")
         okEnable = true//メイン画面のokボタンの受付を許可する
         let currentPoint = touches.first!.location(in: self)
@@ -280,8 +277,9 @@ class DrawableView: UIView {
             //移動量の抽出
             let deltX = currentPoint.x - lastPoint.x
             let deltY = currentPoint.y - lastPoint.y
-            movDistance = abs(_: (deltX - deltY))
-            let k_dt = sqrt(pow(deltX,2) + pow(deltY,2))//変化量の長さがの２乗
+          
+            k_dt = sqrt(pow(deltX,2) + pow(deltY,2))//変化量の長さがの２乗
+            print(" ▶︎▶︎▶︎▶︎▶︎ k_dt: \(k_dt)")
             // 座標軸を左に45度回転させる
             let dtx = (deltX - deltY)*0.7
             let dty = (deltX + deltY)*0.7
@@ -306,7 +304,7 @@ class DrawableView: UIView {
             drawLine2(path:bezierPath)
             lastPoint = currentPoint
             lastMidPoint = midPoint
-            lastMovDistance = movDistance
+            //lastMovDistance = movDistance
             
         }
     //▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
@@ -489,16 +487,18 @@ class DrawableView: UIView {
     }
     //非ベジエ描画プログラム
     func drawLine2(path:UIBezierPath) {
+        sliderN = 0.7
+        
         let penColor = penC
         penColor?.setStroke()
         //  path.lineWidth = penW//ペン幅を指定する
         path.lineCapStyle =   .round//.butt//.square//
         if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
         //★修正ペンモード時はベジェモードとする？？モード切替時に行う？ここには来ない！
-        //penw = gPw
         //ペン幅を指定する
         var v_z = k_dt*sliderN * (0.25 + (penW - 7)/25)     //k_dt：△l 速度が大きい場合のみ作用させる
         v_z = v_z >= penW ? penW : v_z      //0.5--1.0
+        print("▲  penw: \(penW) ◾️v_z: \(v_z) k_dt: \(k_dt) sliderN: \(sliderN) ")
         var w = k_dt >= 5 ? penW * k_z - v_z : penW * k_z       //今回の線幅計算値
         w = w < 1 ? 1 : w
         let w2 = (lastPenW + w)/2 //1つ前の線幅との平均をとる
@@ -511,25 +511,6 @@ class DrawableView: UIView {
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
         secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
     }
-    
- /*
-    //ストロークの線色を変更する//使用しているの？
-    func eXImageColor(img:UIImage)->UIImage{
-        let imv:UIImageView = UIImageView(frame: self.frame)
-        imv.image = img.withRenderingMode(.alwaysTemplate)
-        imv.tintColor = UIColor.orange
-        lastDrawImage = imv.GetImage()
-        return imv.GetImage()
-    }
- */
-/*
-    let tempPallete = UIView(frame: CGRect(x:0,y:0,width:vWidth,height:vHeight))
-    func upToMemoTmp(){
-        //直前のパレット画面画像
-        //tempPallete.backgroundColor = UIColor( パレット画像
-        //memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
-        
-    }
-*/
+
  }
  

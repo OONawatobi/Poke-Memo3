@@ -1178,12 +1178,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func menu(_ sender: UIBarButtonItem) {
-
+        
+        if isPalleteMode == true {
+            callig = callig == false ? true :false//★20180819テスト専用
+            print("callig: \(callig)")
+            return }
+        
         if animeFlag == true {return}
         //indexページが開いている時は
         if isIndexMode == true { return }//Indexが表示中は実行しない
         //パレットの表示中は実行しない
-        if isPalleteMode == true { return }
+
         //上記の変更理由：パレット表示中にペン幅を変更できるようになった為
         /* 20180603に変更
         if isPalleteMode == true{//パレット内容を保存して閉じる
@@ -1365,7 +1370,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let palImage = drawableView.GetImage()
         let myImage1 = palImage.ResizeUIImage(width: vWidth/3, height: vHeight/3)
         print("fNum:\(fNum) ,tag: \(nowGyouNo)")
-        // メモにパレット内容を書き込む
+        // メモにパレット内容を書き込む(書き込みが5回以上ではリサイズしない）
         let rn = resn[String(nowGyouNo)]!//+-+
         if rn < 5 {
            memo[fNum].addMemo(img: myImage1!,tag:nowGyouNo)
@@ -1394,7 +1399,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //非空白行の最上値
         print("numOfUsedLine:\(numOfUsedLine(pn:pageNum))")
         //ペンモードの初期化
-        //penMode()//黒ペンモードにする★20180813
+        //penMode()//黒ペンモードにする★20180813 勝手に黒色に戻ることを止める
         settingWite()//設定値を外部に保存する
     }
     
@@ -1406,7 +1411,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         //---------- パレット編集時 ---------------------------
         if isPalleteMode == false{return}//パレットが表示されて無い場合は🐞
-        if myEditFlag == true{ //編集パネルが表示されている場合
+        //===== 編集パネルが表示の場合 =====
+        if myEditFlag == true{
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
           drawableView.editOK = true//編集パネル表示の場合
           if editFlag == true{//カーソルモードが選択されている場合
@@ -1437,7 +1443,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     //+-+ resn[]を更新する(0にリセット)
                     resn[String(nowGyouNo)] = 0
                     m2pFlag = true//+-+ リサイズ回数追加を可能とする（リセット）
-
+                    //ok2()//★20180819
                 }else{ //編集パネル”CLR”以外の処理はココで行う
                     editedView = drawableView.secondView.editPallete(sel: myInt)
                     
@@ -1464,7 +1470,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 drawableView.get3VImage(open:0)//編集結果画面を保存する
                 //+- メイン画面のokボタンの受付を許可する
                 okEnable = true//+-
-                
+               ok2()//★20180819
             }else{ //カーソル幅が狭い場合）
                 print("カーソル巾がゼロです")
                 //カーソルを削除する
@@ -1475,8 +1481,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
           }else{ return }//モードが選択されていない場合(editFlag == false)
             //編集画面表示中で編集モードが選択されていない場合はパス
             //if myEditFlag == true{return}
-            
-        }else{ //編集パネルが非表示の場合
+        //===== 編集パネルが非表示の場合 =====
+        }else{
         /**      通常の文字入力時      **/
             //if okEnable == false{return}
             //+- okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
