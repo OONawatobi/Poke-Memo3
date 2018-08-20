@@ -3081,6 +3081,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func modalChanged(TouchNumber: Int) {// protocol ScrollViewDelegate
         print("TouchNumber:@\(TouchNumber)")
         print("fNum:\(fNum)")
+        if myEditFlag{return}//★20180820
         if bigFlag == true{
             return//★20180814 ←zoom(zoom2)//倍率を元に戻す
         }
@@ -3200,7 +3201,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func selectNextGyou() {//$$$$
-        print("selectNextGyou")
+        print("★selectNextGyou")
         
         //lastGyouNo = nowGyouNo//★20180812追加
         memoCursol(disp: 0)//★20180812追加

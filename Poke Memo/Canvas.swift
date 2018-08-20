@@ -481,7 +481,7 @@ class DrawableView: UIView {
     func drawLine2(path:UIBezierPath) {
         
         if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
-        sliderN = 0.7
+        sliderN = 1.3
         
         let penColor = penC
         penColor?.setStroke()
@@ -489,11 +489,12 @@ class DrawableView: UIView {
         path.lineCapStyle =   .round//.butt//.square//
         //★修正ペンモード時はベジェモードとする？？モード切替時に行う？ここには来ない！
         //ペン幅を指定する
+        var penw = penW + 1
         var v_z = k_dt*sliderN * (0.25 + (penW - 7)/25)     //k_dt：△l
-        v_z = v_z >= penW ? penW : v_z      //0.5--1.0
+        v_z = v_z >= penw ? penw : v_z      //0.5--1.0
         print("▲  penw: \(penW) ◾️v_z: \(v_z) k_dt: \(k_dt) sliderN: \(sliderN) ")
 
-        var w = k_dt >= 5 ? penW * k_z - v_z : penW * k_z       //今回の線幅計算値
+        var w = k_dt >= 5 ? penw * k_z - v_z : penw * k_z       //今回の線幅計算値
         w = w < 1 ? 1 : w
         let w2 = (lastPenW + w)/2 //1つ前の線幅との平均をとる
         path.lineWidth = w2
