@@ -12,7 +12,7 @@ class DrawableView: UIView {
     var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
     var lastPenW:CGFloat = 1//直前のペン幅
-    var sliderN:CGFloat = 2//スライダー番号
+    var sliderN:CGFloat = 0.5//スライダー番号
     var k_dt:CGFloat = 0//
     var k_z:CGFloat = 1.0//象限別のペン幅係数
     var lastMidPoint:CGPoint!//★20180818
@@ -201,19 +201,19 @@ class DrawableView: UIView {
     var timerFlag:Bool = false//タイマー起動中:true
     
     
-    // タッチされた
+    // タッチされた------------------------------------------
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
-        print("touchbegan")
-        okEnable = true//メイン画面のokボタンの受付を許可する
+        UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く ▼▼
         let currentPoint = touches.first!.location(in: self)
         print("currentPoint.x: \(currentPoint.x)")
         bezierPath = UIBezierPath()
+        bezierPath.lineCapStyle = .round
+        bezierPath.lineJoinStyle = .round
         bezierPath.lineWidth = 1.0
         bezierPath.move(to:currentPoint)
         lastPoint = currentPoint
-//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        if callig { lastMidPoint = currentPoint}
-//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+        lastMidPoint = currentPoint//20180702:カリグラフィ用
+        okEnable = true//メイン画面のokボタンの受付を許可する
         //右側エリアに入っているか判定
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
@@ -240,36 +240,34 @@ class DrawableView: UIView {
         if timer != nil{timer.invalidate()}
         myMx = 0//タッチ位置の初期化
         //+++++++++2:新タッチシステム検証用
-        UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く ▼▼
         if lastDrawImage != nil {//タッチEnd時に画面を背景にコピーするつもりだった？
             lastDrawImage.draw(at:CGPoint.zero)
         }
 
     }
     
-    // タッチが動いた
+    // タッチが動いた-----------------------------------------------
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //print("touchesMoved\(sCount)")
         let currentPoint = touches.first!.location(in:self)//  @ self:UIView @
         /* ★20180817 削除してみる、問題なさそうに思う
-        if bezierPath.isEmpty == true {
-        print("◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️")
-        return }//タッチされていない場合(Pathが初期化前)はパス　？これって必要？
+         if bezierPath.isEmpty == true {
+         print("◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️")
+         return }//タッチされていない場合(Pathが初期化前)はパス　？これって必要？
         */
- 
+ if bezierPath == nil {return}//★20180819
     //---- 通常モード ----
        if rightFlag == false{
         //mx最大値を取得
         mxTemp = max(mxTemp,currentPoint.x)
     
         //中間点を作成
-    //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        if !callig{
+    //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼カリグラフィ向けに変更した箇所▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+        if !callig{//-- 鉛筆 --
             let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
             bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
             drawLine(path:bezierPath)
             lastPoint = currentPoint
-        }else{
+        }else{//-- カリグラフィ --
             // ● 中間点を作成
             let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
             let mid2Point = CGPoint(x: (lastMidPoint.x + midPoint.x)/2, y: (lastMidPoint.y + midPoint.y)/2)
@@ -285,7 +283,7 @@ class DrawableView: UIView {
             let dty = (deltX + deltY)*0.7
             
             //移動量ベクトルの象限判定（1,2,3,4)
-            var zone:Int = 2                           // 4 | 1
+            var zone:Int = 1                           // 4 | 1
             if dtx >= 0 { zone = (dty < 0) ? 1 : 2 }   //  —+—
             else{ zone = (dty >= 0) ? 3 : 4}           // 3 | 2
             //線幅調整値の計算（象限別）
@@ -340,19 +338,13 @@ class DrawableView: UIView {
 
     }
     
-    // タッチが終わった
+    // タッチが終わった---------------------------------------------
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //moveFlag == false//タッチ状態終了
         if bezierPath == nil { return }
         //------- 右端エリア以外にタッチされた場合 -------
         if rightFlag == false{
-            
-          //??let currentPoint = touches.first!.location(in:self)
-          //??bezierPath.addQuadCurve(to: currentPoint, controlPoint: lastPoint)
-          //??drawLine(path: bezierPath)
-//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-            
+
           get2VImage()//second画像をbup[2]に保存：UNDO用
           //左方向への自動スクロール
             print("autoFlag:\(autoFlag):mxTemp=\(mxTemp)")
@@ -487,18 +479,20 @@ class DrawableView: UIView {
     }
     //非ベジエ描画プログラム
     func drawLine2(path:UIBezierPath) {
+        
+        if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
         sliderN = 0.7
         
         let penColor = penC
         penColor?.setStroke()
         //  path.lineWidth = penW//ペン幅を指定する
         path.lineCapStyle =   .round//.butt//.square//
-        if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
         //★修正ペンモード時はベジェモードとする？？モード切替時に行う？ここには来ない！
         //ペン幅を指定する
-        var v_z = k_dt*sliderN * (0.25 + (penW - 7)/25)     //k_dt：△l 速度が大きい場合のみ作用させる
+        var v_z = k_dt*sliderN * (0.25 + (penW - 7)/25)     //k_dt：△l
         v_z = v_z >= penW ? penW : v_z      //0.5--1.0
         print("▲  penw: \(penW) ◾️v_z: \(v_z) k_dt: \(k_dt) sliderN: \(sliderN) ")
+
         var w = k_dt >= 5 ? penW * k_z - v_z : penW * k_z       //今回の線幅計算値
         w = w < 1 ? 1 : w
         let w2 = (lastPenW + w)/2 //1つ前の線幅との平均をとる
