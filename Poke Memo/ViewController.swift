@@ -1182,6 +1182,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isPalleteMode == true {
             callig = callig == false ? true :false//★20180819テスト専用
             print("callig: \(callig)")
+            penMode()
             return }
         
         if animeFlag == true {return}
@@ -2785,12 +2786,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton3.layer.borderWidth = 0.5
         editButton4.layer.borderWidth = 0
         // //WC
-         var penImg:UIImage!
+        var penImg:UIImage!
+        if callig {
          switch lineWidth {
-         case 0:penImg = UIImage(named: "pen0.pdf")
-         case 1:penImg = UIImage(named: "pen3.pdf")
-         case 2:penImg = UIImage(named: "pen1.pdf")
-         default:break
+            case 0:penImg = UIImage(named: "gpen00.pdf")
+            case 1:penImg = UIImage(named: "gpen01.pdf")
+            case 2:penImg = UIImage(named: "gpen02.pdf")
+            default:penImg = UIImage(named: "gpen01.pdf")
+            }
+         }else{
+         switch lineWidth {
+            case 0:penImg = UIImage(named: "pen0.pdf")
+            case 1:penImg = UIImage(named: "pen3.pdf")
+            case 2:penImg = UIImage(named: "pen1.pdf")
+            default:penImg = UIImage(named: "pen1.pdf")
+            }
          }
          editButton3.setImage(penImg, for:UIControlState.normal)
          //
@@ -2806,7 +2816,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
           if trf == true{penWclicked()}
           else{
             trf = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){self.trf = false}
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){self.trf = false}//0.5秒後にtrfをfalseに変更する
             }
             
             

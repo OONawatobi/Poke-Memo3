@@ -262,7 +262,7 @@ class DrawableView: UIView {
     
         //中間点を作成
     //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼カリグラフィ向けに変更した箇所▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        if !callig{//-- 鉛筆 --
+        if !callig || (X_color == 1){//-- 鉛筆と修正ペン --
             let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
             bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
             drawLine(path:bezierPath)
