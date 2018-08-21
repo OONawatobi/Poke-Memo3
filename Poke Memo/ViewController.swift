@@ -1183,9 +1183,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBAction func menu(_ sender: UIBarButtonItem) {
         if myEditFlag{ return }//★20180821
         if isPalleteMode == true {
+           /*
             callig = callig == false ? true :false//★20180819テスト専用
             print("callig: \(callig)")
-            penMode()
+           */
+            showAlert()
+            //penMode()
             return }
         
         if animeFlag == true {return}
@@ -3068,6 +3071,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func wClick(){//+-+-
+        if myEditFlag {return} //★20180821
         if bigFlag {return}//+-+- ◆◆子メモ機能を無効にする
         if isIndexMode == true {
             longPress()//+-+-$$
@@ -3485,6 +3489,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 targetMemo.addCursolLine(color: UIColor.blue, lineWidth: 1.5, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }
         }
+    }
+    //★20180821:アラート追加
+    func showAlert(){
+        print("===showAlert()===")
+        let msg:String = callig ? "change to pencil" : "change to Gpen"
+        let alert = UIAlertController(title: "Calligraphy", message: msg, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title:"キャンセル",style:.cancel))
+        alert.addAction(UIAlertAction(title:"OK",style:.default,handler: {action in
+            self.ActionPenMode()
+        }))
+        self.present(alert,animated: true,completion: nil)
+    }
+    func ActionPenMode(){
+        callig = callig ? false : true
+        penMode()
     }
     
   //----------------------------------------------------------------

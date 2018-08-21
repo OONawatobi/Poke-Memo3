@@ -481,7 +481,7 @@ class DrawableView: UIView {
     func drawLine2(path:UIBezierPath) {
         
         if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
-        sliderN = 1.1
+        sliderN = 1.2
         
         let penColor = penC
         penColor?.setStroke()
