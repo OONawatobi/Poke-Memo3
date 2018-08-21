@@ -64,6 +64,7 @@ extension UIView {
         return self
     }
     //20180812作成
+    @discardableResult
     func addCursolLine(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber,posX:CGFloat,lenX:CGFloat) -> UIView {
         self.layer.sublayers = nil//既存の下線を削除する
         //**破線を引く**
@@ -90,6 +91,7 @@ extension UIView {
     }
 
     //20180813作成:下線が実践の場合
+    @discardableResult
     func addCursolLine2(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber,posX:CGFloat,lenX:CGFloat) -> UIView {
         self.layer.sublayers = nil//既存の下線を削除する
         //**実線を引く**
@@ -110,6 +112,7 @@ extension UIView {
         return self
     }
     //20180815作成:下線が実践の場合(子メモ用）
+    @discardableResult
     func addLineForChild(color: UIColor, lineWidth: CGFloat,posX:CGFloat,lenX:CGFloat,spaceX:CGFloat) -> UIView {
         self.layer.sublayers = nil//既存の下線を削除する
         //**実線を引く**
@@ -1178,7 +1181,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func menu(_ sender: UIBarButtonItem) {
-        
+        if myEditFlag{ return }//★20180821
         if isPalleteMode == true {
             callig = callig == false ? true :false//★20180819テスト専用
             print("callig: \(callig)")
@@ -1234,6 +1237,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
     var animeFlag:Bool = false//アニメ中はtrue
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
+        if myEditFlag{ return }//★20180821：Editパネルを閉じないとパレットが閉じられない王に変更した
         if changing == true { return}//メニューのアニメ中は実行しない。
         if animeFlag { return}//アニメ中は実行しない
         //if isMenuMode == true{ return }//リストメニュー表示中は実行しない
@@ -1748,6 +1752,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //飛び先のtag番号を決定する
                 nowGyouNo = nextNum!*100 + 1
             // ** [メモページ] **
+            }else if myEditFlag{
+                print("myEditFlag: \(myEditFlag)")
             }else{
             print(" == [メモページの場合] ==")
               // 仮想的にeditボタンを押す
@@ -2783,7 +2789,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         editButton3.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
-        editButton3.layer.borderWidth = 0.5
+        editButton3.layer.borderWidth = 1.0//★20180821:0.5
         editButton4.layer.borderWidth = 0
         // //WC
         var penImg:UIImage!
@@ -2831,7 +2837,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton2.setImage(UIImage(named: "white.png"), for:UIControlState.normal)
         editButton4.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
-        editButton4.layer.borderWidth = 0.5
+        editButton4.layer.borderWidth = 1.0//★20180821:0.5
         editButton3.layer.borderWidth = 0
     }
     
