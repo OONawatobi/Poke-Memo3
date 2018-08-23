@@ -48,13 +48,13 @@
 		301B5D791E8F7BC5005B1B99 /* edit18.png in Resources */ = {isa = PBXBuildFile; fileRef = 301B5D6F1E8F7BC5005B1B99 /* edit18.png */; };
 		301B5D7A1E8F7BC5005B1B99 /* edit15.png in Resources */ = {isa = PBXBuildFile; fileRef = 301B5D701E8F7BC5005B1B99 /* edit15.png */; };
 		301B5D7B1E8F7BC5005B1B99 /* undo_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 301B5D711E8F7BC5005B1B99 /* undo_ico.png */; };
+		30281EDB212D536D0009A7F4 /* gpen02.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 30281EDA212D536D0009A7F4 /* gpen02.pdf */; };
 		303238211E90A8E000E443A4 /* 3Up.png in Resources */ = {isa = PBXBuildFile; fileRef = 303238201E90A8E000E443A4 /* 3Up.png */; };
 		3034940D212ABAA5003F673E /* GpenM.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 3034940C212ABAA5003F673E /* GpenM.pdf */; };
 		3034940F212ABAB7003F673E /* GpenT.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 3034940E212ABAB7003F673E /* GpenT.pdf */; };
 		30349411212ABAC1003F673E /* GpenW.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 30349410212ABAC1003F673E /* GpenW.pdf */; };
 		30349413212AD7B0003F673E /* gpen00.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 30349412212AD7AF003F673E /* gpen00.pdf */; };
 		30349415212AD7BB003F673E /* gpen01.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 30349414212AD7BB003F673E /* gpen01.pdf */; };
-		30349417212AD7C6003F673E /* gpen02.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 30349416212AD7C6003F673E /* gpen02.pdf */; };
 		3035AB791E928AE000D9D899 /* ind_ico2.png in Resources */ = {isa = PBXBuildFile; fileRef = 3035AB781E928AE000D9D899 /* ind_ico2.png */; };
 		303A12C21EA397CD003AB4A7 /* guide.png in Resources */ = {isa = PBXBuildFile; fileRef = 303A12C11EA397CD003AB4A7 /* guide.png */; };
 		303A12CA1EA3A632003AB4A7 /* appA5.png in Resources */ = {isa = PBXBuildFile; fileRef = 303A12C91EA3A632003AB4A7 /* appA5.png */; };
@@ -264,13 +264,13 @@
 		301B5D6F1E8F7BC5005B1B99 /* edit18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit18.png; sourceTree = "<group>"; };
 		301B5D701E8F7BC5005B1B99 /* edit15.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit15.png; sourceTree = "<group>"; };
 		301B5D711E8F7BC5005B1B99 /* undo_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undo_ico.png; sourceTree = "<group>"; };
+		30281EDA212D536D0009A7F4 /* gpen02.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = gpen02.pdf; sourceTree = "<group>"; };
 		303238201E90A8E000E443A4 /* 3Up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3Up.png; sourceTree = "<group>"; };
 		3034940C212ABAA5003F673E /* GpenM.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = GpenM.pdf; sourceTree = "<group>"; };
 		3034940E212ABAB7003F673E /* GpenT.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = GpenT.pdf; sourceTree = "<group>"; };
 		30349410212ABAC1003F673E /* GpenW.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = GpenW.pdf; sourceTree = "<group>"; };
 		30349412212AD7AF003F673E /* gpen00.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = gpen00.pdf; sourceTree = "<group>"; };
 		30349414212AD7BB003F673E /* gpen01.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = gpen01.pdf; sourceTree = "<group>"; };
-		30349416212AD7C6003F673E /* gpen02.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = gpen02.pdf; sourceTree = "<group>"; };
 		3035AB781E928AE000D9D899 /* ind_ico2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ind_ico2.png; sourceTree = "<group>"; };
 		303A12C11EA397CD003AB4A7 /* guide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = guide.png; sourceTree = "<group>"; };
 		303A12C91EA3A632003AB4A7 /* appA5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appA5.png; sourceTree = "<group>"; };
@@ -456,7 +456,7 @@
 		30C2B1841DEB24F60069A5DF /* Imgs */ = {
 			isa = PBXGroup;
 			children = (
-				30349416212AD7C6003F673E /* gpen02.pdf */,
+				30281EDA212D536D0009A7F4 /* gpen02.pdf */,
 				30349414212AD7BB003F673E /* gpen01.pdf */,
 				30349412212AD7AF003F673E /* gpen00.pdf */,
 				30349410212ABAC1003F673E /* GpenW.pdf */,
@@ -882,7 +882,7 @@
 				30349415212AD7BB003F673E /* gpen01.pdf in Resources */,
 				306738221E7A896400679C20 /* swipeR.png in Resources */,
 				308ECC2E1E82AB7200576BA8 /* edits.png in Resources */,
-				30349417212AD7C6003F673E /* gpen02.pdf in Resources */,
+				30281EDB212D536D0009A7F4 /* gpen02.pdf in Resources */,
 				30A96DD21E93E2C0002361C0 /* m4xp14E.png in Resources */,
 				303C93161E51D08B00E465AB /* green2.png in Resources */,
 				30E82C541E8FD47300DA7E2D /* brown2.png in Resources */,

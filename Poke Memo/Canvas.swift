@@ -398,7 +398,7 @@ class DrawableView: UIView {
     func scrollLeft(){
         
         // 左方向へのシフトを実施する:画面の５-7分の１だけ左側に表示する
-        var dsX = vWidth/2 - mxTemp + boundWidth/7
+        var dsX = vWidth/2 - mxTemp + boundWidth/20 //★20180822:←7
         //右端制限
         dsX = dsX < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):dsX
         //左端制限

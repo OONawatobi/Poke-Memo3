@@ -2274,7 +2274,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func fc2(){// [ 現行ベージの内容を削除する ]
-        print("test2!!!!!")
+        print("fc2()!!  = oyaGyou: \(oyaGyou) =")
         //+-+- 現在開いている子メモの内容を削除する
         if childFlag == true{
             //+-+- 子メモページを閉じる
@@ -3412,6 +3412,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func childMemoClose(ngn:Int){//+-+- 子メモを閉じる$
         print("----childMemoClose-----\(nowGyouNo)")
+        print("childMemoClose()  = oyaGyou: \(oyaGyou) =")
         if childFlag == false{return}
         //if ngn<10000{return}//子メモ内をWクリックした時だけ処理する//1000
         //親行をクリックしたときだけ
@@ -3492,11 +3493,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     //★20180821:アラート追加
     func showAlert(){
-        print("===showAlert()===")
-        let msg:String = callig ? "change to pencil" : "change to Gpen"
-        let alert = UIAlertController(title: "Calligraphy", message: msg, preferredStyle: .alert)
+        print("===showAlert()=== \(langFlag)")
+        //バイリンガル処理
+        let title = (langFlag == 0) ? "** カリグラフィ **":"** calligraph **"
+        let cancel = (langFlag == 0) ? "キャンセル":"Cancel"
+        let msg_F = (langFlag == 0) ? "鉛筆モードに変更します！":"Change to pencil- mode!"
+        let msg_G = (langFlag == 0) ? "Gペンモードに変更します！":"Change to Gpen- mode!"
+        let msg:String = callig ? msg_F : msg_G
+        //--------------------------------------------------
+        let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title:"キャンセル",style:.cancel))
+        alert.addAction(UIAlertAction(title:cancel,style:.cancel))
         alert.addAction(UIAlertAction(title:"OK",style:.default,handler: {action in
             self.ActionPenMode()
         }))
