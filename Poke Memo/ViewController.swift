@@ -2279,7 +2279,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if childFlag == true{
             //+-+- 子メモページを閉じる
             //let dammy = nowGyouNo<10000 ? (nowGyouNo*100 + 1):nowGyouNo
-            childMemoClose(ngn:oyaGyou*100 + 1)//(ngn:dammy!)
+            //childMemoClose(ngn:oyaGyou*100 + 1)//(ngn:dammy!)
+            childMemoClose(ngn:oyaGyou)//★20180823
             //子メモのデータを削除・初期化する
             delChild(baseGyou: oyaGyou)
             //▽マークを削除する
