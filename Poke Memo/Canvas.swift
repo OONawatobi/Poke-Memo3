@@ -12,6 +12,7 @@ class DrawableView: UIView {
     var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
     var lastPenW:CGFloat = 1//直前のペン幅
+    var kando_k:CGFloat = 1 //sliderNに掛かる係数
     var sliderN:CGFloat = 0.5//スライダー番号
     var k_dt:CGFloat = 0//
     var k_z:CGFloat = 1.0//象限別のペン幅係数
@@ -243,7 +244,7 @@ class DrawableView: UIView {
         if lastDrawImage != nil {//タッチEnd時に画面を背景にコピーするつもりだった？
             lastDrawImage.draw(at:CGPoint.zero)
         }
-
+        lastPenW = 3.0//★
     }
     
     // タッチが動いた-----------------------------------------------
@@ -287,10 +288,17 @@ class DrawableView: UIView {
             if dtx >= 0 { zone = (dty < 0) ? 1 : 2 }   //  —+—
             else{ zone = (dty >= 0) ? 3 : 4}           // 3 | 2
             //線幅調整値の計算（象限別）
+            kando_k = 1.0//★
             switch zone {
-            case 1: k_z = 2 - (dtx - dty)/k_dt     //1-0.6
-            case 2: k_z = 1
-            case 3: k_z = (dty - dtx)/k_dt    //1-1.4
+            case 1:
+                k_z = 2 - (dtx - dty)/k_dt     //1-0.6
+                kando_k =  k_z*0.8//★
+            case 2:
+                k_z = 1
+                kando_k =  k_z*2//★
+            case 3:
+                k_z = (dty - dtx)/k_dt    //1-1.4
+                kando_k = k_z*1.2//★
             case 4: k_z = 1
             default: k_z = 1
             }
@@ -481,7 +489,7 @@ class DrawableView: UIView {
     func drawLine2(path:UIBezierPath) {
         
         if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
-        sliderN = 1.2
+        sliderN = (penW - 7) / 12  + 1.2//★1.2
         
         let penColor = penC
         penColor?.setStroke()
@@ -489,13 +497,18 @@ class DrawableView: UIView {
         path.lineCapStyle =   .round//.butt//.square//
         //★修正ペンモード時はベジェモードとする？？モード切替時に行う？ここには来ない！
         //ペン幅を指定する
-        let penw = penW + 1
+        let penw = penW*1.2
+        /* ★★★
         var v_z = k_dt*sliderN * (0.25 + (penW - 7)/25)     //k_dt：△l
         v_z = v_z >= penw ? penw : v_z      //0.5--1.0
         print("▲  penw: \(penW) ◾️v_z: \(v_z) k_dt: \(k_dt) sliderN: \(sliderN) ")
-
         var w = k_dt >= 5 ? penw * k_z - v_z : penw * k_z       //今回の線幅計算値
         w = w < 1 ? 1 : w
+        */ //★★★
+        let v_z = penw*k_dt*sliderN*0.02*kando_k
+        let w = penw * k_z  - v_z
+        
+        //---------------------------------------------------
         let w2 = (lastPenW + w)/2 //1つ前の線幅との平均をとる
         path.lineWidth = w2
         lastPenW  = w2

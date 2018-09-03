@@ -1622,8 +1622,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // NSUserDefaults のインスタンス取得
         let colorNum = String(lineColor)
         let lineWNum = String(lineWidth)
-        let autoScroll = autoScrollFlag ? "1" :"0"
+        let autoScroll = autoScrollFlag ? "1" : "0"
         let lPage = String(pageNum)
+        let calFlag = callig ? "1" : "0"
         
         let ud = UserDefaults.standard
         // キーを指定してオブジェクトを保存
@@ -1631,6 +1632,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ud.set(lineWNum, forKey: "width")
         ud.set(autoScroll, forKey: "auto")
         ud.set(lPage, forKey: "page")
+        ud.set(calFlag, forKey: "cal")
 
         ud.synchronize()
         
@@ -1641,6 +1643,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if ud.object(forKey: "color") == nil{return}
         if ud.object(forKey: "auto") == nil{return}
         if ud.object(forKey: "page") == nil{return}
+        if ud.object(forKey: "cal") == nil{return}
             
         let colorNum = ud.object(forKey: "color") as! String
         let lineWNum = ud.object(forKey: "width") as! String
@@ -1654,6 +1657,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         let lPage = ud.object(forKey: "page") as! String
         lastPage = Int(lPage)!
+        
+        let calFlag = ud.object(forKey: "cal") as! String
+        let ca = Int(calFlag)!
+        callig = (ca == 1) ? true : false
       
     }
     
@@ -3481,7 +3488,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //１行目と３２行目の下線は実践、他は破線
             //let clr = UIColor.rgb(r: 0, g: 141, b: 183, alpha: 1)
             if nowGyouNo > 10000{
-                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 1.5, posX: pos, lenX: len,spaceX: 7)
+                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 1.7, posX: pos, lenX: len,spaceX: 7)
             }else if
                 nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
                 print("aaaaaaaaaa:\(zm)")
