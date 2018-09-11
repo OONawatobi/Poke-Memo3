@@ -385,6 +385,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var gardClrFlg = true//パレット上下のガードの色をつける（緑色）
 var callig = false//カリグラフィモード時：true
 var th:CGFloat = 46//ツールバーの高さ 20180720本当は"46"
 var subMemoView:UIView!//+-+- 子メモの入るエリア
@@ -632,15 +633,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /** underViewを生成. **/
         //underFlag = false// 表示・非表示のためのフラグ
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
-        underView.backgroundColor = UIColor.green// underViewの背景を青色に設定
-        underView.alpha = 0.33// 透明度を設定
+        let gardColor = gardClrFlg ? UIColor.green.withAlphaComponent(0.2) : UIColor.clear
+        underView.backgroundColor = gardColor//UIColor.green// underViewの背景を青色に設定
+        //★★ underView.alpha = 0.33// 透明度を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 15 )// 位置を中心に設定
         underView.addBottomBorderWithColor(color: UIColor.black, width:2)
         underView.isUserInteractionEnabled = false//タッチ情報を後ろにスルーする™™
         /** upperViewを生成. **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
-        upperView.backgroundColor = UIColor.green
-        upperView.alpha = 0.33// 透明度を設定
+        upperView.backgroundColor = gardColor//UIColor.green
+        //★★ upperView.alpha = 0.33// 透明度を設定
         upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th + 15)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
         
