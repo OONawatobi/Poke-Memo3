@@ -106,7 +106,7 @@
         <br>
         <strong class="b">T</strong>hank you for using <strong>HappyMemo</strong>
         (Notepad application for handwritten character input). <br>
-        By adopting "Input palette of enlarged size" and "Function to edit input sentence",
+        By adopting "Input palette of enlarged size" and "Function to edit input sentences",
         you can easily draw characters even at your fingertips and realize the necessary practicality for notepad.
 		</p>    
         <ul>
@@ -117,7 +117,7 @@
             <li><a href="#j05">About the Edit-Panel</a></li>
             <li><a href="#j06">Usage of cancel button</a></li>
             <li><a href="#j07">What is this app used for?</a></li>
-            <li><a href="#j08">Changes in ver 1.6.0</a></li>
+            <li><a href="#j08">Changes in ver 1.8.0</a></li>
         </ul><br><br>
         
     </header>
@@ -129,14 +129,15 @@
             In order to handle analog (image) characters, there are several unique functions as below.</em>
 		</p>     
         <h4>1) Input-Palette </h4>
-        <img class="left" src= "all.png"  width ="400" alt="入力画面">
+        <img class="left" src= "all_v18.png"  width ="400" alt="入力画面">
         <p>   		
             When drawing characters, use the input area (Input-Palette) appearing from the bottom. <br>
             Since the pallet size is four times the memo line, 
             only a part of it can be seen on the smart screen.<br>
             Therefore, to see the entire memo line, scroll the palette itself left 
-            and right by tracing the scroll bar at the top of the palette.
-            <br>
+            and right by tracing the scroll bar at the top of the palette.<br>
+            “underscore-cursor" appearing on the selected memo line shows the display range of the palette.<br>
+            Then it moves to the left and right in conjunction with the palette scroll.<br>
             If you tap the <strong>ZOOM</strong> button under the palette, the pallet size will be 1.5 times more.<br>
             This function is an effective means for writing complicated kanji etc.
         </p>
@@ -961,17 +962,39 @@
          </section>
     
     <section id="j08">        
+        <h3 class="line">Changes in ver 1.8.0</h3>
+       
+            1. "G pen mode" (line width dynamically changed) was added.<br> 
+            - When writing letters by handwriting, the line width has been fixed so far. (Pencil mode)<br>
+			By selecting Gpen mode, the line width automatically changes (narrows) in relation to the direction the pen tip moves and the moving speed.<br>
+			If you get used to it a bit, you can draw with Brush style or calligraphy, and you can express more variety.<br>
+			And the most promising effect of this mode is to speed up writing sentences.<br>
+			The reason is that expressions using <br>
+			① cursive letters, ② character written in running style, ③ single stroke letters, etc. <br>
+			become easier.<br><br>
+           
+            2.A underscore- cursor was added to the memo line and displayed.<br>
+            <p><img src= "all_v18J.png"  width ="300" alt="underscore-cursol"></p><br>
+			- An underline is additionally displayed in the memo line for the range displayed on the input palette.<br>
+			This underline moves left and right in conjunction with the scroll of the input palette, so it becomes easier to understand where you are going to write in the line.<br><br>
+           
+            3. Both display/non-display operation of child memo have changed to double tap of parent row.<br>
+			(Up to now, it was specification to double tap inside the child memo when closing the child memo.)<br><br>
+           
+            4.Correction to the help manua<br>  
             
+            5.A little bug fix  
+            <br><br>               
         <h3 class="line">Changes in ver 1.6.0</h3>
        
             1. It corresponds to notch screen of iPhoneX.<br>
             2. The number of lines on the memo page has been extended from 30 lines to 32 lines.<br>
             3. Even when the input palette is opened, the line width of input characters can now be selected.<br>
-		- In the pen mode, the line width is sequentially changed each time the pen button is <strong>double clicked</strong>.
+		- In the pen mode, the line width is sequentially changed each time the pen button is <strong>double tapped</strong>.
            <p><img src= "penchange.png"  width ="200" alt="penchange.png"></p>
             4. You can now add child notes (8 lines) tied to each line of the memo page.<br>
 		- By <strong>double tapping</strong> a non-blank line, a small memo of only 8 rows opens just below it.<br>
-		- To close the small memo, <strong>double click</strong> that child note.
+		- To close the small memo, <strong>double tap</strong> that child note.
            <p><img id="top2"   src= "childEng.png"  width ="200" alt="childEng.png"></p>
            <p><img  src= "childEng2.png"  width ="200" alt="childEng2.png"></p><br>
             　- You can also enter handwritten notes for child notes in the same way.<br>

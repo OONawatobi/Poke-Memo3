@@ -3505,7 +3505,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func showAlert(){
         print("===showAlert()=== \(langFlag)")
         //バイリンガル処理
-        let title = (langFlag == 0) ? "** カリグラフィ **":"** calligraph **"
+        let title = (langFlag == 0) ? "** ペン先変更 **":"** Change pen tip **"
         let cancel = (langFlag == 0) ? "キャンセル":"Cancel"
         let msg_F = (langFlag == 0) ? "鉛筆モードに変更します！":"Change to pencil- mode!"
         let msg_G = (langFlag == 0) ? "Gペンモードに変更します！":"Change to Gpen- mode!"
