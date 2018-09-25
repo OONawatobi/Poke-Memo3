@@ -1368,7 +1368,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("undoMode:\(drawableView.undoMode)")//+-
         if drawableView.undoMode == 1{okEnable = true}//+-
         if okEnable == false{return}else{okEnable = false}//+-
-        print("nowGyouNo:\(nowGyouNo)")
+        print("nowGyouNo:\(String(describing: nowGyouNo))")
         print("●------reszNum01:\(String(describing: resn[String(nowGyouNo)]))")//+-+-
         if m2pFlag == true{//+-+
            m2pFlag = false
@@ -1379,7 +1379,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.thirdView.removeFromSuperview()//3rdViewを取り出す
         let palImage = drawableView.GetImage()
         let myImage1 = palImage.ResizeUIImage(width: vWidth/3, height: vHeight/3)
-        print("fNum:\(fNum) ,tag: \(nowGyouNo)")
+        print("fNum:\(fNum) ,tag: \(String(describing: nowGyouNo))")
         // メモにパレット内容を書き込む(書き込みが5回以上ではリサイズしない）
         let rn = resn[String(nowGyouNo)]!//+-+
         if rn < 5 {
@@ -1765,13 +1765,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 nowGyouNo = nextNum!*100 + 1
             // ** [メモページ] **
             }else if myEditFlag{
-                print("myEditFlag: \(myEditFlag)")
+                print("myEditFlag: \(String(describing: myEditFlag))")
             }else{
             print(" == [メモページの場合] ==")
               // 仮想的にeditボタンを押す
               let nextNum = nowGyouNo
               self.Pallete(self.pallete2)//パレットを開く
-              print("isEdit: \(isPalleteMode)")
+                print("isEdit: \(String(describing: isPalleteMode))")
               self.modalChanged(TouchNumber:nextNum!)//セルを選択
               memo[fNum].togglleCursol()
             }
@@ -3142,7 +3142,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("######5")
             //◆◆◆◆
             //セカンドViewの初期画面をブランク画像として保存
-            print("\(nowGyouNo)")//$
+            print("\(String(describing: nowGyouNo))")//$
             print("mx-nowGyouNo:\(String(describing: mx[String(nowGyouNo)]))")//$
             drawableView.bup["20"] = (bImage,mx[String(nowGyouNo)]!)
             //パレットViewの初期画面を保存
@@ -3226,7 +3226,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //lastGyouNo = nowGyouNo//★20180812追加
         memoCursol(disp: 0)//★20180812追加
         done(done2)// okボタンを押す
-        print("nowGyouNo2:\(nowGyouNo)")
+        print("nowGyouNo2:\(String(describing: nowGyouNo))")
         if nowGyouNo<10000 && nowGyouNo%100 < pageGyou{
     print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
            modalChanged(TouchNumber:nowGyouNo + 1)
@@ -3387,7 +3387,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          //
         subMemoView.addSubview(subMemo)//$$ アニメーション時は削除
         memo[fNum].addSubview(subMemoView)
-        print("nowGyouNo:\(nowGyouNo)")
+        print("nowGyouNo:\(String(describing: nowGyouNo))")
         addMx(gyou:nowGyouNo)//子メモのmxをmx[]に追加する
 /*
     // == アニメーション動作 ==
@@ -3421,7 +3421,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func childMemoClose(ngn:Int){//+-+- 子メモを閉じる$
-        print("----childMemoClose-----\(nowGyouNo)")
+        print("----childMemoClose-----\(String(describing: nowGyouNo))")
         print("childMemoClose()  = oyaGyou: \(oyaGyou) =")
         if childFlag == false{return}
         //if ngn<10000{return}//子メモ内をWクリックした時だけ処理する//1000
@@ -3477,7 +3477,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
  ---------------------------------------------------------------- */
     func memoCursol(disp:Int){//★20180812:メモにカーソルを表示(1),非表示(0)
         if isPalleteMode == true{
-        print("+nowGyouNo: \(nowGyouNo)")
+        print("+nowGyouNo: \(String(describing: nowGyouNo))")
         let zm:CGFloat = bigFlag ? 1.5 : 1.0//★20180814
         var len =  boundWidth/4/zm
         let pos = (vWidth*zm/2 - drawableView.layer.position.x)/4/zm
