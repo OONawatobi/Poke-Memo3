@@ -44,7 +44,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
         }
         shiftLeftFlag = false
         //
-        print("touches.x:startX= \(startPointX)")
+        print("touches.x:startX= \(String(describing: startPointX))")
         print("touches.x:screenX= \(screenX)")
         //print("touches.x:midX= \(midX)")
         print("touchbegan:rightFla= \(rightFlag)")
@@ -102,7 +102,7 @@ class UpperToolView: UIView {
     // タッチが動いた
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         let point = touches.first!.location(in: self)
-        print("midX = \(midX)")
+        print("midX = \(String(describing: midX))")
         deltaX = startX - point.x
         deltaX = deltaX*2
 

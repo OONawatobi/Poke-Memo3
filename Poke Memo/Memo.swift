@@ -231,7 +231,7 @@ class MemoView:UIView{
         // == debug2 ==========================================================
           if debug2 == true{//@@ DEBUG2 @@
             testV.layer.position = CGPoint(x: 0, y:vHeight/2 )
-            print("** nowGyouNo: \(nowGyouNo)")
+            print("** nowGyouNo: \(String(describing: nowGyouNo))")
             print("◆imgサイズ：\(String(describing: targetMemo.image?.size.height))")
             print("🔳cg-imgサイズ：\(String(describing: targetMemo.image?.cgImage?.height))")
           }

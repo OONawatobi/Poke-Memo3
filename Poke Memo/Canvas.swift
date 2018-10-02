@@ -153,7 +153,7 @@ class DrawableView: UIView {
         let im = self.GetImage()
         self.addSubview(thirdView)//前フィルタ3rdViewを追加
         bup["1"] = (im,mxTemp)
-        print("get1VImage:mxTemp=\(mxTemp)")
+        print("get1VImage:mxTemp=\(String(describing: mxTemp))")
         print("mx nowGyouNo:\(String(describing: mx[String(nowGyouNo)]))")
         undoMode = 1
 
@@ -219,8 +219,8 @@ class DrawableView: UIView {
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
         let screenX = b*(currentPoint.x) + (midX - b*vWidth/2)    // 画面座標に変換
-        
-        rightFlag =  screenX > (boundWidth - rightArea) ? true:false
+        //_????
+        rightFlag =  screenX > (boundWidthX - rightArea) ? true:false
         //print("screenX:\(screenX)")
         //print("◆◆◆◆")
         if lastDrawImage != nil{
@@ -321,7 +321,7 @@ class DrawableView: UIView {
           if myMx >= mxTemp{//既に書かれた文字よりも右へ越えた場合だけ処理する(タイマー起動中も🐞）
             let midX = self.frame.midX //スクリーンViewから見たパレット中心X座標
             let screenX = myMx + (midX - vWidth/2)    // 画面座標に変
-            autoFlag =  screenX > (boundWidth - rightArea*6) ? true:false
+            autoFlag =  screenX > (boundWidthX - rightArea*6) ? true:false
           }
           if timerFlag == true{autoFlag = true}//タイマー稼働中は自動スクロールする
         }
@@ -355,7 +355,7 @@ class DrawableView: UIView {
 
           get2VImage()//second画像をbup[2]に保存：UNDO用
           //左方向への自動スクロール
-            print("autoFlag:\(autoFlag):mxTemp=\(mxTemp)")
+            print("autoFlag:\(autoFlag):mxTemp=\(String(describing: mxTemp))")
           if autoScrollFlag == true{//設定フラグ(判定フラグ:autoFlagでは無い）
              if bigFlag == false{ startTimer()}//遅延してスクロール(autoFlagを判定）
           }
@@ -405,17 +405,17 @@ class DrawableView: UIView {
     /// 左方向へのスクロール
     func scrollLeft(){
         
-        // 左方向へのシフトを実施する:画面の５-7分の１だけ左側に表示する
-        var dsX = vWidth/2 - mxTemp + boundWidth/20 //★20180822:←7
+        //_左方向へのシフトを実施する:画面の５-7分の１だけ左側に表示する
+        var dsX = vWidth/2 - mxTemp + boundWidthX/20 //★20180822:←7
         //右端制限
-        dsX = dsX < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):dsX
+        dsX = dsX < (boundWidthX - vWidth/2) ? (boundWidthX - vWidth/2):dsX
         //左端制限
         dsX = dsX > vWidth/2 ? vWidth/2:dsX
         
         //アニメーション動作をさせる
         UIView.animate(withDuration: 0.3, animations: {
             () -> Void in
-            self.layer.position = CGPoint(x:dsX, y:boundHeight - th - vHeight/2)
+            self.layer.position = CGPoint(x:dsX, y:leftEndPoint.y)//boundHeight - th - vHeight/2)
             self.timerFlag = false//タイマーフラグのリセット
         })
         //シフトスクロールした後にOKボタンを押さない様にする
@@ -470,7 +470,7 @@ class DrawableView: UIView {
             penW = 15//消しゴムの巾
         }
         
-        print("@@@@@@@@:::::\(penC)")
+        print("@@@@@@@@:::::\(String(describing: penC))")
     }
  
     // 描画処理:セカンドviewにストロークパス(セカンドViewを含む？）をコピーする

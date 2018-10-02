@@ -385,6 +385,10 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var boundWidthX:CGFloat!//デバイス画面の水平方向の幅（方向によって変化する）
+var leftEndPoint:CGPoint = CGPoint(x:0,y:0)
+var didLoadFlg = false//_portlaitモードで起動する為のフラグ
+var deviceO:Int = 1//_デバイスの回転方向(1-4)
 var gardClrFlg = true//パレット上下のガードの色をつける（緑色）
 var callig = false//カリグラフィモード時：true
 var th:CGFloat = 46//ツールバーの高さ 20180720本当は"46"
@@ -492,7 +496,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
-    
+    var shortToolBar: UIView!//_横向き画面のツールバー
     var statusBarBackground:UIView!
     let myScrollView = TouchScrollView()//UIScrollView()
     var spaceView1: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
@@ -563,7 +567,65 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
     var underNav:UIView!//ナビゲーションバー下の半透明バー
     //var mask:UIView!
-    
+    //_viewレイアウトの変更
+    func setView1(){
+        print("setView1")
+        boundWidthX = boundWidth
+        let ax = drawableView.layer.position.x
+        drawableView.layer.position = CGPoint(x:ax,y:boundHeight - vHeight/2 - th)
+        upperView.frame.size = CGSize(width:boundWidth,height:30)
+        upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 30/2)// underView：パレットの上の緑色帯を生成.
+        underView.frame.size = CGSize(width:boundWidth,height:30)
+        underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 30/2 - th)// underView：パレットの下の緑色帯を生成.
+        leftEndPoint = CGPoint(x:vWidth/2,y:boundHeight - vHeight/2 - th)
+        myToolView.frame.size = CGSize(width: boundWidth,height:40)
+        myToolView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40/2 - th)
+        myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
+        myEditView.frame.size = CGSize(width:boundWidth,height:60)
+        myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
+        spaceView1.frame.size = CGSize(width: boundWidth, height: 10)
+        spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
+        spaceView2.frame.size = CGSize(width: boundWidth, height: 20)
+        spaceView2.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight - 40 - 20/2)
+        scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 44 - vHeight - 50)//最後の50は目で見て調整した
+        self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
+        self.view.addSubview(underNav)//ナビゲーション下線を追加
+        statusBarBackground.backgroundColor = nColor
+        statusBarBackground.frame.size = CGSize(width:boundWidth,height:UIApplication.shared.statusBarFrame.height)
+        memoCursol(disp: 1)//メモカーソルを更新
+        self.toolBar.isHidden  = false
+    }
+    func setView2(){
+        boundWidthX = boundHeight//縦横を入れ替える
+        let ax = drawableView.layer.position.x
+        drawableView.layer.position = CGPoint(x:ax,y:boundWidth - vHeight/2)
+        leftEndPoint = CGPoint(x:vWidth/2,y:boundWidth - vHeight/2)
+        upperView.frame.size = CGSize(width:boundHeight,height:30)
+        upperView.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight + 30/2)// underView：パレットの上の緑色帯を生成.
+        
+        underView.frame.size = CGSize(width:boundHeight,height:30)
+        underView.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - 30/2 + 2)// underView：パレットの下の緑色帯を生成.
+        myToolView.frame.size = CGSize(width: boundHeight,height:40)
+        myToolView.layer.position = CGPoint(x: boundHeight/2, y: boundWidth - vHeight - 40/2)
+        myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
+        myEditView.frame.size = CGSize(width:boundHeight,height:60)
+        myEditView.layer.position = CGPoint(x: boundHeight/2, y: boundWidth - vHeight - 40 - 60/2)
+        spaceView1.frame.size = CGSize(width: boundHeight, height: 10)
+        spaceView1.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight + 10/2)
+        spaceView2.frame.size = CGSize(width: boundHeight, height: 20)
+        spaceView2.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight - 40 - 20/2)
+        scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 10 ,width:leafWidth, height:boundWidth - vHeight - 50)//最後の50は目で見て調整した
+        self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
+       
+        underNav.removeFromSuperview()
+        statusBarBackground.backgroundColor = UIColor.white
+        statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
+        statusBarBackground.backgroundColor = UIColor.yellow
+        self.view.addSubview(shortToolBar)
+        memoCursol(disp: 1)//メモカーソルを更新
+        self.toolBar.isHidden  = true
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
@@ -587,17 +649,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //Indexバーの色を作成
         iColor = UIColor.rgb(r: 208,g: 113, b: 68, alpha: 1) //init(white: 0.92, alpha: 1)78,157,121  (r: 208,g: 113, b: 68, alpha: 1)
         iColor2 = UIColor.rgb(r: 242, g: 177, b: 106, alpha: 1)
-        
-        //ステータスバーの色を変える
+        //_画面の水平方向の幅
+        boundWidthX = boundWidth
+        //_ステータスバーの色を変える
         statusBarBackground = UIView(frame: CGRect(x:0 ,y: 0, width:self.view.frame.width, height:UIApplication.shared.statusBarFrame.height))
         statusBarBackground.backgroundColor = nColor
         self.view.addSubview(statusBarBackground)
         //ナビゲーションバーの色を変える
         setNaviBar(color: nColor)
-        //ナビゲーションバーの下線（半透明）
+        //_ナビゲーションバーの下線（半透明）
         underNav = UIView(frame: CGRect(x:0,y:64 - 5 + sBarX,width:boundWidth,height:8))
         underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
-        
+        //_パレットをの左端を表示する
+        leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
+        //_第２の短かいツールバー
+        shortToolBar = UIView(frame:CGRect(x: boundWidth, y: 44, width: boundHeight - boundWidth, height: 46))
+        shortToolBar.backgroundColor = UIColor.lightGray
+        //-----------------------------------------------------
         //ブランクleafを作成する
         let bView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
         bImage = bView.GetImage()
@@ -623,29 +691,29 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         subMemoView.layer.shadowRadius = 8 // 角度(距離）
         */
         /** spaceViewを生成(透明：タッチ緩衝の為) **/
-        //underViewの下側
+        //_underViewの下側
         spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight , width: boundWidth, height: 10))
         spaceView1.backgroundColor = UIColor.clear
-        //underViewの上側
+        //_underViewの上側
         spaceView2 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight - 40 - 20, width: boundWidth, height: 20))
         spaceView2.backgroundColor = UIColor.clear
         
-        /** underViewを生成. **/
+        /** underViewを生成：パレットの下の緑色帯 **/
         //underFlag = false// 表示・非表示のためのフラグ
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
         let gardColor = gardClrFlg ? UIColor.green.withAlphaComponent(0.2) : UIColor.clear
         underView.backgroundColor = gardColor//UIColor.green// underViewの背景を青色に設定
-        //★★ underView.alpha = 0.33// 透明度を設定
+        //_★★ underViewの位置を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 15 )// 位置を中心に設定
         underView.addBottomBorderWithColor(color: UIColor.black, width:2)
         underView.isUserInteractionEnabled = false//タッチ情報を後ろにスルーする™™
-        /** upperViewを生成. **/
+        /** upperViewを生成：パレットの上の緑色帯 **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
         upperView.backgroundColor = gardColor//UIColor.green
         //★★ upperView.alpha = 0.33// 透明度を設定
         upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th + 15)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
-        
+        //_パレットスクロールバー
         /** myToolView ([色][ペン][消しゴム][▲])を生成. **/
         myToolView.Delegate = self
         myToolView.frame =  CGRect(x: 0, y: 0, width: boundWidth, height: 40)// underViewを生成.
@@ -701,7 +769,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.addSubview(editButton3)
         myToolView.addSubview(editButton4)
         self.toolBar.isHidden  = true//ツールバーを隠す
-        
+        //_編集パネル
         /* editView([<][OVW][INS][DEL][CLR][>])を生成. */
         myEditView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 60))
         let myEditColor = UIColor.rgb(r: 255, g: 0, b:80, alpha: 0.66)
@@ -778,16 +846,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /* ScrollViewを生成. */
         myScrollView.Delegate2 = self
         //myScrollView.Delegate3 = self
-        //パレット表示されていない場合
+        //_パレット表示されていない場合
         scrollRect = CGRect(x:(boundWidth - leafWidth)/2, y:70 + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 10 - sBarX )
         
-        //パレット表示されている場合
+        //_パレット表示されている場合
         scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 44 - vHeight - 50)//最後の50は目で見て調整した
-        //パレット表示されている場合
+        //_パレットが拡大表示されている場合
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
-        scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 10 - 44 )//toolViewだけが表示されている場合
-        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:110 + sBarX ,width:leafWidth, height:boundHeight - 115 - sBarX )//index表示されている場合
+        //_toolViewだけが表示されている場合
+        scrollRect_T = CGRect(x:(boundWidth - leafWidth)/2, y:70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 10 - 44 )
+        //index表示されている場合
+        scrollRect_I = CGRect(x:(boundWidth - leafWidth)/2, y:110 + sBarX ,width:leafWidth, height:boundHeight - 115 - sBarX )
         
         myScrollView.frame = scrollRect
         myScrollView.bounces = false//スクロールをバウンドさせない
@@ -796,6 +866,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //myScrollView.isPagingEnabled = false//離散スクロール
         myScrollView.showsVerticalScrollIndicator = true
         myScrollView.showsHorizontalScrollIndicator = false// 横スクロールバー非表示
+        //_スクロールコンテンツのサイズ
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
         //myScrollView.directionalLockEnabled = true
         //枠線を追加する
@@ -1018,6 +1089,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpTop.addSubview(jButton)
         helpTop.addSubview(eButton)
         helpTop.addSubview(rButton)
+        didLoadFlg = false//_portlaitで起動する為のフラグ
     }
     
     //  ======= End of viewDidLoad=======
@@ -1025,6 +1097,33 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    //_★★画面の回転に応じた処理を行う
+    override func viewDidAppear(_ animated: Bool) {
+        // 端末の向きがかわったらNotificationを呼ばす設定.
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.onOrientationChange(notification:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+    }
+    //_★★ 端末の向きがかわったら呼び出されるメソッド　-------------------★★
+    func onOrientationChange(notification: NSNotification){
+        // 現在のデバイスの向きを取得.
+        let deviceOrientation: UIDeviceOrientation!  = UIDevice.current.orientation
+        deviceO = deviceOrientation.rawValue
+        print("deviceOrientation:\(deviceO)")
+        // 向きの判定.
+        if deviceOrientation.rawValue == 3 || deviceOrientation.rawValue == 4 {
+            if didLoadFlg {
+                self.setView2()
+                /*
+                drawableView.layer.position = CGPoint(x:vWidth/2,y:boundWidth - vHeight/2 ) //-- 横向きの判定 --
+                self.toolBar.isHidden  = true
+                */
+            }
+        } else if deviceOrientation.rawValue == 1{//-- 縦向きの判定 --
+            if didLoadFlg {
+            self.setView1()
+            }
+ 
+        }
     }
 /*
     func pinchZoom(sender:UIPinchGestureRecognizer){
@@ -1242,7 +1341,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
     var animeFlag:Bool = false//アニメ中はtrue
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
-        if myEditFlag{ return }//★20180821：Editパネルを閉じないとパレットが閉じられない王に変更した
+        if deviceO != 1{return}//画面が縦方向出ない場合は無視
+        if myEditFlag{ return }//★20180821：Editパネルを閉じないとパレットが閉じられない様に変更した
         if changing == true { return}//メニューのアニメ中は実行しない。
         if animeFlag { return}//アニメ中は実行しない
         //if isMenuMode == true{ return }//リストメニュー表示中は実行しない
@@ -1254,6 +1354,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //----------------------------------------------①
         if drawableView != nil {
         // ◆◆ パレットが表示されている時パレットを消す
+          //_portlaitで起動する為のフラグ:回転禁止に設定
+            didLoadFlg = false
            //メモカーソルを消す
             memoCursol(disp: 0)
            //編集中のページ内容を更新する
@@ -1309,20 +1411,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             bigFlag = false
         }else{
         // パレットが表示されていない時パレットを表示する-----------②
-            //パレットビューを作成・初期化する
-            //zoom2.tintColor = UIColor.red
-            
+            //_パレットビューを作成・初期化する
              drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
              drawableView.Delegate = self
-             let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - 1)
+            //_左端を表示⬇️使っていないみたい？？modaoChange()で再設定している
+             leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
              drawableView.layer.position = leftEndPoint
              drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
-             drawableView.setSecondView()//編集ツールの追加とおｌBar
-             //
+            //secondView,thirdViewの初期化(追加）
+            drawableView.setSecondView()
+            //編集ツールの追加(toolbar)
             self.view.addSubview(myToolView)
             myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 40/2)// 位置を中心に設定：画面の外に位置する
             self.myScrollView.frame = self.scrollRect_T
-            //+++ パレットを開くアニメーション　+++
+            //_+++ パレットを開くアニメーション　+++
             UIView.animate(withDuration:0.4, animations: {
                 () -> Void in
                 self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th - 40/2 )//++ 位置を中心に設定
@@ -1337,13 +1439,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.animeFlag = false//アニメ動作終了宣言
                 //メモカーソルを表示する
                 self.memoCursol(disp: 1)
+                //_portlaitで起動する為のフラグ:回転OKに設定
+                didLoadFlg = true
              } // ++++  ココまで  ++++
             
             self.toolBar.isHidden  = false//ツールバーを現す
             //ツールバーの高さを検出する 20180720追加
             //th = self.toolBar.frame.height
             print("〓toolbar.height〓 th:\(th)")
-            isPalleteMode = true//パレットが表示されている場合は"true"
+            isPalleteMode = true//パレットが表示されているので"true"
             //編集画面非表示フラグをリセットする
             //????myEditFlag = false
             //+-+- １行目をパレットに呼び込む$
@@ -1437,7 +1541,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     print("----CLR---")
                     editedView = bImage//UIImage(named:"blankW.png")
                     //パレットの位置を先頭にする
-                    let leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
+                    leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
                     drawableView.layer.position = leftEndPoint
                     //mx[]を更新する(0にリセット)
                     mx[String(nowGyouNo)] = 0
@@ -3127,8 +3231,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[fNum].selectedNo(tagN: nowGyouNo)
 
    print("######4")
-           //パレットの表示位置をリセットする
-            drawableView.layer.position = CGPoint(x:vWidth/2, y:boundHeight - th - vHeight/2)
+           //_パレットの表示位置をリセット(左端を表示）する
+            drawableView.layer.position = leftEndPoint// CGPoint(x:vWidth/2, y:boundHeight - th - vHeight/2)
 
            //パレット表示用にリサイズする(extension)？読み込む画像はどこから？myMemo
            //上のreadMemo(tag: nowGyouNo)の中ですでにリサイズしている為以下省略する
@@ -3170,14 +3274,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //メモカーソルを表示する★20180812
         memoCursol(disp: 1)
     }
-    //パレットの表示位置を変更する
-    func dispPosChange(midX: CGFloat,deltaX:CGFloat){// protocol UpperToolViewDelegate
+    //_パレットの表示位置を変更する
+    func dispPosChange(midX: CGFloat,deltaX:CGFloat){
+        // protocol UpperToolViewDelegate
         //print("midX: \(midX)")
         let b = (bigFlag == true) ? big:1
         var midX2 = midX
         let topX:CGFloat = (b*vWidth/2)
-        let lastX:CGFloat = (boundWidth - b*vWidth/2)
-        let pY:CGFloat = (boundHeight - b*vHeight/2 - th)//パレットのセンター座標
+        let lastX:CGFloat = (boundWidthX - b*vWidth/2)
+        let pY:CGFloat = leftEndPoint.y//(boundHeight - b*vHeight/2 - th)//パレットのセンター座標
         
         let dir = deltaX>=0 ? 1 : 0 //0:右へシフト,1:左へシフト
         //先頭へシフトする場合
@@ -3475,11 +3580,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
      20p:2001-2032  child:200101-200108,203201-203208
      30p:3001-3032  child:300101-300108,303201-303208
  ---------------------------------------------------------------- */
-    func memoCursol(disp:Int){//★20180812:メモにカーソルを表示(1),非表示(0)
+    func memoCursol(disp:Int){//_★20180812:メモにカーソルを表示(1),非表示(0)
         if isPalleteMode == true{
         print("+nowGyouNo: \(String(describing: nowGyouNo))")
         let zm:CGFloat = bigFlag ? 1.5 : 1.0//★20180814
-        var len =  boundWidth/4/zm
+        //_????
+        var len =  boundWidthX/4/zm
         let pos = (vWidth*zm/2 - drawableView.layer.position.x)/4/zm
             //let add = bigFlag ? len : 0//★20180814
             //let pos = (vWidth/2 - drawableView.layer.position.x)/4/zm + add

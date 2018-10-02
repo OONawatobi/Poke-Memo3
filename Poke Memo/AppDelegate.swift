@@ -12,8 +12,14 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    //_起動時はportlaitに強制する
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        if (didLoadFlg == true){
+            return UIInterfaceOrientationMask.allButUpsideDown
+        }
+        return UIInterfaceOrientationMask.portrait
+    }
+    //
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         //ナビゲーションバーの下線を消す
