@@ -532,7 +532,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //var isIndexMode:Bool! = false//Indexの表示フラグ：
     //var indexFlag:Bool! = false//Indexの表示フラグ：true
     //var reloadedImage:UIImage!//ファイルから読み込んだイメージ：未使用　下記使用
-    
+    var buttonOK:UIButton!//_shortToolBarのボタン
+    var buttonZoom:UIButton!//_shortToolBarのボタン
+    var buttonRedo:UIButton!//_shortToolBarのボタン
     var reloads:[UIImage]!//ファイルから読み込んだイメージ配列
     var editButton1:UIButton!
     var editButton2:UIButton!
@@ -597,7 +599,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     func setView2(){
         boundWidthX = boundHeight//縦横を入れ替える
-        let ax = drawableView.layer.position.x
+        // ステータスバーの高さを取得する
+        let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+        print("statusBarHeight:\(statusBarHeight)")
+        print("naviBar.frame.height:\(naviBar.frame.height)")
+        
+        var ax = drawableView.layer.position.x
+        let bx = boundHeight - vWidth/2
+        ax = ax > bx ? ax : bx//_右端を超えない様にする
         drawableView.layer.position = CGPoint(x:ax,y:boundWidth - vHeight/2)
         leftEndPoint = CGPoint(x:vWidth/2,y:boundWidth - vHeight/2)
         upperView.frame.size = CGSize(width:boundHeight,height:30)
@@ -608,8 +617,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.frame.size = CGSize(width: boundHeight,height:40)
         myToolView.layer.position = CGPoint(x: boundHeight/2, y: boundWidth - vHeight - 40/2)
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
-        myEditView.frame.size = CGSize(width:boundHeight,height:60)
-        myEditView.layer.position = CGPoint(x: boundHeight/2, y: boundWidth - vHeight - 40 - 60/2)
+        //myEditView.frame.size = CGSize(width:boundWidth,height:60)
+        myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
         spaceView1.frame.size = CGSize(width: boundHeight, height: 10)
         spaceView1.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight + 10/2)
         spaceView2.frame.size = CGSize(width: boundHeight, height: 20)
@@ -621,10 +630,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         statusBarBackground.backgroundColor = UIColor.white
         statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
         statusBarBackground.backgroundColor = UIColor.yellow
+        let navH = statusBarHeight + naviBar.frame.height
+        shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH + 44/2)
         self.view.addSubview(shortToolBar)
         memoCursol(disp: 1)//メモカーソルを更新
         self.toolBar.isHidden  = true
-        
+
+    }
+    //_shortToolBarボタンのタッチDOWN 時の処理
+    func btn_clicked(sender:UIButton){
+        print("btn_clicked:\(sender.tag)")
+        if sender.tag == 1{done(done2)}
+        else if sender.tag == 2{zoom(zoom2)}
+        else{redo(redo2)}
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -659,12 +677,36 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setNaviBar(color: nColor)
         //_ナビゲーションバーの下線（半透明）
         underNav = UIView(frame: CGRect(x:0,y:64 - 5 + sBarX,width:boundWidth,height:8))
-        underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
+        underNav.backgroundColor = UIColor.red//init(white: 0.6, alpha:0.3)
         //_パレットをの左端を表示する
         leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
         //_第２の短かいツールバー
         shortToolBar = UIView(frame:CGRect(x: boundWidth, y: 44, width: boundHeight - boundWidth, height: 46))
         shortToolBar.backgroundColor = UIColor.lightGray
+        // buttonOKの追加
+        buttonOK = UIButton(frame: CGRect(x:boundHeight - boundWidth - 40,y: 15, width:30, height:20))
+        buttonOK.backgroundColor = UIColor.clear
+        buttonOK.setImage(UIImage(named: "ok.png"), for:UIControlState.normal)
+            //イベントを追加する
+        buttonOK.tag = 1
+        buttonOK.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchDown)
+        shortToolBar.addSubview(buttonOK)
+        // buttonZoomの追加
+        buttonZoom = UIButton(frame: CGRect(x:(boundHeight - boundWidth)/2 - 30 ,y: 15, width:60, height:20))
+        buttonZoom.backgroundColor = UIColor.clear
+        buttonZoom.setImage(UIImage(named: "zoom.png"), for:UIControlState.normal)
+        //イベントを追加する
+        buttonZoom.tag = 2
+        buttonZoom.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchDown)
+        shortToolBar.addSubview(buttonZoom)
+        // buttonRedoの追加
+        buttonRedo = UIButton(frame: CGRect(x:20 ,y: 10, width:30, height:30))
+        buttonRedo.backgroundColor = UIColor.clear
+        buttonRedo.setImage(UIImage(named: "undopdf2.pdf"), for:UIControlState.normal)
+        //イベントを追加する
+        buttonRedo.tag = 3
+        buttonRedo.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchDown)
+        shortToolBar.addSubview(buttonRedo)
         //-----------------------------------------------------
         //ブランクleafを作成する
         let bView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
@@ -1090,10 +1132,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpTop.addSubview(eButton)
         helpTop.addSubview(rButton)
         didLoadFlg = false//_portlaitで起動する為のフラグ
+        
     }
-    
+
     //  ======= End of viewDidLoad=======
-   
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -1109,17 +1152,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let deviceOrientation: UIDeviceOrientation!  = UIDevice.current.orientation
         deviceO = deviceOrientation.rawValue
         print("deviceOrientation:\(deviceO)")
+        print("isLandscape?: \(deviceOrientation.isLandscape)")
         // 向きの判定.
         if deviceOrientation.rawValue == 3 || deviceOrientation.rawValue == 4 {
             if didLoadFlg {
+                if bigFlag{zoom(zoom2)}//拡大モードを取り消す
                 self.setView2()
-                /*
-                drawableView.layer.position = CGPoint(x:vWidth/2,y:boundWidth - vHeight/2 ) //-- 横向きの判定 --
-                self.toolBar.isHidden  = true
-                */
             }
         } else if deviceOrientation.rawValue == 1{//-- 縦向きの判定 --
             if didLoadFlg {
+            if bigFlag{zoom(zoom2)}//拡大モードを取り消す
             self.setView1()
             }
  
@@ -1339,9 +1381,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
+
     var animeFlag:Bool = false//アニメ中はtrue
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
-        if deviceO != 1{return}//画面が縦方向出ない場合は無視
+        print("★deviceO: \(deviceO)")
+        //_if deviceO != 1{return}//画面が縦方向出ない場合は無視？画面ロックの場合はX
+        if boundWidthX != boundWidth{return}//_landscape画面の場合は無視する
         if myEditFlag{ return }//★20180821：Editパネルを閉じないとパレットが閉じられない様に変更した
         if changing == true { return}//メニューのアニメ中は実行しない。
         if animeFlag { return}//アニメ中は実行しない
@@ -1525,6 +1570,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         //---------- パレット編集時 ---------------------------
         if isPalleteMode == false{return}//パレットが表示されて無い場合は🐞
+        //done2.tintColor = UIColor.red
         //===== 編集パネルが表示の場合 =====
         if myEditFlag == true{
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
@@ -1541,7 +1587,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     print("----CLR---")
                     editedView = bImage//UIImage(named:"blankW.png")
                     //パレットの位置を先頭にする
-                    leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
+                    //_グローバル変数：回転の度に設定されている
+                    //_leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
                     drawableView.layer.position = leftEndPoint
                     //mx[]を更新する(0にリセット)
                     mx[String(nowGyouNo)] = 0
@@ -1629,16 +1676,40 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBAction func zoom(_ sender: UIBarButtonItem) {
         print("◆◆◆◆")
         if myEditFlag == true{return}//編集パレットが開いている場合は🐞
-        //let big:CGFloat = 1.5//拡大率
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
+        //shortToolBar(横向きの場合のみ)のY位置を調整(SE対策)
+        if boundWidthX != boundWidth{//_portlaitの場合
+            if !bigFlag{  //拡大画面の場合
+            var tY = shortToolBar.frame.maxY//第２ツールバーの下側の位置
+            let mY = myToolView.frame.minY - sa//拡大時の編集バーの上側の位置
+            if tY > mY {tY = mY}
+            let newPosY = boundWidth - big*vHeight - shortToolBar.frame.height/2 - 3
+            shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:newPosY) //y:navH + 44/2)
+            print("newPosY: \(newPosY)")
+            }else{   //通常画面の場合
+            let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+            let navH = statusBarHeight + naviBar.frame.height
+            shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH + 44/2)
+                
+            }
+            
+        }
+        //ココまで
+        var zYpos:CGFloat = 0//_paletteのy座標
+            if boundWidthX == boundWidth {//_portlait画面の時
+                zYpos = boundHeight - th
+            }else{ //_landscape画面の場合
+                zYpos = boundWidth
+            }
             if drawableView.frame.height == vHeight{ //非拡大モード
                 print("normalSize:")
                 let cx = drawableView.center.x
-                
-                drawableView.transform = CGAffineTransform(scaleX: big, y: big)//拡大率を2倍にする
-                drawableView.layer.position = CGPoint(x: big*cx, y:boundHeight - th - big*vHeight/2 )
+                //拡大率を2倍にする
+                drawableView.transform = CGAffineTransform(scaleX: big, y: big)
+
+                drawableView.layer.position = CGPoint(x: big*cx, y:zYpos - big*vHeight/2 )
             //myEditViewの再描画
-                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th - 40/2 - sa )
+                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:zYpos - vHeight - 40/2 - sa )
                 etcBarDisp(disp:0)//マスクビューを非表示にする
             //スクロールviewを合わせる
                 myScrollView.frame = self.scrollRect_B// メモframeの値を設定する
@@ -1651,17 +1722,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }else{ //拡大画面モード
                 print("bigSize:")
                 let cx = drawableView.center.x
-                drawableView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)//元に戻す場合
-                drawableView.layer.position = CGPoint(x: cx/big, y:boundHeight - th - vHeight/2 - 1)
+                drawableView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)//_元に戻す場合
+                drawableView.layer.position = CGPoint(x: cx/big, y:zYpos - vHeight/2 - 1)
             //パレットの左右端の制限
                 var cx2 = drawableView.center.x//パレットの中点のｘ座標
                 //右端制限
                 cx2 = cx2 < (boundWidth - vWidth/2) ? (boundWidth - vWidth/2):cx2
                 //左端制限
                 cx2 = cx2 > vWidth/2 ? vWidth/2:cx2
-                drawableView.layer.position = CGPoint(x: cx2, y:boundHeight - th - vHeight/2)
+                drawableView.layer.position = CGPoint(x: cx2, y:zYpos - vHeight/2)
             //myEditViewの再描画
-                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th - 40/2 )
+                myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:zYpos - vHeight - 40/2 )
                 etcBarDisp(disp:1)//マスクビューの再追加
             //スクロールviewを元に戻す
                 myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
@@ -3282,8 +3353,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var midX2 = midX
         let topX:CGFloat = (b*vWidth/2)
         let lastX:CGFloat = (boundWidthX - b*vWidth/2)
-        let pY:CGFloat = leftEndPoint.y//(boundHeight - b*vHeight/2 - th)//パレットのセンター座標
-        
+        var pY:CGFloat = 0//_パレットのセンター座標
+        if boundWidthX == boundWidth{//_portlait画面の場合
+            pY = (boundHeight - b*vHeight/2 - th)
+        }else{//_landscape画面の場合
+            pY = (boundWidth - b*vHeight/2)
+        }
         let dir = deltaX>=0 ? 1 : 0 //0:右へシフト,1:左へシフト
         //先頭へシフトする場合
         if dir == 0{
