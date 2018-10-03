@@ -1682,11 +1682,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             if !bigFlag{  //拡大画面の場合
             var tY = shortToolBar.frame.maxY//第２ツールバーの下側の位置
             let mY = myToolView.frame.minY - sa//拡大時の編集バーの上側の位置
-            if tY > mY {tY = mY}
-            let newPosY = boundWidth - big*vHeight - shortToolBar.frame.height/2 - 3
-            shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:newPosY) //y:navH + 44/2)
-            print("newPosY: \(newPosY)")
-            }else{   //通常画面の場合
+            let sH = shortToolBar.frame.height//第２ツールバーの高さ
+                if tY > mY {tY = mY
+                 var newPosY = boundWidth - big*vHeight - myToolView.frame.height - sH/2 - 2
+                 newPosY = newPosY < sH/2 ? sH/2 : newPosY
+                 shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:newPosY) //y:navH + 44/2)
+                 print("newPosY: \(newPosY)")
+                }
+            }else{   //通常画面に戻す場合
             let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
             let navH = statusBarHeight + naviBar.frame.height
             shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH + 44/2)
