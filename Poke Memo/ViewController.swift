@@ -496,6 +496,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
+    var rotMode:Int = 1
     var shortToolBar: UIView!//_横向き画面のツールバー
     var statusBarBackground:UIView!
     let myScrollView = TouchScrollView()//UIScrollView()
@@ -571,7 +572,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //var mask:UIView!
     //_viewレイアウトの変更
     func setView1(){
-        print("setView1")
+        rotMode = 1
+        print("------ setView1 --------")
         boundWidthX = boundWidth
         let ax = drawableView.layer.position.x
         drawableView.layer.position = CGPoint(x:ax,y:boundHeight - vHeight/2 - th)
@@ -596,9 +598,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         statusBarBackground.frame.size = CGSize(width:boundWidth,height:UIApplication.shared.statusBarFrame.height)
         memoCursol(disp: 1)//メモカーソルを更新
         self.toolBar.isHidden  = false
+        if bigFlag{
+            zoom(zoom2)//一旦閉じる
+            zoom(zoom2)//再度開く
+        }//拡大モードを終了する
     }
     func setView2(){
+        rotMode = 2
         boundWidthX = boundHeight//縦横を入れ替える
+        print("----- setView2 --------")
+
         // ステータスバーの高さを取得する
         let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
         print("statusBarHeight:\(statusBarHeight)")
@@ -635,7 +644,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.addSubview(shortToolBar)
         memoCursol(disp: 1)//メモカーソルを更新
         self.toolBar.isHidden  = true
-
+        if bigFlag{
+            zoom(zoom2)//一旦閉じる
+            zoom(zoom2)//再度開く
+        }//拡大モードを終了する
     }
     //_shortToolBarボタンのタッチDOWN 時の処理
     func btn_clicked(sender:UIButton){
@@ -1156,13 +1168,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // 向きの判定.
         if deviceOrientation.rawValue == 3 || deviceOrientation.rawValue == 4 {
             if didLoadFlg {
-                if bigFlag{zoom(zoom2)}//拡大モードを取り消す
-                self.setView2()
+                if rotMode == 1{ self.setView2() }
             }
         } else if deviceOrientation.rawValue == 1{//-- 縦向きの判定 --
             if didLoadFlg {
-            if bigFlag{zoom(zoom2)}//拡大モードを取り消す
-            self.setView1()
+                if rotMode == 2{ self.setView1() }
             }
  
         }
@@ -1679,7 +1689,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         //shortToolBar(横向きの場合のみ)のY位置を調整(SE対策)
         if boundWidthX != boundWidth{//_portlaitの場合
-            if !bigFlag{  //拡大画面の場合
+            
+         if !bigFlag{  //拡大画面の場合
+            //print("◆◆◆◆ portlaitの場合")
             var tY = shortToolBar.frame.maxY//第２ツールバーの下側の位置
             let mY = myToolView.frame.minY - sa//拡大時の編集バーの上側の位置
             let sH = shortToolBar.frame.height//第２ツールバーの高さ
@@ -1689,7 +1701,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                  shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:newPosY) //y:navH + 44/2)
                  print("newPosY: \(newPosY)")
                 }
-            }else{   //通常画面に戻す場合
+            }else {   //通常画面に戻す場合
             let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
             let navH = statusBarHeight + naviBar.frame.height
             shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH + 44/2)
@@ -1707,7 +1719,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             if drawableView.frame.height == vHeight{ //非拡大モード
                 print("normalSize:")
                 let cx = drawableView.center.x
-                //拡大率を2倍にする
+                //拡大率を1.5倍にする
                 drawableView.transform = CGAffineTransform(scaleX: big, y: big)
 
                 drawableView.layer.position = CGPoint(x: big*cx, y:zYpos - big*vHeight/2 )
