@@ -134,6 +134,7 @@
 		307EA73420D011CD0087B044 /* penchange.png in Resources */ = {isa = PBXBuildFile; fileRef = 307EA72F20D011CC0087B044 /* penchange.png */; };
 		307EA73520D011CD0087B044 /* childEng2.png in Resources */ = {isa = PBXBuildFile; fileRef = 307EA73020D011CC0087B044 /* childEng2.png */; };
 		307EA73620D011CD0087B044 /* childJPN2.png in Resources */ = {isa = PBXBuildFile; fileRef = 307EA73120D011CD0087B044 /* childJPN2.png */; };
+		307F120021686DE500EAA343 /* jines.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 307F11FF21686DE500EAA343 /* jines.jpg */; };
 		308574BF1E79399F009F544E /* hello.png in Resources */ = {isa = PBXBuildFile; fileRef = 308574BE1E79399F009F544E /* hello.png */; };
 		308BDDDE1E3CDA13006F1504 /* blankX.png in Resources */ = {isa = PBXBuildFile; fileRef = 308BDDDD1E3CDA13006F1504 /* blankX.png */; };
 		308ECC1C1E82AAFC00576BA8 /* cursol.png in Resources */ = {isa = PBXBuildFile; fileRef = 308ECC1B1E82AAFC00576BA8 /* cursol.png */; };
@@ -353,6 +354,7 @@
 		307EA72F20D011CC0087B044 /* penchange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = penchange.png; sourceTree = "<group>"; };
 		307EA73020D011CC0087B044 /* childEng2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = childEng2.png; sourceTree = "<group>"; };
 		307EA73120D011CD0087B044 /* childJPN2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = childJPN2.png; sourceTree = "<group>"; };
+		307F11FF21686DE500EAA343 /* jines.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = jines.jpg; sourceTree = "<group>"; };
 		308574BE1E79399F009F544E /* hello.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hello.png; sourceTree = "<group>"; };
 		308BDDDD1E3CDA13006F1504 /* blankX.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blankX.png; sourceTree = "<group>"; };
 		308ECC1B1E82AAFC00576BA8 /* cursol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cursol.png; sourceTree = "<group>"; };
@@ -578,6 +580,7 @@
 			children = (
 				30EA084A2159E8CD004DDD3A /* indexJa.html */,
 				30EA084C2159E8DB004DDD3A /* indexEn.html */,
+				307F11FF21686DE500EAA343 /* jines.jpg */,
 				30EA084E2159E8F3004DDD3A /* 7_penMode.png */,
 				3039F7A2214CE3C500FF121A /* all_v18J.png */,
 				3039F7A0214CE3AD00FF121A /* all_v18E.png */,
@@ -937,6 +940,7 @@
 				30750B6E1E8546F000809D15 /* openP.png in Resources */,
 				301B5D3F1E8F7B05005B1B99 /* m3x2cur.png in Resources */,
 				303C930B1E51ADEF00E465AB /* OVW2.png in Resources */,
+				307F120021686DE500EAA343 /* jines.jpg in Resources */,
 				30750B851E85559600809D15 /* m2x4.png in Resources */,
 				306672091E4F495700A9CFAC /* redUp.png in Resources */,
 				30C8EE091E4F6F6500192B06 /* blue.png in Resources */,
