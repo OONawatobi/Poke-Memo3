@@ -385,6 +385,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var statusView:UIView!//landscape画面のstatusbarに青色をカバーする
 var jinesView:UIView!//landscape画面のジンズ生地
 var jinesH:CGFloat = 0//jinesViewの高さ
 var shadow:UIView!//landscape画面のメモもの右側につける影
@@ -604,6 +605,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         shortToolBar.removeFromSuperview()
         shadow.removeFromSuperview()//影を削除する
         jinesView.removeFromSuperview()//削除する
+        statusView.removeFromSuperview()//削除する
+        
         if bigFlag{
             //_パレットが拡大表示されている場合のメモ表示サイズ
             let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
@@ -621,6 +624,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
         print("statusBarHeight:\(statusBarHeight)")
         print("naviBar.frame.height:\(naviBar.frame.height)")
+        statusView = UIView(frame: CGRect(x: boundWidth, y: 0, width: boundHeight - boundWidth, height: statusBarHeight))
+        statusView.backgroundColor = nColor
+        self.view.addSubview(statusView)
         
         var ax = drawableView.layer.position.x
         let bx = boundHeight - vWidth/2
@@ -652,7 +658,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1)
         jinesH = boundWidth - vHeight - 40 - statusBarHeight - naviBar.frame.height - 44
         jinesView = UIView(frame: CGRect(x:boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH))
-        jinesView.backgroundColor = UIColor.orange
+        jinesView.backgroundColor = UIColor.orange.withAlphaComponent(0.1) //(patternImage: UIImage(named:"jines.png")!)
         self.view.addSubview(jinesView)
         self.view.addSubview(shortToolBar)
         
@@ -1728,7 +1734,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - big*vHeight - 40)
                 //メモの右側の影
             shadow.frame.size = CGSize(width:6,height:boundWidth - big*vHeight - 40)
-            jinesView.frame.size = CGSize(width: boundWidth, height: jinesH - vHeight/2)
+            var jinesH2 = jinesH < vHeight/2 ? 0 :jinesH - vHeight/2
+            jinesView.frame.size = CGSize(width: boundWidth, height: jinesH2)
             //print("======================================")
             }else {   //拡大画面から通常画面に戻す場合
             //let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
