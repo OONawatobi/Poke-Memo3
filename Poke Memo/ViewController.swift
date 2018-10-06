@@ -202,6 +202,17 @@ extension UIView {
             self.frame.size.width, height:width)
         self.layer.addSublayer(border)
     }
+    func roundCorners(_ corners: UIRectCorner, radius: CGFloat) {
+        let maskPath = UIBezierPath(roundedRect: self.bounds,
+                                    byRoundingCorners: corners,
+                                    cornerRadii: CGSize(width: radius, height: radius))
+        
+        let maskLayer = CAShapeLayer()
+        maskLayer.frame = self.bounds
+        maskLayer.path = maskPath.cgPath
+        
+        self.layer.mask = maskLayer
+    }
 /*
     public func changeBottomBorder(color: UIColor, width: CGFloat) {
         self.layer.sublayers = nil
@@ -606,7 +617,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         shadow.removeFromSuperview()//影を削除する
         jinesView.removeFromSuperview()//削除する
         statusView.removeFromSuperview()//削除する
-        
+        scrollPos()//スクロール位置を調整
         if bigFlag{
             //_パレットが拡大表示されている場合のメモ表示サイズ
             let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
@@ -661,23 +672,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         jinesView.backgroundColor = UIColor.orange.withAlphaComponent(0.1) //(patternImage: UIImage(named:"jines.png")!)
         self.view.addSubview(jinesView)
         self.view.addSubview(shortToolBar)
-        
         shadow = UIView(frame: CGRect(x:boundWidth,y:0,width:6,height:boundWidth - vHeight - 40))//メモの右側の影
-        shadow.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        shadow.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         self.view.addSubview(shadow)
         memoCursol(disp: 1)//メモカーソルを更新
         self.toolBar.isHidden  = true
+        scrollPos()//スクロール位置を調整
         if bigFlag{
             //_パレットが拡大表示されている場合のメモ表示サイズ
             scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 3,width:leafWidth, height:boundWidth - big*vHeight - 40 - 5)
             //メモの白い背景として代用している
             statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - big*vHeight - 40)
-            shadow.frame.size = CGSize(width:6,height:boundWidth - big*vHeight - 40)
-            
-            //jinesView = UIView(frame: CGRect(x:boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH - vHeight/2))
-
+            let shadowL = boundWidth - big*vHeight - 40
+            if shadowL < 46 {shadow.backgroundColor = UIColor.clear}
+            else{shadow.backgroundColor = UIColor.black.withAlphaComponent(0.3)}
+            shadow.frame.size = CGSize(width:6,height:shadowL)
             zoom(zoom2)//一旦閉じる
             zoom(zoom2)//再度開く
+            
         }
     }
     //_shortToolBarボタンのタッチDOWN 時の処理
@@ -735,7 +747,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         buttonOK.setImage(UIImage(named: "ok.png"), for:UIControlState.normal)
             //イベントを追加する
         buttonOK.tag = 1
-        buttonOK.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchDown)
+        buttonOK.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchUpInside)
         shortToolBar.addSubview(buttonOK)
         // buttonZoomの追加
         buttonZoom = UIButton(frame: CGRect(x:(boundHeight - boundWidth)/2 - 30 ,y: 15, width:60, height:20))
@@ -743,7 +755,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         buttonZoom.setImage(UIImage(named: "zoom.png"), for:UIControlState.normal)
         //イベントを追加する
         buttonZoom.tag = 2
-        buttonZoom.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchDown)
+        buttonZoom.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchUpInside)
         shortToolBar.addSubview(buttonZoom)
         // buttonRedoの追加
         buttonRedo = UIButton(frame: CGRect(x:20 ,y: 10, width:30, height:30))
@@ -751,7 +763,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         buttonRedo.setImage(UIImage(named: "undopdf2.pdf"), for:UIControlState.normal)
         //イベントを追加する
         buttonRedo.tag = 3
-        buttonRedo.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchDown)
+        buttonRedo.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchUpInside)
         shortToolBar.addSubview(buttonRedo)
         //-----------------------------------------------------
         //ブランクleafを作成する
@@ -849,6 +861,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //_編集パネル
         /* editView([<][OVW][INS][DEL][CLR][>])を生成. */
         myEditView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 60))
+        myEditView.roundCorners([.topLeft, .topRight], radius: 10.0)
         let myEditColor = UIColor.rgb(r: 255, g: 0, b:80, alpha: 0.66)
         //red.withAlphaComponent(0.7)
         //rgb(r: 198, g: 54, b: 89, alpha: 0.8)
@@ -864,9 +877,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let b2W:CGFloat = 40.0//矢印ボタンの幅
         let tW:CGFloat = sp + bW//各ボタン間の距離
         let sp2:CGFloat = (boundWidth - (bW*4 + b2W*2 + sp*5))/2//両側のスペース
-        let x05 = b2W + sp + sp2//cW - CGFloat(2*tW - sp/2)//左端のボタン(05)の位置
+        let x05 = b2W + sp + sp2//cW - CGFloat(2*tW - sp/2) - 5//左端のボタン(05)の位置
         //button5の追加
-        editButton5 = UIButton(frame: CGRect(x:x05, y:8, width:bW, height:bH))
+        editButton5 = UIButton(frame: CGRect(x:x05 + 3, y:8, width:bW, height:bH))
         editButton5.backgroundColor = UIColor.clear
         editButton5.layer.cornerRadius = 8
         //editButton5.layer.masksToBounds = true
@@ -903,7 +916,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myEditView.addSubview(editButton8)
         
         //button9の追加
-        editButton9 = UIButton(frame: CGRect(x:sp2, y:5, width:40,height: 45))
+        editButton9 = UIButton(frame: CGRect(x:sp2 + 8, y:5, width:30,height: 45))
         editButton9.backgroundColor = UIColor.clear
         editButton9.layer.cornerRadius = 8
         editButton9.addTarget(self, action: #selector(ViewController.btn9_click(sender:)), for:.touchDown)
@@ -912,7 +925,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myEditView.addSubview(editButton9)
         
         //button10の追加
-        editButton10 = UIButton(frame: CGRect(x:x05 + tW*4, y:5, width:40,height: 45))
+        editButton10 = UIButton(frame: CGRect(x:x05 + tW*4 - 3, y:5, width:30,height: 45))
         editButton10.backgroundColor = UIColor.clear
         editButton10.layer.cornerRadius = 8
         editButton10.addTarget(self, action: #selector(ViewController.btn10_click(sender:)), for:.touchDown)
@@ -1733,8 +1746,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //ステータスバー(メモの背景としてとして使う）の高さ再設定
                 statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - big*vHeight - 40)
                 //メモの右側の影
-            shadow.frame.size = CGSize(width:6,height:boundWidth - big*vHeight - 40)
-            var jinesH2 = jinesH < vHeight/2 ? 0 :jinesH - vHeight/2
+            let shadowL = boundWidth - big*vHeight - 40
+            shadow.frame.size = CGSize(width:6,height:shadowL)
+            if shadowL < 46 {shadow.backgroundColor = UIColor.clear}
+            let jinesH2 = jinesH < vHeight/2 ? 0 :jinesH - vHeight/2
             jinesView.frame.size = CGSize(width: boundWidth, height: jinesH2)
             //print("======================================")
             }else {   //拡大画面から通常画面に戻す場合
@@ -1745,6 +1760,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
             //メモの右側の影
             shadow.frame.size = CGSize(width:6,height:boundWidth - vHeight - 40)
+            shadow.backgroundColor = UIColor.black.withAlphaComponent(0.3)
             //ジーンズ生地
             jinesView.frame.size = CGSize(width: boundWidth, height: jinesH)
             }
@@ -1937,20 +1953,25 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let gyou4:Int = nowGyouNo%100
         
         //+-+- 画面上での行番号
-        let gyou = nowGyouNo<10000 ? gyou4 : gyou3//$
-        let os:CGPoint = myScrollView.contentOffset
-        let iti = topOffset + CGFloat(leafHeight + leafMargin)*CGFloat(gyou) - os.y
-        print("タグ行の下線の位置:\(gyou3)")
+        let gyou = nowGyouNo<10000 ? gyou4 : gyou3//$何行目が選ばれたか
+        let os:CGPoint = myScrollView.contentOffset//現状のオフセット
+        let iti = topOffset + CGFloat(leafHeight + leafMargin)*CGFloat(gyou) - os.y//現状の表示位置
+        print("タグ行の下線の位置:\(iti)")
         //スクロール量を計算する
-        let maxIti = scrollRect_P.height - myEditView.frame.height//スクロール可否の閾値
-        let saIti = iti - maxIti
-        if iti > maxIti{
+        var maxIti = scrollRect_P.height - myEditView.frame.height//スクロール可否の閾値
+
+        if boundWidthX != boundWidth{ //portlait画面だけはoffsetは正の値だけとする
+            maxIti = maxIti + topOffset - 7
+        }//landscape画面では制限を変える
+        var saIti = iti - maxIti//差（移動量）
+        saIti = (os.y + saIti)<0 ? -os.y : saIti
+        //使用しないif iti > maxIti{//下方向へのスクロールだけ可能とする
             UIScrollView.animate(withDuration: 0.3, animations: {
                 () -> Void in
                 self.myScrollView.contentOffset = CGPoint(x:0,y:os.y + saIti)
             })
            
-        }
+        //}
 
     }
     
@@ -3359,7 +3380,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //パレット表示中
         if isPalleteMode == true{
             if myEditFlag == true{ closeEditView()}//編集パネルを閉じる
-           //メモのスクロール位置を設定(変更）する
+           //_★★メモのスクロール位置を設定(変更）する
             scrollPos()
                 
            //メモに書き出した内容をパレットに読み込む//20161024追加
