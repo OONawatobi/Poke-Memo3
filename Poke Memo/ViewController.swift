@@ -1,7 +1,7 @@
 //
 //  ViewController.swift
 //  Poke Memo⇒　E.T.Memo Happy Memo,Leaf Memo ⇒ Happy Note( Ver2)
-//
+//  now:20181008
 //  Created by 青山 行夫 on 2016/11/23.
 //  Copyright © 2016年 mm289. All rights reserved.
 // 20161213
