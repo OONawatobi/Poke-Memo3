@@ -202,6 +202,13 @@ extension UIView {
             self.frame.size.width, height:width)
         self.layer.addSublayer(border)
     }
+    public func addTopBorderWithColor(color: UIColor, width: CGFloat) {
+        let border = CALayer()
+        border.backgroundColor = color.cgColor
+        border.frame = CGRect(x:0, y:width/2,width:
+            self.frame.size.width, height:width)
+        self.layer.addSublayer(border)
+    }
     func roundCorners(_ corners: UIRectCorner, radius: CGFloat) {
         let maskPath = UIBezierPath(roundedRect: self.bounds,
                                     byRoundingCorners: corners,
@@ -665,8 +672,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
         statusBarBackground.backgroundColor = UIColor.white
         let navH = boundWidth - vHeight - 40
-        shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH - 44/2 - 3)
-        shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1)
+        shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH - 44/2 - 2)
+        shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5)
         jinesH = boundWidth - vHeight - 40 - statusBarHeight - naviBar.frame.height - 44
         jinesView = UIView(frame: CGRect(x:boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH))
         jinesView.backgroundColor = UIColor.orange.withAlphaComponent(0.1) //(patternImage: UIImage(named:"jines.png")!)
@@ -794,7 +801,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         underView.backgroundColor = gardColor//UIColor.green// underViewの背景を青色に設定
         //_★★ underViewの位置を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 15 )// 位置を中心に設定
-        //_addunderView.addBottomBorderWithColor(color: UIColor.black, width:2)
         underView.isUserInteractionEnabled = false//タッチ情報を後ろにスルーする™™
         /** upperViewを生成：パレットの上の緑色帯 **/
         upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
@@ -1182,7 +1188,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpTop.addSubview(eButton)
         helpTop.addSubview(rButton)
         didLoadFlg = false//_portlaitで起動する為のフラグ
-        
+        toolBar.addTopBorderWithColor(color: UIColor.black, width: 1.5)//パレットとツールバーの境界線
     }
 
     //  ======= End of viewDidLoad=======
@@ -1512,7 +1518,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
              drawableView.layer.position = leftEndPoint
              drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
             //パレットの底に黒線を追加する
-            drawableView.addBottomBorderWithColor(color: UIColor.black, width:2)
+            //drawableView.addBottomBorderWithColor(color: UIColor.black, width:2)
             //secondView,thirdViewの初期化(追加）
             drawableView.setSecondView()
             //編集ツールの追加(toolbar)
@@ -1736,7 +1742,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let mY = myToolView.frame.minY - sa//拡大時の編集バーの上側の位置
             let sH = shortToolBar.frame.height//第２ツールバーの高さ
                 if tY > mY {tY = mY
-                 var newPosY = boundWidth - big*vHeight - myToolView.frame.height - sH/2 - 2
+                 var newPosY = boundWidth - big*vHeight - myToolView.frame.height - sH/2 - 1
                  newPosY = newPosY < sH/2 ? sH/2 : newPosY
                  shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:newPosY) //y:navH + 44/2)
                  print("newPosY: \(newPosY)")
@@ -1755,7 +1761,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }else {   //拡大画面から通常画面に戻す場合
             //let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
             let navH = boundWidth - vHeight - 40 //statusBarHeight + naviBar.frame.height
-            shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH - 44/2 - 3)
+            shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH - 44/2 - 2)
             //ステータスバー(メモの背景としてとして使う）の高さ再設定
             statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
             //メモの右側の影
