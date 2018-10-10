@@ -205,8 +205,9 @@ extension UIView {
     public func addTopBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
         border.backgroundColor = color.cgColor
+        let bw = UIScreen.main.bounds.size.width
         border.frame = CGRect(x:0, y:width/2,width:
-            self.frame.size.width, height:width)
+            bw, height:width)
         self.layer.addSublayer(border)
     }
     func roundCorners(_ corners: UIRectCorner, radius: CGFloat) {
@@ -403,6 +404,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var statusBarHeight:CGFloat!//ステータスバーの高さ
 var statusView:UIView!//landscape画面のstatusbarに青色をカバーする
 var jinesView:UIView!//landscape画面のジンズ生地
 var jinesH:CGFloat = 0//jinesViewの高さ
@@ -413,7 +415,7 @@ var didLoadFlg = false//_portlaitモードで起動する為のフラグ
 var deviceO:Int = 1//_デバイスの回転方向(1-4)
 var gardClrFlg = true//パレット上下のガードの色をつける（緑色）
 var callig = false//カリグラフィモード時：true
-var th:CGFloat = 46//ツールバーの高さ 20180720本当は"46"
+var th:CGFloat = 46//(46:iP,51:iX,52:iPad)ツールバーの高さ 20180720本当は"46"
 var subMemoView:UIView!//+-+- 子メモの入るエリア
 var subMemo:MemoView! = nil//+-+-子メモ本体
 var posOffset:CGFloat = 50//+-+-　上記エリアの縦位置
@@ -611,8 +613,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
         spaceView1.frame.size = CGSize(width: boundWidth, height: 10)
         spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
-        spaceView2.frame.size = CGSize(width: boundWidth, height: 20)
-        spaceView2.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight - 40 - 20/2)
+        spaceView2.frame.size = CGSize(width: boundWidth, height: 10)
+        spaceView2.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight - 40 - 10/2)
         scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 44 - vHeight - 50)//最後の50は目で見て調整した
         self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
         self.view.addSubview(underNav)//ナビゲーション下線を追加
@@ -639,7 +641,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("----- setView2 --------")
 
         // ステータスバーの高さを取得する
-        let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+        statusBarHeight = UIApplication.shared.statusBarFrame.size.height
         print("statusBarHeight:\(statusBarHeight)")
         print("naviBar.frame.height:\(naviBar.frame.height)")
         statusView = UIView(frame: CGRect(x: boundWidth, y: 0, width: boundHeight - boundWidth, height: statusBarHeight))
@@ -662,8 +664,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
         spaceView1.frame.size = CGSize(width: boundHeight, height: 10)
         spaceView1.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight + 10/2)
-        spaceView2.frame.size = CGSize(width: boundHeight, height: 20)
-        spaceView2.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight - 40 - 20/2)
+        spaceView2.frame.size = CGSize(width: boundHeight, height: 10)
+        spaceView2.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight - 40 - 10/2)
         scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 5 ,width:leafWidth, height:boundWidth - vHeight - 50)//最後の50は目で見て調整した
         self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
        
@@ -738,11 +740,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.addSubview(statusBarBackground)
         //ナビゲーションバーの色を変える
         setNaviBar(color: nColor)
-        //_ナビゲーションバーの下線（半透明）
+/*        //_ナビゲーションバーの下線（半透明）
         let navB = statusBarHeight + naviBar.frame.height
-        print("naviBar.frame.height:\(naviBar.frame.height)")
+        print("__naviBar.frame.height__:\(naviBar.frame.height)")
         underNav = UIView(frame: CGRect(x:0,y:navB - 1 ,width:boundWidth,height:5))
-        underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
+        underNav.backgroundColor = UIColor.black//init(white: 0.6, alpha:0.3)
+ */
         //_パレットをの左端を表示する
         leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
         //_第２の短かいツールバー
@@ -789,10 +792,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /** spaceViewを生成(透明：タッチ緩衝の為) **/
         //_underViewの下側
         spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight , width: boundWidth, height: 10))
-        spaceView1.backgroundColor = UIColor.clear
+        spaceView1.backgroundColor = UIColor.red//clear
         //_underViewの上側
-        spaceView2 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight - 40 - 20, width: boundWidth, height: 20))
-        spaceView2.backgroundColor = UIColor.clear
+        spaceView2 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight - 40 - 20, width: boundWidth, height: 10))
+        spaceView2.backgroundColor = UIColor.blue//clear
         
         /** underViewを生成：パレットの下の緑色帯 **/
         //underFlag = false// 表示・非表示のためのフラグ
@@ -1133,7 +1136,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //設定画面
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
-        self.view.addSubview(underNav)//ナビゲーション下線を追加
+        //self.view.addSubview(underNav)//ナビゲーション下線を追加
         //使用言語を調べる
         let prefLang = NSLocale.preferredLanguages.first
         //文字列の先頭から末尾までを取得
@@ -1189,6 +1192,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpTop.addSubview(rButton)
         didLoadFlg = false//_portlaitで起動する為のフラグ
         toolBar.addTopBorderWithColor(color: UIColor.black, width: 1.5)//パレットとツールバーの境界線
+        print("toolBar.frame.size.width:\(toolBar.frame.size.width)")
+        print("toolBar.frame.size.height:\(toolBar.frame.size.height)")
+        print("boundWidth:\(boundWidth)")
+        print("statusBarHeight:\(statusBarHeight)")
+        print("naviBar.frame.height:\(naviBar.frame.height)")
+
     }
 
     //  ======= End of viewDidLoad=======
@@ -1201,6 +1210,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidAppear(_ animated: Bool) {
         // 端末の向きがかわったらNotificationを呼ばす設定.
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.onOrientationChange(notification:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+        //_ナビゲーションバーの下線（半透明）
+        statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+        print("xx__statusBarHeight__:\(String(describing: statusBarHeight))")
+        print("xx__naviBar.frame.height__:\(naviBar.frame.height)")
+        let navB = statusBarHeight + naviBar.frame.height
+        underNav = UIView(frame: CGRect(x:0,y:navB - 1 ,width:boundWidth,height:5))
+        underNav.backgroundColor = UIColor.black//init(white: 0.6, alpha:0.3)
+        self.view.addSubview(underNav)//ナビゲーション下線を追加
     }
     //_★★ 端末の向きがかわったら呼び出されるメソッド　-------------------★★
     func onOrientationChange(notification: NSNotification){
@@ -1435,7 +1452,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     /* パレットの表示／非表示を交互に行う (NAVバーの右端ボタン) */
-
     var animeFlag:Bool = false//アニメ中はtrue
     @IBAction func Pallete(_ sender: UIBarButtonItem) {
         print("★deviceO: \(deviceO)")
@@ -1509,12 +1525,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             isPalleteMode = false
             bigFlag = false
         }else{
-        // パレットが表示されていない時パレットを表示する-----------②
+        // パレットが表示されていない時パレットを表示する--------②
             //_パレットビューを作成・初期化する
              drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
              drawableView.Delegate = self
+            //下段ツールバーを表示して、その高さを取得する
+            self.toolBar.isHidden  = false//ツールバーを現す
+            th = self.toolBar.frame.height
+            print("〓toolbar.height〓 th:\(th)")
+            leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - th - vHeight/2 )
+            //x_パレット周りのレイアウトを再設定する
+            upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 30/2)// upperViewの位置調整.
+            underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 30/2 - th)// underViewの位置調整.
+            spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
+            spaceView2.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight - 40 - 10/2)
+            myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
             //_左端を表示⬇️使っていないみたい？？modaoChange()で再設定している
-             leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
              drawableView.layer.position = leftEndPoint
              drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
             //パレットの底に黒線を追加する
@@ -1544,10 +1570,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 didLoadFlg = true
              } // ++++  ココまで  ++++
             
-            self.toolBar.isHidden  = false//ツールバーを現す
+            //self.toolBar.isHidden  = false//ツールバーを現す
             //ツールバーの高さを検出する 20180720追加
             //th = self.toolBar.frame.height
-            print("〓toolbar.height〓 th:\(th)")
+            //print("〓toolbar.height〓 th:\(th)")
             isPalleteMode = true//パレットが表示されているので"true"
             //編集画面非表示フラグをリセットする
             //????myEditFlag = false
