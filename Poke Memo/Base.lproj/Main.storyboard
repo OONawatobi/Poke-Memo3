@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_0" orientation="portrait">
+    <device id="retina6_1" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -15,11 +15,11 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Happy_Memo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <toolbar clearsContextBeforeDrawing="NO" contentMode="scaleToFill" semanticContentAttribute="playback" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="WDe-yS-lAl">
-                                <rect key="frame" x="0.0" y="522" width="320" height="46"/>
+                                <rect key="frame" x="44" y="342" width="808" height="51"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                 <viewLayoutGuide key="safeArea" id="gZ0-Rd-KVV"/>
                                 <items>
@@ -48,7 +48,7 @@
                                 <color key="barTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </toolbar>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ivu-cJ-hot">
-                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                                <rect key="frame" x="44" y="0.0" width="808" height="44"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <viewLayoutGuide key="safeArea" id="dtM-1l-p0j"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -88,6 +88,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ivu-cJ-hot" firstAttribute="top" secondItem="SJR-tO-uZ1" secondAttribute="top" id="7sM-kH-4gA"/>
+                            <constraint firstItem="ivu-cJ-hot" firstAttribute="leading" secondItem="SJR-tO-uZ1" secondAttribute="leading" id="Cbh-2I-cH8"/>
                             <constraint firstItem="WDe-yS-lAl" firstAttribute="bottom" secondItem="SJR-tO-uZ1" secondAttribute="bottom" id="FCW-ag-eTp"/>
                             <constraint firstItem="ivu-cJ-hot" firstAttribute="leading" secondItem="SJR-tO-uZ1" secondAttribute="leading" id="IwR-fZ-g4Y"/>
                             <constraint firstItem="WDe-yS-lAl" firstAttribute="trailing" secondItem="SJR-tO-uZ1" secondAttribute="trailing" id="Uxn-lI-Lhk"/>

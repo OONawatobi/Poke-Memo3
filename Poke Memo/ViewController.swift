@@ -404,6 +404,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var leftOffset:CGFloat = 0//safeArea(landscape画面)の左側
 var statusBarHeight:CGFloat!//ステータスバーの高さ
 var statusView:UIView!//landscape画面のstatusbarに青色をカバーする
 var jinesView:UIView!//landscape画面のジンズ生地
@@ -598,6 +599,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func setView1(){
         rotMode = 1
         print("------ setView1 --------")
+        //パレットのアンカー座標を変更する（センターに戻す）
+        drawableView.layer.anchorPoint = CGPoint(x: 0.5, y:0.5)
         boundWidthX = boundWidth
         let ax = drawableView.layer.position.x
         drawableView.layer.position = CGPoint(x:ax,y:boundHeight - vHeight/2 - th)
@@ -620,6 +623,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.addSubview(underNav)//ナビゲーション下線を追加
         statusBarBackground.backgroundColor = nColor
         statusBarBackground.frame.size = CGSize(width:boundWidth,height:UIApplication.shared.statusBarFrame.height)
+        statusBarBackground.layer.position = CGPoint(x:boundWidth/2,y:UIApplication.shared.statusBarFrame.height/2)
         memoCursol(disp: 1)//メモカーソルを更新
         self.toolBar.isHidden  = false
         shortToolBar.removeFromSuperview()
@@ -639,11 +643,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         rotMode = 2//チャタリング防止用
         boundWidthX = boundHeight//縦横を入れ替える
         print("----- setView2 --------")
-
+        //iPhoneXシリーズ？
+        if iphoneX{
+            leftOffset = 44//safeAreaの両側のスペースの幅
+            //パレットのアンカー座標を変更する（右にスペースの幅分だけずらす）
+            let zm:CGFloat = bigFlag ? big : 1
+            let anchoOffeset:CGFloat = (zm*2*boundWidth - leftOffset)/(zm*4*boundWidth)
+            drawableView.layer.anchorPoint = CGPoint(x: anchoOffeset, y:0.5)
+            print("centerX:\(drawableView.layer.anchorPoint)")
+        }
         // ステータスバーの高さを取得する
         statusBarHeight = UIApplication.shared.statusBarFrame.size.height
-        print("statusBarHeight:\(statusBarHeight)")
-        print("naviBar.frame.height:\(naviBar.frame.height)")
+        //print("statusBarHeight:\(String(describing: statusBarHeight))")
+        //print("naviBar.frame.height:\(naviBar.frame.height)")
         statusView = UIView(frame: CGRect(x: boundWidth, y: 0, width: boundHeight - boundWidth, height: statusBarHeight))
         statusView.backgroundColor = nColor
         self.view.addSubview(statusView)
@@ -654,34 +666,39 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.layer.position = CGPoint(x:ax,y:boundWidth - vHeight/2)
         leftEndPoint = CGPoint(x:vWidth/2,y:boundWidth - vHeight/2)
         upperView.frame.size = CGSize(width:boundHeight,height:30)
-        upperView.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight + 30/2)// underView：パレットの上の緑色帯を生成.
+        upperView.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - vHeight + 30/2)// underView：パレットの上の緑色帯を生成.
         
         underView.frame.size = CGSize(width:boundHeight,height:30)
-        underView.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - 30/2 + 2)// underView：パレットの下の緑色帯を生成.
-        myToolView.frame.size = CGSize(width: boundHeight,height:40)
-        myToolView.layer.position = CGPoint(x: boundHeight/2, y: boundWidth - vHeight - 40/2)
+        underView.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - 30/2 + 2)// underView：パレットの下の緑色帯を生成.
+        //myToolViewのサイズと位置を再設定する
+        let mtvWidth = iphoneX ? boundHeight - 54 : boundHeight
+        let mtPosx = iphoneX ? boundHeight + 34 : boundHeight
+        myToolView.frame.size = CGSize(width: mtvWidth,height:40)
+        myToolView.layer.position = CGPoint(x:mtPosx/2, y: boundWidth - vHeight - 40/2)
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
-        myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
+        myEditView.layer.position = CGPoint(x:leftOffset + boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
         spaceView1.frame.size = CGSize(width: boundHeight, height: 10)
-        spaceView1.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight + 10/2)
+        spaceView1.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - vHeight + 10/2)
         spaceView2.frame.size = CGSize(width: boundHeight, height: 10)
-        spaceView2.layer.position = CGPoint(x:boundHeight/2,y:boundWidth - vHeight - 40 - 10/2)
-        scrollRect_P = CGRect(x:(boundWidth - leafWidth)/2,y: 5 ,width:leafWidth, height:boundWidth - vHeight - 50)//最後の50は目で見て調整した
+        spaceView2.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - vHeight - 40 - 10/2)
+        scrollRect_P = CGRect(x:leftOffset + (boundWidth - leafWidth)/2,y: 5 ,width:leafWidth, height:boundWidth - vHeight - 50)//最後の50は目で見て調整した
         self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
        
         underNav.removeFromSuperview()
-        statusBarBackground.backgroundColor = UIColor.white
+        
         statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
+        statusBarBackground.layer.position = CGPoint(x:leftOffset + (boundWidth)/2,y:(boundWidth - vHeight - 40)/2)
         statusBarBackground.backgroundColor = UIColor.white
-        let navH = boundWidth - vHeight - 40
-        shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH - 44/2 - 2)
-        shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5)
+        let stH = boundWidth - vHeight - 40//ショートツールバーのY位置
+        let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
+        shortToolBar.layer.position = CGPoint(x:stX,y:stH - 44/2 - 2)
+        //shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5)
         jinesH = boundWidth - vHeight - 40 - statusBarHeight - naviBar.frame.height - 44
-        jinesView = UIView(frame: CGRect(x:boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH))
+        jinesView = UIView(frame: CGRect(x: leftOffset + boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH))
         jinesView.backgroundColor = UIColor.orange.withAlphaComponent(0.1) //(patternImage: UIImage(named:"jines.png")!)
         self.view.addSubview(jinesView)
         self.view.addSubview(shortToolBar)
-        shadow = UIView(frame: CGRect(x:boundWidth,y:0,width:6,height:boundWidth - vHeight - 40))//メモの右側の影
+        shadow = UIView(frame: CGRect(x:leftOffset + boundWidth,y:0,width:6,height:boundWidth - vHeight - 40))//メモの右側の影
         shadow.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         self.view.addSubview(shadow)
         memoCursol(disp: 1)//メモカーソルを更新
@@ -700,6 +717,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             zoom(zoom2)//再度開く
             
         }
+        /*
+        var test:UIView! = UIView(frame: CGRect(x:44,y:50,width:boundHeight - 10,height:20))
+        test.backgroundColor = UIColor.red
+        self.view.addSubview(test)
+        */
     }
     //_shortToolBarボタンのタッチDOWN 時の処理
     func btn_clicked(sender:UIButton){
@@ -720,6 +742,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             sBarX = 24//iPhoneXの場合status barが下に24拡大する
             boundHeight = boundHeight - 34//safeareaのbottom
             helpFrame = UIView(frame: CGRect(x:0,y:44,width:boundWidth,height:boundHeight - 78))
+            
           }
 
         //-----------------------------------------------
@@ -740,19 +763,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.addSubview(statusBarBackground)
         //ナビゲーションバーの色を変える
         setNaviBar(color: nColor)
-/*        //_ナビゲーションバーの下線（半透明）
-        let navB = statusBarHeight + naviBar.frame.height
-        print("__naviBar.frame.height__:\(naviBar.frame.height)")
-        underNav = UIView(frame: CGRect(x:0,y:navB - 1 ,width:boundWidth,height:5))
-        underNav.backgroundColor = UIColor.black//init(white: 0.6, alpha:0.3)
- */
         //_パレットをの左端を表示する
         leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
-        //_第２の短かいツールバー
-        shortToolBar = UIView(frame:CGRect(x: boundWidth, y: 44, width: boundHeight - boundWidth, height: 46))
+        //_第２の短かいツールバー(横画面専用）
+            leftOffset = iphoneX ? 44 : 0
+        let bS:CGFloat = iphoneX ? 10 : 0
+        shortToolBar = UIView(frame:CGRect(x:leftOffset + boundWidth, y: 44, width: boundHeight - boundWidth - leftOffset - bS, height: 46))
+
         shortToolBar.backgroundColor = UIColor.lightGray
+        shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5)
         // buttonOKの追加
-        buttonOK = UIButton(frame: CGRect(x:boundHeight - boundWidth - 40,y: 15, width:30, height:20))
+        buttonOK = UIButton(frame: CGRect(x:-2*leftOffset + boundHeight - boundWidth - 40,y: 15, width:30, height:20))
         buttonOK.backgroundColor = UIColor.clear
         buttonOK.setImage(UIImage(named: "ok.png"), for:UIControlState.normal)
             //イベントを追加する
@@ -760,7 +781,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         buttonOK.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchUpInside)
         shortToolBar.addSubview(buttonOK)
         // buttonZoomの追加
-        buttonZoom = UIButton(frame: CGRect(x:(boundHeight - boundWidth)/2 - 30 ,y: 15, width:60, height:20))
+        buttonZoom = UIButton(frame: CGRect(x:-leftOffset +  (boundHeight - boundWidth)/2 - 30 ,y: 15, width:60, height:20))
         buttonZoom.backgroundColor = UIColor.clear
         buttonZoom.setImage(UIImage(named: "zoom.png"), for:UIControlState.normal)
         //イベントを追加する
@@ -775,7 +796,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         buttonRedo.tag = 3
         buttonRedo.addTarget(self, action: #selector(btn_clicked(sender:)), for:.touchUpInside)
         shortToolBar.addSubview(buttonRedo)
-        //-----------------------------------------------------
+        //----ここまで---------------------------------------
         //ブランクleafを作成する
         let bView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight))
         bImage = bView.GetImage()
@@ -1761,7 +1782,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         //shortToolBar(横向きの場合のみ)のY位置を調整(SE対策)
         if boundWidthX != boundWidth{  //_landscapeの場合--------------
-            
          if !bigFlag{  //_拡大画面に移行する場合
             print("◆◆◆◆ landscapeの場合 ◆◆◆◆")
             var tY = shortToolBar.frame.maxY//第２ツ_ールバーの下側の位置
@@ -1770,11 +1790,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 if tY > mY {tY = mY
                  var newPosY = boundWidth - big*vHeight - myToolView.frame.height - sH/2 - 1
                  newPosY = newPosY < sH/2 ? sH/2 : newPosY
-                 shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:newPosY) //y:navH + 44/2)
+                let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
+                 shortToolBar.layer.position = CGPoint(x:stX,y:newPosY) //y:navH + 44/2)
                  print("newPosY: \(newPosY)")
                 }
             //スクロールViewのサイズ再設定
-                scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 3,width:leafWidth, height:boundWidth - big*vHeight - 40 - 5)
+                scrollRect_B = CGRect(x:leftOffset + (boundWidth - leafWidth)/2,y: 3,width:leafWidth, height:boundWidth - big*vHeight - 40 - 5)
                 //ステータスバー(メモの背景としてとして使う）の高さ再設定
                 statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - big*vHeight - 40)
                 //メモの右側の影
@@ -1787,14 +1808,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }else {   //拡大画面から通常画面に戻す場合
             //let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
             let navH = boundWidth - vHeight - 40 //statusBarHeight + naviBar.frame.height
-            shortToolBar.layer.position = CGPoint(x:(boundHeight + boundWidth)/2,y:navH - 44/2 - 2)
+            let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
+            shortToolBar.layer.position = CGPoint(x:stX,y:navH - 44/2 - 2)
             //ステータスバー(メモの背景としてとして使う）の高さ再設定
             statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
             //メモの右側の影
             shadow.frame.size = CGSize(width:6,height:boundWidth - vHeight - 40)
             shadow.backgroundColor = UIColor.black.withAlphaComponent(0.3)
             //ジーンズ生地
-            jinesView.frame.size = CGSize(width: boundWidth, height: jinesH)
+            jinesView.frame.size = CGSize(width: shortToolBar.frame.width, height: jinesH)
             }
         //-------上記の「landscapeモード専用の if文」はココまで --------------
         }else{ //-------portlaitモード専用-----------------
@@ -1817,10 +1839,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 print("normalSize:")
                 let cx = drawableView.center.x
                 //拡大率を1.5倍にする
+
                 drawableView.transform = CGAffineTransform(scaleX: big, y: big)
 
                 drawableView.layer.position = CGPoint(x: big*cx, y:zYpos - big*vHeight/2 )
             //myEditViewの再描画
+                
                 myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:zYpos - vHeight - 40/2 - sa )
                 etcBarDisp(disp:0)//マスクビューを非表示にする
             //スクロールviewを合わせる
@@ -1858,7 +1882,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             editButton1.setImage(UIImage(named: "3Up.pdf"), for:UIControlState.normal)
                 ok2()//★20180814:oomを閉じたときにメモ行を更新する
             }
-            
+        // iphoneXモード時の拡大時に右にずらす量を再設定する
+         if iphoneX{
+         //パレットのアンカー座標を変更する（右にスペースの幅分だけずらす）
+         let zm:CGFloat = bigFlag ? big : 1
+         let anchoOffeset:CGFloat = (zm*2*boundWidth - leftOffset)/(zm*4*boundWidth)
+         drawableView.layer.anchorPoint = CGPoint(x: anchoOffeset, y:0.5)
+         }
+         //
      //★20180814 メモカーソルを更新する
         memoCursol(disp: 1)//カーソル幅と位置をzoom画面ように更新する
         
@@ -2337,7 +2368,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var tg:Int = 101
 
           for i in 0..<pageGyou {
-            print("aaa???\(i)")
+            //print("aaa???\(i)")
             tg = pn*100 + (pageGyou - i)
             if Int(mx[String(tg)]!)>50{
                 ret = pageGyou - i  //1 〜 30
@@ -3464,17 +3495,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //メモカーソルを表示する★20180812
         memoCursol(disp: 1)
     }
-    //_パレットの表示位置を変更する
+    //_xパレットの表示位置を変更する
     func dispPosChange(midX: CGFloat,deltaX:CGFloat){
         // protocol UpperToolViewDelegate
         //print("midX: \(midX)")
         let b = (bigFlag == true) ? big:1
         var midX2 = midX
         let topX:CGFloat = (b*vWidth/2)
-        let lastX:CGFloat = (boundWidthX - b*vWidth/2)
+        let lastX:CGFloat = (boundWidthX - leftOffset - b*vWidth/2)
         var pY:CGFloat = 0//_パレットのセンター座標
         if boundWidthX == boundWidth{//_portlait画面の場合
             pY = (boundHeight - b*vHeight/2 - th)
+            
         }else{//_landscape画面の場合
             pY = (boundWidth - b*vHeight/2)
         }
@@ -3484,10 +3516,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            if drawableView.frame.midX >= topX{//Viewの中心のX座標
              drawableView.layer.position = CGPoint(x: topX, y:pY)
            }
-        //末尾にシフト
+        //_x?末尾にシフト
         }else if dir == 1{
             if drawableView.frame.midX < lastX{//Viewの中心のX座標
-                drawableView.layer.position = CGPoint(x: lastX, y:pY)
+                drawableView.layer.position = CGPoint(x: 0, y:pY)
             }
         }
         if midX > topX{ midX2 = topX}
