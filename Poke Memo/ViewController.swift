@@ -521,6 +521,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
+    var rightArea:UIView!//safeAreaの右側エリア(landsccape)
+    var leftArea:UIView!//safeAreaの右側エリア(landsccape)
     var rotMode:Int = 1
     var shortToolBar: UIView!//_横向き画面のツールバー
     var statusBarBackground:UIView!
@@ -638,6 +640,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             zoom(zoom2)//一旦閉じる
             zoom(zoom2)//再度開く
         }
+        //safeArea両側のマスクを削除する
+        if iphoneX{
+            rightArea.removeFromSuperview()
+            leftArea.removeFromSuperview()
+        }
     }
     func setView2(){
         rotMode = 2//チャタリング防止用
@@ -717,11 +724,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             zoom(zoom2)//再度開く
             
         }
-        /*
-        var test:UIView! = UIView(frame: CGRect(x:44,y:50,width:boundHeight - 10,height:20))
-        test.backgroundColor = UIColor.red
-        self.view.addSubview(test)
-        */
+        if iphoneX && boundWidthX != boundWidth{
+            self.view.addSubview(rightArea)
+            self.view.addSubview(leftArea)
+        }
     }
     //_shortToolBarボタンのタッチDOWN 時の処理
     func btn_clicked(sender:UIButton){
@@ -763,6 +769,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.addSubview(statusBarBackground)
         //ナビゲーションバーの色を変える
         setNaviBar(color: nColor)
+        //iphoneX・横画面safeArea両側を覆う
+        rightArea = UIView(frame:CGRect(x:boundHeight - 10,y:0,width:44,height:boundWidth))
+        leftArea = UIView(frame:CGRect(x:0,y:0,width:44,height:boundWidth))
+        rightArea.backgroundColor = UIColor.gray
+        leftArea.backgroundColor = UIColor.gray
         //_パレットをの左端を表示する
         leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
         //_第２の短かいツールバー(横画面専用）
@@ -813,10 +824,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /** spaceViewを生成(透明：タッチ緩衝の為) **/
         //_underViewの下側
         spaceView1 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight , width: boundWidth, height: 10))
-        spaceView1.backgroundColor = UIColor.red//clear
+        spaceView1.backgroundColor = UIColor.clear
         //_underViewの上側
         spaceView2 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight - 40 - 20, width: boundWidth, height: 10))
-        spaceView2.backgroundColor = UIColor.blue//clear
+        spaceView2.backgroundColor = UIColor.clear
         
         /** underViewを生成：パレットの下の緑色帯 **/
         //underFlag = false// 表示・非表示のためのフラグ
@@ -1237,7 +1248,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("xx__naviBar.frame.height__:\(naviBar.frame.height)")
         let navB = statusBarHeight + naviBar.frame.height
         underNav = UIView(frame: CGRect(x:0,y:navB - 1 ,width:boundWidth,height:5))
-        underNav.backgroundColor = UIColor.black//init(white: 0.6, alpha:0.3)
+        underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
         self.view.addSubview(underNav)//ナビゲーション下線を追加
     }
     //_★★ 端末の向きがかわったら呼び出されるメソッド　-------------------★★
@@ -1892,7 +1903,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          //
      //★20180814 メモカーソルを更新する
         memoCursol(disp: 1)//カーソル幅と位置をzoom画面ように更新する
-        
+       //_x選択メモ行の表示位置を調整する
+        scrollPos()
     }
     
     @IBAction func redo(_ sender: UIBarButtonItem) {
@@ -2021,20 +2033,26 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let iti = topOffset + CGFloat(leafHeight + leafMargin)*CGFloat(gyou) - os.y//現状の表示位置
         print("タグ行の下線の位置:\(iti)")
         //スクロール量を計算する
-        var maxIti = scrollRect_P.height - myEditView.frame.height//スクロール可否の閾値
+        var maxIti:CGFloat = 0
+        if !bigFlag {//非拡大時
+            maxIti = scrollRect_P.height - myEditView.frame.height//スクロール可否の閾値
+        }else{//拡大時
+            maxIti = scrollRect_B.height
+        }
 
-        if boundWidthX != boundWidth{ //portlait画面だけはoffsetは正の値だけとする
-            maxIti = maxIti + topOffset - 7
-        }//landscape画面では制限を変える
-        var saIti = iti - maxIti//差（移動量）
+        //スクロール量の計算
+        //iphoneXのlandscape画面では制限を変える
+        var saX:CGFloat = 0//ステータスバーの高さの差
+        if boundWidthX == boundWidth{//portlait画面
+            saX = iphoneX ? 24 : 0
+        }
+        var saIti = iti - maxIti + saX//差（移動量）
         saIti = (os.y + saIti)<0 ? -os.y : saIti
         //使用しないif iti > maxIti{//下方向へのスクロールだけ可能とする
-            UIScrollView.animate(withDuration: 0.3, animations: {
-                () -> Void in
-                self.myScrollView.contentOffset = CGPoint(x:0,y:os.y + saIti)
-            })
-           
-        //}
+        UIScrollView.animate(withDuration: 0.3, animations: {
+            () -> Void in
+            self.myScrollView.contentOffset = CGPoint(x:0,y:os.y + saIti)
+        })
 
     }
     
