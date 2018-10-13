@@ -190,7 +190,7 @@ class DrawableView: UIView {
     //=====================　描画プログラム　======================//
     
     var rightFlag:Bool = false
-    let rightArea:CGFloat = 10//右側エリア境界位置
+    let rightArea:CGFloat = 20//10//右側エリア境界位置
     var shiftLeftFlag:Bool = false
     var shiftDownFlag:Bool = false
     var X_color = 0
@@ -218,11 +218,10 @@ class DrawableView: UIView {
         //右側エリアに入っているか判定
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
-        let screenX = b*(currentPoint.x) + (midX - b*vWidth/2)    // 画面座標に変換
-        //_????
+        let screenX = b*(currentPoint.x) + (midX - b*vWidth/2)// 画面座標に変換
         rightFlag =  screenX > (boundWidthX - rightArea) ? true:false
         //print("screenX:\(screenX)")
-        //print("◆◆◆◆")
+        //print("◆◆◆◆")//
         if lastDrawImage != nil{
           bup["20"] = (lastDrawImage,mxTemp)//)bup["2"]
         }
@@ -407,8 +406,8 @@ class DrawableView: UIView {
         
         //_左方向へのシフトを実施する:画面の５-7分の１だけ左側に表示する
         var dsX = vWidth/2 - mxTemp + boundWidthX/20 //★20180822:←7
-        //右端制限
-        dsX = dsX < (boundWidthX - vWidth/2) ? (boundWidthX - vWidth/2):dsX
+        //_x右端制限
+        dsX = dsX < (boundWidthX - vWidth/2 - leftOffset) ? (boundWidthX - vWidth/2 - leftOffset):dsX
         //左端制限
         dsX = dsX > vWidth/2 ? vWidth/2:dsX
         

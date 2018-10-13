@@ -404,6 +404,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+//var testView = UIView(frame: CGRect(x:0,y:0,width:10,height:vHeight))
 var leftOffset:CGFloat = 0//safeArea(landscape画面)の左側
 var statusBarHeight:CGFloat!//ステータスバーの高さ
 var statusView:UIView!//landscape画面のstatusbarに青色をカバーする
@@ -521,8 +522,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
-    var rightArea:UIView!//safeAreaの右側エリア(landsccape)
-    var leftArea:UIView!//safeAreaの右側エリア(landsccape)
+    var rightAreaView:UIView!//safeAreaの右側エリア(landsccape)
+    var leftAreaView:UIView!//safeAreaの右側エリア(landsccape)
     var rotMode:Int = 1
     var shortToolBar: UIView!//_横向き画面のツールバー
     var statusBarBackground:UIView!
@@ -642,8 +643,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         //safeArea両側のマスクを削除する
         if iphoneX{
-            rightArea.removeFromSuperview()
-            leftArea.removeFromSuperview()
+            rightAreaView.removeFromSuperview()
+            leftAreaView.removeFromSuperview()
         }
     }
     func setView2(){
@@ -672,11 +673,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ax = ax > bx ? ax : bx//_右端を超えない様にする
         drawableView.layer.position = CGPoint(x:ax,y:boundWidth - vHeight/2)
         leftEndPoint = CGPoint(x:vWidth/2,y:boundWidth - vHeight/2)
-        upperView.frame.size = CGSize(width:boundHeight,height:30)
-        upperView.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - vHeight + 30/2)// underView：パレットの上の緑色帯を生成.
-        
-        underView.frame.size = CGSize(width:boundHeight,height:30)
-        underView.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - 30/2 + 2)// underView：パレットの下の緑色帯を生成.
+        let saL1:CGFloat = iphoneX ? 54 : 0//iphoneXの場合は調整(s.A.の幅=bH - 54)
+        let saL2:CGFloat = iphoneX ? 34 : 0//iphoneXの場合は調整(全長=bH + 34)
+        upperView.frame.size = CGSize(width:boundHeight - saL1,height:30)
+        upperView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - vHeight + 30/2)// underView：パレットの上の緑色帯を生成.
+        underView.frame.size = upperView.frame.size
+        underView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - 30/2 + 2)// underView：パレットの下の緑色帯を生成.
         //myToolViewのサイズと位置を再設定する
         let mtvWidth = iphoneX ? boundHeight - 54 : boundHeight
         let mtPosx = iphoneX ? boundHeight + 34 : boundHeight
@@ -725,8 +727,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
         }
         if iphoneX && boundWidthX != boundWidth{
-            self.view.addSubview(rightArea)
-            self.view.addSubview(leftArea)
+            self.view.addSubview(rightAreaView)
+            self.view.addSubview(leftAreaView)
         }
     }
     //_shortToolBarボタンのタッチDOWN 時の処理
@@ -770,10 +772,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //ナビゲーションバーの色を変える
         setNaviBar(color: nColor)
         //iphoneX・横画面safeArea両側を覆う
-        rightArea = UIView(frame:CGRect(x:boundHeight - 10,y:0,width:44,height:boundWidth))
-        leftArea = UIView(frame:CGRect(x:0,y:0,width:44,height:boundWidth))
-        rightArea.backgroundColor = UIColor.gray
-        leftArea.backgroundColor = UIColor.gray
+        rightAreaView = UIView(frame:CGRect(x:boundHeight - 10,y:0,width:44,height:boundWidth))
+        leftAreaView = UIView(frame:CGRect(x:0,y:0,width:44,height:boundWidth))
+        rightAreaView.backgroundColor = UIColor.darkGray
+        leftAreaView.backgroundColor = UIColor.darkGray
+        rightAreaView.isUserInteractionEnabled = false
         //_パレットをの左端を表示する
         leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
         //_第２の短かいツールバー(横画面専用）
@@ -1233,6 +1236,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
 
     //  ======= End of viewDidLoad=======
+    @available(iOS 11, *)
+    override func prefersHomeIndicatorAutoHidden() -> Bool {
+        return true
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -1792,8 +1799,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if myEditFlag == true{return}//編集パレットが開いている場合は🐞
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         //shortToolBar(横向きの場合のみ)のY位置を調整(SE対策)
-        if boundWidthX != boundWidth{  //_landscapeの場合--------------
-         if !bigFlag{  //_拡大画面に移行する場合
+        if boundWidthX != boundWidth{
+        //_****landscapeの場合--------------
+            if !bigFlag{
+            //_++++拡大画面に移行する場合
             print("◆◆◆◆ landscapeの場合 ◆◆◆◆")
             var tY = shortToolBar.frame.maxY//第２ツ_ールバーの下側の位置
             let mY = myToolView.frame.minY - sa//拡大時の編集バーの上側の位置
@@ -1816,7 +1825,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let jinesH2 = jinesH < vHeight/2 ? 0 :jinesH - vHeight/2
             jinesView.frame.size = CGSize(width: boundWidth, height: jinesH2)
             //print("======================================")
-            }else {   //拡大画面から通常画面に戻す場合
+            
+            }else {
+            //++++拡大画面から通常画面に戻す場合
             //let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
             let navH = boundWidth - vHeight - 40 //statusBarHeight + naviBar.frame.height
             let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
@@ -1829,13 +1840,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //ジーンズ生地
             jinesView.frame.size = CGSize(width: shortToolBar.frame.width, height: jinesH)
             }
+            //++++END
         //-------上記の「landscapeモード専用の if文」はココまで --------------
-        }else{ //-------portlaitモード専用-----------------
+        }else{
+        //****--portlaitモード専用-----------------
             //_パレットが拡大表示されている場合のメモ表示サイズ
             let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
             scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
             //_ ↑ height:画面高さ-_ステタスバー(20?)_ツールバー(46)_ナビバー(44)_vH_sa(vH/2)_myToolBar(40)
-        }
+        }//****END
  
         //-------以降は「portlait/landscape」両モード（パラメータで切り替える）
             //_palette底辺のy座標
@@ -1846,13 +1859,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 zYpos = boundWidth
             }
         //---- 非拡大画面から拡大画面に移行する　--------------------------
-            if drawableView.frame.height == vHeight{//非拡大画面
+            if drawableView.frame.height == vHeight{
+            //@@@@非拡大画面
                 print("normalSize:")
                 let cx = drawableView.center.x
                 //拡大率を1.5倍にする
 
                 drawableView.transform = CGAffineTransform(scaleX: big, y: big)
-
                 drawableView.layer.position = CGPoint(x: big*cx, y:zYpos - big*vHeight/2 )
             //myEditViewの再描画
                 
@@ -1866,9 +1879,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //拡大鏡アイコンを表示する
             editButton1.frame.size = CGSize(width:60, height:60)//ボタンサイズを変更
             editButton1.setImage(UIImage(named: "bigW.pdf"), for:UIControlState.normal)
-                
-        //-----拡大画面から通常画面に戻す---------------------------------
+
             }else{
+            //@@@@拡大画面から通常画面に戻す---
                 print("bigSize:")
                 let cx = drawableView.center.x
                 drawableView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)//_元に戻す場合
@@ -1885,14 +1898,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 etcBarDisp(disp:1)//マスクビューの再追加
             //スクロールviewを元に戻す
                 myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
-                
             //線幅：元に戻す
             bigFlag = false
             //赤▲アイコンに戻す
             editButton1.frame.size = CGSize(width:40, height:40)//ボタンサイズを元に戻す
             editButton1.setImage(UIImage(named: "3Up.pdf"), for:UIControlState.normal)
                 ok2()//★20180814:oomを閉じたときにメモ行を更新する
-            }
+            }//@@@@END
         // iphoneXモード時の拡大時に右にずらす量を再設定する
          if iphoneX{
          //パレットのアンカー座標を変更する（右にスペースの幅分だけずらす）
@@ -3537,7 +3549,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //_x?末尾にシフト
         }else if dir == 1{
             if drawableView.frame.midX < lastX{//Viewの中心のX座標
-                drawableView.layer.position = CGPoint(x: 0, y:pY)
+                drawableView.layer.position = CGPoint(x:lastX, y:pY)//CGPoint(x:0, y:pY)
             }
         }
         if midX > topX{ midX2 = topX}
@@ -3828,8 +3840,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isPalleteMode == true{
         print("+nowGyouNo: \(String(describing: nowGyouNo))")
         let zm:CGFloat = bigFlag ? 1.5 : 1.0//★20180814
-        //_????
-        var len =  boundWidthX/4/zm
+        //_カーソルラインの長さと位置を計算する
+            //_x：iphoneX横画面だけはノッチ分だけ短くなる
+            var dd:CGFloat = 0
+            if iphoneX && (boundWidthX != boundWidth){ dd = leftOffset }
+        var len =  (boundWidthX - dd)/4/zm
+
         let pos = (vWidth*zm/2 - drawableView.layer.position.x)/4/zm
             //let add = bigFlag ? len : 0//★20180814
             //let pos = (vWidth/2 - drawableView.layer.position.x)/4/zm + add
