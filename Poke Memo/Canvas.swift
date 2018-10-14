@@ -320,14 +320,14 @@ class DrawableView: UIView {
           if myMx >= mxTemp{//既に書かれた文字よりも右へ越えた場合だけ処理する(タイマー起動中も🐞）
             let midX = self.frame.midX //スクリーンViewから見たパレット中心X座標
             let screenX = myMx + (midX - vWidth/2)    // 画面座標に変
-            autoFlag =  screenX > (boundWidthX - rightArea*6) ? true:false
+            autoFlag =  screenX > (boundWidthX - rightArea*5) ? true:false
           }
           if timerFlag == true{autoFlag = true}//タイマー稼働中は自動スクロールする
         }
         
     //---- 右端エリアモード ----
        }else{
-        print(" is rightArea!!")
+        print(" ●●●●is rightArea!!●●●●")
         
        //左シフトの判定（手動）
         let dX = lastPoint.x - currentPoint.x

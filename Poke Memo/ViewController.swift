@@ -707,8 +707,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         jinesView.backgroundColor = UIColor.orange.withAlphaComponent(0.1) //(patternImage: UIImage(named:"jines.png")!)
         self.view.addSubview(jinesView)
         self.view.addSubview(shortToolBar)
-        shadow = UIView(frame: CGRect(x:leftOffset + boundWidth,y:0,width:6,height:boundWidth - vHeight - 40))//メモの右側の影
-        shadow.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        shadow = UIView(frame: CGRect(x:leftOffset + boundWidth,y:0,width:7,height:boundWidth - vHeight - 40))//メモの右側の影
+        shadow.backgroundColor = UIColor.black.withAlphaComponent(0.25)
         self.view.addSubview(shadow)
         memoCursol(disp: 1)//メモカーソルを更新
         self.toolBar.isHidden  = true
