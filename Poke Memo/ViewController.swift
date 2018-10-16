@@ -84,6 +84,23 @@ extension UIView {
         let cursolLayer = CALayer()
         cursolLayer.backgroundColor = color.cgColor
         cursolLayer.frame = CGRect(x:posX, y:self.frame.size.height - lineWidth,width:lenX, height:lineWidth)
+            //@@@@@20181016  カーソルの点滅追加 iOS 10よりTimerでクロージャが使える様になったため採用
+            var e = true
+            if #available(iOS 10.0, *) {
+                Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { (timer) in
+                    //print(timer.fireDate)
+                    if e{
+                        cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
+                    }else{
+                        cursolLayer.backgroundColor = color.cgColor
+                    }
+                    e = !e
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+            //@@@@@
+
 
         self.layer.addSublayer(cursolLayer)
         }
@@ -106,6 +123,23 @@ extension UIView {
             let cursolLayer = CALayer()
             cursolLayer.backgroundColor = color.cgColor
             cursolLayer.frame = CGRect(x:posX, y:self.frame.size.height - lineWidth,width:lenX, height:lineWidth)
+            //@@@@@20181016  カーソルの点滅追加 iOS 10よりTimerでクロージャが使える様になったため採用
+            var e = true
+            if #available(iOS 10.0, *) {
+                Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { (timer) in
+                    //print(timer.fireDate)
+                    if e{
+                        cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
+                    }else{
+                        cursolLayer.backgroundColor = color.cgColor
+                    }
+                    e = !e
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+            //@@@@@
+
             
             self.layer.addSublayer(cursolLayer)
         }
@@ -127,6 +161,23 @@ extension UIView {
             let cursolLayer = CALayer()
             cursolLayer.backgroundColor = color.cgColor
             cursolLayer.frame = CGRect(x:posX, y:self.frame.size.height - lineWidth,width:lenX, height:lineWidth)
+            //@@@@@20181016  カーソルの点滅追加 iOS 10よりTimerでクロージャが使える様になったため採用
+            var e = true
+            if #available(iOS 10.0, *) {
+                Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { (timer) in
+                    //print(timer.fireDate)
+                    if e{
+                        cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
+                    }else{
+                        cursolLayer.backgroundColor = color.cgColor
+                    }
+                    e = !e
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+            //@@@@@
+
             
             self.layer.addSublayer(cursolLayer)
         }
@@ -522,6 +573,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
+    var selFlg:Bool = false//色選択メニュー表示フラグ
     var rightAreaView:UIView!//safeAreaの右側エリア(landsccape)
     var leftAreaView:UIView!//safeAreaの右側エリア(landsccape)
     var rotMode:Int = 1
@@ -555,7 +607,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
     var hl:UILabel!//ヘルプ画面のタイトル
     var numBar:UIView!//INDEXページの左端ライン
-    var trf:Bool = false//WC：タイマーフラグ（ペンボタンのdouble-click対応）
+    //var trf:Bool = false//WC：タイマーフラグ（ペンボタンのdouble-click対応）
     //var bView:UIView!//ブランクビュー
     //var setFlag:Bool = false
     //var isIndexMode:Bool! = false//Indexの表示フラグ：
@@ -1232,7 +1284,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("boundWidth:\(boundWidth)")
         print("statusBarHeight:\(statusBarHeight)")
         print("naviBar.frame.height:\(naviBar.frame.height)")
-
+        //色パレットボタン長押しジェスチャーの登録
+        let myLongPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.pushStartBtn))
+        myLongPressGesture.minimumPressDuration = 0.6
+        editButton2.addGestureRecognizer(myLongPressGesture)//★★★複数のボタンで共通
     }
 
     //  ======= End of viewDidLoad=======
@@ -1276,6 +1331,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
  
         }
+    }
+    //長押しボタンの処理(色選択)
+    func pushStartBtn(sender: UILongPressGestureRecognizer){
+        print("pushStartBtn")
+        if selFlg{
+            print("★！！！！")
+            return}
+        //select_pcView.setMenu()//★★
+        //self.view.addSubview(select_pcView_bg)
+        //self.view.addSubview(select_pcView)
+        selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
     }
 /*
     func pinchZoom(sender:UIPinchGestureRecognizer){
@@ -3139,8 +3205,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func penWclicked(){
-        print("☑️☑️double-clickされました！！")
-        trf = false
+        print("penWidth-clickされました！！")
+        //trf = false
         switch lineWidth {
             case 0:lineWidth = 2
             case 1:lineWidth = 0
@@ -3149,6 +3215,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         penMode()//
     }///WC
+    
     func penMode(){
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
@@ -3181,18 +3248,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
     }///
     func btn3_click(sender:UIButton){
-        print("btn3_clicked!：ペンモード")
-        if drawableView.X_color != 0{//ペンモード以外の場合
+        print("btn3_clicked!：")
+        if drawableView.X_color != 0{//ペンモード以外の場合はペンモードにする
             closeEditView()//パレット編集画面を閉じる
             penMode()
         }else{
-          print("既にペンモードですよ！！")//WC
+          print("既にペンモードですよ！！")//ペンモードの場合はpen幅選択モードにする
+          penWclicked()//ペン幅変更メソッド
+/*
           if trf == true{penWclicked()}
           else{
             trf = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){self.trf = false}//0.5秒後にtrfをfalseに変更する
             }
-            
+ */
             
         }
     }
