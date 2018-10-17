@@ -456,6 +456,11 @@ extension UIImage {
 
 //-----　grobal constance　--------
 //var testView = UIView(frame: CGRect(x:0,y:0,width:10,height:vHeight))
+var gblColor = UIColor.black
+var bigBtm:UIImageView! = UIImageView(frame: CGRect(x:0,y:0,width:30,height:30))//★★ボタンを押した時の大きい丸
+var select_pcView:SelectView!//色選択パネル
+var select_pcView_bg:UIView!//色選択パネルの背景
+var selFlg:Bool = false//色選択メニュー表示フラグ
 var leftOffset:CGFloat = 0//safeArea(landscape画面)の左側
 var statusBarHeight:CGFloat!//ステータスバーの高さ
 var statusView:UIView!//landscape画面のstatusbarに青色をカバーする
@@ -573,7 +578,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
-    var selFlg:Bool = false//色選択メニュー表示フラグ
+
     var rightAreaView:UIView!//safeAreaの右側エリア(landsccape)
     var leftAreaView:UIView!//safeAreaの右側エリア(landsccape)
     var rotMode:Int = 1
@@ -669,6 +674,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.frame.size = CGSize(width:boundWidth,height:60)
         myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
+        select_pcView.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
+        select_pcView_bg.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
         spaceView1.frame.size = CGSize(width: boundWidth, height: 10)
         spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
         spaceView2.frame.size = CGSize(width: boundWidth, height: 10)
@@ -738,6 +745,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.layer.position = CGPoint(x:mtPosx/2, y: boundWidth - vHeight - 40/2)
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.layer.position = CGPoint(x:leftOffset + boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
+        select_pcView.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
+        select_pcView_bg.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
         spaceView1.frame.size = CGSize(width: boundHeight, height: 10)
         spaceView1.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - vHeight + 10/2)
         spaceView2.frame.size = CGSize(width: boundHeight, height: 10)
@@ -1285,12 +1294,33 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("statusBarHeight:\(statusBarHeight)")
         print("naviBar.frame.height:\(naviBar.frame.height)")
         //色パレットボタン長押しジェスチャーの登録
-        let myLongPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.pushStartBtn))
-        myLongPressGesture.minimumPressDuration = 0.6
-        editButton2.addGestureRecognizer(myLongPressGesture)//★★★複数のボタンで共通
+        let myLongPressGesture2 = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.pushStartBtn2))
+        myLongPressGesture2.minimumPressDuration = 0.6
+        editButton2.addGestureRecognizer(myLongPressGesture2)//★★複数ボタンで共通
+        //ペンボタン長押しジェスチャーの登録
+        let myLongPressGesture3 = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.pushStartBtn3))
+        myLongPressGesture3.minimumPressDuration = 0.6
+        editButton3.addGestureRecognizer(myLongPressGesture3)//★★複数ボタンで共通
+        //*** 色パネルViewの作成 ***//★★★★
+        let selHeight:CGFloat = 44
+        let sel_y:CGFloat = boundHeight - 46 - vHeight - 40 - selHeight
+        //let sely2:CGFloat = myEdity2 - selHeight
+        var selRect = CGRect(x:0,y:sel_y,width:50*6 + 15,height: selHeight)
+        select_pcView = SelectView(frame: selRect)
+        select_pcView.backgroundColor = UIColor.clear//white.withAlphaComponent(1.0)
+        select_pcView_bg = UIView(frame: selRect)
+        select_pcView.layer.position.x = selRect.width/2 + 2
+        select_pcView_bg.layer.position.x = selRect.width/2 + 2
+        //セレクトパネルの背景色:角丸表示にするために必要
+        select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
+        //UIColor.white.withAlphaComponent(0.5)
+        select_pcView_bg.roundCorners([.topLeft, .topRight], radius: 15.0)
+        //イベントの透過
+        select_pcView.isUserInteractionEnabled = true
+        
     }
 
-    //  ======= End of viewDidLoad=======
+    //  ======= End of viewDi dLoad=======
     @available(iOS 11, *)
     override func prefersHomeIndicatorAutoHidden() -> Bool {
         return true
@@ -1333,22 +1363,27 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     //長押しボタンの処理(色選択)
-    func pushStartBtn(sender: UILongPressGestureRecognizer){
-        print("pushStartBtn")
-        if selFlg{
-            print("★！！！！")
-            return}
+    func pushStartBtn2(sender: UILongPressGestureRecognizer){
+        print("pushStartBtn:2")
+        if selFlg{ return }
+        print("★！！！！")
+        select_pcView.setMenu()//★★
+        self.view.addSubview(select_pcView_bg)
+        self.view.addSubview(select_pcView)
+        selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
+    }
+    //長押しボタンの処理(ペン選択)
+    func pushStartBtn3(sender: UILongPressGestureRecognizer){
+        print("pushStartBtn:3")
+        if drawableView.X_color == 1{return}//ペンモード以外はパス
+        if selFlg{return}
+        print("★！！！！")
         //select_pcView.setMenu()//★★
         //self.view.addSubview(select_pcView_bg)
         //self.view.addSubview(select_pcView)
         selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
     }
-/*
-    func pinchZoom(sender:UIPinchGestureRecognizer){
-        print("zoomOut!")
-        //helpView.transform = CGAffineTransform(
-    }
-*/
+
     @IBOutlet weak var naviBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var menu2: UIBarButtonItem!
@@ -3182,6 +3217,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func btn2_click(sender:UIButton){
         closeEditView()//パレット編集画面を閉じる
         print("btn2_clicked!：ペン色切り替え")
+        //色選択パネルが開いている場合は閉じる
+        if selFlg{
+           select_pcView.removeFromSuperview()
+           select_pcView_bg.removeFromSuperview()
+           selFlg = false
+            return
+        }
         if myEditFlag == true{return}//編集画面が表示の場合はパス
         if drawableView.X_color == 1{return}//ペンモード以外はパス
         if penColorNum == 1 {
@@ -3597,17 +3639,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //_xパレットの表示位置を変更する
     func dispPosChange(midX: CGFloat,deltaX:CGFloat){
         // protocol UpperToolViewDelegate
-        //print("midX: \(midX)")
+        print("------ midX: \(midX)------------")
         let b = (bigFlag == true) ? big:1
         var midX2 = midX
         let topX:CGFloat = (b*vWidth/2)
-        let lastX:CGFloat = (boundWidthX - leftOffset - b*vWidth/2)
+        var lastX:CGFloat = 0//(boundWidthX - leftOffset - b*vWidth/2)
         var pY:CGFloat = 0//_パレットのセンター座標
         if boundWidthX == boundWidth{//_portlait画面の場合
             pY = (boundHeight - b*vHeight/2 - th)
-            
+            lastX = (boundWidthX - b*vWidth/2)
         }else{//_landscape画面の場合
             pY = (boundWidth - b*vHeight/2)
+            lastX = (boundWidthX - leftOffset - b*vWidth/2)
         }
         let dir = deltaX>=0 ? 1 : 0 //0:右へシフト,1:左へシフト
         //先頭へシフトする場合

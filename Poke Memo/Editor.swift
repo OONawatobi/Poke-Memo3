@@ -22,6 +22,20 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return image
     }
+    //色付きの丸
+    class func colorImage2(color: UIColor, size: CGSize) -> UIImage {
+        UIGraphicsBeginImageContext(size)
+        
+        let rect = CGRect(origin:CGPoint.zero, size: size)
+        let context = UIGraphicsGetCurrentContext()
+        context!.setFillColor(color.cgColor)
+        //context!.fill(rect)
+        context!.fillEllipse(in: rect)
+        // 円は引数のCGRectに内接する
+        let image:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return image
+    }
 }
 
 class EditorView: UIView {
@@ -330,15 +344,50 @@ class EditorView: UIView {
 
     }
 
-/*
-    func resetContext(context: CGContext) {
-        context.clear(self.bounds)
-        if let color = self.backgroundColor {
-            color.setFill()
-        } else {
-            UIColor.white.setFill()
+}
+
+class SelectView:UIView{
+    //ボタンを作成する
+    let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
+    var penColor = UIColor.black
+    var btnImgs:[UIImage] = []//★★セレクトボタン画像：丸
+
+    func setMenu(){ //UIButtonはここで作成する
+        print("select is selected!!")
+        //ボタン画像の作成
+    
+        for i in 0...5 {//print("\(i)")
+            btnImgs.append( UIImage.colorImage2(color: bColor[i], size: CGSize(width: 23, height: 23)))
+            
+            let selBtn:UIButton = UIButton(frame: CGRect(x:15 + i*50,y:2,width:40,height:40))
+            selBtn.tag = i
+            selBtn.addTarget(self, action: #selector(btnA_click(sender:)), for:.touchUpInside)
+            selBtn.addTarget(self, action: #selector(btnA_click(sender:)), for:.touchUpOutside)
+            selBtn.addTarget(self, action: #selector(btnA_click_S(sender:)), for:.touchDown)
+            selBtn.setImage(btnImgs[i], for:UIControlState.normal)
+            //selBtn.setBackgroundImage(UIImage.colorToImage3(color: bColor[i]), for: UIControlState.highlighted)
+            self.addSubview(selBtn)
         }
-        context.fill(self.bounds)
+        
     }
-*/
+    func btnA_click_S(sender:UIButton){//タッチDOWN 時の処理
+        print("btnA_clicked_S!: \(sender.tag)")
+        //bigボタンを全て消す
+        
+        bigBtm.removeFromSuperview()
+        print("------------------------")
+        //bigボタンの色と位置を再設定する
+        bigBtm.image = UIImage.colorImage2(color: bColor[sender.tag], size: CGSize(width: 30, height: 30))
+        bigBtm.layer.position.x = CGFloat(sender.tag) * 50 + 15 + 20
+        bigBtm.layer.position.y = self.frame.height/2
+        self.addSubview(bigBtm)
+        print("self.addSubview(bigBtm)")
+    }
+    func btnA_click(sender:UIButton){//タッチUP 時の処理
+        print("btnA_clicked!: \(sender.tag)")
+        //penColor = bColor[sender.tag]
+        gblColor = bColor[sender.tag]
+    }
+    
+    
 }

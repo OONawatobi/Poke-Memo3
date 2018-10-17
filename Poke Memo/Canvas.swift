@@ -406,8 +406,9 @@ class DrawableView: UIView {
         
         //_左方向へのシフトを実施する:画面の５-7分の１だけ左側に表示する
         var dsX = vWidth/2 - mxTemp + boundWidthX/20 //★20180822:←7
-        //_x右端制限
-        dsX = dsX < (boundWidthX - vWidth/2 - leftOffset) ? (boundWidthX - vWidth/2 - leftOffset):dsX
+        //_x右端制限:『iphoneXの横向き』の場合だけleftOffsetが加わわる。
+        var leftOffset2 = (boundWidthX == boundWidth) ? 0 : leftOffset
+        dsX = dsX < (boundWidthX - vWidth/2 - leftOffset2) ? (boundWidthX - vWidth/2 - leftOffset2):dsX
         //左端制限
         dsX = dsX > vWidth/2 ? vWidth/2:dsX
         
@@ -474,7 +475,7 @@ class DrawableView: UIView {
  
     // 描画処理:セカンドviewにストロークパス(セカンドViewを含む？）をコピーする
     func drawLine(path:UIBezierPath) {
-        let penColor = penC
+        let penColor = selFlg ? gblColor : penC//色選択パネルの色を優先する
         penColor?.setStroke()
         path.lineWidth = penW//ペン幅を指定する
         path.lineCapStyle = .square
@@ -490,7 +491,7 @@ class DrawableView: UIView {
         if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
         sliderN = (penW - 7) / 12  + 1.2//★1.2
         
-        let penColor = penC
+        let penColor = selFlg ? gblColor : penC//色選択パネルの色を優先する
         penColor?.setStroke()
         //  path.lineWidth = penW//ペン幅を指定する
         path.lineCapStyle =   .round//.butt//.square//
