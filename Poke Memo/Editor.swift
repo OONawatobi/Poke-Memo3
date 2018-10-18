@@ -348,7 +348,7 @@ class EditorView: UIView {
 
 class SelectView:UIView{
     //ボタンを作成する
-    let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
+    //let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
     var penColor = UIColor.black
     var btnImgs:[UIImage] = []//★★セレクトボタン画像：丸
 
@@ -387,6 +387,18 @@ class SelectView:UIView{
         print("btnA_clicked!: \(sender.tag)")
         //penColor = bColor[sender.tag]
         gblColor = bColor[sender.tag]
+        let ci = sender.tag
+        if ci >= 2 {//選んだ色をlineColorに設定する
+         lineColor = ci - 2
+         editButton2.setImage(colorIcon[ci - 2], for:UIControlState.normal)
+         penColorNum = 3
+        }else if ci == 0{
+         editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
+         penColorNum = 1
+        }else{
+         editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
+         penColorNum = 2
+        }
     }
     
     

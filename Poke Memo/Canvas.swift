@@ -424,7 +424,7 @@ class DrawableView: UIView {
         self.Delegate.ok2()// [ok2]ボタンを押す:view.done(done2)★20180813
  
     }
-    
+    //??
     func resetContext(context: CGContext) {
         context.clear(self.bounds)
         if let color = self.backgroundColor {
@@ -453,6 +453,7 @@ class DrawableView: UIView {
             }else if penColorNum == 2{
                 penC = UIColor.red
             }else{//第３番目の色：設定色
+             /*
                switch lineColor {
                 case 0:penC = UIColor.blue
                 case 1:penC = UIColor.rgb(r: 0, g: 147, b: 87, alpha: 1)
@@ -460,11 +461,20 @@ class DrawableView: UIView {
                 //rgb(r: 50, g: 0, b: 0, alpha: 1)
                //gray.withAlphaComponent(0.2) // brown
                 default:break
-               }
-                
+               
+             */
+                switch lineColor {
+                case 0:penC = bColor[2]
+                case 1:penC = bColor[3]
+                case 2:penC = bColor[4]
+                case 3:penC = bColor[5]
+                case 4:penC = bColor[6]
+                case 5:penC = bColor[7]
+                default:break
+                }
             }
         //消しゴムモード
-        }else{
+            }else{
             //+-+-子メモの場合はchildColorにする
             penC = (nowGyouNo>10000) ? childColor : UIColor.white
             penW = 15//消しゴムの巾

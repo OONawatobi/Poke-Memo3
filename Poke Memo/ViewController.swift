@@ -87,7 +87,7 @@ extension UIView {
             //@@@@@20181016  カーソルの点滅追加 iOS 10よりTimerでクロージャが使える様になったため採用
             var e = true
             if #available(iOS 10.0, *) {
-                Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { (timer) in
+                Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
                     //print(timer.fireDate)
                     if e{
                         cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
@@ -126,7 +126,7 @@ extension UIView {
             //@@@@@20181016  カーソルの点滅追加 iOS 10よりTimerでクロージャが使える様になったため採用
             var e = true
             if #available(iOS 10.0, *) {
-                Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { (timer) in
+                Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
                     //print(timer.fireDate)
                     if e{
                         cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
@@ -164,7 +164,7 @@ extension UIView {
             //@@@@@20181016  カーソルの点滅追加 iOS 10よりTimerでクロージャが使える様になったため採用
             var e = true
             if #available(iOS 10.0, *) {
-                Timer.scheduledTimer(withTimeInterval: 1.2, repeats: true) { (timer) in
+                Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
                     //print(timer.fireDate)
                     if e{
                         cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
@@ -456,6 +456,10 @@ extension UIImage {
 
 //-----　grobal constance　--------
 //var testView = UIView(frame: CGRect(x:0,y:0,width:10,height:vHeight))
+var editButton2:UIButton!//カラーパレットから操作するためグローバル化する
+var editButton3:UIButton!
+let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
+var colorIcon:[UIImage] = []//カラーボタンアイコン
 var gblColor = UIColor.black
 var bigBtm:UIImageView! = UIImageView(frame: CGRect(x:0,y:0,width:30,height:30))//★★ボタンを押した時の大きい丸
 var select_pcView:SelectView!//色選択パネル
@@ -623,8 +627,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var buttonRedo:UIButton!//_shortToolBarのボタン
     var reloads:[UIImage]!//ファイルから読み込んだイメージ配列
     var editButton1:UIButton!
-    var editButton2:UIButton!
-    var editButton3:UIButton!
+    //var editButton2:UIButton!
+    //var editButton3:UIButton!
     var editButton4:UIButton!
     var editButton5:UIButton!
     var editButton6:UIButton!
@@ -1317,10 +1321,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         select_pcView_bg.roundCorners([.topLeft, .topRight], radius: 15.0)
         //イベントの透過
         select_pcView.isUserInteractionEnabled = true
-        
+        //カラーアイコンの作成
+        colorIcon.append(UIImage(named: "blue.png")!)
+        colorIcon.append(UIImage(named: "green2.png")!)
+        colorIcon.append(UIImage(named: "orange.png")!)
+        colorIcon.append(UIImage(named: "purple.png")!)
+    
     }
-
-    //  ======= End of viewDi dLoad=======
+    //  =======         End of viewDi dLoad         =======
+    
     @available(iOS 11, *)
     override func prefersHomeIndicatorAutoHidden() -> Bool {
         return true
@@ -3234,10 +3243,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             var thirdColor:UIImage!
             
             switch lineColor {
-              case 0:thirdColor = UIImage(named: "blue.png")
-              case 1:thirdColor = UIImage(named: "green2.png")
-              case 2:thirdColor = UIImage(named: "brown2.png")
-              default:break
+              case 0:thirdColor = colorIcon[0]//UIImage(named: "blue.png")
+              case 1:thirdColor = colorIcon[1]//UIImage(named: "green2.png")
+              case 2:thirdColor = colorIcon[2]//UIImage(named: "orange.png")//"brown2.png"
+              case 3:thirdColor = colorIcon[3]//UIImage(named: "purple.png")
+              default:thirdColor = colorIcon[0]
             }
             editButton2.setImage(thirdColor, for:UIControlState.normal)
         }else{
@@ -3297,7 +3307,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }else{
           print("既にペンモードですよ！！")//ペンモードの場合はpen幅選択モードにする
           penWclicked()//ペン幅変更メソッド
-/*
+/*          //Wクリック操作を取りやめる
           if trf == true{penWclicked()}
           else{
             trf = true
