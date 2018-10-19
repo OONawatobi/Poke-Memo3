@@ -347,11 +347,12 @@ class EditorView: UIView {
 }
 
 class SelectView:UIView{
+    var Delegate: SelectViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
     //ボタンを作成する
     //let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
     var penColor = UIColor.black
     var btnImgs:[UIImage] = []//★★セレクトボタン画像：丸
-
+    
     func setMenu(){ //UIButtonはここで作成する
         print("select is selected!!")
         //ボタン画像の作成
@@ -368,26 +369,43 @@ class SelectView:UIView{
             //selBtn.setBackgroundImage(UIImage.colorToImage3(color: bColor[i]), for: UIControlState.highlighted)
             self.addSubview(selBtn)
         }
+        sectView = UIView(frame:CGRect(x:110,y:4,width:3,height:36))
+        sectView.backgroundColor = UIColor.white.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
+        self.addSubview(sectView)
+        //penColorNum(1:黒色、２：赤色、３：選択色)
+        //選択色 lineCplor（0:青色,1:緑色,2:オレンジ色,3:ムラサキ色）
+        //パレット（0:黒色,1:赤色,2:青色,3:緑色,4:橙色,5:紫色)
+        let tag = penColorNum == 3 ? lineColor + 2 : penColorNum - 1
+        print("★★tag: \(tag)")
+        btnA_click2(tag:tag)
+        btnA_click_S2(tag:tag)
+        //_self.Delegate?.penMode()
         
     }
-    func btnA_click_S(sender:UIButton){//タッチDOWN 時の処理
-        print("btnA_clicked_S!: \(sender.tag)")
+    func btnA_click_S(sender:UIButton){//タッチUP 時の処理
+        print("btnA_clicked!: \(sender.tag)")
+        let st:Int = sender.tag
+        btnA_click_S2(tag:st)
+    }
+    func btnA_click_S2(tag:Int){//タッチDOWN 時の処理
         //bigボタンを全て消す
-        
         bigBtm.removeFromSuperview()
-        print("------------------------")
+        print("---------")
         //bigボタンの色と位置を再設定する
-        bigBtm.image = UIImage.colorImage2(color: bColor[sender.tag], size: CGSize(width: 30, height: 30))
-        bigBtm.layer.position.x = CGFloat(sender.tag) * 50 + 15 + 20
+        bigBtm.image = UIImage.colorImage2(color: bColor[tag], size: CGSize(width: 30, height: 30))
+        bigBtm.layer.position.x = CGFloat(tag) * 50 + 15 + 20
         bigBtm.layer.position.y = self.frame.height/2
         self.addSubview(bigBtm)
-        print("self.addSubview(bigBtm)")
+        print("---------self.addSubview(bigBtm)-------------")
     }
     func btnA_click(sender:UIButton){//タッチUP 時の処理
         print("btnA_clicked!: \(sender.tag)")
-        //penColor = bColor[sender.tag]
-        gblColor = bColor[sender.tag]
-        let ci = sender.tag
+        let st:Int = sender.tag
+        btnA_click2(tag:st)
+    }
+    func btnA_click2(tag:Int){//btnA_click()の本体プログラム
+        gblColor = bColor[tag]
+        let ci = tag
         if ci >= 2 {//選んだ色をlineColorに設定する
          lineColor = ci - 2
          editButton2.setImage(colorIcon[ci - 2], for:UIControlState.normal)

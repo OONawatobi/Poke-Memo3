@@ -90,7 +90,7 @@ extension UIView {
                 Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
                     //print(timer.fireDate)
                     if e{
-                        cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
+                        cursolLayer.backgroundColor = color.withAlphaComponent(0.0).cgColor
                     }else{
                         cursolLayer.backgroundColor = color.cgColor
                     }
@@ -129,7 +129,7 @@ extension UIView {
                 Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
                     //print(timer.fireDate)
                     if e{
-                        cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
+                        cursolLayer.backgroundColor = color.withAlphaComponent(0.0).cgColor
                     }else{
                         cursolLayer.backgroundColor = color.cgColor
                     }
@@ -167,7 +167,7 @@ extension UIView {
                 Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
                     //print(timer.fireDate)
                     if e{
-                        cursolLayer.backgroundColor = color.withAlphaComponent(0.3).cgColor
+                        cursolLayer.backgroundColor = color.withAlphaComponent(0.0).cgColor
                     }else{
                         cursolLayer.backgroundColor = color.cgColor
                     }
@@ -464,6 +464,7 @@ var gblColor = UIColor.black
 var bigBtm:UIImageView! = UIImageView(frame: CGRect(x:0,y:0,width:30,height:30))//★★ボタンを押した時の大きい丸
 var select_pcView:SelectView!//色選択パネル
 var select_pcView_bg:UIView!//色選択パネルの背景
+var sectView:UIView!//色選択パネルの区切り線
 var selFlg:Bool = false//色選択メニュー表示フラグ
 var leftOffset:CGFloat = 0//safeArea(landscape画面)の左側
 var statusBarHeight:CGFloat!//ステータスバーの高さ
@@ -570,11 +571,13 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
     func upToMemo()
     func ok2()
 }
-
+protocol SelectViewDelegate{//パレットビューの操作(機能）
+    func penMode()
+}
 
 //    =======  ViewController    ========
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate, UIWebViewDelegate{
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate, UIWebViewDelegate,SelectViewDelegate{
     
     //ステータスバーを非表示にする
     //override var prefersStatusBarHidden: Bool { return true }
@@ -1309,7 +1312,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let selHeight:CGFloat = 44
         let sel_y:CGFloat = boundHeight - 46 - vHeight - 40 - selHeight
         //let sely2:CGFloat = myEdity2 - selHeight
-        var selRect = CGRect(x:0,y:sel_y,width:50*6 + 15,height: selHeight)
+        let selRect = CGRect(x:0,y:sel_y,width:50*6 + 15,height: selHeight)
         select_pcView = SelectView(frame: selRect)
         select_pcView.backgroundColor = UIColor.clear//white.withAlphaComponent(1.0)
         select_pcView_bg = UIView(frame: selRect)
@@ -1371,6 +1374,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
  
         }
     }
+
     //長押しボタンの処理(色選択)
     func pushStartBtn2(sender: UILongPressGestureRecognizer){
         print("pushStartBtn:2")
@@ -1618,6 +1622,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //----------------------------------------------①
         if drawableView != nil {
         // ◆◆ パレットが表示されている時パレットを消す
+        //色選択パネルが開いている場合は閉じる
+            if selFlg{
+                select_pcView.removeFromSuperview()
+                select_pcView_bg.removeFromSuperview()
+                selFlg = false
+            }
           //_portlaitで起動する為のフラグ:回転禁止に設定
             didLoadFlg = false
            //メモカーソルを消す
@@ -1909,36 +1919,33 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if myEditFlag == true{return}//編集パレットが開いている場合は🐞
         let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
         //shortToolBar(横向きの場合のみ)のY位置を調整(SE対策)
-        if boundWidthX != boundWidth{
-        //_****landscapeの場合--------------
-            if !bigFlag{
-            //_++++拡大画面に移行する場合
+        //_****
+        if boundWidthX != boundWidth{// $1 == landscapeの場合 ===
+            
+          if !bigFlag{//_$1.1 ++++ 拡大画面に移行する場合 ++++
             print("◆◆◆◆ landscapeの場合 ◆◆◆◆")
             var tY = shortToolBar.frame.maxY//第２ツ_ールバーの下側の位置
             let mY = myToolView.frame.minY - sa//拡大時の編集バーの上側の位置
             let sH = shortToolBar.frame.height//第２ツールバーの高さ
-                if tY > mY {tY = mY
-                 var newPosY = boundWidth - big*vHeight - myToolView.frame.height - sH/2 - 1
-                 newPosY = newPosY < sH/2 ? sH/2 : newPosY
-                let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
-                 shortToolBar.layer.position = CGPoint(x:stX,y:newPosY) //y:navH + 44/2)
-                 print("newPosY: \(newPosY)")
-                }
+            if tY > mY {
+              tY = mY
+              var newPosY = boundWidth - big*vHeight - myToolView.frame.height - sH/2 - 1
+              newPosY = newPosY < sH/2 ? sH/2 : newPosY
+              let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
+              shortToolBar.layer.position = CGPoint(x:stX,y:newPosY) //y:navH + 44/2)
+            }
             //スクロールViewのサイズ再設定
-                scrollRect_B = CGRect(x:leftOffset + (boundWidth - leafWidth)/2,y: 3,width:leafWidth, height:boundWidth - big*vHeight - 40 - 5)
-                //ステータスバー(メモの背景としてとして使う）の高さ再設定
-                statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - big*vHeight - 40)
-                //メモの右側の影
+            scrollRect_B = CGRect(x:leftOffset + (boundWidth - leafWidth)/2,y: 3,width:leafWidth, height:boundWidth - big*vHeight - 40 - 5)
+            //ステータスバー(メモの背景としてとして使う）の高さ再設定
+            statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - big*vHeight - 40)
+            //メモの右側の影
             let shadowL = boundWidth - big*vHeight - 40
             shadow.frame.size = CGSize(width:6,height:shadowL)
             if shadowL < 46 {shadow.backgroundColor = UIColor.clear}
             let jinesH2 = jinesH < vHeight/2 ? 0 :jinesH - vHeight/2
             jinesView.frame.size = CGSize(width: boundWidth, height: jinesH2)
-            //print("======================================")
-            
-            }else {
-            //++++拡大画面から通常画面に戻す場合
-            //let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+
+          }else { //_$1.2 ++++ 拡大画面から通常画面に戻す場合 ++++
             let navH = boundWidth - vHeight - 40 //statusBarHeight + naviBar.frame.height
             let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
             shortToolBar.layer.position = CGPoint(x:stX,y:navH - 44/2 - 2)
@@ -1949,17 +1956,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             shadow.backgroundColor = UIColor.black.withAlphaComponent(0.3)
             //ジーンズ生地
             jinesView.frame.size = CGSize(width: shortToolBar.frame.width, height: jinesH)
-            }
-            //++++END
-        //-------上記の「landscapeモード専用の if文」はココまで --------------
-        }else{
-        //****--portlaitモード専用-----------------
+
+          } //_$1.3 ++++++++ END of "bigFlg" ++++++++
+        
+        }else{// $2 ==== portlaitの場合 ====
+        
             //_パレットが拡大表示されている場合のメモ表示サイズ
             let sa:CGFloat = (big - 1.0)*vHeight//境界線が上に動く距離
             scrollRect_B = CGRect(x:(boundWidth - leafWidth)/2,y: 70  + sBarX ,width:leafWidth, height:boundHeight - 20 - th - 44 - vHeight - 50 - sa)//最後の50は目で見て調整した
             //_ ↑ height:画面高さ-_ステタスバー(20?)_ツールバー(46)_ナビバー(44)_vH_sa(vH/2)_myToolBar(40)
-        }//****END
- 
+        }// $3 ==== END ====
+        
+        //===========================================================
         //-------以降は「portlait/landscape」両モード（パラメータで切り替える）
             //_palette底辺のy座標
             var zYpos:CGFloat = 0
@@ -1989,6 +1997,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //拡大鏡アイコンを表示する
             editButton1.frame.size = CGSize(width:60, height:60)//ボタンサイズを変更
             editButton1.setImage(UIImage(named: "bigW.pdf"), for:UIControlState.normal)
+            //select_pcViewのY位置を変更する
+            let bigHX = (boundWidthX == boundWidth) ? boundHeight : boundWidth
+            let th2 = (boundWidthX == boundWidth) ? th : 0
+            select_pcView.layer.position.y = bigHX - vHeight*1.5 - 40 - 44/2 - th2
+            select_pcView_bg.layer.position.y = bigHX - vHeight*1.5 - 40 - 44/2 - th2
 
             }else{
             //@@@@拡大画面から通常画面に戻す---
@@ -2014,6 +2027,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             editButton1.frame.size = CGSize(width:40, height:40)//ボタンサイズを元に戻す
             editButton1.setImage(UIImage(named: "3Up.pdf"), for:UIControlState.normal)
                 ok2()//★20180814:oomを閉じたときにメモ行を更新する
+            //select_pcViewのY位置を変更する
+                let bigHX = (boundWidthX == boundWidth) ? boundHeight : boundWidth
+                let th2 = (boundWidthX == boundWidth) ? th : 0
+            select_pcView.layer.position.y = bigHX - vHeight - 40 - 44/2 - th2
+            select_pcView_bg.layer.position.y = bigHX - vHeight - 40 - 44/2 - th2
             }//@@@@END
         // iphoneXモード時の拡大時に右にずらす量を再設定する
          if iphoneX{
@@ -2023,7 +2041,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          drawableView.layer.anchorPoint = CGPoint(x: anchoOffeset, y:0.5)
          }
          //
-     //★20180814 メモカーソルを更新する
+       //★20180814 メモカーソルを更新する
         memoCursol(disp: 1)//カーソル幅と位置をzoom画面ように更新する
        //_x選択メモ行の表示位置を調整する
         scrollPos()
@@ -3225,7 +3243,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func btn2_click(sender:UIButton){
         closeEditView()//パレット編集画面を閉じる
-        print("btn2_clicked!：ペン色切り替え")
+        print("btn2_clicked!：---- ペン色切り替え ----")
         //色選択パネルが開いている場合は閉じる
         if selFlg{
            select_pcView.removeFromSuperview()
@@ -3233,6 +3251,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            selFlg = false
             return
         }
+
         if myEditFlag == true{return}//編集画面が表示の場合はパス
         if drawableView.X_color == 1{return}//ペンモード以外はパス
         if penColorNum == 1 {
@@ -3272,8 +3291,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
         drawableView.X_color = 0//ペンモード[黒色、赤色、青色?]
-        penColorNum = 1//黒色
-        editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
+        //_20181020に変更_ penColorNum = 1//黒色
+        //_20181020に変更_ editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         editButton3.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton3.layer.borderWidth = 1.0//★20180821:0.5
@@ -3296,8 +3315,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
          }
          editButton3.setImage(penImg, for:UIControlState.normal)
-         //
-        
+        //_20181020に変更_カラーiconの再表示
+        switch penColorNum {
+        case 1: editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
+        case 2: editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
+        case 3:
+            var thirdColor:UIImage!
+            switch lineColor {
+            case 0:thirdColor = colorIcon[0]//UIImage(named: "blue.png")
+            case 1:thirdColor = colorIcon[1]//UIImage(named: "green2.png")
+            case 2:thirdColor = colorIcon[2]//UIImage(named: "orange.png")
+            case 3:thirdColor = colorIcon[3]//UIImage(named: "purple.png")
+            default:thirdColor = colorIcon[0]
+            }
+            editButton2.setImage(thirdColor, for:UIControlState.normal)
+        default:editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
+        }
     }///
     func btn3_click(sender:UIButton){
         print("btn3_clicked!：")
