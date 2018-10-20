@@ -351,10 +351,13 @@ class SelectView:UIView{
     //ボタンを作成する
     //let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
     var penColor = UIColor.black
-    var btnImgs:[UIImage] = []//★★セレクトボタン画像：丸
+    var btnImgs:[UIImage] = []//★★色セレクトボタン画像：丸
+    var btnImgs2:[UIImage] = []//★★ペンセレクトボタン画像：四角
+    //ボタン画像の作成
+    var tImg:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.pdf")!]
     
     func setMenu(){ //UIButtonはここで作成する
-        print("select is selected!!")
+        print("select2btn is selected!!")
         //ボタン画像の作成
     
         for i in 0...5 {//print("\(i)")
@@ -369,9 +372,13 @@ class SelectView:UIView{
             //selBtn.setBackgroundImage(UIImage.colorToImage3(color: bColor[i]), for: UIControlState.highlighted)
             self.addSubview(selBtn)
         }
-        sectView = UIView(frame:CGRect(x:110,y:4,width:3,height:36))
-        sectView.backgroundColor = UIColor.white.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
+        select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
+        sectView = UIView(frame:CGRect(x:107,y:4,width:4,height:36))
+        sectView2 = UIView(frame:CGRect(x:107,y:4,width:1,height:36))
+        sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.15)//brown.withAlphaComponent(0.7)
+        sectView2.backgroundColor = UIColor.white//.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
         self.addSubview(sectView)
+        self.addSubview(sectView2)
         //penColorNum(1:黒色、２：赤色、３：選択色)
         //選択色 lineCplor（0:青色,1:緑色,2:オレンジ色,3:ムラサキ色）
         //パレット（0:黒色,1:赤色,2:青色,3:緑色,4:橙色,5:紫色)
@@ -382,12 +389,44 @@ class SelectView:UIView{
         //_self.Delegate?.penMode()
         
     }
-    func btnA_click_S(sender:UIButton){//タッチUP 時の処理
+    func setPenMenu(){ //UIButtonはここで作成する
+        print("select3btn is selected!!")
+
+        for i in 0...2 {// Pencil | G-pen | Highlight-pen
+
+            let selBtn:UIButton = UIButton(frame: CGRect(x:15 + i*100,y:2,width:40,height:40))
+            selBtn.backgroundColor = UIColor.white
+            selBtn.tag = i
+            selBtn.addTarget(self, action: #selector(btnB_click(sender:)), for:.touchUpInside)
+            selBtn.addTarget(self, action: #selector(btnB_click(sender:)), for:.touchUpOutside)//要らないかもしれない？
+            selBtn.addTarget(self, action: #selector(btnB_click_S(sender:)), for:.touchDown)
+            selBtn.setImage(tImg[i], for:UIControlState.normal)
+            //selBtn.setBackgroundImage(UIImage.colorToImage3(color: bColor[i]), for: UIControlState.highlighted)
+            self.addSubview(selBtn)
+        }
+        select_pcView_bg.backgroundColor = UIColor.blue.withAlphaComponent(0.7)//rgb(r:219,g:214, b:162, alpha: 1)
+        sectView = UIView(frame:CGRect(x:107,y:4,width:4,height:36))
+        sectView2 = UIView(frame:CGRect(x:107,y:4,width:1,height:36))
+        sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.15)//brown.withAlphaComponent(0.7)
+        sectView2.backgroundColor = UIColor.white//.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
+        self.addSubview(sectView)
+        self.addSubview(sectView2)
+        //penColorNum(1:黒色、２：赤色、３：選択色)
+        //選択色 lineCplor（0:青色,1:緑色,2:オレンジ色,3:ムラサキ色）
+        //パレット（0:黒色,1:赤色,2:青色,3:緑色,4:橙色,5:紫色)
+        let tag = penColorNum == 3 ? lineColor + 2 : penColorNum - 1
+        print("★★tag: \(tag)")
+        //btnB_click(tag:tag)
+        //btnBclick_S(tag:tag)
+        //_self.Delegate?.penMode()
+        
+    }
+    func btnA_click_S(sender:UIButton){//タッチDOWN 時の処理(start)
         print("btnA_clicked!: \(sender.tag)")
         let st:Int = sender.tag
         btnA_click_S2(tag:st)
     }
-    func btnA_click_S2(tag:Int){//タッチDOWN 時の処理
+    func btnA_click_S2(tag:Int){//btnA_click_Sの本体プログラム
         //bigボタンを全て消す
         bigBtm.removeFromSuperview()
         print("---------")
@@ -398,7 +437,7 @@ class SelectView:UIView{
         self.addSubview(bigBtm)
         print("---------self.addSubview(bigBtm)-------------")
     }
-    func btnA_click(sender:UIButton){//タッチUP 時の処理
+    func btnA_click(sender:UIButton){//色アイコンタッチUP 時の処理
         print("btnA_clicked!: \(sender.tag)")
         let st:Int = sender.tag
         btnA_click2(tag:st)
@@ -418,6 +457,24 @@ class SelectView:UIView{
          penColorNum = 2
         }
     }
+    func btnB_click_S(sender:UIButton){//ペンボタンを押す
+        editButton3.setImage(tImg[sender.tag], for:UIControlState.normal)
+    }//penアイコン
     
+    func btnB_click(sender:UIButton){//ペンボタンを離す
+        print("ペンボタンを離す")
+        switch sender.tag {
+        case 0:callig = false;marker = false
+            case 1: callig = true
+        case 2: marker = true
+            default:break
+        }
+        self.Delegate?.penMode()
+        //ペンパネルを閉じる
+        select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
+        select_pcView.removeFromSuperview()
+        select_pcView_bg.removeFromSuperview()
+        selFlg = false
+    }
     
 }

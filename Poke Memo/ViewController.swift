@@ -19,6 +19,13 @@ extension UIColor {
 }
 
 extension UIView {
+    //返り値を使わないことを許可する
+    func deleteSubviews() {//subViewを全て削除する
+        let a = subviews
+        for b in a {
+            b.removeFromSuperview()
+        }
+    }
     @discardableResult//返り値を使わないことを許可する
     func drawDashedLine(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber, type: DashedLineType) -> UIView {
         let dashedLineLayer: CAShapeLayer = CAShapeLayer()
@@ -465,6 +472,7 @@ var bigBtm:UIImageView! = UIImageView(frame: CGRect(x:0,y:0,width:30,height:30))
 var select_pcView:SelectView!//色選択パネル
 var select_pcView_bg:UIView!//色選択パネルの背景
 var sectView:UIView!//色選択パネルの区切り線
+var sectView2:UIView!//色選択パネルの区切り線
 var selFlg:Bool = false//色選択メニュー表示フラグ
 var leftOffset:CGFloat = 0//safeArea(landscape画面)の左側
 var statusBarHeight:CGFloat!//ステータスバーの高さ
@@ -478,6 +486,7 @@ var didLoadFlg = false//_portlaitモードで起動する為のフラグ
 var deviceO:Int = 1//_デバイスの回転方向(1-4)
 var gardClrFlg = true//パレット上下のガードの色をつける（緑色）
 var callig = false//カリグラフィモード時：true
+var marker = false//マーカーペンモード時：true
 var th:CGFloat = 46//(46:iP,51:iX,52:iPad)ツールバーの高さ 20180720本当は"46"
 var subMemoView:UIView!//+-+- 子メモの入るエリア
 var subMemo:MemoView! = nil//+-+-子メモ本体
@@ -1314,12 +1323,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //let sely2:CGFloat = myEdity2 - selHeight
         let selRect = CGRect(x:0,y:sel_y,width:50*6 + 15,height: selHeight)
         select_pcView = SelectView(frame: selRect)
+        //デリゲート登録
+        select_pcView.Delegate = self
         select_pcView.backgroundColor = UIColor.clear//white.withAlphaComponent(1.0)
         select_pcView_bg = UIView(frame: selRect)
         select_pcView.layer.position.x = selRect.width/2 + 2
         select_pcView_bg.layer.position.x = selRect.width/2 + 2
         //セレクトパネルの背景色:角丸表示にするために必要
-        select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
+        //__select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
         //UIColor.white.withAlphaComponent(0.5)
         select_pcView_bg.roundCorners([.topLeft, .topRight], radius: 15.0)
         //イベントの透過
@@ -1379,7 +1390,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func pushStartBtn2(sender: UILongPressGestureRecognizer){
         print("pushStartBtn:2")
         if selFlg{ return }
-        print("★！！！！")
+        print("★！！！！2")
         select_pcView.setMenu()//★★
         self.view.addSubview(select_pcView_bg)
         self.view.addSubview(select_pcView)
@@ -1390,10 +1401,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("pushStartBtn:3")
         if drawableView.X_color == 1{return}//ペンモード以外はパス
         if selFlg{return}
-        print("★！！！！")
-        //select_pcView.setMenu()//★★
-        //self.view.addSubview(select_pcView_bg)
-        //self.view.addSubview(select_pcView)
+        print("★！！！！3")
+        select_pcView.setPenMenu()//★★
+        self.view.addSubview(select_pcView_bg)
+        self.view.addSubview(select_pcView)
         selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
     }
 
@@ -1556,6 +1567,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            */
             showAlert()
             //penMode()
+            //fc5()
             return }
         
         if animeFlag == true {return}
@@ -1710,6 +1722,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             self.view.addSubview(myToolView)
             myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 40/2)// 位置を中心に設定：画面の外に位置する
             self.myScrollView.frame = self.scrollRect_T
+            //penモードを初期化する(鉛筆またはGpen)
+            marker = false
             //_+++ パレットを開くアニメーション　+++
             UIView.animate(withDuration:0.4, animations: {
                 () -> Void in
@@ -3246,6 +3260,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("btn2_clicked!：---- ペン色切り替え ----")
         //色選択パネルが開いている場合は閉じる
         if selFlg{
+           select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
            select_pcView.removeFromSuperview()
            select_pcView_bg.removeFromSuperview()
            selFlg = false
@@ -3279,15 +3294,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("penWidth-clickされました！！")
         //trf = false
         switch lineWidth {
-            case 0:lineWidth = 2
-            case 1:lineWidth = 0
-            case 2:lineWidth = 1
+            case 0:lineWidth = 1
+            case 1:lineWidth = 2
+            case 2:lineWidth = 0
             default:break
         }
         penMode()//
     }///WC
     
     func penMode(){
+        print("penMode()に入りました！marker:\(marker)")
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
         drawableView.X_color = 0//ペンモード[黒色、赤色、青色?]
@@ -3299,21 +3315,28 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton4.layer.borderWidth = 0
         // //WC
         var penImg:UIImage!
-        if callig {
+        if marker {//-- marker-pen --{
+         switch lineWidth {
+            case 0:penImg = UIImage(named: "markerS.pdf")
+            case 1:penImg = UIImage(named: "markerM.pdf")
+            case 2:penImg = UIImage(named: "markerL.pdf")
+            default:penImg = UIImage(named: "markerM.pdf")
+            }
+        }else if callig {//-- graphic-pen --
          switch lineWidth {
             case 0:penImg = UIImage(named: "gpen00.pdf")
             case 1:penImg = UIImage(named: "gpen01.pdf")
             case 2:penImg = UIImage(named: "gpen02.pdf")
             default:penImg = UIImage(named: "gpen01.pdf")
             }
-         }else{
-         switch lineWidth {
+         }else {//-- pencil --
+          switch lineWidth {
             case 0:penImg = UIImage(named: "pen0.pdf")
             case 1:penImg = UIImage(named: "pen3.pdf")
             case 2:penImg = UIImage(named: "pen1.pdf")
             default:penImg = UIImage(named: "pen1.pdf")
             }
-         }
+        }
          editButton3.setImage(penImg, for:UIControlState.normal)
         //_20181020に変更_カラーiconの再表示
         switch penColorNum {
@@ -3332,8 +3355,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         default:editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         }
     }///
+    
     func btn3_click(sender:UIButton){
         print("btn3_clicked!：")
+        //ペン選択パネルが開いている場合は閉じる
+        if selFlg{
+            select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
+            select_pcView.removeFromSuperview()
+            select_pcView_bg.removeFromSuperview()
+            selFlg = false
+            return
+        }
         if drawableView.X_color != 0{//ペンモード以外の場合はペンモードにする
             closeEditView()//パレット編集画面を閉じる
             penMode()
