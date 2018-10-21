@@ -465,7 +465,7 @@ class SelectView:UIView{
         print("ペンボタンを離す")
         switch sender.tag {
         case 0:callig = false;marker = false
-            case 1: callig = true
+        case 1: callig = true;marker = false
         case 2: marker = true
             default:break
         }

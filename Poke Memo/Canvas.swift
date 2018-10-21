@@ -264,9 +264,22 @@ class DrawableView: UIView {
     //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼カリグラフィ向けに変更した箇所▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
         if !callig || (X_color == 1 || marker){//-- 鉛筆と修正ペン + マーカペン --
             let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
-            bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
+            if marker{// ● マーカーペン描画実行
+                /*
+                bezierPath.removeAllPoints()
+                bezierPath.move(to: lastPoint)
+                bezierPath.addLine(to:currentPoint)
+                */
+                bezierPath.removeAllPoints()
+                bezierPath.move(to: midPoint)
+                bezierPath.addLine(to:currentPoint)
+            }else{// ● 鉛筆と修正ペン
+             bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
+            }
+            
             drawLine(path:bezierPath)
             lastPoint = currentPoint
+            lastMidPoint = midPoint
         }else{//-- カリグラフィ --
             // ● 中間点を作成
             let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
@@ -439,14 +452,15 @@ class DrawableView: UIView {
     var penW:CGFloat = 7
     
     func setPen(){
+        print("ココは　setPen()です！")
         let kpw:CGFloat = marker ? 5 : 1//マーカーペンの線幅係数
         var op:CGFloat = 1.0//マークペンの透明度
         if X_color == 0 { //ペンモード
             //ペン巾の変更
             switch lineWidth {
-               case 0:penW = 5*kpw;op = 0.1
-               case 1:penW = 7*kpw;op = 0.05
-               case 2:penW = 10*kpw;op = 0.01
+               case 0:penW = 5*kpw;op = 0.3
+               case 1:penW = 7*kpw;op = 0.15
+               case 2:penW = 10*kpw;op = 0.1
                default:break
             }
             penC = UIColor.black
@@ -464,7 +478,6 @@ class DrawableView: UIView {
                 case 5:penC = bColor[7]
                 default:break
                 }
-                penC = marker ? penC.withAlphaComponent(op) : penC//マーカペンの色
             }
         //消しゴムモード
             }else{
@@ -472,7 +485,7 @@ class DrawableView: UIView {
             penC = (nowGyouNo>10000) ? childColor : UIColor.white
             penW = 15//消しゴムの巾
         }
-        
+        penC = marker ? penC.withAlphaComponent(op) : penC//マーカペンの色
         print("@@@@@@@@:::::\(String(describing: penC))")
     }
  
@@ -480,10 +493,11 @@ class DrawableView: UIView {
     func drawLine(path:UIBezierPath) {
         var penColor = selFlg ? gblColor : penC//色選択パネルの色を優先する
         penColor = X_color == 1 ? penC : penColor//消しゴムモードは白色
-        penColor = marker ? penC.withAlphaComponent(0.05) : penC//マーカペンの色
+        penColor = penC//marker ? penC.withAlphaComponent(0.2) : penC//マーカペンの色
         penColor?.setStroke()
         path.lineWidth = penW//ペン幅を指定する
-        path.lineCapStyle = .square
+        path.lineCapStyle = .round
+        if marker {path.lineJoinStyle = .round}// CapStyle = .square}
         path.stroke()//描画する
         //タッチEnd時に画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
@@ -495,7 +509,6 @@ class DrawableView: UIView {
         
         if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
         sliderN = (penW - 7) / 12  + 1.2//★1.2
-        
         let penColor = selFlg ? gblColor : penC//色選択パネルの色を優先する
         penColor?.setStroke()
         //  path.lineWidth = penW//ペン幅を指定する
