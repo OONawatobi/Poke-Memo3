@@ -129,6 +129,9 @@
 		30792ED21E839C0B0069F903 /* m4i1.png in Resources */ = {isa = PBXBuildFile; fileRef = 30792ED11E839C0B0069F903 /* m4i1.png */; };
 		30792ED41E839C950069F903 /* 3red.png in Resources */ = {isa = PBXBuildFile; fileRef = 30792ED31E839C950069F903 /* 3red.png */; };
 		30792ED61E83F0850069F903 /* ovwx.png in Resources */ = {isa = PBXBuildFile; fileRef = 30792ED51E83F0850069F903 /* ovwx.png */; };
+		307B5A09217D72A400DECF3A /* pencil.png in Resources */ = {isa = PBXBuildFile; fileRef = 307B5A08217D72A400DECF3A /* pencil.png */; };
+		307B5A0B217D8A2F00DECF3A /* gpen.png in Resources */ = {isa = PBXBuildFile; fileRef = 307B5A0A217D8A2F00DECF3A /* gpen.png */; };
+		307B5A0F217DA59800DECF3A /* marker.png in Resources */ = {isa = PBXBuildFile; fileRef = 307B5A0E217DA59800DECF3A /* marker.png */; };
 		307EA73220D011CD0087B044 /* childEng.png in Resources */ = {isa = PBXBuildFile; fileRef = 307EA72D20D011CC0087B044 /* childEng.png */; };
 		307EA73320D011CD0087B044 /* childJPN.png in Resources */ = {isa = PBXBuildFile; fileRef = 307EA72E20D011CC0087B044 /* childJPN.png */; };
 		307EA73420D011CD0087B044 /* penchange.png in Resources */ = {isa = PBXBuildFile; fileRef = 307EA72F20D011CC0087B044 /* penchange.png */; };
@@ -352,6 +355,9 @@
 		30792ED11E839C0B0069F903 /* m4i1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = m4i1.png; sourceTree = "<group>"; };
 		30792ED31E839C950069F903 /* 3red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3red.png; sourceTree = "<group>"; };
 		30792ED51E83F0850069F903 /* ovwx.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ovwx.png; sourceTree = "<group>"; };
+		307B5A08217D72A400DECF3A /* pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pencil.png; sourceTree = "<group>"; };
+		307B5A0A217D8A2F00DECF3A /* gpen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gpen.png; sourceTree = "<group>"; };
+		307B5A0E217DA59800DECF3A /* marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = marker.png; sourceTree = "<group>"; };
 		307EA72D20D011CC0087B044 /* childEng.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = childEng.png; sourceTree = "<group>"; };
 		307EA72E20D011CC0087B044 /* childJPN.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = childJPN.png; sourceTree = "<group>"; };
 		307EA72F20D011CC0087B044 /* penchange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = penchange.png; sourceTree = "<group>"; };
@@ -470,6 +476,9 @@
 		30C2B1841DEB24F60069A5DF /* Imgs */ = {
 			isa = PBXGroup;
 			children = (
+				307B5A0E217DA59800DECF3A /* marker.png */,
+				307B5A0A217D8A2F00DECF3A /* gpen.png */,
+				307B5A08217D72A400DECF3A /* pencil.png */,
 				309A14EA2178ECBE007349E7 /* orange.png */,
 				309A14EC2178ECCA007349E7 /* purple.png */,
 				309A14E82178ECB1007349E7 /* green.png */,
@@ -904,6 +913,7 @@
 				307542A81E516DA900A82B1C /* red3.png in Resources */,
 				30349415212AD7BB003F673E /* gpen01.pdf in Resources */,
 				306738221E7A896400679C20 /* swipeR.png in Resources */,
+				307B5A0F217DA59800DECF3A /* marker.png in Resources */,
 				308ECC2E1E82AB7200576BA8 /* edits.png in Resources */,
 				30281EDB212D536D0009A7F4 /* gpen02.pdf in Resources */,
 				30A96DD21E93E2C0002361C0 /* m4xp14E.png in Resources */,
@@ -991,12 +1001,14 @@
 				301B5D471E8F7B27005B1B99 /* ovwON.png in Resources */,
 				301B5D371E8F7AED005B1B99 /* m3x2clr.png in Resources */,
 				30D9F3321E13B82B00142144 /* pen2.png in Resources */,
+				307B5A09217D72A400DECF3A /* pencil.png in Resources */,
 				30584FD61E97641000691BFA /* art3b.png in Resources */,
 				30792ED61E83F0850069F903 /* ovwx.png in Resources */,
 				301B5D721E8F7BC5005B1B99 /* undo06.png in Resources */,
 				30750B761E85474700809D15 /* ges7.png in Resources */,
 				301B5D2F1E8F7AC3005B1B99 /* editPanel.png in Resources */,
 				307EA73220D011CD0087B044 /* childEng.png in Resources */,
+				307B5A0B217D8A2F00DECF3A /* gpen.png in Resources */,
 				306738211E7A896400679C20 /* swipeL.png in Resources */,
 				30DEDDDA1E0D25A40051C829 /* 僕の世界.jpg in Resources */,
 				30451EA41E9369F9009B559A /* m5x1E.png in Resources */,

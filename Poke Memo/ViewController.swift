@@ -466,6 +466,7 @@ extension UIImage {
 var editButton2:UIButton!//カラーパレットから操作するためグローバル化する
 var editButton3:UIButton!
 let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
+var mColor:[UIColor]!//マーカの色
 var colorIcon:[UIImage] = []//カラーボタンアイコン
 var gblColor = UIColor.black
 var bigBtm:UIImageView! = UIImageView(frame: CGRect(x:0,y:0,width:30,height:30))//★★ボタンを押した時の大きい丸
@@ -549,7 +550,7 @@ let big:CGFloat = 1.5//拡大率
 //var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
 
 var lineWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
-var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:purple]
+var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:orange,3:]purple]
 var autoScrollFlag = true//自動スクロールOn/Offフラグ
 var myLabel:UILabel!//自動スクロールOn/Off表示用
 var lastPage:Int = 1//最後に編集したたページ番号
@@ -839,6 +840,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //Indexバーの色を作成
         iColor = UIColor.rgb(r: 208,g: 113, b: 68, alpha: 1) //init(white: 0.92, alpha: 1)78,157,121  (r: 208,g: 113, b: 68, alpha: 1)
         iColor2 = UIColor.rgb(r: 242, g: 177, b: 106, alpha: 1)
+        //マーカの色（蛍光ペン）
+        let pink = UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
+        let skyblue = UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
+        let grass = UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
+        let mRed =  UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
+        let mGray =  UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
+        let mYellow =  UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
+        mColor = [UIColor.lightGray,UIColor.magenta.withAlphaComponent(0.05),UIColor.cyan,UIColor.green,UIColor.yellow,UIColor.purple]
         //_画面の水平方向の幅
         boundWidthX = boundWidth
         //_ステータスバーの色を変える
@@ -912,7 +921,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /** underViewを生成：パレットの下の緑色帯 **/
         //underFlag = false// 表示・非表示のためのフラグ
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
-        let gardColor = gardClrFlg ? UIColor.green.withAlphaComponent(0.2) : UIColor.clear
+        let gardColor = gardClrFlg ? UIColor.green.withAlphaComponent(0.1) : UIColor.clear//_g (0.2⇨0.1)
         underView.backgroundColor = gardColor//UIColor.green// underViewの背景を青色に設定
         //_★★ underViewの位置を設定
         underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 15 )// 位置を中心に設定

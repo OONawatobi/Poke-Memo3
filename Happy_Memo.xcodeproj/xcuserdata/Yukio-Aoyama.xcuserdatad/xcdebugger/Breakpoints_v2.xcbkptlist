@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/Memo.swift"
-            timestampString = "560869660.025323"
+            timestampString = "561895178.686202"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "500"
@@ -72,11 +72,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/ViewController.swift"
-            timestampString = "561741075.709844"
+            timestampString = "561987205.119334"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2526"
-            endingLineNumber = "2526"
+            startingLineNumber = "2535"
+            endingLineNumber = "2535"
             landmarkName = "clearResn(pn:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -88,7 +88,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/Memo.swift"
-            timestampString = "560869660.026219"
+            timestampString = "561895178.6868221"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "145"
@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/Canvas.swift"
-            timestampString = "561820385.315026"
+            timestampString = "561987205.1194659"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "317"
-            endingLineNumber = "317"
+            startingLineNumber = "318"
+            endingLineNumber = "318"
             landmarkName = "touchesMoved(_:with:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -120,7 +120,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/Canvas.swift"
-            timestampString = "561820385.315557"
+            timestampString = "561987205.120049"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "201"
@@ -136,11 +136,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/ViewController.swift"
-            timestampString = "561741075.71085"
+            timestampString = "561987205.120473"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1773"
-            endingLineNumber = "1773"
+            startingLineNumber = "1782"
+            endingLineNumber = "1782"
             landmarkName = "upToMemo()"
             landmarkType = "7">
          </BreakpointContent>
@@ -152,11 +152,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/ViewController.swift"
-            timestampString = "561741075.710924"
+            timestampString = "561987205.120541"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2006"
-            endingLineNumber = "2006"
+            startingLineNumber = "2015"
+            endingLineNumber = "2015"
             landmarkName = "zoom(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -168,11 +168,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/ViewController.swift"
-            timestampString = "561741075.710996"
+            timestampString = "561987205.120602"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1996"
-            endingLineNumber = "1996"
+            startingLineNumber = "2005"
+            endingLineNumber = "2005"
             landmarkName = "zoom(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -184,11 +184,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/ViewController.swift"
-            timestampString = "561741075.711066"
+            timestampString = "561987205.120662"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1932"
-            endingLineNumber = "1932"
+            startingLineNumber = "1941"
+            endingLineNumber = "1941"
             landmarkName = "zoom(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -200,11 +200,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/ViewController.swift"
-            timestampString = "561741075.711136"
+            timestampString = "561987205.1207221"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "792"
-            endingLineNumber = "792"
+            startingLineNumber = "793"
+            endingLineNumber = "793"
             landmarkName = "setView2()"
             landmarkType = "7">
          </BreakpointContent>
@@ -216,11 +216,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/ViewController.swift"
-            timestampString = "561741075.711205"
+            timestampString = "561987205.120782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "846"
-            endingLineNumber = "846"
+            startingLineNumber = "855"
+            endingLineNumber = "855"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -232,11 +232,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/Editor.swift"
-            timestampString = "561820385.316054"
+            timestampString = "561895178.689025"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "472"
-            endingLineNumber = "472"
+            startingLineNumber = "488"
+            endingLineNumber = "488"
             landmarkName = "btnB_click(sender:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -248,12 +248,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Poke Memo/Canvas.swift"
-            timestampString = "561820385.316118"
+            timestampString = "561987205.120863"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "492"
+            endingLineNumber = "492"
+            landmarkName = "setPen()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Poke Memo/Editor.swift"
+            timestampString = "561895178.689168"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "482"
             endingLineNumber = "482"
-            landmarkName = "setPen()"
+            landmarkName = "btnB_click(sender:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Poke Memo/Canvas.swift"
+            timestampString = "561987205.1212831"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "touchesBegan(_:with:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

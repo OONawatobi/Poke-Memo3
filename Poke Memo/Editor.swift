@@ -354,7 +354,10 @@ class SelectView:UIView{
     var btnImgs:[UIImage] = []//★★色セレクトボタン画像：丸
     var btnImgs2:[UIImage] = []//★★ペンセレクトボタン画像：四角
     //ボタン画像の作成
-    var tImg:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.pdf")!]
+    //ボタンの画像
+    var tImg:[UIImage] = [UIImage(named: "pencil.png")!,UIImage(named: "gpen.png")!,UIImage(named: "marker.png")!]
+    //ボタンダウン時の画像
+    var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
     
     func setMenu(){ //UIButtonはここで作成する
         print("select2btn is selected!!")
@@ -394,8 +397,8 @@ class SelectView:UIView{
 
         for i in 0...2 {// Pencil | G-pen | Highlight-pen
 
-            let selBtn:UIButton = UIButton(frame: CGRect(x:15 + i*100,y:2,width:40,height:40))
-            selBtn.backgroundColor = UIColor.white
+            let selBtn:UIButton = UIButton(frame: CGRect(x:5 + i*100,y:2,width:100,height:40))
+            selBtn.backgroundColor = UIColor.clear
             selBtn.tag = i
             selBtn.addTarget(self, action: #selector(btnB_click(sender:)), for:.touchUpInside)
             selBtn.addTarget(self, action: #selector(btnB_click(sender:)), for:.touchUpOutside)//要らないかもしれない？
@@ -412,7 +415,7 @@ class SelectView:UIView{
         self.addSubview(sectView)
         self.addSubview(sectView2)
         //penColorNum(1:黒色、２：赤色、３：選択色)
-        //選択色 lineCplor（0:青色,1:緑色,2:オレンジ色,3:ムラサキ色）
+        //選択色 lineColor（0:青色,1:緑色,2:オレンジ色,3:ムラサキ色）
         //パレット（0:黒色,1:赤色,2:青色,3:緑色,4:橙色,5:紫色)
         let tag = penColorNum == 3 ? lineColor + 2 : penColorNum - 1
         print("★★tag: \(tag)")
@@ -458,16 +461,29 @@ class SelectView:UIView{
         }
     }
     func btnB_click_S(sender:UIButton){//ペンボタンを押す
-        editButton3.setImage(tImg[sender.tag], for:UIControlState.normal)
+        editButton3.setImage(tImg2[sender.tag], for:UIControlState.normal)
     }//penアイコン
     
     func btnB_click(sender:UIButton){//ペンボタンを離す
         print("ペンボタンを離す")
         switch sender.tag {
-        case 0:callig = false;marker = false
-        case 1: callig = true;marker = false
-        case 2: marker = true
-            default:break
+        case 0:callig = false;
+        if marker{
+            marker = false;penColorNum = 1//マーカからペンに移った時は"黒色"にする
+        }
+            
+        case 1: callig = true;
+        if marker{
+            marker = false;penColorNum = 1
+            }
+            
+        case 2:
+        if !marker{//penからマーカに移った時は"黄色"にする
+            marker = true
+            penColorNum = 3
+            lineColor = 2
+        }
+        default:break
         }
         self.Delegate?.penMode()
         //ペンパネルを閉じる

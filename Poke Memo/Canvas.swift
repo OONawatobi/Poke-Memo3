@@ -264,15 +264,16 @@ class DrawableView: UIView {
     //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼カリグラフィ向けに変更した箇所▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
         if !callig || (X_color == 1 || marker){//-- 鉛筆と修正ペン + マーカペン --
             let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
-            if marker{// ● マーカーペン描画実行
+            //
+            if marker{//________ ● マーカーペン描画実行
+                //
+                bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
+                //
                 /*
                 bezierPath.removeAllPoints()
                 bezierPath.move(to: lastPoint)
                 bezierPath.addLine(to:currentPoint)
                 */
-                bezierPath.removeAllPoints()
-                bezierPath.move(to: midPoint)
-                bezierPath.addLine(to:currentPoint)
             }else{// ● 鉛筆と修正ペン
              bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
             }
@@ -360,6 +361,14 @@ class DrawableView: UIView {
     
     // タッチが終わった---------------------------------------------
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //________マーカペンのタッチEnd時の処理
+        if marker{
+            lastDrawImage = bup["2"]?.0//描画前の画像をCanvasに書き戻す
+            if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
+            drawLine(path:bezierPath)//strokeをcanvasに描画する
+            lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
+            bezierPath = nil//これがないと前のストロークが再描画されてしまった
+        }//________
         //moveFlag == false//タッチ状態終了
         if bezierPath == nil { return }
         //------- 右端エリア以外にタッチされた場合 -------
@@ -393,9 +402,10 @@ class DrawableView: UIView {
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2)
         }
     // ==========================================================
+        
         UIGraphicsEndImageContext()  //Canvasを閉じる　▼▼
 
-    }
+}
     
     // タイマー開始
     func startTimer() {
@@ -458,9 +468,9 @@ class DrawableView: UIView {
         if X_color == 0 { //ペンモード
             //ペン巾の変更
             switch lineWidth {
-               case 0:penW = 5*kpw;op = 0.3
-               case 1:penW = 7*kpw;op = 0.15
-               case 2:penW = 10*kpw;op = 0.1
+               case 0:penW = 5*kpw;op = 0.10
+               case 1:penW = 7*kpw;op = 0.07
+               case 2:penW = 10*kpw;op = 0.03
                default:break
             }
             penC = UIColor.black
@@ -470,12 +480,12 @@ class DrawableView: UIView {
                 penC = UIColor.red
             }else{//第３番目の色：設定色
               switch lineColor {
-                case 0:penC = bColor[2]
-                case 1:penC = bColor[3]
-                case 2:penC = bColor[4]
-                case 3:penC = bColor[5]
-                case 4:penC = bColor[6]
-                case 5:penC = bColor[7]
+                case 0:penC = marker ? mColor[2] :bColor[2]
+                case 1:penC = marker ? mColor[3] :bColor[3]
+                case 2:penC = marker ? mColor[4] :bColor[4]
+                case 3:penC = marker ? mColor[5] :bColor[5]
+                case 4:penC = marker ? mColor[6] :bColor[6]
+                case 5:penC = marker ? mColor[7] :bColor[7]
                 default:break
                 }
             }
@@ -493,13 +503,13 @@ class DrawableView: UIView {
     func drawLine(path:UIBezierPath) {
         var penColor = selFlg ? gblColor : penC//色選択パネルの色を優先する
         penColor = X_color == 1 ? penC : penColor//消しゴムモードは白色
-        penColor = penC//marker ? penC.withAlphaComponent(0.2) : penC//マーカペンの色
+        penColor = penC//マーカペンの色
         penColor?.setStroke()
         path.lineWidth = penW//ペン幅を指定する
-        path.lineCapStyle = .round
+        path.lineCapStyle = .square
         if marker {path.lineJoinStyle = .round}// CapStyle = .square}
         path.stroke()//描画する
-        //タッチEnd時に画面を背景にコピーする
+        //画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
         secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
         //print(":::::func drawLine")
@@ -507,7 +517,7 @@ class DrawableView: UIView {
     //非ベジエ描画プログラム
     func drawLine2(path:UIBezierPath) {
         
-        if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
+        //_if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
         sliderN = (penW - 7) / 12  + 1.2//★1.2
         let penColor = selFlg ? gblColor : penC//色選択パネルの色を優先する
         penColor?.setStroke()
