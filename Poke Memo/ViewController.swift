@@ -2210,6 +2210,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var saX:CGFloat = 0//ステータスバーの高さの差
         if boundWidthX == boundWidth{//portlait画面
             saX = iphoneX ? 24 : 0
+        }else{//landscape画面は1行分下げる
+            saX = saX - 20//20は微調整値
         }
         var saIti = iti - maxIti + saX//差（移動量）
         saIti = (os.y + saIti)<0 ? -os.y : saIti
