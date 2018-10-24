@@ -121,6 +121,7 @@ class DrawableView: UIView {
     //SecondView画面(パネル編集結果）を取得する
     func get3VImage(open:Int){//open:パネルを開く時が１、閉じる時は０
         print("get3VImage")
+        
         thirdView.removeFromSuperview()//3rdViewを取り出す
         let im = self.GetImage()
         self.addSubview(thirdView)//前フィルタ3rdViewを追加
@@ -148,6 +149,7 @@ class DrawableView: UIView {
     
     //drawableView画面を取得する
     func get1VImage(){
+        print("●----------get1VImage()-------------●")
         bup["10"] = bup["1"]
         thirdView.removeFromSuperview()//3rdViewを取り出す
         let im = self.GetImage()
@@ -158,8 +160,7 @@ class DrawableView: UIView {
         undoMode = 1
 
     }
-
-    
+   
     //----------- secondView(パレット前面フィルタ)の作成 --------------------------
         let myImg = UIImage(named: "blank.png")// 背景(メモの選択背景色と合わせる)
         //let myImg2 = UIImage(named: "blankP.png")// 背景(メモの選択背景色と合わせる)
@@ -225,6 +226,9 @@ class DrawableView: UIView {
         if lastDrawImage != nil{
           bup["20"] = (lastDrawImage,mxTemp)//)bup["2"]
         }
+        if marker {
+          //getVImage4Marker()//self画面を一時的に保存する：マーカ対応
+        }
         //lastXm = mx[String(nowGyouNo)]!//◆◆◆◆
         setPen()//線巾、線色の設定
         //sCount = 0//?
@@ -264,20 +268,8 @@ class DrawableView: UIView {
     //▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼カリグラフィ向けに変更した箇所▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
         if !callig || (X_color == 1 || marker){//-- 鉛筆と修正ペン + マーカペン --
             let midPoint = CGPoint(x: (lastPoint.x + currentPoint.x)/2, y: (lastPoint.y + currentPoint.y)/2)
-            //
-            if marker{//________ ● マーカーペン描画実行
-                //
-                bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
-                //
-                /*
-                bezierPath.removeAllPoints()
-                bezierPath.move(to: lastPoint)
-                bezierPath.addLine(to:currentPoint)
-                */
-            }else{// ● 鉛筆と修正ペン
-             bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
-            }
-            
+
+            bezierPath.addQuadCurve(to: midPoint, controlPoint: lastPoint)
             drawLine(path:bezierPath)
             lastPoint = currentPoint
             lastMidPoint = midPoint
@@ -363,17 +355,20 @@ class DrawableView: UIView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //________マーカペンのタッチEnd時の処理
         if marker{
-            lastDrawImage = bup["2"]?.0//描画前の画像をCanvasに書き戻す
-            if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
-            drawLine(path:bezierPath)//strokeをcanvasに描画する
-            lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
-            bezierPath = nil//これがないと前のストロークが再描画されてしまった
+            //lastDrawImage = bup["m"]?.0//描画前の画像をCanvasに書き戻す
+            //let blankImge = UIImage.colorImage(color: UIColor.clear, size: self.frame.size)
+            //lastDrawImage = blankImge
+            //lastDrawImage.draw(at:CGPoint.zero)
+            //secondView.backgroundColor = UIColor.green
+            //bup["20"] = bup["1"]
+            //drawLine(path:bezierPath)//strokeをcanvasに描画する
+            //lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
+           // bezierPath = nil//これがないと前のストロークが再描画されてしまった
         }//________
         //moveFlag == false//タッチ状態終了
         if bezierPath == nil { return }
         //------- 右端エリア以外にタッチされた場合 -------
         if rightFlag == false{
-
           get2VImage()//second画像をbup[2]に保存：UNDO用
           //左方向への自動スクロール
             print("autoFlag:\(autoFlag):mxTemp=\(String(describing: mxTemp))")
@@ -468,9 +463,9 @@ class DrawableView: UIView {
         if X_color == 0 { //ペンモード
             //ペン巾の変更
             switch lineWidth {
-               case 0:penW = 5*kpw;op = 0.10
-               case 1:penW = 7*kpw;op = 0.07
-               case 2:penW = 10*kpw;op = 0.03
+               case 0:penW = 5*kpw;op = 0.05
+               case 1:penW = 7*kpw;op = 0.04
+               case 2:penW = 10*kpw;op = 0.02
                default:break
             }
             penC = UIColor.black
@@ -506,8 +501,7 @@ class DrawableView: UIView {
         penColor = penC//マーカペンの色
         penColor?.setStroke()
         path.lineWidth = penW//ペン幅を指定する
-        path.lineCapStyle = .square
-        if marker {path.lineJoinStyle = .round}// CapStyle = .square}
+        if marker {path.lineCapStyle = .square}
         path.stroke()//描画する
         //画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!

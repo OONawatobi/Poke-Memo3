@@ -1408,7 +1408,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //長押しボタンの処理(ペン選択)
     func pushStartBtn3(sender: UILongPressGestureRecognizer){
         print("pushStartBtn:3")
-        if drawableView.X_color == 1{return}//ペンモード以外はパス
+        if drawableView.X_color == 1{//消しゴムモードの時は鉛筆モードに戻す
+            penMode()
+            return}//ペンモード以外はパス
         if selFlg{return}
         print("★！！！！3")
         select_pcView.setPenMenu()//★★
