@@ -355,7 +355,7 @@ class SelectView:UIView{
     var btnImgs2:[UIImage] = []//★★ペンセレクトボタン画像：四角
     //ボタン画像の作成
     //ボタンの画像
-    var tImg:[UIImage] = [UIImage(named: "pencil.png")!,UIImage(named: "gpen.png")!,UIImage(named: "marker.png")!]
+    var tImg:[UIImage] = [UIImage(named: "pencil2.png")!,UIImage(named: "gpen2.png")!,UIImage(named: "marker2.png")!]
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
     
@@ -407,10 +407,10 @@ class SelectView:UIView{
             //selBtn.setBackgroundImage(UIImage.colorToImage3(color: bColor[i]), for: UIControlState.highlighted)
             self.addSubview(selBtn)
         }
-        select_pcView_bg.backgroundColor = UIColor.blue.withAlphaComponent(0.7)//rgb(r:219,g:214, b:162, alpha: 1)
-        sectView = UIView(frame:CGRect(x:107,y:4,width:4,height:36))
-        sectView2 = UIView(frame:CGRect(x:107,y:4,width:1,height:36))
-        sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.15)//brown.withAlphaComponent(0.7)
+        select_pcView_bg.backgroundColor = UIColor.rgb(r:51,g:204, b:204, alpha: 1)
+        sectView = UIView(frame:CGRect(x:107,y:4,width:1,height:36))
+        sectView2 = UIView(frame:CGRect(x:200,y:4,width:1,height:36))
+        sectView.backgroundColor = UIColor.white//.withAlphaComponent(0.15)//brown.withAlphaComponent(0.7)
         sectView2.backgroundColor = UIColor.white//.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
         self.addSubview(sectView)
         self.addSubview(sectView2)

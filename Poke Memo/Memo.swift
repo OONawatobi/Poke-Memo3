@@ -204,15 +204,15 @@ class MemoView:UIView{
         //新しく選択した行の背景に色を付ける
         print("newGyouNo:tag\(tagN)")
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
-        let gColor = UIColor.green.withAlphaComponent(0.02)   //(0.06)
-        let gColor2 = UIColor.green.withAlphaComponent(0.10)  //(0.15)
+        let gColor = UIColor.green.withAlphaComponent(0.01)   //(0.06)
+        let gColor2 = UIColor.green.withAlphaComponent(0.15)
         //let wColor = UIColor.white
         let cColor = UIColor.rgb(r: 234, g: 204, b: 99, alpha: 0.4)//orange.withAlphaComponent(0.2) 234,204,99
         //カーソル色の代わりに縁取り画像を使う(2/24追加）
         let cursolView:UIView = UIView(frame: leafRect)
         cursolView.backgroundColor = gColor
         cursolView.layer.borderColor = gColor2.cgColor
-        cursolView.layer.borderWidth = 8
+        cursolView.layer.borderWidth = 6
         //中間線を追加
         let mline = UIView(frame: CGRect(x:leafWidth/2,y:0,width:2,height:leafHeight))
         mline.backgroundColor = gColor2
