@@ -175,7 +175,7 @@ class DrawableView: UIView {
         //__ ++ thirdViewの初期化：背景を緑色にする、先頭と末尾に印を追加する ++
         thirdView = UIView(frame: secondView.frame)
         thirdView.backgroundColor = UIColor.clear//(patternImage: myImg!)
-        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.25), width: 15)
+        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.15), width: 15)
         thirdView.isUserInteractionEnabled = false //イベントの透過
         self.addSubview(secondView)
         self.addSubview(thirdView)
@@ -399,7 +399,7 @@ class DrawableView: UIView {
     // ==========================================================
         
         UIGraphicsEndImageContext()  //Canvasを閉じる　▼▼
-
+        ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
 }
     
     // タイマー開始
@@ -439,8 +439,9 @@ class DrawableView: UIView {
         //シフトスクロールした後にOKボタンを押さない様にする
         //理由：①ボケ回数を減らす為、②ペン色が変わらない様にする
         //      ↑書き出したメモを再読み込みしなければOK,②は止めてもいいかも
-        self.Delegate.ok2()// [ok2]ボタンを押す:view.done(done2)★20180813
- 
+        if !marker{//マーカモード時は無視する
+            self.Delegate.ok2()// [ok2]ボタンを押す:view.done(done2)★20180813
+        }
     }
     //??
     func resetContext(context: CGContext) {

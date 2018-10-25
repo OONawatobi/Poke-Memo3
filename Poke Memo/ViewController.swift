@@ -463,6 +463,7 @@ extension UIImage {
 
 //-----　grobal constance　--------
 //var testView = UIView(frame: CGRect(x:0,y:0,width:10,height:vHeight))
+var ok2Flg = false//ok2()の重複実行を無視する為のフラグ（toutchUpでリセット）
 var editButton2:UIButton!//カラーパレットから操作するためグローバル化する
 var editButton3:UIButton!
 let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
@@ -676,6 +677,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func setView1(){
         rotMode = 1
         print("------ setView1 --------")
+        self.pallete2.isEnabled = true//パレットボタンを表示
+        self.menu2.isEnabled = true//メニューボタンを表示
         //パレットのアンカー座標を変更する（センターに戻す）
         drawableView.layer.anchorPoint = CGPoint(x: 0.5, y:0.5)
         boundWidthX = boundWidth
@@ -727,6 +730,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         rotMode = 2//チャタリング防止用
         boundWidthX = boundHeight//縦横を入れ替える
         print("----- setView2 --------")
+        self.pallete2.isEnabled = false//パレットボタンを非表示
+        self.menu2.isEnabled = false//メニューボタンを非表示
         //iPhoneXシリーズ？
         if iphoneX{
             leftOffset = 44//safeAreaの両側のスペースの幅
@@ -1576,9 +1581,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             callig = callig == false ? true :false//★20180819テスト専用
             print("callig: \(callig)")
            */
-            showAlert()
+            //showAlert()//ペンモードの切り替えダイアログ
             //penMode()
-            //fc5()
+            fc5()//設定画面を表示する
             return }
         
         if animeFlag == true {return}
@@ -1933,10 +1938,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if myEditFlag {return}//編集パレット表示中はメモ行に反映させない
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
         drawableView.editOK = false//編集パネル非表示の場合
-        upToMemo()//パレット画面をメモ行にコピーする
-        drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
+        if !ok2Flg{
+            upToMemo()//パレット画面をメモ行にコピーする
+            drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
+        }
         //メモカーソル位置の更新
         memoCursol(disp: 1)
+        ok2Flg = true//ok2()重複実行防止用(メモ行更新不可となる)
     }
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
@@ -2051,7 +2059,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //赤▲アイコンに戻す
             editButton1.frame.size = CGSize(width:40, height:40)//ボタンサイズを元に戻す
             editButton1.setImage(UIImage(named: "3Up.pdf"), for:UIControlState.normal)
-                ok2()//★20180814:oomを閉じたときにメモ行を更新する
+                ok2()//★20180814:zoomを閉じたときにメモ行を更新する
             //select_pcViewのY位置を変更する
                 let bigHX = (boundWidthX == boundWidth) ? boundHeight : boundWidth
                 let th2 = (boundWidthX == boundWidth) ? th : 0
@@ -2879,6 +2887,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setV2.backgroundColor = UIColor.white
         setV2.layer.position = CGPoint(x: self.view.bounds.width / 2,y:self.view.bounds.height * 0.53)
         setV2.layer.cornerRadius = 7
+        setV.deleteSubviews()//設定画面の内容を一旦、削除する。
         setV.addSubview(setV2)
         //部品のコンテントVIew
         let cv = UIView(frame: CGRect(x:0,y:0,width:300,height:500))
@@ -2976,7 +2985,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         scB.addTarget(self, action: #selector(segconChangedB(segcon:)), for: UIControlEvents.valueChanged)
  
         //------- セグメント03(Boxなし)-----------------------
-        
+ 
         // 表示する配列を作成する.
         let myArrayC: NSArray = [sT[6],sT[7]]//["DLETE-ALL","NO ACTION"]
         let sWC:CGFloat = 120
@@ -2992,6 +3001,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         scC.selectedSegmentIndex = 1
         // イベントを追加する.
         scC.addTarget(self, action: #selector(segconChangedC(segcon:)), for: UIControlEvents.valueChanged)
+
         //------------セグメントSw(Boxなし)------------------------------
         // Swicthを作成する.
         let mySwicth: UISwitch = UISwitch()
@@ -3038,13 +3048,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         scBoxB.addSubview(scB)
         cv.addSubview(scBox)
         cv.addSubview(scBoxB)
-        cv.addSubview(scC)
+        if isPalleteMode == false{//パレットが表示中は無視
+            cv.addSubview(scC)
+        }
         cv.addSubview(self.setButtonN)
         cv.addSubview(self.setButtonY)
         cv.addSubview(lb1)
         cv.addSubview(lb2);cv.addSubview(lb2a);cv.addSubview(lb2b)
         cv.addSubview(lb2c)
-        cv.addSubview(lb3)
+        if isPalleteMode == false{//パレットが表示中は無視
+            cv.addSubview(lb3)
+        }
         cv.addSubview(lbSw)
         cv.addSubview(mySwicth)
         cv.addSubview(myLabel)
@@ -3052,12 +3066,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setV.addSubview(cv)
         //setVを表示する
         self.view.addSubview(setV)
-        
+        let settingH:CGFloat = isPalleteMode ? 400 : 520//パレット表示中は短くする
+        let settingC:CGFloat = isPalleteMode ? 120/2 : 0
         UIScrollView.animate(withDuration: 0.2, animations: {
         () -> Void in
-            self.setV2.frame.size = CGSize(width: 300, height: 520)
+            self.setV2.frame.size = CGSize(width: 300, height: settingH)
         //self.setV2.layer.position = CGPoint(x:boundWidth / 2,y:boundHeight * 0.53)
-          self.setV2.layer.position = CGPoint(x:boundWidth / 2,y:self.view.bounds.height * 0.53)
+          self.setV2.layer.position = CGPoint(x:boundWidth / 2,y:self.view.bounds.height * 0.53 - settingC)
         })
 
     }
