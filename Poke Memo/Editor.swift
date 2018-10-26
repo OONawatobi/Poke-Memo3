@@ -354,13 +354,14 @@ class SelectView:UIView{
     var btnImgs:[UIImage] = []//★★色セレクトボタン画像：丸
     var btnImgs2:[UIImage] = []//★★ペンセレクトボタン画像：四角
     //ボタン画像の作成
-    //ボタンの画像
-    var tImg:[UIImage] = [UIImage(named: "pencil2.png")!,UIImage(named: "gpen2.png")!,UIImage(named: "marker2.png")!]
+    
+    //var tImg:[UIImage] = [UIImage(named: "pencil2.png")!,UIImage(named: "gpen2.png")!,UIImage(named: "marker2.png")!]
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
     
     func setMenu(){ //UIButtonはここで作成する
         print("select2btn is selected!!")
+        
         //ボタン画像の作成
     
         for i in 0...5 {//print("\(i)")
@@ -393,8 +394,12 @@ class SelectView:UIView{
         
     }
     func setPenMenu(){ //UIButtonはここで作成する
-        print("select3btn is selected!!")
-
+        print("select3btn is selected!!:lang = \(langFlag)")
+        //ボタンの画像
+        let pcl:UIImage = langFlag == 0 ? UIImage(named: "鉛筆.png")! : UIImage(named: "pencil2.png")!
+        let gpn:UIImage = langFlag == 0 ? UIImage(named: "Gペン.png")! : UIImage(named: "gpen2.png")!
+        let mkr:UIImage = langFlag == 0 ? UIImage(named: "マーカー.png")! : UIImage(named: "marker2.png")!
+        var tImg:[UIImage] = [pcl,gpn,mkr]
         for i in 0...2 {// Pencil | G-pen | Highlight-pen
 
             let selBtn:UIButton = UIButton(frame: CGRect(x:5 + i*100,y:2,width:100,height:40))

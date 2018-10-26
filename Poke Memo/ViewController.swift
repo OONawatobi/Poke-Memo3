@@ -463,6 +463,7 @@ extension UIImage {
 
 //-----　grobal constance　--------
 //var testView = UIView(frame: CGRect(x:0,y:0,width:10,height:vHeight))
+var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
 var ok2Flg = false//ok2()の重複実行を無視する為のフラグ（toutchUpでリセット）
 var editButton2:UIButton!//カラーパレットから操作するためグローバル化する
 var editButton3:UIButton!
@@ -627,7 +628,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var jButton:UIButton!//ヘルプ画面:日本語
     var eButton:UIButton!//ヘルプ画面:English
     var rButton:UIButton!//ヘルプ画面:[X]閉じる
-    var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
+    
     var hl:UILabel!//ヘルプ画面のタイトル
     var numBar:UIView!//INDEXページの左端ライン
     //var trf:Bool = false//WC：タイマーフラグ（ペンボタンのdouble-click対応）
@@ -846,13 +847,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         iColor = UIColor.rgb(r: 208,g: 113, b: 68, alpha: 1) //init(white: 0.92, alpha: 1)78,157,121  (r: 208,g: 113, b: 68, alpha: 1)
         iColor2 = UIColor.rgb(r: 242, g: 177, b: 106, alpha: 1)
         //マーカの色（蛍光ペン）
-        let pink = UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
-        let skyblue = UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
-        let grass = UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
-        let mRed =  UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
-        let mGray =  UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
-        let mYellow =  UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
-        mColor = [UIColor.lightGray,UIColor.magenta.withAlphaComponent(0.05),UIColor.cyan,UIColor.green,UIColor.yellow,UIColor.purple]
+        let mPink = UIColor.rgb(r: 250, g: 99, b: 230, alpha: 1.0)
+        let mBlue = UIColor.cyan//UIColor.rgb(r: 153, g: 255, b: 255, alpha: 1.0)
+        let mGrass = UIColor.rgb(r: 55, g: 234, b: 71, alpha: 1.0)
+        let mRed =  UIColor.rgb(r: 221, g: 19, b: 121, alpha: 1.0)
+        let mGray =  UIColor.lightGray//UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
+        let mYellow =  UIColor.rgb(r: 254, g: 217, b: 0, alpha: 1.0)
+        mColor = [mGray,mRed,mBlue,mGrass,mYellow,mPink]
+        //[UIColor.lightGray,UIColor.magenta.withAlphaComponent(0.05),UIColor.cyan,UIColor.green,UIColor.yellow,UIColor.purple]
+        
         //_画面の水平方向の幅
         boundWidthX = boundWidth
         //_ステータスバーの色を変える
@@ -1354,10 +1357,42 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         colorIcon.append(UIImage(named: "green2.png")!)
         colorIcon.append(UIImage(named: "orange.png")!)
         colorIcon.append(UIImage(named: "purple.png")!)
+        // アプリバックグラウンド移行時の通知を設定する
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ViewController.onWillResignActive(_:)),
+            name: NSNotification.Name.UIApplicationWillResignActive,
+            object: nil
+        )
+        // アプリバックグラウンドから復帰時の通知を設定する
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ViewController.onDidBecomeActive(_:)),
+            name: NSNotification.Name.UIApplicationDidBecomeActive,
+            object: nil
+        )
     
     }
     //  =======         End of viewDi dLoad         =======
-    
+    // アプリバックグラウンド移行開始時に行う処理
+    @objc func onWillResignActive(_ notification: Notification?) {
+        print("アプリバックグラウンド移行時に行う処理")
+        didLoadFlg = false//回転禁止にする
+    /*
+       回転ロックSWがON(横向き画面)の状態でアプリを起動した場合でも、アプリは縦画面で立ち上がる。
+      そして、パレットを表示したままバックグランドに移行すると横向き画面に移行してしまう。
+　　　　理由は不明（「device方向=横向き」に固定されているせいだと思われる)
+      そこで、移行開始時に回転を強制的に禁止する。但しこのままだとフォアグランドに戻った時にも
+      回転が禁止のままなので、回転ロックSWがOFFのモードの時には困るので戻ってきた時には回転禁止
+      フラグdidLoadFlgを元の状態(回転可)に戻す。(※但し、パレットが表示されている場合のみ）
+    */
+    }
+    @objc func onDidBecomeActive(_ notification: Notification?) {
+        print("アプリバックグラウンドから復帰時に行う処理")
+        //パレット表示時なら回転可にする※回転ロックSWオンの場合は、回転可にする
+        if isPalleteMode{didLoadFlg = true}
+    }
+    //iphoneXのホームインジケータを自動で消えるように設定する
     @available(iOS 11, *)
     override func prefersHomeIndicatorAutoHidden() -> Bool {
         return true

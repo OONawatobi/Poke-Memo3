@@ -133,7 +133,6 @@
 		307B5A0B217D8A2F00DECF3A /* gpen.png in Resources */ = {isa = PBXBuildFile; fileRef = 307B5A0A217D8A2F00DECF3A /* gpen.png */; };
 		307B5A0F217DA59800DECF3A /* marker.png in Resources */ = {isa = PBXBuildFile; fileRef = 307B5A0E217DA59800DECF3A /* marker.png */; };
 		307B5A1921820E8300DECF3A /* marker2.png in Resources */ = {isa = PBXBuildFile; fileRef = 307B5A1821820E8300DECF3A /* marker2.png */; };
-		307B5A1D2182114500DECF3A /* pencil2.png in Resources */ = {isa = PBXBuildFile; fileRef = 307B5A1C2182114500DECF3A /* pencil2.png */; };
 		307B5A1F2182131700DECF3A /* gpen2.png in Resources */ = {isa = PBXBuildFile; fileRef = 307B5A1E2182131700DECF3A /* gpen2.png */; };
 		307EA73220D011CD0087B044 /* childEng.png in Resources */ = {isa = PBXBuildFile; fileRef = 307EA72D20D011CC0087B044 /* childEng.png */; };
 		307EA73320D011CD0087B044 /* childJPN.png in Resources */ = {isa = PBXBuildFile; fileRef = 307EA72E20D011CC0087B044 /* childJPN.png */; };
@@ -216,6 +215,10 @@
 		30EA084B2159E8CD004DDD3A /* indexJa.html in Resources */ = {isa = PBXBuildFile; fileRef = 30EA084A2159E8CD004DDD3A /* indexJa.html */; };
 		30EA084D2159E8DB004DDD3A /* indexEn.html in Resources */ = {isa = PBXBuildFile; fileRef = 30EA084C2159E8DB004DDD3A /* indexEn.html */; };
 		30EA084F2159E8F3004DDD3A /* 7_penMode.png in Resources */ = {isa = PBXBuildFile; fileRef = 30EA084E2159E8F3004DDD3A /* 7_penMode.png */; };
+		30F18FE521834C7B00ACFAC2 /* pencil2.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FE421834C7B00ACFAC2 /* pencil2.png */; };
+		30F18FE72183508100ACFAC2 /* マーカー.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FE62183508100ACFAC2 /* マーカー.png */; };
+		30F18FE92183508C00ACFAC2 /* Gペン.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FE82183508C00ACFAC2 /* Gペン.png */; };
+		30F18FEB2183509F00ACFAC2 /* 鉛筆.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FEA2183509E00ACFAC2 /* 鉛筆.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,7 +365,6 @@
 		307B5A0A217D8A2F00DECF3A /* gpen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gpen.png; sourceTree = "<group>"; };
 		307B5A0E217DA59800DECF3A /* marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = marker.png; sourceTree = "<group>"; };
 		307B5A1821820E8300DECF3A /* marker2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = marker2.png; sourceTree = "<group>"; };
-		307B5A1C2182114500DECF3A /* pencil2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pencil2.png; sourceTree = "<group>"; };
 		307B5A1E2182131700DECF3A /* gpen2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gpen2.png; sourceTree = "<group>"; };
 		307EA72D20D011CC0087B044 /* childEng.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = childEng.png; sourceTree = "<group>"; };
 		307EA72E20D011CC0087B044 /* childJPN.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = childJPN.png; sourceTree = "<group>"; };
@@ -452,6 +454,10 @@
 		30EA084A2159E8CD004DDD3A /* indexJa.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = indexJa.html; sourceTree = "<group>"; };
 		30EA084C2159E8DB004DDD3A /* indexEn.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = indexEn.html; sourceTree = "<group>"; };
 		30EA084E2159E8F3004DDD3A /* 7_penMode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 7_penMode.png; sourceTree = "<group>"; };
+		30F18FE421834C7B00ACFAC2 /* pencil2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pencil2.png; path = "../../../../My Creative Cloud Files/pencil2.png"; sourceTree = "<group>"; };
+		30F18FE62183508100ACFAC2 /* マーカー.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "マーカー.png"; sourceTree = "<group>"; };
+		30F18FE82183508C00ACFAC2 /* Gペン.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Gペン.png"; sourceTree = "<group>"; };
+		30F18FEA2183509E00ACFAC2 /* 鉛筆.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "鉛筆.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -482,7 +488,10 @@
 		30C2B1841DEB24F60069A5DF /* Imgs */ = {
 			isa = PBXGroup;
 			children = (
-				307B5A1C2182114500DECF3A /* pencil2.png */,
+				30F18FEA2183509E00ACFAC2 /* 鉛筆.png */,
+				30F18FE82183508C00ACFAC2 /* Gペン.png */,
+				30F18FE62183508100ACFAC2 /* マーカー.png */,
+				30F18FE421834C7B00ACFAC2 /* pencil2.png */,
 				307B5A1E2182131700DECF3A /* gpen2.png */,
 				307B5A1821820E8300DECF3A /* marker2.png */,
 				307B5A0E217DA59800DECF3A /* marker.png */,
@@ -887,6 +896,7 @@
 				30750B791E85474700809D15 /* gesA1.png in Resources */,
 				307B5A1921820E8300DECF3A /* marker2.png in Resources */,
 				30451EA31E9369F9009B559A /* m71E.png in Resources */,
+				30F18FE72183508100ACFAC2 /* マーカー.png in Resources */,
 				30DAD88F1DE5C3040068FF45 /* Assets.xcassets in Resources */,
 				30BE96C81E7D6CD50018412E /* editPanel02.png in Resources */,
 				307542AA1E516DC900A82B1C /* green3.png in Resources */,
@@ -896,6 +906,7 @@
 				301B5D381E8F7AED005B1B99 /* m3x2del.png in Resources */,
 				30BE70B61E14BF3A00B9F52E /* green3a.png in Resources */,
 				301B5D741E8F7BC5005B1B99 /* undo04.png in Resources */,
+				30F18FE521834C7B00ACFAC2 /* pencil2.png in Resources */,
 				30A405581E9BCD3A000759C1 /* undo03E.png in Resources */,
 				30E326A61E474E5B00DD6686 /* lines.png in Resources */,
 				308ECC301E82AD0900576BA8 /* all.png in Resources */,
@@ -940,6 +951,7 @@
 				30A1A53A1E810AAC00938BCA /* m4xp13.png in Resources */,
 				304E6A7F1E7C0A87004E27A6 /* m6x2.png in Resources */,
 				30A1A5331E810A9700938BCA /* m4xp07.png in Resources */,
+				30F18FE92183508C00ACFAC2 /* Gペン.png in Resources */,
 				30A1A5371E810A9700938BCA /* m4xp11.png in Resources */,
 				30750B7A1E85474700809D15 /* gesI02.png in Resources */,
 				304800541E81284400B0F441 /* col2_ico.png in Resources */,
@@ -1016,6 +1028,7 @@
 				30584FD61E97641000691BFA /* art3b.png in Resources */,
 				30792ED61E83F0850069F903 /* ovwx.png in Resources */,
 				301B5D721E8F7BC5005B1B99 /* undo06.png in Resources */,
+				30F18FEB2183509F00ACFAC2 /* 鉛筆.png in Resources */,
 				30750B761E85474700809D15 /* ges7.png in Resources */,
 				301B5D2F1E8F7AC3005B1B99 /* editPanel.png in Resources */,
 				307EA73220D011CD0087B044 /* childEng.png in Resources */,
@@ -1030,7 +1043,6 @@
 				304373381EAA41BB00114FED /* haiku.png in Resources */,
 				30BE96C41E7D6A890018412E /* m4xp03.png in Resources */,
 				30A1A5361E810A9700938BCA /* m4xp10.png in Resources */,
-				307B5A1D2182114500DECF3A /* pencil2.png in Resources */,
 				30584FE41E97D6D800691BFA /* white.png in Resources */,
 				30750B6F1E8546F000809D15 /* closeP.png in Resources */,
 				30750B781E85474700809D15 /* gesA2.png in Resources */,
