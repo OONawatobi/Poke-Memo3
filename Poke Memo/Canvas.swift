@@ -441,6 +441,8 @@ class DrawableView: UIView {
         //      ↑書き出したメモを再読み込みしなければOK,②は止めてもいいかも
         if !marker{//マーカモード時は無視する
             self.Delegate.ok2()// [ok2]ボタンを押す:view.done(done2)★20180813
+        }else{//メモカーソル位置の更新
+            self.Delegate.memoCursol(disp: 1)
         }
     }
     //??

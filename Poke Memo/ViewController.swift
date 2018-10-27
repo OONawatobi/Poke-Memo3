@@ -582,6 +582,7 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
     func shiftMX()
     func upToMemo()
     func ok2()
+    func memoCursol(disp: Int)
 }
 protocol SelectViewDelegate{//パレットビューの操作(機能）
     func penMode()
