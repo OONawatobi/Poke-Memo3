@@ -349,19 +349,29 @@ class EditorView: UIView {
 class SelectView:UIView{
     var Delegate: SelectViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
     //ボタンを作成する
-    //let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
     var penColor = UIColor.black
     var btnImgs:[UIImage] = []//★★色セレクトボタン画像：丸
     var btnImgs2:[UIImage] = []//★★ペンセレクトボタン画像：四角
     //ボタン画像の作成
-    
-    //var tImg:[UIImage] = [UIImage(named: "pencil2.png")!,UIImage(named: "gpen2.png")!,UIImage(named: "marker2.png")!]
+    let penJ = UIImage(named: "鉛筆.png")!
+    let penE = UIImage(named: "pencil2.png")!
+    let GpenJ = UIImage(named: "Gペン.png")!
+    let GpenE = UIImage(named: "gpen2.png")!
+    let markJ = UIImage(named: "マーカー.png")!
+    let markE = UIImage(named: "marker2.png")!
+    let black = UIColor.black
+    let red = UIColor.red
+    let blue = UIColor.rgb(r: 22, g: 87, b: 226, alpha: 1)
+    let green = UIColor.rgb(r: 71, g: 173, b: 166, alpha: 1)
+    let yellow = UIColor.rgb(r: 249, g: 223, b: 9, alpha: 1)//254,246,42
+    let purple = UIColor.rgb(r: 148, g: 0, b: 211, alpha: 1)
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
-    
+
     func setMenu(){ //UIButtonはここで作成する
         print("select2btn is selected!!")
-        
+        //マーカの色
+        bColor = [black,red,blue,green,yellow,purple]
         //ボタン画像の作成
     
         for i in 0...5 {//print("\(i)")
@@ -396,9 +406,9 @@ class SelectView:UIView{
     func setPenMenu(){ //UIButtonはここで作成する
         print("select3btn is selected!!:lang = \(langFlag)")
         //ボタンの画像
-        let pcl:UIImage = langFlag == 0 ? UIImage(named: "鉛筆.png")! : UIImage(named: "pencil2.png")!
-        let gpn:UIImage = langFlag == 0 ? UIImage(named: "Gペン.png")! : UIImage(named: "gpen2.png")!
-        let mkr:UIImage = langFlag == 0 ? UIImage(named: "マーカー.png")! : UIImage(named: "marker2.png")!
+        let pcl:UIImage = langFlag == 0 ? penJ : penE
+        let gpn:UIImage = langFlag == 0 ? GpenJ : GpenE
+        let mkr:UIImage = langFlag == 0 ? markJ : markE
         var tImg:[UIImage] = [pcl,gpn,mkr]
         for i in 0...2 {// Pencil | G-pen | Highlight-pen
 

@@ -225,14 +225,15 @@ extension UIView {
     
     public func addBothBorderWithColor(color: UIColor, width: CGFloat) {
         let border = CALayer()
+        let gH:CGFloat = 18//上下の緑色帯の幅
         border.backgroundColor = color.cgColor
-        border.frame = CGRect(x:0, y:0,width:width,
-                              height:self.frame.size.height)
+        border.frame = CGRect(x:0, y:gH,width:width,
+                              height:self.frame.size.height - 2*gH)
         self.layer.addSublayer(border)
         let border2 = CALayer()
         border2.backgroundColor = color.cgColor
-        border2.frame = CGRect(x:self.frame.size.width - 2.5*width, y:0,width:2.5*width,
-                               height:self.frame.size.height)//+-+-
+        border2.frame = CGRect(x:self.frame.size.width - 2.5*width, y:gH,width:2.5*width,
+                               height:self.frame.size.height - 2*gH)//+-+-
         self.layer.addSublayer(border2)
         //センターにも縦線を引く　20161216追加
         let border3 = CALayer()
@@ -467,7 +468,7 @@ var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
 var ok2Flg = false//ok2()の重複実行を無視する為のフラグ（toutchUpでリセット）
 var editButton2:UIButton!//カラーパレットから操作するためグローバル化する
 var editButton3:UIButton!
-let bColor = [UIColor.black,UIColor.red,UIColor.blue,UIColor.green,UIColor.orange,UIColor.purple]
+var bColor:[UIColor] = []//色パネル表示色
 var mColor:[UIColor]!//マーカの色
 var colorIcon:[UIImage] = []//カラーボタンアイコン
 var gblColor = UIColor.black
@@ -686,10 +687,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         boundWidthX = boundWidth
         let ax = drawableView.layer.position.x
         drawableView.layer.position = CGPoint(x:ax,y:boundHeight - vHeight/2 - th)
-        upperView.frame.size = CGSize(width:boundWidth,height:30)
-        upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 30/2)// underView：パレットの上の緑色帯を生成.
-        underView.frame.size = CGSize(width:boundWidth,height:30)
-        underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 30/2 - th)// underView：パレットの下の緑色帯を生成.
+        upperView.frame.size = CGSize(width:boundWidth,height:18)
+        upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 18/2)// underView：パレットの上の緑色帯を生成.
+        underView.frame.size = CGSize(width:boundWidth,height:18)
+        underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 18/2 - th)// underView：パレットの下の緑色帯を生成.
         leftEndPoint = CGPoint(x:vWidth/2,y:boundHeight - vHeight/2 - th)
         myToolView.frame.size = CGSize(width: boundWidth,height:40)
         myToolView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40/2 - th)
@@ -758,10 +759,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         leftEndPoint = CGPoint(x:vWidth/2,y:boundWidth - vHeight/2)
         let saL1:CGFloat = iphoneX ? 54 : 0//iphoneXの場合は調整(s.A.の幅=bH - 54)
         let saL2:CGFloat = iphoneX ? 34 : 0//iphoneXの場合は調整(全長=bH + 34)
-        upperView.frame.size = CGSize(width:boundHeight - saL1,height:30)
-        upperView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - vHeight + 30/2)// underView：パレットの上の緑色帯を生成.
+        upperView.frame.size = CGSize(width:boundHeight - saL1,height:18)
+        upperView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - vHeight + 18/2)// underView：パレットの上の緑色帯を生成.
         underView.frame.size = upperView.frame.size
-        underView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - 30/2 + 2)// underView：パレットの下の緑色帯を生成.
+        underView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - 18/2 + 2)// underView：パレットの下の緑色帯を生成.
         //myToolViewのサイズと位置を再設定する
         let mtvWidth = iphoneX ? boundHeight - 54 : boundHeight
         let mtPosx = iphoneX ? boundHeight + 34 : boundHeight
@@ -929,17 +930,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         /** underViewを生成：パレットの下の緑色帯 **/
         //underFlag = false// 表示・非表示のためのフラグ
-        underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
-        let gardColor = gardClrFlg ? UIColor.green.withAlphaComponent(0.1) : UIColor.clear//_g (0.2⇨0.1)
+        underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 18))// underViewを生成.
+        let gardColor = gardClrFlg ? UIColor.green.withAlphaComponent(0.2) : UIColor.clear//_g (0.2⇨0.1)
         underView.backgroundColor = gardColor//UIColor.green// underViewの背景を青色に設定
         //_★★ underViewの位置を設定
-        underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 15 )// 位置を中心に設定
+        underView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 18/2 )// 位置を中心に設定
         underView.isUserInteractionEnabled = false//タッチ情報を後ろにスルーする™™
         /** upperViewを生成：パレットの上の緑色帯 **/
-        upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 30))// underViewを生成.
+        upperView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 18))// underViewを生成.
         upperView.backgroundColor = gardColor//UIColor.green
         //★★ upperView.alpha = 0.33// 透明度を設定
-        upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th + 15)// 位置を中心に設定
+        upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th + 9)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
         //_パレットスクロールバー
         /** myToolView ([色][ペン][消しゴム][▲])を生成. **/
@@ -1378,6 +1379,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     // アプリバックグラウンド移行開始時に行う処理
     @objc func onWillResignActive(_ notification: Notification?) {
         print("アプリバックグラウンド移行時に行う処理")
+        if boundWidthX != boundWidth{
+            return
+        }// 横画面時（回転ロックSWはOFF)は無視する。
         didLoadFlg = false//回転禁止にする
     /*
        回転ロックSWがON(横向き画面)の状態でアプリを起動した場合でも、アプリは縦画面で立ち上がる。
@@ -1386,10 +1390,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
       そこで、移行開始時に回転を強制的に禁止する。但しこのままだとフォアグランドに戻った時にも
       回転が禁止のままなので、回転ロックSWがOFFのモードの時には困るので戻ってきた時には回転禁止
       フラグdidLoadFlgを元の状態(回転可)に戻す。(※但し、パレットが表示されている場合のみ）
+      以上だけだと回転ロックSWoFFの横画面の時には、前はパレットが再立ち上げしするま回転できないので
+     縦方向だと変な画面になってしまう。横画面時のバックグランド移行時は回転ロックをしないよう変更する。
     */
     }
     @objc func onDidBecomeActive(_ notification: Notification?) {
         print("アプリバックグラウンドから復帰時に行う処理")
+        onOrientationChange2()
         //パレット表示時なら回転可にする※回転ロックSWオンの場合は、回転可にする
         if isPalleteMode{didLoadFlg = true}
     }
@@ -1407,7 +1414,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidAppear(_ animated: Bool) {
         // 端末の向きがかわったらNotificationを呼ばす設定.
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.onOrientationChange(notification:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
-        //_ナビゲーションバーの下線（半透明）
+        //_ナビゲーションバーの下線（半透明）※ナビバーの高さが確定するのまで待つ為ここで実行する。
         statusBarHeight = UIApplication.shared.statusBarFrame.size.height
         print("xx__statusBarHeight__:\(String(describing: statusBarHeight))")
         print("xx__naviBar.frame.height__:\(naviBar.frame.height)")
@@ -1418,11 +1425,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     //_★★ 端末の向きがかわったら呼び出されるメソッド　-------------------★★
     func onOrientationChange(notification: NSNotification){
+         onOrientationChange2()
+    }
+    func onOrientationChange2(){//上記の実行メソッド
+        print("▶️onOrientationChange2()")
         // 現在のデバイスの向きを取得.
         let deviceOrientation: UIDeviceOrientation!  = UIDevice.current.orientation
         deviceO = deviceOrientation.rawValue
+        /*
         print("deviceOrientation:\(deviceO)")
         print("isLandscape?: \(deviceOrientation.isLandscape)")
+        print("rotMode = \(rotMode)")
+        print("didLoadFlg = \(didLoadFlg)")
+        */
         // 向きの判定.
         if deviceOrientation.rawValue == 3 || deviceOrientation.rawValue == 4 {
             if didLoadFlg {
@@ -1758,8 +1773,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             print("〓toolbar.height〓 th:\(th)")
             leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - th - vHeight/2 )
             //x_パレット周りのレイアウトを再設定する
-            upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 30/2)// upperViewの位置調整.
-            underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 30/2 - th)// underViewの位置調整.
+            upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 18/2)// upperViewの位置調整.
+            underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 18/2 - th)// underViewの位置調整.
             spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
             spaceView2.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight - 40 - 10/2)
             myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
@@ -1875,14 +1890,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             zoom(zoom2)
             return
         }
+       
         //---------- パレット編集時 ---------------------------
         if isPalleteMode == false{return}//パレットが表示されて無い場合は🐞
         //done2.tintColor = UIColor.red
         //===== 編集パネルが表示の場合 =====
         if myEditFlag == true{
+           ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
           drawableView.editOK = true//編集パネル表示の場合
           if editFlag == true{//カーソルモードが選択されている場合
+            ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
             if cursolWFlag == true{ //カーソル幅が有る場合(狭い場合では🐞）
                //カーソル画面を撤去する
                 drawableView.secondView.cursolView.removeFromSuperview()
@@ -1970,6 +1988,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
    
     func ok2(){//★2018081314
+        print("---- ok2():ok2Flg= \(ok2Flg) ---------")
         if bigFlag {return}//拡大表示中はメモ行に反映させない
         if myEditFlag {return}//編集パレット表示中はメモ行に反映させない
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
@@ -1980,7 +1999,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         //メモカーソル位置の更新
         memoCursol(disp: 1)
-        ok2Flg = true//ok2()重複実行防止用(メモ行更新不可となる)
+        ok2Flg = true//??ok2()重複実行防止用(メモ行更新不可となる)
+        //↑これを有効にするとメモ行に正しく書き込めないバグが発生した。
     }
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
@@ -3285,10 +3305,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
            zoom(zoom2)
            return
         }
-
+        colseSelectView()//セレクトパネルが開いている場合は閉じる
         if myEditFlag == false{//エディット画面非表示の場合は表示する
             //??done(done2)// okボタンを押す
-            //?? 最大文字位置を保存する：編集パネルでも使用するためここでも保存する必要あり
+            //?? 最大文字位置を保存す閉じるる：編集パネルでも使用するためここでも保存する必要あり
             mx[String(nowGyouNo)] = mxTemp
             clearSelect()//編集ツールを非選択状態にする
             editButton1.backgroundColor = UIColor.clear
@@ -3316,6 +3336,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //drawableView.myMx = 0 //今回タッチした最大X座標(タイマースクロール用）
             //drawableView.autoScrollFlag = false
             
+        }
+    }
+    func colseSelectView(){//選択パネルが開いている場合は閉じる
+        if selFlg{
+            select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
+            select_pcView.removeFromSuperview()
+            select_pcView_bg.removeFromSuperview()
+            selFlg = false
         }
     }
     
@@ -3451,6 +3479,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("btn4_clicked!:消しゴム")
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
+        colseSelectView()//選択パネルを閉じる
         drawableView.X_color = 1//消しゴムモード
         editButton2.setImage(UIImage(named: "white.png"), for:UIControlState.normal)
         editButton4.backgroundColor = UIColor.init(white: 0.9, alpha: 1)

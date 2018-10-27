@@ -175,7 +175,7 @@ class DrawableView: UIView {
         //__ ++ thirdViewの初期化：背景を緑色にする、先頭と末尾に印を追加する ++
         thirdView = UIView(frame: secondView.frame)
         thirdView.backgroundColor = UIColor.clear//(patternImage: myImg!)
-        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.15), width: 15)
+        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.2), width: 15)
         thirdView.isUserInteractionEnabled = false //イベントの透過
         self.addSubview(secondView)
         self.addSubview(thirdView)
