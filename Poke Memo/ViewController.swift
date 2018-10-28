@@ -848,6 +848,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //Indexバーの色を作成
         iColor = UIColor.rgb(r: 208,g: 113, b: 68, alpha: 1) //init(white: 0.92, alpha: 1)78,157,121  (r: 208,g: 113, b: 68, alpha: 1)
         iColor2 = UIColor.rgb(r: 242, g: 177, b: 106, alpha: 1)
+        //ペン色
+        let black = UIColor.black
+        let red = UIColor.red
+        let blue = UIColor.rgb(r: 22, g: 87, b: 226, alpha: 1)
+        let green = UIColor.rgb(r: 71, g: 173, b: 166, alpha: 1)
+        let yellow = UIColor.rgb(r: 255, g: 209, b: 42, alpha: 1)//249,223,9//山吹色　255 209  42//251,221,32
+        let purple = UIColor.rgb(r: 148, g: 0, b: 211, alpha: 1)
+        bColor = [black,red,blue,green,yellow,purple]
         //マーカの色（蛍光ペン）
         let mPink = UIColor.rgb(r: 250, g: 99, b: 230, alpha: 1.0)
         let mBlue = UIColor.cyan//UIColor.rgb(r: 153, g: 255, b: 255, alpha: 1.0)

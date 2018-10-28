@@ -255,9 +255,14 @@ class DrawableView: UIView {
         let currentPoint = touches.first!.location(in:self)//  @ self:UIView @
         /* ★20180817 削除してみる、問題なさそうに思う
          if bezierPath.isEmpty == true {
-         print("◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️")
+          print("◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️")
          return }//タッチされていない場合(Pathが初期化前)はパス　？これって必要？
         */
+        //末尾の緑色帯より右には描画不可とする:（子メモマーク表示エリア）
+        if rightFlag == false && (currentPoint.x + penW/2) >= (vWidth - 34){
+            return
+        }
+ //
  if bezierPath == nil {return}//★20180819
     //---- 通常モード ----
        if rightFlag == false{

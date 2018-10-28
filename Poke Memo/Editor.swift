@@ -359,19 +359,12 @@ class SelectView:UIView{
     let GpenE = UIImage(named: "gpen2.png")!
     let markJ = UIImage(named: "マーカー.png")!
     let markE = UIImage(named: "marker2.png")!
-    let black = UIColor.black
-    let red = UIColor.red
-    let blue = UIColor.rgb(r: 22, g: 87, b: 226, alpha: 1)
-    let green = UIColor.rgb(r: 71, g: 173, b: 166, alpha: 1)
-    let yellow = UIColor.rgb(r: 249, g: 223, b: 9, alpha: 1)//254,246,42
-    let purple = UIColor.rgb(r: 148, g: 0, b: 211, alpha: 1)
+
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
 
     func setMenu(){ //UIButtonはここで作成する
         print("select2btn is selected!!")
-        //マーカの色
-        bColor = [black,red,blue,green,yellow,purple]
         //ボタン画像の作成
     
         for i in 0...5 {//print("\(i)")

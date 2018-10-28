@@ -218,7 +218,7 @@
 		30F18FE72183508100ACFAC2 /* マーカー.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FE62183508100ACFAC2 /* マーカー.png */; };
 		30F18FE92183508C00ACFAC2 /* Gペン.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FE82183508C00ACFAC2 /* Gペン.png */; };
 		30F18FEB2183509F00ACFAC2 /* 鉛筆.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FEA2183509E00ACFAC2 /* 鉛筆.png */; };
-		30F18FF321848AE800ACFAC2 /* orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FF221848AE800ACFAC2 /* orange.png */; };
+		30F18FF721856A0700ACFAC2 /* orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FF621856A0700ACFAC2 /* orange.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -457,7 +457,7 @@
 		30F18FE62183508100ACFAC2 /* マーカー.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "マーカー.png"; sourceTree = "<group>"; };
 		30F18FE82183508C00ACFAC2 /* Gペン.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Gペン.png"; sourceTree = "<group>"; };
 		30F18FEA2183509E00ACFAC2 /* 鉛筆.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "鉛筆.png"; sourceTree = "<group>"; };
-		30F18FF221848AE800ACFAC2 /* orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orange.png; sourceTree = "<group>"; };
+		30F18FF621856A0700ACFAC2 /* orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orange.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -496,9 +496,9 @@
 				307B5A1821820E8300DECF3A /* marker2.png */,
 				307B5A0E217DA59800DECF3A /* marker.png */,
 				307B5A0A217D8A2F00DECF3A /* gpen.png */,
+				30F18FF621856A0700ACFAC2 /* orange.png */,
 				307B5A08217D72A400DECF3A /* pencil.png */,
 				309A14EC2178ECCA007349E7 /* purple.png */,
-				30F18FF221848AE800ACFAC2 /* orange.png */,
 				309A14E82178ECB1007349E7 /* green.png */,
 				30281EDA212D536D0009A7F4 /* gpen02.pdf */,
 				30349414212AD7BB003F673E /* gpen01.pdf */,
@@ -951,7 +951,7 @@
 				30A1A53A1E810AAC00938BCA /* m4xp13.png in Resources */,
 				304E6A7F1E7C0A87004E27A6 /* m6x2.png in Resources */,
 				30A1A5331E810A9700938BCA /* m4xp07.png in Resources */,
-				30F18FF321848AE800ACFAC2 /* orange.png in Resources */,
+				30F18FF721856A0700ACFAC2 /* orange.png in Resources */,
 				30F18FE92183508C00ACFAC2 /* Gペン.png in Resources */,
 				30A1A5371E810A9700938BCA /* m4xp11.png in Resources */,
 				30750B7A1E85474700809D15 /* gesI02.png in Resources */,
