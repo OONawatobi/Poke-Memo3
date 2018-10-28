@@ -3108,24 +3108,26 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //lb3.backgroundColor = UIColor.yellow
         lb3.text = sT[5]//"DELETE-ALL(PAGES)"
         //コンテナに追加する
-        scBox.addSubview(sc)
-        scBoxB.addSubview(scB)
-        cv.addSubview(scBox)
-        cv.addSubview(scBoxB)
-        if isPalleteMode == false{//パレットが表示中は無視
+        scBox.addSubview(sc)//1番目の内容
+        scBoxB.addSubview(scB)//2番目右半分
+        //??cv.addSubview(scBox)//↑：1番目の内容をコンテナに入れる
+        //??cv.addSubview(scBoxB)//2番目右半分の選択ボタン領域をコンテナに入れる
+        if isPalleteMode == false{//??パレットが表示中は4番目は無視（非表示）
             cv.addSubview(scC)
         }
         cv.addSubview(self.setButtonN)
         cv.addSubview(self.setButtonY)
         cv.addSubview(lb1)
-        cv.addSubview(lb2);cv.addSubview(lb2a);cv.addSubview(lb2b)
-        cv.addSubview(lb2c)
-        if isPalleteMode == false{//パレットが表示中は無視
+        cv.addSubview(lb2)     //タイトル[-- Line Color --]
+        //??cv.addSubview(lb2a);
+        //??cv.addSubview(lb2b)
+        //??cv.addSubview(lb2c)
+        if isPalleteMode == false{//??パレットが表示中は4番目は無視
             cv.addSubview(lb3)
         }
-        cv.addSubview(lbSw)
-        cv.addSubview(mySwicth)
-        cv.addSubview(myLabel)
+        cv.addSubview(lbSw)    //3番目のタイトル[-- Auto Scroll --]
+        cv.addSubview(mySwicth)//3番目のSwitch
+        cv.addSubview(myLabel) //3番目のSwitchの[ON]/[OFF]表示
         // コンテナをseVに追加する.
         setV.addSubview(cv)
         //setVを表示する
@@ -4144,14 +4146,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //１行目と３２行目の下線は実践、他は破線
             //let clr = UIColor.rgb(r: 0, g: 141, b: 183, alpha: 1)
             if nowGyouNo > 10000{
-                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 1.7, posX: pos, lenX: len,spaceX: 7)
+                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 1.9, posX: pos, lenX: len,spaceX: 7)
             }else if
                 nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
                 print("aaaaaaaaaa:\(zm)")
-                targetMemo.addCursolLine2(color: UIColor.blue, lineWidth: 2.0, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                targetMemo.addCursolLine2(color: UIColor.blue, lineWidth: 2.2, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }else{
                 print("bbbbbbbbb:\(zm)")
-                targetMemo.addCursolLine(color: UIColor.blue, lineWidth: 1.5, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                targetMemo.addCursolLine(color: UIColor.blue, lineWidth: 1.8, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }
         }
     }
