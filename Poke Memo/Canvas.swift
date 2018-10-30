@@ -175,7 +175,8 @@ class DrawableView: UIView {
         //__ ++ thirdViewの初期化：背景を緑色にする、先頭と末尾に印を追加する ++
         thirdView = UIView(frame: secondView.frame)
         thirdView.backgroundColor = UIColor.clear//(patternImage: myImg!)
-        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.2), width: 15)
+        thirdView.addBothBorderWithColor(color: UIColor.green.withAlphaComponent(0.2), width: 15,gHeight: 18)
+        
         thirdView.isUserInteractionEnabled = false //イベントの透過
         self.addSubview(secondView)
         self.addSubview(thirdView)
@@ -482,7 +483,8 @@ class DrawableView: UIView {
             }else if penColorNum == 2{
                 penC = UIColor.red
             }else{//第３番目の色：設定色
-              switch lineColor {
+                let lineColorX = marker ? lineColor2 : lineColor
+              switch lineColorX {
                 case 0:penC = marker ? mColor[2] :bColor[2]
                 case 1:penC = marker ? mColor[3] :bColor[3]
                 case 2:penC = marker ? mColor[4] :bColor[4]

@@ -222,18 +222,32 @@ extension UIView {
         UIGraphicsEndImageContext()
         return capturedImage
     }
-    
-    public func addBothBorderWithColor(color: UIColor, width: CGFloat) {
+    //パレット(thirdView)のガイドライン（緑色帯）を作成
+    public func addBothBorderWithColor(color: UIColor, width: CGFloat,gHeight:CGFloat) {//width:左端緑帯の巾,gHeight:上下の緑帯の巾
+        
+        ///20181029追加：上下の緑帯の追加をここで行うようにする
+        let upper = CALayer()
+        upper.backgroundColor = color.cgColor
+        upper.frame = CGRect(x:0, y:0,width:self.frame.width,
+                              height:gHeight)
+        self.layer.addSublayer(upper)
+        
+        let under = CALayer()
+        under.backgroundColor = color.cgColor
+        under.frame = CGRect(x:0, y:self.frame.height - gHeight,width:self.frame.width,
+                             height:gHeight)
+        self.layer.addSublayer(under)
+        //let gardH:CGFloat = 18//上下の緑色帯の幅
         let border = CALayer()
-        let gH:CGFloat = 18//上下の緑色帯の幅
         border.backgroundColor = color.cgColor
-        border.frame = CGRect(x:0, y:gH,width:width,
-                              height:self.frame.size.height - 2*gH)
+        border.frame = CGRect(x:0, y:gHeight,width:width,
+                              height:self.frame.size.height - 2*gHeight)
+        
         self.layer.addSublayer(border)
         let border2 = CALayer()
         border2.backgroundColor = color.cgColor
-        border2.frame = CGRect(x:self.frame.size.width - 2.5*width, y:gH,width:2.5*width,
-                               height:self.frame.size.height - 2*gH)//+-+-
+        border2.frame = CGRect(x:self.frame.size.width - 2.5*width, y:gHeight,width:2.5*width,
+                               height:self.frame.size.height - 2*gHeight)//+-+-
         self.layer.addSublayer(border2)
         //センターにも縦線を引く　20161216追加
         let border3 = CALayer()
@@ -474,7 +488,7 @@ var colorIcon:[UIImage] = []//カラーボタンアイコン
 var gblColor = UIColor.black
 var bigBtm:UIImageView! = UIImageView(frame: CGRect(x:0,y:0,width:30,height:30))//★★ボタンを押した時の大きい丸
 var select_pcView:SelectView!//色選択パネル
-var select_pcView_bg:UIView!//色選択パネルの背景
+///var select_pcView_bg:UIView!//色選択パネルの背景
 var sectView:UIView!//色選択パネルの区切り線
 var sectView2:UIView!//色選択パネルの区切り線
 var selFlg:Bool = false//色選択メニュー表示フラグ
@@ -486,6 +500,7 @@ var jinesH:CGFloat = 0//jinesViewの高さ
 var shadow:UIView!//landscape画面のメモもの右側につける影
 var boundWidthX:CGFloat!//デバイス画面の水平方向の幅（方向によって変化する）
 var leftEndPoint:CGPoint = CGPoint(x:0,y:0)
+var rotEnable = true//device回転許可フラグ
 var didLoadFlg = false//_portlaitモードで起動する為のフラグ
 var deviceO:Int = 1//_デバイスの回転方向(1-4)
 var gardClrFlg = true//パレット上下のガードの色をつける（緑色）
@@ -515,7 +530,7 @@ var editFlag:Bool = false//パレット編集モードが選ばれるとtrue
 var myInt : String = "NON"//パレット編集モード
 var cursolWFlag:Bool = false//カーソル巾が5以上になると１
 
-var penColorNum:Int = 1
+var penColorNum:Int = 1//[1:黒色,2:赤色,3:選択色]
 let homeFrame:Int = 2//表示用フレーム ⇒グローバル定数
 //-----ページ---------
 var indexImgs:[UIImage] = []//index[0−29]の画像
@@ -553,9 +568,11 @@ let big:CGFloat = 1.5//拡大率
 //var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
 
 var lineWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
-var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:orange,3:]purple]
+var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:orange,3:purple]
+var lineColor2:Int = 2//マーカの色[0:skyblue,1:grass,2:yellow,3:pink]
 var autoScrollFlag = true//自動スクロールOn/Offフラグ
-var myLabel:UILabel!//自動スクロールOn/Off表示用
+var myLabel:UILabel!//横画面表示On/Off表示用
+var myLabel2:UILabel!//自動スクロールOn/Off表示用
 var lastPage:Int = 1//最後に編集したたページ番号
 var bImage:UIImage!//ブランク画像
 var helpView: HelpView! = nil//ヘルプ画面
@@ -608,8 +625,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     let myScrollView = TouchScrollView()//UIScrollView()
     var spaceView1: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
     var spaceView2: UIView!//spacing確保のためのビュー※タッチ緩衝エリア
-    var underView: UIView!//パレットの下の帯
-    var upperView: UIView!//パレットの上の帯
+    ///var underView: UIView!//パレットの下の帯
+    ///var upperView: UIView!//パレットの上の帯
     var myToolView = UpperToolView()//パレットの上のツールバー（パレットスクロール機能）
     var myEditView:UIView!//パレットの編集用ボタン表示エリア
     var underFlag: Bool!
@@ -659,7 +676,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var tempColor:Int = 0//設定用線色
     var tempDelAll:Int = 0//削除フラグ：１で削除
     var tempAutoScroll = true//設定用(初期値：自動）
-    
+    var tempRotEnable = true//設定用(初期値：自動）
     /* --- リストメニュー --- */
     let ch:CGFloat = 40//セルの高さ
     let cn:Int = 8//リストの数
@@ -687,10 +704,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         boundWidthX = boundWidth
         let ax = drawableView.layer.position.x
         drawableView.layer.position = CGPoint(x:ax,y:boundHeight - vHeight/2 - th)
-        upperView.frame.size = CGSize(width:boundWidth,height:18)
-        upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 18/2)// underView：パレットの上の緑色帯を生成.
-        underView.frame.size = CGSize(width:boundWidth,height:18)
-        underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 18/2 - th)// underView：パレットの下の緑色帯を生成.
+        ///upperView.frame.size = CGSize(width:boundWidth,height:18)
+        ///upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 18/2)// underView：パレットの上の緑色帯を生成.
+        ///underView.frame.size = CGSize(width:boundWidth,height:18)
+        ///underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 18/2 - th)// underView：パレットの下の緑色帯を生成.
         leftEndPoint = CGPoint(x:vWidth/2,y:boundHeight - vHeight/2 - th)
         myToolView.frame.size = CGSize(width: boundWidth,height:40)
         myToolView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40/2 - th)
@@ -698,7 +715,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myEditView.frame.size = CGSize(width:boundWidth,height:60)
         myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
         select_pcView.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
-        select_pcView_bg.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
+        ///select_pcView_bg.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
         spaceView1.frame.size = CGSize(width: boundWidth, height: 10)
         spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
         spaceView2.frame.size = CGSize(width: boundWidth, height: 10)
@@ -757,12 +774,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ax = ax > bx ? ax : bx//_右端を超えない様にする
         drawableView.layer.position = CGPoint(x:ax,y:boundWidth - vHeight/2)
         leftEndPoint = CGPoint(x:vWidth/2,y:boundWidth - vHeight/2)
-        let saL1:CGFloat = iphoneX ? 54 : 0//iphoneXの場合は調整(s.A.の幅=bH - 54)
-        let saL2:CGFloat = iphoneX ? 34 : 0//iphoneXの場合は調整(全長=bH + 34)
-        upperView.frame.size = CGSize(width:boundHeight - saL1,height:18)
-        upperView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - vHeight + 18/2)// underView：パレットの上の緑色帯を生成.
-        underView.frame.size = upperView.frame.size
-        underView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - 18/2 + 2)// underView：パレットの下の緑色帯を生成.
+        ///let saL1:CGFloat = iphoneX ? 54 : 0//iphoneXの場合は調整(s.A.の幅=bH - 54)
+        ///let saL2:CGFloat = iphoneX ? 34 : 0//iphoneXの場合は調整(全長=bH + 34)
+        ///upperView.frame.size = CGSize(width:boundHeight - saL1,height:18)
+        ///upperView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - vHeight + 18/2)// underView：パレットの上の緑色帯を生成.
+        ///underView.frame.size = upperView.frame.size
+        ///underView.layer.position = CGPoint(x:(boundHeight + saL2)/2,y:boundWidth - 18/2 + 2)// underView：パレットの下の緑色帯を生成.
         //myToolViewのサイズと位置を再設定する
         let mtvWidth = iphoneX ? boundHeight - 54 : boundHeight
         let mtPosx = iphoneX ? boundHeight + 34 : boundHeight
@@ -771,7 +788,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.layer.position = CGPoint(x:leftOffset + boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
         select_pcView.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
-        select_pcView_bg.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
+        ///select_pcView_bg.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
         spaceView1.frame.size = CGSize(width: boundHeight, height: 10)
         spaceView1.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - vHeight + 10/2)
         spaceView2.frame.size = CGSize(width: boundHeight, height: 10)
@@ -936,6 +953,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         spaceView2 = UIView(frame: CGRect(x: 0, y:boundHeight - th - vHeight - 40 - 20, width: boundWidth, height: 10))
         spaceView2.backgroundColor = UIColor.clear
         
+ /*
         /** underViewを生成：パレットの下の緑色帯 **/
         //underFlag = false// 表示・非表示のためのフラグ
         underView = UIView(frame: CGRect(x: 0, y: 0, width: boundWidth, height: 18))// underViewを生成.
@@ -950,6 +968,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //★★ upperView.alpha = 0.33// 透明度を設定
         upperView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - vHeight - th + 9)// 位置を中心に設定
         upperView.isUserInteractionEnabled = false
+ 
+ */
         //_パレットスクロールバー
         /** myToolView ([色][ペン][消しゴム][▲])を生成. **/
         myToolView.Delegate = self
@@ -1184,8 +1204,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             underTV.backgroundColor = UIColor.init(white: 0.6, alpha:0.2)
             
             let tw = titleV.frame.width
-            let th = titleV.frame.height*1.2
-            let label1 = UILabel(frame: CGRect(x:0,y:8,width:tw/3,height:th/2))
+            let tvh = titleV.frame.height*1.2
+            let label1 = UILabel(frame: CGRect(x:0,y:8,width:tw/3,height:tvh/2))
             let label2 = UILabel(frame: CGRect(x:tw/2 - tw/5,y:9,width:tw/3,height:th/2))
             let label3 = UILabel(frame: CGRect(x:tw*2/3 - 5 ,y:8,width:tw/3 - 15,height:th/2))
             label1.font = UIFont(name: "ChalkboardSE-Bold", size: 16)
@@ -1212,6 +1232,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             // ** メモ表示内容の初期化 **
             //設定値を読み込む
             settingRead()//前回終了時の保存データを読み込む
+            print("----- rotEnable: \(rotEnable) ------")
             let openPage:Int = lastPage
             pageNum = lastPage//ページ番号を設定する
             let im = readPage(pn:openPage)//im:１ページ目の外部データを読み込む
@@ -1346,20 +1367,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton3.addGestureRecognizer(myLongPressGesture3)//★★複数ボタンで共通
         //*** 色パネルViewの作成 ***//★★★★
         let selHeight:CGFloat = 44
-        let sel_y:CGFloat = boundHeight - 46 - vHeight - 40 - selHeight
+        let sel_y:CGFloat = boundHeight - th - vHeight - 40 - selHeight
         //let sely2:CGFloat = myEdity2 - selHeight
         let selRect = CGRect(x:0,y:sel_y,width:50*6 + 15,height: selHeight)
         select_pcView = SelectView(frame: selRect)
         //デリゲート登録
         select_pcView.Delegate = self
         select_pcView.backgroundColor = UIColor.clear//white.withAlphaComponent(1.0)
-        select_pcView_bg = UIView(frame: selRect)
+        ///select_pcView_bg = UIView(frame: selRect)
+        //セレクトパネルの横方向の位置を少し右にずらす
         select_pcView.layer.position.x = selRect.width/2 + 2
-        select_pcView_bg.layer.position.x = selRect.width/2 + 2
+        ///select_pcView_bg.layer.position.x = selRect.width/2 + 2
         //セレクトパネルの背景色:角丸表示にするために必要
         //__select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
         //UIColor.white.withAlphaComponent(0.5)
-        select_pcView_bg.roundCorners([.topLeft, .topRight], radius: 15.0)
+        ///select_pcView_bg.roundCorners([.topLeft, .topRight], radius: 15.0)
         //イベントの透過
         select_pcView.isUserInteractionEnabled = true
         //カラーアイコンの作成
@@ -1390,7 +1412,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if boundWidthX != boundWidth{
             return
         }// 横画面時（回転ロックSWはOFF)は無視する。
-        didLoadFlg = false//回転禁止にする
+        else{
+            didLoadFlg = false//回転禁止にする
+        }
     /*
        回転ロックSWがON(横向き画面)の状態でアプリを起動した場合でも、アプリは縦画面で立ち上がる。
       そして、パレットを表示したままバックグランドに移行すると横向き画面に移行してしまう。
@@ -1449,12 +1473,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // 向きの判定.
         if deviceOrientation.rawValue == 3 || deviceOrientation.rawValue == 4 {
             if didLoadFlg {
-                if rotMode == 1{ self.setView2() }
+                if (rotMode == 1) && rotEnable{ self.setView2() }
             }
         } else if deviceOrientation.rawValue == 1{//-- 縦向きの判定 --
             if didLoadFlg {
                 if rotMode == 2{ self.setView1() }
             }
+            ///
+            if !rotEnable{didLoadFlg = false}
  
         }
     }
@@ -1465,7 +1491,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if selFlg{ return }
         print("★！！！！2")
         select_pcView.setMenu()//★★
-        self.view.addSubview(select_pcView_bg)
+        ///self.view.addSubview(select_pcView_bg)
         self.view.addSubview(select_pcView)
         selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
     }
@@ -1478,7 +1504,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if selFlg{return}
         print("★！！！！3")
         select_pcView.setPenMenu()//★★
-        self.view.addSubview(select_pcView_bg)
+        ///self.view.addSubview(select_pcView_bg)
         self.view.addSubview(select_pcView)
         selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
     }
@@ -1712,7 +1738,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //色選択パネルが開いている場合は閉じる
             if selFlg{
                 select_pcView.removeFromSuperview()
-                select_pcView_bg.removeFromSuperview()
+                ///select_pcView_bg.removeFromSuperview()
                 selFlg = false
             }
           //_portlaitで起動する為のフラグ:回転禁止に設定
@@ -1777,12 +1803,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
              drawableView.Delegate = self
             //下段ツールバーを表示して、その高さを取得する
             self.toolBar.isHidden  = false//ツールバーを現す
-            th = self.toolBar.frame.height
+            th = self.toolBar.frame.height//最下段ツールバーの高さを取得する
             print("〓toolbar.height〓 th:\(th)")
             leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - th - vHeight/2 )
             //x_パレット周りのレイアウトを再設定する
-            upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 18/2)// upperViewの位置調整.
-            underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 18/2 - th)// underViewの位置調整.
+            ///upperView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - vHeight - th + 18/2)// upperViewの位置調整.
+            ///underView.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - 18/2 - th)// underViewの位置調整.
             spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
             spaceView2.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight - 40 - 10/2)
             myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
@@ -1815,7 +1841,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //メモカーソルを表示する
                 self.memoCursol(disp: 1)
                 //_portlaitで起動する為のフラグ:回転OKに設定
-                didLoadFlg = true
+                if rotEnable{ didLoadFlg = true}
              } // ++++  ココまで  ++++
             
             //self.toolBar.isHidden  = false//ツールバーを現す
@@ -2031,6 +2057,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
               shortToolBar.layer.position = CGPoint(x:stX,y:newPosY) //y:navH + 44/2)
             }
+            //??palleteの両端の高さを再調整する
+            
             //スクロールViewのサイズ再設定
             scrollRect_B = CGRect(x:leftOffset + (boundWidth - leafWidth)/2,y: 3,width:leafWidth, height:boundWidth - big*vHeight - 40 - 5)
             //ステータスバー(メモの背景としてとして使う）の高さ再設定
@@ -2046,6 +2074,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let navH = boundWidth - vHeight - 40 //statusBarHeight + naviBar.frame.height
             let stX = leftOffset + boundWidth + shortToolBar.frame.width/2
             shortToolBar.layer.position = CGPoint(x:stX,y:navH - 44/2 - 2)
+            //??palleteの両端の高さを再調整する
+            
             //ステータスバー(メモの背景としてとして使う）の高さ再設定
             statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
             //メモの右側の影
@@ -2098,7 +2128,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             let bigHX = (boundWidthX == boundWidth) ? boundHeight : boundWidth
             let th2 = (boundWidthX == boundWidth) ? th : 0
             select_pcView.layer.position.y = bigHX - vHeight*1.5 - 40 - 44/2 - th2
-            select_pcView_bg.layer.position.y = bigHX - vHeight*1.5 - 40 - 44/2 - th2
+            ///select_pcView_bg.layer.position.y = bigHX - vHeight*1.5 - 40 - 44/2 - th2
 
             }else{
             //@@@@拡大画面から通常画面に戻す---
@@ -2128,10 +2158,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 let bigHX = (boundWidthX == boundWidth) ? boundHeight : boundWidth
                 let th2 = (boundWidthX == boundWidth) ? th : 0
             select_pcView.layer.position.y = bigHX - vHeight - 40 - 44/2 - th2
-            select_pcView_bg.layer.position.y = bigHX - vHeight - 40 - 44/2 - th2
+            ///select_pcView_bg.layer.position.y = bigHX - vHeight - 40 - 44/2 - th2
             }//@@@@END
-        // iphoneXモード時の拡大時に右にずらす量を再設定する
-         if iphoneX{
+        // iphoneXモード時の(横向き画面だけ)拡大時に右にずらす量を再設定する
+         if iphoneX && (boundWidth != boundWidthX){
          //パレットのアンカー座標を変更する（右にスペースの幅分だけずらす）
          let zm:CGFloat = bigFlag ? big : 1
          let anchoOffeset:CGFloat = (zm*2*boundWidth - leftOffset)/(zm*4*boundWidth)
@@ -2196,6 +2226,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let autoScroll = autoScrollFlag ? "1" : "0"
         let lPage = String(pageNum)
         let calFlag = callig ? "1" : "0"
+        let rotation = rotEnable ? "1" : "0"
         
         let ud = UserDefaults.standard
         // キーを指定してオブジェクトを保存
@@ -2204,7 +2235,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ud.set(autoScroll, forKey: "auto")
         ud.set(lPage, forKey: "page")
         ud.set(calFlag, forKey: "cal")
-
+        ud.set(rotation, forKey: "rot")
         ud.synchronize()
         
     }
@@ -2215,6 +2246,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if ud.object(forKey: "auto") == nil{return}
         if ud.object(forKey: "page") == nil{return}
         if ud.object(forKey: "cal") == nil{return}
+        if ud.object(forKey: "width") == nil{return}///20181030追加
+        if ud.object(forKey: "rot") == nil{return}  ///20181030追加
             
         let colorNum = ud.object(forKey: "color") as! String
         let lineWNum = ud.object(forKey: "width") as! String
@@ -2232,6 +2265,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let calFlag = ud.object(forKey: "cal") as! String
         let ca = Int(calFlag)!
         callig = (ca == 1) ? true : false
+        
+        let rotation = ud.object(forKey: "rot") as! String
+        let at2 = Int(rotation)!
+        rotEnable = (at2 == 1) ? true : false
       
     }
     
@@ -2283,7 +2320,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if boundWidthX == boundWidth{//portlait画面
             saX = iphoneX ? 24 : 0
         }else{//landscape画面は1行分下げる
-            saX = saX - 20//20は微調整値
+            saX = saX - 16//18-20は微調整値
         }
         var saIti = iti - maxIti + saX//差（移動量）
         saIti = (os.y + saIti)<0 ? -os.y : saIti
@@ -2298,14 +2335,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //上下barView,スペーサー等の表示／非表示
     func etcBarDisp(disp:Int){
         if disp == 1 {
-            self.view.addSubview(underView)
-            self.view.addSubview(upperView)
+            ///self.view.addSubview(underView)
+            ///self.view.addSubview(upperView)
             //self.view.addSubview(myToolView)
             self.view.addSubview(spaceView1)
             self.view.addSubview(spaceView2)
         }else if disp == 0{
-            underView.removeFromSuperview()
-            upperView.removeFromSuperview()
+            ///underView.removeFromSuperview()
+            ///upperView.removeFromSuperview()
             //myToolView.removeFromSuperview()
             if myEditView != nil{
                 myEditView.removeFromSuperview()
@@ -2943,8 +2980,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func fc5(){ // [ = 設定 = ]
         print("test5!!!!!")
         //設定項目名の定義
-        let sT_Ja:[String] = ["決定","戻る","-- 線の太さ --","-- 線の色 --","-- 自動スクロール --","-- 全ページを削除 --","削除する","実行しない"]
-        let sT_En:[String] = ["Set","Cancel","-- LINE WIDTH --","-- LINE COLOR --","-- AUTO SCROLL --","-- DELETE ALL --","DLETE-ALL","NO ACTION"]
+        let sT_Ja:[String] = ["決定","戻る","-- 線の太さ --","-- 画面の回転 --","-- 自動スクロール --","-- 全ページを削除 --","削除する","実行しない"]
+        let sT_En:[String] = ["Set","Cancel","-- LINE WIDTH --","-- SCREEN-ROTATION --","-- AUTO SCROLL --","-- DELETE ALL --","DLETE-ALL","NO ACTION"]
         var sT = (langFlag == 0) ? sT_Ja:sT_En//言語による切り替え
         
         setV2 = UIView(frame:CGRect(x:0,y:0,width: 400, height: 600))//表示初期値
@@ -3018,7 +3055,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setV2.addSubview(sep3)
         */
         //------- セグメント02---------------------------------------------------
-        
+ /*
         // 表示する配列を作成する.
         let myArrayB: NSArray = ["Blue","Green","Brown"]
                 let sWB:CGFloat = 50
@@ -3047,7 +3084,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         scB.selectedSegmentIndex = lineColor
         // イベントを追加する.
         scB.addTarget(self, action: #selector(segconChangedB(segcon:)), for: UIControlEvents.valueChanged)
- 
+ */
         //------- セグメント03(Boxなし)-----------------------
  
         // 表示する配列を作成する.
@@ -3081,14 +3118,29 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myLabel.text = autoScrollFlag ? "[ ON  ]" : "[ OFF ]"
         
         //--------------------------------------------------------------
+        //------------セグメントSw2(Boxなし)-横画面表示------------------
+        // Swicthを作成する.
+        let mySwicth2: UISwitch = UISwitch()
+        mySwicth2.layer.position = CGPoint(x: cv.frame.width/2, y: cv.frame.height/2 + 100 - 100)
+        mySwicth2.tintColor = UIColor.gray
+        // SwitchをOnに設定する.
+        mySwicth2.isOn = rotEnable ? true :false
+        // SwitchのOn/Off切り替わりの際に、呼ばれるイベントを設定する.
+        mySwicth2.addTarget(self, action: #selector(ViewController.onClickMySwicth2(sender:)), for: UIControlEvents.valueChanged)
+        
+        // On/Offを表示するラベルを作成する.
+        myLabel2 = UILabel(frame: CGRect(x:cv.frame.width/2 + 60,y: 230,width:100,height:40))
+        myLabel2.text = rotEnable ? "[ ON  ]" : "[ OFF ]"
+        
+        //--------------------------------------------------------------
         // Labelを作成.
         let lb1: UILabel = UILabel(frame: CGRect(x:20,y:50,width:200,height:40))
         //lb1.backgroundColor = UIColor.yellow
         lb1.text = sT[2]//"LINE-WIDTH"
         // Labe2を作成.
-        let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220 - 60,width:200,height:40))
+        let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220 - 40,width:200,height:40))
         //lb2.backgroundColor = UIColor.yellow
-        lb2.text = sT[3]//"LINE-COLOR"
+        lb2.text = sT[3]//"SCREEN-ROTATION"
         let lb2a: UILabel = UILabel(frame: CGRect(x:20,y:280 - 60,width:30,height:30))
         lb2a.backgroundColor = UIColor.black
         lb2a.layer.masksToBounds = true
@@ -3109,7 +3161,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         lb3.text = sT[5]//"DELETE-ALL(PAGES)"
         //コンテナに追加する
         scBox.addSubview(sc)//1番目の内容
-        scBoxB.addSubview(scB)//2番目右半分
+        ///scBoxB.addSubview(scB)//2番目右半分
         //??cv.addSubview(scBox)//↑：1番目の内容をコンテナに入れる
         //??cv.addSubview(scBoxB)//2番目右半分の選択ボタン領域をコンテナに入れる
         if isPalleteMode == false{//??パレットが表示中は4番目は無視（非表示）
@@ -3128,6 +3180,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         cv.addSubview(lbSw)    //3番目のタイトル[-- Auto Scroll --]
         cv.addSubview(mySwicth)//3番目のSwitch
         cv.addSubview(myLabel) //3番目のSwitchの[ON]/[OFF]表示
+        cv.addSubview(mySwicth2)//3番目のSwitch
+        cv.addSubview(myLabel2) //3番目のSwitchの[ON]/[OFF]表示
         // コンテナをseVに追加する.
         setV.addSubview(cv)
         //setVを表示する
@@ -3154,7 +3208,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             tempAutoScroll = false
         }
     }
-    
+    func onClickMySwicth2(sender: UISwitch){
+        if sender.isOn {
+            myLabel2.text = "[ ON  ]"
+            tempRotEnable = true
+        }
+        else {
+            myLabel2.text = "[ OFF ]"
+            tempRotEnable = false
+        }
+    }
     func segconChanged(segcon: UISegmentedControl){//線幅
         switch segcon.selectedSegmentIndex {
             case 0:tempLineW = 0
@@ -3230,8 +3293,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               memo[0].setIndexFromImgs(imgs:indexImgs)
             //---- ここまで[ ページ削除処理の実行 ]----
             //ペン仕様の初期化
-            lineWidth = 1//線幅
-            lineColor = 0//三番目の線色
+            ///lineWidth = 1//線幅
+            ///lineColor = 0//三番目の線色
             //設定viewを閉じる
             self.setButtonN.removeFromSuperview()
             self.setV2.removeFromSuperview()
@@ -3256,6 +3319,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         lineColor = tempColor
         //自動スクロールOn/Off設定を反映させる
         autoScrollFlag = tempAutoScroll
+        //横画面表示許可On/Off設定を反映させる
+        rotEnable = tempRotEnable
+        didLoadFlg = rotEnable ? true : false
         //設定viewを閉じる
         self.setButtonN.removeFromSuperview()
         self.setV2.removeFromSuperview()
@@ -3352,7 +3418,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if selFlg{
             select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
             select_pcView.removeFromSuperview()
-            select_pcView_bg.removeFromSuperview()
+            ///select_pcView_bg.removeFromSuperview()
             selFlg = false
         }
     }
@@ -3364,13 +3430,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if selFlg{
            select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
            select_pcView.removeFromSuperview()
-           select_pcView_bg.removeFromSuperview()
+           ///select_pcView_bg.removeFromSuperview()
            selFlg = false
             return
         }
 
         if myEditFlag == true{return}//編集画面が表示の場合はパス
         if drawableView.X_color == 1{return}//ペンモード以外はパス
+        if marker{return}//マーカペンの場合はパス
+    
         if penColorNum == 1 {
             penColorNum = 2
             editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
@@ -3409,13 +3477,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
         drawableView.X_color = 0//ペンモード[黒色、赤色、青色?]
-        //_20181020に変更_ penColorNum = 1//黒色
-        //_20181020に変更_ editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
+        if !marker{//ペンモードの場合のみ黒色に戻す
+         penColorNum = 1//黒色
+         editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
+        }
         editButton3.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton3.layer.borderWidth = 1.0//★20180821:0.5
         editButton4.layer.borderWidth = 0
-        // //WC
+        //ペンアイコンの画像を設定
         var penImg:UIImage!
         if marker {//-- marker-pen --{
          switch lineWidth {
@@ -3446,7 +3516,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         case 2: editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
         case 3:
             var thirdColor:UIImage!
-            switch lineColor {
+            let lineColorX = marker ? lineColor2 : lineColor
+            switch lineColorX {
             case 0:thirdColor = colorIcon[0]//UIImage(named: "blue.png")
             case 1:thirdColor = colorIcon[1]//UIImage(named: "green2.png")
             case 2:thirdColor = colorIcon[2]//UIImage(named: "orange.png")
@@ -3464,7 +3535,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if selFlg{
             select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
             select_pcView.removeFromSuperview()
-            select_pcView_bg.removeFromSuperview()
+            ///select_pcView_bg.removeFromSuperview()
             selFlg = false
             return
         }
@@ -4146,7 +4217,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //１行目と３２行目の下線は実践、他は破線
             //let clr = UIColor.rgb(r: 0, g: 141, b: 183, alpha: 1)
             if nowGyouNo > 10000{
-                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 1.9, posX: pos, lenX: len,spaceX: 7)
+                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 1.7, posX: pos, lenX: len,spaceX: 7)
             }else if
                 nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
                 print("aaaaaaaaaa:\(zm)")

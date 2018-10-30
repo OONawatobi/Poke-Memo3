@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     //_起動時はportlaitに強制する
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        if (didLoadFlg == true){
+        if (didLoadFlg == true) && rotEnable{
             return UIInterfaceOrientationMask.allButUpsideDown
         }
         return UIInterfaceOrientationMask.portrait

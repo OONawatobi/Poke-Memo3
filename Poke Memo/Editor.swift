@@ -29,8 +29,8 @@ extension UIImage {
         let rect = CGRect(origin:CGPoint.zero, size: size)
         let context = UIGraphicsGetCurrentContext()
         context!.setFillColor(color.cgColor)
-        //context!.fill(rect)
-        context!.fillEllipse(in: rect)
+        //context!.fill(rect)//四角に塗りつぶす
+        context!.fillEllipse(in: rect)//丸型に変形させる
         // 円は引数のCGRectに内接する
         let image:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
@@ -365,12 +365,18 @@ class SelectView:UIView{
 
     func setMenu(){ //UIButtonはここで作成する
         print("select2btn is selected!!")
+        //ツールバーの高さを取得した後の再設定
+        if boundWidthX == boundWidth{//縦場面の場合
+         select_pcView.layer.position.y = boundHeight - vHeight - 40 - 44/2 - th
+        }
+        //selectViewを空にする
+        self.deleteSubviews()
         //ボタン画像の作成
     
         for i in 0...5 {//print("\(i)")
-            btnImgs.append( UIImage.colorImage2(color: bColor[i], size: CGSize(width: 23, height: 23)))
-            
-            let selBtn:UIButton = UIButton(frame: CGRect(x:15 + i*50,y:2,width:40,height:40))
+            btnImgs.append( UIImage.colorImage2(color: bColor[i], size: CGSize(width: 20, height: 20)))
+            let xx:CGFloat = i == 1 ? 10 : 0//第２ボタンだけ位置をづらす
+            let selBtn:UIButton = UIButton(frame: CGRect(x:CGFloat(15 + i*50) - xx,y:4,width:40,height:40))
             selBtn.tag = i
             selBtn.addTarget(self, action: #selector(btnA_click(sender:)), for:.touchUpInside)
             selBtn.addTarget(self, action: #selector(btnA_click(sender:)), for:.touchUpOutside)
@@ -379,33 +385,44 @@ class SelectView:UIView{
             //selBtn.setBackgroundImage(UIImage.colorToImage3(color: bColor[i]), for: UIControlState.highlighted)
             self.addSubview(selBtn)
         }
-        select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
-        sectView = UIView(frame:CGRect(x:107,y:4,width:4,height:36))
-        sectView2 = UIView(frame:CGRect(x:107,y:4,width:1,height:36))
-        sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.15)//brown.withAlphaComponent(0.7)
-        sectView2.backgroundColor = UIColor.white//.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
+        ///select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
+        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectVBg.png")!)
+        //区切り線
+        sectView = UIView(frame:CGRect(x:107,y:5,width:2,height:34))
+        //sectView2 = UIView(frame:CGRect(x:108,y:8,width:2,height:33))
+        sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.2)//brown.withAlphaComponent(0.7)
+        //sectView2.backgroundColor = UIColor.white.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
         self.addSubview(sectView)
-        self.addSubview(sectView2)
+        //self.addSubview(sectView2)
         //penColorNum(1:黒色、２：赤色、３：選択色)
         //選択色 lineCplor（0:青色,1:緑色,2:オレンジ色,3:ムラサキ色）
         //パレット（0:黒色,1:赤色,2:青色,3:緑色,4:橙色,5:紫色)
-        let tag = penColorNum == 3 ? lineColor + 2 : penColorNum - 1
+        let lineColorX = marker ? lineColor2 : lineColor
+        let tag = penColorNum == 3 ? lineColorX + 2 : penColorNum - 1
         print("★★tag: \(tag)")
-        btnA_click2(tag:tag)
-        btnA_click_S2(tag:tag)
+        //ペン色とカラーアイコンの再設定
+        btnA_click2(tag:tag)//btnA_click() UP動作の本体プログラム
+        //bigボタンの色と位置を再設定する
+        btnA_click_S2(tag:tag)//btnA_click() down動作の本体プログラム
         //_self.Delegate?.penMode()
         
     }
     func setPenMenu(){ //UIButtonはここで作成する
         print("select3btn is selected!!:lang = \(langFlag)")
+        //ツールバーの高さを取得した後の再設定
+        if boundWidthX == boundWidth{//縦場面の場合
+         select_pcView.layer.position.y = boundHeight - vHeight - 40 - 44/2 - th
+        }
         //ボタンの画像
         let pcl:UIImage = langFlag == 0 ? penJ : penE
         let gpn:UIImage = langFlag == 0 ? GpenJ : GpenE
         let mkr:UIImage = langFlag == 0 ? markJ : markE
         var tImg:[UIImage] = [pcl,gpn,mkr]
+        //selectViewを空にする
+        self.deleteSubviews()
         for i in 0...2 {// Pencil | G-pen | Highlight-pen
-
-            let selBtn:UIButton = UIButton(frame: CGRect(x:5 + i*100,y:2,width:100,height:40))
+            
+            let selBtn:UIButton = UIButton(frame: CGRect(x:5 + i*100,y:4,width:100,height:40))
             selBtn.backgroundColor = UIColor.clear
             selBtn.tag = i
             selBtn.addTarget(self, action: #selector(btnB_click(sender:)), for:.touchUpInside)
@@ -415,7 +432,9 @@ class SelectView:UIView{
             //selBtn.setBackgroundImage(UIImage.colorToImage3(color: bColor[i]), for: UIControlState.highlighted)
             self.addSubview(selBtn)
         }
-        select_pcView_bg.backgroundColor = UIColor.rgb(r:51,g:204, b:204, alpha: 1)
+        ///select_pcView_bg.backgroundColor = UIColor.rgb(r:51,g:204, b:204, alpha: 1)
+        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectVBg2.png")!)
+        //区切り線
         sectView = UIView(frame:CGRect(x:107,y:4,width:1,height:36))
         sectView2 = UIView(frame:CGRect(x:200,y:4,width:1,height:36))
         sectView.backgroundColor = UIColor.white//.withAlphaComponent(0.15)//brown.withAlphaComponent(0.7)
@@ -442,9 +461,10 @@ class SelectView:UIView{
         bigBtm.removeFromSuperview()
         print("---------")
         //bigボタンの色と位置を再設定する
-        bigBtm.image = UIImage.colorImage2(color: bColor[tag], size: CGSize(width: 30, height: 30))
-        bigBtm.layer.position.x = CGFloat(tag) * 50 + 15 + 20
-        bigBtm.layer.position.y = self.frame.height/2
+        bigBtm.image = UIImage.colorImage2(color: bColor[tag], size: CGSize(width: 28, height: 28))
+        let bX = CGFloat(tag) * 50 + 15 + 20
+        bigBtm.layer.position.x = tag == 1 ? bX - 10 : bX
+        bigBtm.layer.position.y = self.frame.height/2 + 2
         self.addSubview(bigBtm)
         print("---------self.addSubview(bigBtm)-------------")
     }
@@ -455,18 +475,20 @@ class SelectView:UIView{
     }
     func btnA_click2(tag:Int){//btnA_click()の本体プログラム
         gblColor = bColor[tag]
-        let ci = tag
-        if ci >= 2 {//選んだ色をlineColorに設定する
-         lineColor = ci - 2
-         editButton2.setImage(colorIcon[ci - 2], for:UIControlState.normal)
+        var lineColorX:Int = 0
+        if tag >= 2 {//選んだ色をlineColorに設定する
+         lineColorX = tag - 2
+         editButton2.setImage(colorIcon[tag - 2], for:UIControlState.normal)
          penColorNum = 3
-        }else if ci == 0{
+        }else if tag == 0{//黒色
          editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
          penColorNum = 1
-        }else{
+        }else{//赤色
          editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
          penColorNum = 2
         }
+        if marker{lineColor2 = lineColorX}
+        else{lineColor = lineColorX}
     }
     func btnB_click_S(sender:UIButton){//ペンボタンを押す
         editButton3.setImage(tImg2[sender.tag], for:UIControlState.normal)
@@ -489,7 +511,7 @@ class SelectView:UIView{
         if !marker{//penからマーカに移った時は"黄色"にする
             marker = true
             penColorNum = 3
-            lineColor = 2
+            lineColor2 = 2//「lineColor"2"」は「lineColor」のマーカ専用版
         }
         default:break
         }
@@ -497,7 +519,7 @@ class SelectView:UIView{
         //ペンパネルを閉じる
         select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
         select_pcView.removeFromSuperview()
-        select_pcView_bg.removeFromSuperview()
+        ///select_pcView_bg.removeFromSuperview()
         selFlg = false
     }
     
