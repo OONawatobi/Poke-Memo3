@@ -30,13 +30,28 @@ extension UIImage {
         let context = UIGraphicsGetCurrentContext()
         context!.setFillColor(color.cgColor)
         //context!.fill(rect)//四角に塗りつぶす
+        
         context!.fillEllipse(in: rect)//丸型に変形させる
         // 円は引数のCGRectに内接する
+        
         let image:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return image
     }
-}
+
+    func maskCorner(radius r: CGFloat) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.main.scale)
+        
+        let rect = CGRect(origin: .zero, size: self.size)
+        UIBezierPath(roundedRect: rect, cornerRadius: r).addClip()
+        draw(in: rect)
+        let clippedImage = UIGraphicsGetImageFromCurrentImageContext()
+            
+        UIGraphicsEndImageContext()
+        return clippedImage
+        }
+    }
+
 
 class EditorView: UIView {
 /*
@@ -372,28 +387,36 @@ class SelectView:UIView{
         //selectViewを空にする
         self.deleteSubviews()
         //ボタン画像の作成
-    
+        //var xColor = marker ? mColor : bColor
+        //角丸にする
+        //self.imageView.layer.cornerRadius = 30
+        //self.imageView.layer.masksToBounds = true
+        btnImgs = []//一旦、空にする
+        for i in 0...5 {
+           if marker{
+            btnImgs.append(UIImage.colorImage(color: mColor[i], size: CGSize(width: 20, height: 20)).maskCorner(radius: 3)! )//角丸の色画像を作成する
+           }else{
+            btnImgs.append(UIImage.colorImage2(color: bColor[i], size: CGSize(width: 20, height: 20)))//円形の色画像を作成する
+           }
+        }
         for i in 0...5 {//print("\(i)")
-            btnImgs.append( UIImage.colorImage2(color: bColor[i], size: CGSize(width: 20, height: 20)))
-            let xx:CGFloat = i == 1 ? 10 : 0//第２ボタンだけ位置をづらす
+            //btnImgs.append( UIImage.colorImage2(color: xColor[i], size: CGSize(width: 20, height: 20)))//円形の色画像を作成する
+            let xx:CGFloat = i == 1 ? (marker ? 0 : 10) : 0//第２ボタンだけ位置をづらす
             let selBtn:UIButton = UIButton(frame: CGRect(x:CGFloat(15 + i*50) - xx,y:4,width:40,height:40))
             selBtn.tag = i
             selBtn.addTarget(self, action: #selector(btnA_click(sender:)), for:.touchUpInside)
             selBtn.addTarget(self, action: #selector(btnA_click(sender:)), for:.touchUpOutside)
             selBtn.addTarget(self, action: #selector(btnA_click_S(sender:)), for:.touchDown)
             selBtn.setImage(btnImgs[i], for:UIControlState.normal)
-            //selBtn.setBackgroundImage(UIImage.colorToImage3(color: bColor[i]), for: UIControlState.highlighted)
             self.addSubview(selBtn)
         }
-        ///select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
         select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectVBg.png")!)
         //区切り線
-        sectView = UIView(frame:CGRect(x:107,y:5,width:2,height:34))
-        //sectView2 = UIView(frame:CGRect(x:108,y:8,width:2,height:33))
-        sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.2)//brown.withAlphaComponent(0.7)
-        //sectView2.backgroundColor = UIColor.white.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
-        self.addSubview(sectView)
-        //self.addSubview(sectView2)
+        if !marker{
+            sectView = UIView(frame:CGRect(x:107,y:5,width:2,height:34))
+            sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.2)//brown.withAlphaComponent(0.7)
+            self.addSubview(sectView)
+        }
         //penColorNum(1:黒色、２：赤色、３：選択色)
         //選択色 lineCplor（0:青色,1:緑色,2:オレンジ色,3:ムラサキ色）
         //パレット（0:黒色,1:赤色,2:青色,3:緑色,4:橙色,5:紫色)
@@ -461,12 +484,21 @@ class SelectView:UIView{
         bigBtm.removeFromSuperview()
         print("---------")
         //bigボタンの色と位置を再設定する
-        bigBtm.image = UIImage.colorImage2(color: bColor[tag], size: CGSize(width: 28, height: 28))
-        let bX = CGFloat(tag) * 50 + 15 + 20
-        bigBtm.layer.position.x = tag == 1 ? bX - 10 : bX
+        if marker{
+            bigBtm.image = UIImage.colorImage2(color: bColor[tag], size: CGSize(width: 28, height: 28))
+            bigBtm.image = UIImage.colorImage(color: mColor[tag], size: CGSize(width: 28, height: 28)).maskCorner(radius: 3)!//角丸の色画像
+            let bX = CGFloat(tag) * 50 + 15 + 20
+            bigBtm.layer.position.x = bX
+        }else{
+            bigBtm.image = UIImage.colorImage2(color: bColor[tag], size: CGSize(width: 28, height: 28))
+            let bX = CGFloat(tag) * 50 + 15 + 20
+            bigBtm.layer.position.x = tag == 1 ? bX - 10 : bX
+        }
         bigBtm.layer.position.y = self.frame.height/2 + 2
+        
         self.addSubview(bigBtm)
         print("---------self.addSubview(bigBtm)-------------")
+        
     }
     func btnA_click(sender:UIButton){//色アイコンタッチUP 時の処理
         print("btnA_clicked!: \(sender.tag)")

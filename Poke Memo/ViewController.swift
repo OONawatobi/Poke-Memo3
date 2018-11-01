@@ -484,7 +484,7 @@ var ok2Flg = false//ok2()の重複実行を無視する為のフラグ（toutchU
 var editButton2:UIButton!//カラーパレットから操作するためグローバル化する
 var editButton3:UIButton!
 var bColor:[UIColor] = []//色パネル表示色
-var mColor:[UIColor]!//マーカの色
+var mColor:[UIColor] = []//マーカの色
 var colorIcon:[UIImage] = []//カラーボタンアイコン
 var gblColor = UIColor.black
 var bigBtm:UIImageView! = UIImageView(frame: CGRect(x:0,y:0,width:30,height:30))//★★ボタンを押した時の大きい丸
