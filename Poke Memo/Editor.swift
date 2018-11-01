@@ -394,7 +394,7 @@ class SelectView:UIView{
         btnImgs = []//一旦、空にする
         for i in 0...5 {
            if marker{
-            btnImgs.append(UIImage.colorImage(color: mColor[i], size: CGSize(width: 20, height: 20)).maskCorner(radius: 3)! )//角丸の色画像を作成する
+            btnImgs.append(UIImage.colorImage(color: mColor[i], size: CGSize(width: 20, height: 20)).maskCorner(radius: 4)! )//角丸の色画像を作成する
            }else{
             btnImgs.append(UIImage.colorImage2(color: bColor[i], size: CGSize(width: 20, height: 20)))//円形の色画像を作成する
            }

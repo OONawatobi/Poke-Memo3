@@ -3003,8 +3003,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func fc5(){ // [ = 設定 = ]
         print("test5!!!!!")
         //設定項目名の定義
-        let sT_Ja:[String] = ["決定","戻る","-- Gペンの線幅調整 --","-- 画面の回転 --","-- 自動スクロール --","-- 全ページを削除 --","削除する","実行しない"]
-        let sT_En:[String] = ["Set","Cancel","-- LINE WIDTH OF GPEN --","-- SCREEN-ROTATION --","-- AUTO SCROLL --","-- DELETE ALL --","DLETE-ALL","NO ACTION"]
+        let sT_Ja:[String] = ["決定","戻る","-- 筆記速度感度(Gペン) --","-- 画面の回転 --","-- 自動スクロール --","-- 全ページを削除 --","削除する","実行しない","*筆記速度に応じて調整","   早く\n    書く","ゆっくり書く","初期値"]
+        let sT_En:[String] = ["Set","Cancel","-- SPEED SENSITIVITY(G-pen) --","-- SCREEN-ROTATION --","-- AUTO SCROLL --","-- DELETE ALL --","DLETE-ALL","NO ACTION","* Adjust to writing-speed","writing\n  fast","writing\n  slow","Reset"]
         var sT = (langFlag == 0) ? sT_Ja:sT_En//言語による切り替え
         
         setV2 = UIView(frame:CGRect(x:0,y:0,width: 400, height: 600))//表示初期値
@@ -3035,7 +3035,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //setButtonN.tintColor = UIColor.lightGray
         //------- セグメント01---------------------------------------------------
          // ----- スライダーの追加 -----
-         gpenSlider = UISlider(frame: CGRect(x:cv.frame.width/2 - 130/2, y:120, width:130, height:20))
+         gpenSlider = UISlider(frame: CGRect(x:cv.frame.width/2 - 130/2, y:130, width:130, height:20))
          //gpenSlider.layer.position = CGPoint(x:boundWidth/2 - 130/2, y:100)
          gpenSlider.backgroundColor = UIColor.white
          gpenSlider.layer.cornerRadius = 10.0
@@ -3049,7 +3049,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          cv.addSubview(gpenSlider)
          //self.view.addSubview(gpenSlider)
         //1つめのラベル
-        gpenlabel = UILabel(frame: CGRect(x:40, y:135, width:60, height:50))
+        gpenlabel = UILabel(frame: CGRect(x:40, y:145, width:60, height:50))
         //gpenlabel.backgroundColor = UIColor.yellow
         gpenlabel.textColor = UIColor.blue
         gpenlabel.font = gpenlabel.font.withSize(24)//フォントサイズだけ変更
@@ -3058,24 +3058,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         gpenSlider.setValue(sN, animated: true)
         gpenlabel.text = String(Int(round(sN*100)))//小数点以下非表示
         //2つめのラベル
-         let gpenlabelA = UILabel(frame: CGRect(x:25, y:100, width:70, height:100))
+         let gpenlabelA = UILabel(frame: CGRect(x:25, y:110, width:70, height:100))
         //gpenlabelA.backgroundColor = UIColor.yellow
-        gpenlabelA.text = "writing\n fast"
+        gpenlabelA.text = sT[9]//"writing\n  fast"
         gpenlabelA.numberOfLines = 0
         gpenlabelA.sizeToFit()
-         gpenlabelA.textColor = UIColor.gray
+        gpenlabelA.textColor = UIColor.gray
         //3つめのラベル
-        let gpenlabelB = UILabel(frame: CGRect(x:cv.frame.width - 75, y:100, width:70, height:100))
+        let gpenlabelB = UILabel(frame: CGRect(x:cv.frame.width - 75, y:110, width:70, height:100))
         //gpenlabelB.backgroundColor = UIColor.yellow
-        gpenlabelB.text = "writing\n slow"
+        gpenlabelB.text = sT[10]//"writing\n  slow"
         gpenlabelB.numberOfLines = 0
         gpenlabelB.sizeToFit()
         gpenlabelB.textColor = UIColor.gray
         //4つめのラベル
-        let gpenlabelC = UILabel(frame: CGRect(x:40, y:80, width:200, height:20))
-        gpenlabelC.text = "* Adjust to drawing speed"
-        gpenlabelC.textColor = UIColor.red.withAlphaComponent(0.5
-        )
+        let gpenlabelC = UILabel(frame: CGRect(x:30, y:82, width:260, height:20))
+        gpenlabelC.text = sT[8]//"* Adjust to writing-speed"
+        gpenlabelC.textColor = UIColor.red.withAlphaComponent(0.6)
         cv.addSubview(gpenlabel)
         cv.addSubview(gpenlabelA)
         cv.addSubview(gpenlabelB)
@@ -3088,10 +3087,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // ----- Resetボタンの生成 -----
         let button = UIButton()
         // ボタンの位置とサイズを設定
-        button.frame = CGRect(x:cv.frame.width - 80, y:155,
+        button.frame = CGRect(x:cv.frame.width - 80, y:160,
                               width:60, height:20)
         // ボタンのタイトルを設定
-        button.setTitle("Reset", for:UIControlState.normal)
+        button.setTitle(sT[11], for:UIControlState.normal)
         // タイトルの色
         button.setTitleColor(UIColor.black.withAlphaComponent(0.6), for: .normal)
         // ボタンのフォントサイズ
@@ -3107,7 +3106,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // コンテナViewにボタンを追加
         cv.addSubview(button)
         //セパレータ-------------------------------------------------------------
-        let sep1 = UIView(frame: CGRect(x:5,y:190,width:290,height:0.3))
+        let sep1 = UIView(frame: CGRect(x:5,y:200,width:290,height:0.3))
         //UIView(frame: CGRect(x:20,y:170,width:300 - 40,height:0.5))
         sep1.backgroundColor = UIColor.gray
         setV2.addSubview(sep1)
@@ -3174,7 +3173,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //lb1.backgroundColor = UIColor.yellow
         lb1.text = sT[2]//"xxLINE-WIDTH"
         // Labe2を作成.
-        let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220 - 40,width:200,height:40))
+        let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220 - 30,width:200,height:40))
         //lb2.backgroundColor = UIColor.yellow
         lb2.text = sT[3]//"SCREEN-ROTATION"
         let lb2a: UILabel = UILabel(frame: CGRect(x:20,y:280 - 60,width:30,height:30))
