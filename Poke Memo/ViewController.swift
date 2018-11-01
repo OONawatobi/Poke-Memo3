@@ -477,6 +477,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var sliderN:CGFloat = 0.5//スライダー値
 //var testView = UIView(frame: CGRect(x:0,y:0,width:10,height:vHeight))
 var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
 var ok2Flg = false//ok2()の重複実行を無視する為のフラグ（toutchUpでリセット）
@@ -567,7 +568,7 @@ let big:CGFloat = 1.5//拡大率
 //var maxPosX = [[CGFloat]]()
 //var maxPosX:CGFloat!  = [[Int]](count: 30,repeatedValue: [Int](count: 30,repeatedValue: 0))
 
-var lineWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
+var penWidth:Int = 1//線幅[0:thin,1:normal,2:thic]
 var lineColor:Int = 0//三番目の線色[0:blue,1:green,2:orange,3:purple]
 var lineColor2:Int = 2//マーカの色[0:skyblue,1:grass,2:yellow,3:pink]
 var autoScrollFlag = true//自動スクロールOn/Offフラグ
@@ -616,7 +617,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
-
+    var tempSlrN:CGFloat = 1.0//sliderNのtemp変数
+    var gpenlabel:UILabel!//スライダー値の表示用
+    var gpenSlider:UISlider!//設定画面のGpen感度調整スライダー
     var rightAreaView:UIView!//safeAreaの右側エリア(landsccape)
     var leftAreaView:UIView!//safeAreaの右側エリア(landsccape)
     var rotMode:Int = 1
@@ -1755,7 +1758,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //mx[]の内容を外部に保存する
             updataMx(my:mx)
             upResn(my: resn)//+-+
-          
+            //設定値を永久保存する
+            settingWite()
            //++ パレットを閉じるアニメーション
             self.etcBarDisp(disp: 0)//underView等を削除する
             UIView.animate(withDuration:0.2, animations: {
@@ -1857,6 +1861,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }else{//子メモが開いている場合
                 modalChanged(TouchNumber: nowGyouNo)
             }
+            penColorNum = 1//黒色
             penMode()//黒ペンモードにする
             //????closeEditView()//編集パレット画面を閉じる
             // == debug2 =====================================================
@@ -2222,12 +2227,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func settingWite(){
         // NSUserDefaults のインスタンス取得
         let colorNum = String(lineColor)
-        let lineWNum = String(lineWidth)
+        let lineWNum = String(penWidth)
         let autoScroll = autoScrollFlag ? "1" : "0"
         let lPage = String(pageNum)
         let calFlag = callig ? "1" : "0"
         let rotation = rotEnable ? "1" : "0"
-        
+        let slider = String(Int(round(sliderN*100)))//スライダー値(3桁）
+        print("--- settingWite:sliderN= \(slider) ----")
         let ud = UserDefaults.standard
         // キーを指定してオブジェクトを保存
         ud.set(colorNum, forKey: "color")
@@ -2236,6 +2242,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ud.set(lPage, forKey: "page")
         ud.set(calFlag, forKey: "cal")
         ud.set(rotation, forKey: "rot")
+        ud.set(slider, forKey: "slr")
         ud.synchronize()
         
     }
@@ -2248,13 +2255,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if ud.object(forKey: "cal") == nil{return}
         if ud.object(forKey: "width") == nil{return}///20181030追加
         if ud.object(forKey: "rot") == nil{return}  ///20181030追加
-            
+        if ud.object(forKey: "slr") == nil{return}  ///20181101追加
+        
         let colorNum = ud.object(forKey: "color") as! String
         let lineWNum = ud.object(forKey: "width") as! String
         
         lineColor = Int(colorNum)!
-        lineWidth = Int(lineWNum)!
-        
+        penWidth = Int(lineWNum)!
         let autoScroll = ud.object(forKey: "auto") as! String
         let at = Int(autoScroll)!
         autoScrollFlag = (at == 1) ? true : false
@@ -2269,7 +2276,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let rotation = ud.object(forKey: "rot") as! String
         let at2 = Int(rotation)!
         rotEnable = (at2 == 1) ? true : false
-      
+        
+        let slider = ud.object(forKey: "slr") as! String
+        let at3 = Int(slider)!
+        sliderN = CGFloat(at3)/100
     }
     
     // <未使用>　UIViewの内容をDocumentディレクトリにPDFファイルで出力する？？？？
@@ -2290,10 +2300,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //メモのスクロール位置を設定する
     func scrollPos(){
     //現在のタグ行がスクロール窓から隠れているかをチェック
-        
-          //print("スクロール窓の高さ:\(scrollRect_P.height)")
-          //print("何行目?:\(nowGyouNo%100)")
-          //print("オフセット：\(myScrollView.contentOffset)")
+        //print("スクロール窓の高さ:\(scrollRect_P.height)")
+        //print("何行目?:\(nowGyouNo%100)")
+        //print("オフセット：\(myScrollView.contentOffset)")
         //+-+- 子メモが開いている場合(10108-303208)
         let gyou1:Int = nowGyouNo%100// +-+- 子メモ内の行番 $
         let gyou2:Int = (nowGyouNo/100)%100//ベース行を計算 $
@@ -2980,8 +2989,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func fc5(){ // [ = 設定 = ]
         print("test5!!!!!")
         //設定項目名の定義
-        let sT_Ja:[String] = ["決定","戻る","-- 線の太さ --","-- 画面の回転 --","-- 自動スクロール --","-- 全ページを削除 --","削除する","実行しない"]
-        let sT_En:[String] = ["Set","Cancel","-- LINE WIDTH --","-- SCREEN-ROTATION --","-- AUTO SCROLL --","-- DELETE ALL --","DLETE-ALL","NO ACTION"]
+        let sT_Ja:[String] = ["決定","戻る","-- Gペンの線幅調整 --","-- 画面の回転 --","-- 自動スクロール --","-- 全ページを削除 --","削除する","実行しない"]
+        let sT_En:[String] = ["Set","Cancel","-- LINE WIDTH OF GPEN --","-- SCREEN-ROTATION --","-- AUTO SCROLL --","-- DELETE ALL --","DLETE-ALL","NO ACTION"]
         var sT = (langFlag == 0) ? sT_Ja:sT_En//言語による切り替え
         
         setV2 = UIView(frame:CGRect(x:0,y:0,width: 400, height: 600))//表示初期値
@@ -3011,80 +3020,93 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         setButtonN.setTitle(sT[1], for: UIControlState.normal)
         //setButtonN.tintColor = UIColor.lightGray
         //------- セグメント01---------------------------------------------------
-        // 表示する配列を作成する.
-        let myArray: NSArray = ["thin","normal","thic"]
-        let sW:CGFloat = 50
-        // SegmentedControlを作成する.
-        let sc: UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
-        let scBox = UIView(frame: CGRect(x:130,y:150,width:sW*3,height:sW))
-        //scBox.backgroundColor = UIColor.lightGray
-        scBox.layer.position = CGPoint(x: cv.frame.width/2, y: 175 - 40)
-        let scBox1 = UIView(frame: CGRect(x:5,y:30,width:sW - 10,height:sW/10))
-        let scBox2 = UIView(frame: CGRect(x:sW + 5,y:30,width:sW - 10,height:sW/7))
-        let scBox3 = UIView(frame: CGRect(x:sW*2 + 5,y:30,width:sW - 10,height:sW/5))
-        scBox1.backgroundColor = UIColor.darkGray
-        scBox2.backgroundColor = UIColor.darkGray
-        scBox3.backgroundColor = UIColor.darkGray
-        scBox.addSubview(scBox1)
-        scBox.addSubview(scBox2)
-        scBox.addSubview(scBox3)
-       
-        sc.setWidth(sW, forSegmentAt: 0)
-        sc.setWidth(sW, forSegmentAt: 1)
-        sc.setWidth(sW, forSegmentAt: 2)
-        sc.center = CGPoint(x:sW*3/2, y: 0)
-        sc.layer.borderColor = UIColor.lightGray.cgColor
-        sc.backgroundColor = UIColor.white
-        sc.tintColor = UIColor.gray
-        sc.selectedSegmentIndex = lineWidth
-        // イベントを追加する.
-        sc.addTarget(self, action: #selector(segconChanged(segcon:)), for: UIControlEvents.valueChanged)
-        /*
+         // ----- スライダーの追加 -----
+         gpenSlider = UISlider(frame: CGRect(x:cv.frame.width/2 - 130/2, y:120, width:130, height:20))
+         //gpenSlider.layer.position = CGPoint(x:boundWidth/2 - 130/2, y:100)
+         gpenSlider.backgroundColor = UIColor.white
+         gpenSlider.layer.cornerRadius = 10.0
+         gpenSlider.layer.shadowOpacity = 0//0.5
+         gpenSlider.layer.masksToBounds = false
+         gpenSlider.addTarget(self, action: #selector(self.onsliderChange(_:)), for: .valueChanged)
+         
+         // 最小値と最大値を設定する.
+         //gpenSlider.minimumValue = 0
+         //gpenSlider.maximumValue = 1
+         cv.addSubview(gpenSlider)
+         //self.view.addSubview(gpenSlider)
+        //1つめのラベル
+        gpenlabel = UILabel(frame: CGRect(x:40, y:135, width:60, height:50))
+        //gpenlabel.backgroundColor = UIColor.yellow
+        gpenlabel.textColor = UIColor.blue
+        gpenlabel.font = gpenlabel.font.withSize(24)//フォントサイズだけ変更
+        // デフォルト値の設定
+        let sN = Float(sliderN)//float無いとsetValueでエラー
+        gpenSlider.setValue(sN, animated: true)
+        gpenlabel.text = String(Int(round(sN*100)))//小数点以下非表示
+        //2つめのラベル
+         let gpenlabelA = UILabel(frame: CGRect(x:25, y:100, width:70, height:100))
+        //gpenlabelA.backgroundColor = UIColor.yellow
+        gpenlabelA.text = "writing\n fast"
+        gpenlabelA.numberOfLines = 0
+        gpenlabelA.sizeToFit()
+         gpenlabelA.textColor = UIColor.gray
+        //3つめのラベル
+        let gpenlabelB = UILabel(frame: CGRect(x:cv.frame.width - 75, y:100, width:70, height:100))
+        //gpenlabelB.backgroundColor = UIColor.yellow
+        gpenlabelB.text = "writing\n slow"
+        gpenlabelB.numberOfLines = 0
+        gpenlabelB.sizeToFit()
+        gpenlabelB.textColor = UIColor.gray
+        //4つめのラベル
+        let gpenlabelC = UILabel(frame: CGRect(x:40, y:80, width:200, height:20))
+        gpenlabelC.text = "* Adjust to drawing speed"
+        gpenlabelC.textColor = UIColor.red.withAlphaComponent(0.5
+        )
+        cv.addSubview(gpenlabel)
+        cv.addSubview(gpenlabelA)
+        cv.addSubview(gpenlabelB)
+        cv.addSubview(gpenlabelC)
+        // 最小値と最大値を設定する.
+         gpenSlider.minimumValue = 0.0
+         gpenSlider.maximumValue = 1.0
+         
+         //self.view.addSubview(endPointSlider)
+        // ----- Resetボタンの生成 -----
+        let button = UIButton()
+        // ボタンの位置とサイズを設定
+        button.frame = CGRect(x:cv.frame.width - 80, y:155,
+                              width:60, height:20)
+        // ボタンのタイトルを設定
+        button.setTitle("Reset", for:UIControlState.normal)
+        // タイトルの色
+        button.setTitleColor(UIColor.black.withAlphaComponent(0.6), for: .normal)
+        // ボタンのフォントサイズ
+        button.titleLabel?.font =  UIFont.systemFont(ofSize: 18)
+        // 背景色
+        button.backgroundColor = UIColor.init(
+            red:0.9, green: 0.9, blue: 0.9, alpha: 0.8)
+        // タップされたときのaction
+        button.addTarget(self,
+                         action: #selector(ViewController.rButtonTapped(sender:)),
+                         for: .touchUpInside)
+        
+        // コンテナViewにボタンを追加
+        cv.addSubview(button)
         //セパレータ-------------------------------------------------------------
-        let sep1 = UIView(frame: CGRect(x:5,y:170,width:290,height:0.3))
+        let sep1 = UIView(frame: CGRect(x:5,y:190,width:290,height:0.3))
         //UIView(frame: CGRect(x:20,y:170,width:300 - 40,height:0.5))
         sep1.backgroundColor = UIColor.gray
-        //setV2.addSubview(sep1)
+        setV2.addSubview(sep1)
         //セパレータ2
         let sep2 = UIView(frame: CGRect(x:5,y:300,width:290,height:0.3))
         sep2.backgroundColor = UIColor.gray
-        //setV2.addSubview(sep2)
+        setV2.addSubview(sep2)
         //セパレータ3
         let sep3 = UIView(frame: CGRect(x:5,y:400,width:290,height:0.3))
         sep3.backgroundColor = UIColor.gray
         setV2.addSubview(sep3)
-        */
+        //
         //------- セグメント02---------------------------------------------------
- /*
-        // 表示する配列を作成する.
-        let myArrayB: NSArray = ["Blue","Green","Brown"]
-                let sWB:CGFloat = 50
-        // SegmentedControlを作成する.
-        let scB: UISegmentedControl = UISegmentedControl(items: myArrayB as [AnyObject])
-        let scBoxB = UIView(frame: CGRect(x:130,y:280 - 60,width:sWB*3,height:sWB))
-        let scBox1B = UIView(frame: CGRect(x:5,y:30,width:sWB - 10,height:sWB/3))
-        let scBox2B = UIView(frame: CGRect(x:sWB + 5,y:30,width:sWB - 10,height:sWB/3))
-        let scBox3B = UIView(frame: CGRect(x:sWB*2 + 5,y:30,width:sWB - 10,height:sWB/3))
-        scBox1B.backgroundColor = UIColor.blue
-        scBox1B.layer.cornerRadius = 10.0
-        scBox2B.backgroundColor = UIColor.green
-        scBox2B.layer.cornerRadius = 10.0
-        scBox3B.backgroundColor = UIColor.brown
-        scBox3B.layer.cornerRadius = 10.0
-        scBoxB.addSubview(scBox1B);
-        scBoxB.addSubview(scBox2B)
-        scBoxB.addSubview(scBox3B)
-        scB.setWidth(sWB, forSegmentAt: 0);
-        scB.setWidth(sWB, forSegmentAt: 1)
-        scB.setWidth(sWB, forSegmentAt: 2)
-        scB.center = CGPoint(x:sWB*3/2, y: 0)
-        scB.layer.borderColor = UIColor.lightGray.cgColor
-        scB.backgroundColor = UIColor.white
-        scB.tintColor = UIColor.gray
-        scB.selectedSegmentIndex = lineColor
-        // イベントを追加する.
-        scB.addTarget(self, action: #selector(segconChangedB(segcon:)), for: UIControlEvents.valueChanged)
- */
         //------- セグメント03(Boxなし)-----------------------
  
         // 表示する配列を作成する.
@@ -3134,9 +3156,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         //--------------------------------------------------------------
         // Labelを作成.
-        let lb1: UILabel = UILabel(frame: CGRect(x:20,y:50,width:200,height:40))
+        let lb1: UILabel = UILabel(frame: CGRect(x:20,y:50,width:300,height:40))
         //lb1.backgroundColor = UIColor.yellow
-        lb1.text = sT[2]//"LINE-WIDTH"
+        lb1.text = sT[2]//"xxLINE-WIDTH"
         // Labe2を作成.
         let lb2: UILabel = UILabel(frame: CGRect(x:20,y:220 - 40,width:200,height:40))
         //lb2.backgroundColor = UIColor.yellow
@@ -3160,10 +3182,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //lb3.backgroundColor = UIColor.yellow
         lb3.text = sT[5]//"DELETE-ALL(PAGES)"
         //コンテナに追加する
-        scBox.addSubview(sc)//1番目の内容
-        ///scBoxB.addSubview(scB)//2番目右半分
-        //??cv.addSubview(scBox)//↑：1番目の内容をコンテナに入れる
-        //??cv.addSubview(scBoxB)//2番目右半分の選択ボタン領域をコンテナに入れる
         if isPalleteMode == false{//??パレットが表示中は4番目は無視（非表示）
             cv.addSubview(scC)
         }
@@ -3171,9 +3189,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         cv.addSubview(self.setButtonY)
         cv.addSubview(lb1)
         cv.addSubview(lb2)     //タイトル[-- Line Color --]
-        //??cv.addSubview(lb2a);
-        //??cv.addSubview(lb2b)
-        //??cv.addSubview(lb2c)
         if isPalleteMode == false{//??パレットが表示中は4番目は無視
             cv.addSubview(lb3)
         }
@@ -3198,7 +3213,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     ///設定画面実行関数
-    func onClickMySwicth(sender: UISwitch){
+    func onClickMySwicth(sender: UISwitch){//AoutoScroll
         if sender.isOn {
             myLabel.text = "[ ON  ]"
             tempAutoScroll = true
@@ -3208,7 +3223,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             tempAutoScroll = false
         }
     }
-    func onClickMySwicth2(sender: UISwitch){
+    func onClickMySwicth2(sender: UISwitch){//Rotation
         if sender.isOn {
             myLabel2.text = "[ ON  ]"
             tempRotEnable = true
@@ -3218,6 +3233,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             tempRotEnable = false
         }
     }
+/*
     func segconChanged(segcon: UISegmentedControl){//線幅
         switch segcon.selectedSegmentIndex {
             case 0:tempLineW = 0
@@ -3237,7 +3253,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         print("tempColor=\(tempColor)")
     }
-    
+*/
     func segconChangedC(segcon: UISegmentedControl){//全頁削除
         switch segcon.selectedSegmentIndex {
             case 0:tempDelAll = 1// 削除する場合
@@ -3293,7 +3309,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               memo[0].setIndexFromImgs(imgs:indexImgs)
             //---- ここまで[ ページ削除処理の実行 ]----
             //ペン仕様の初期化
-            ///lineWidth = 1//線幅
+            ///penWidth = 1//線幅
             ///lineColor = 0//三番目の線色
             //設定viewを閉じる
             self.setButtonN.removeFromSuperview()
@@ -3313,8 +3329,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         alert.addAction(defaultAction)
         self.present(alert, animated: true, completion: nil)// ④ Alertを表示
       }else{
+        //スライダー値の設定値を反映させる
+        sliderN = tempSlrN
         //線幅の設定値を反映させる
-        lineWidth = tempLineW
+        ///penWidth = tempLineW
         //線色の設定値を反映させる
         lineColor = tempColor
         //自動スクロールOn/Off設定を反映させる
@@ -3463,10 +3481,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func penWclicked(){
         print("penWidth-clickされました！！")
         //trf = false
-        switch lineWidth {
-            case 0:lineWidth = 1
-            case 1:lineWidth = 2
-            case 2:lineWidth = 0
+        switch penWidth {
+            case 0:penWidth = 1
+            case 1:penWidth = 2
+            case 2:penWidth = 0
             default:break
         }
         penMode()//
@@ -3474,13 +3492,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func penMode(){
         print("penMode()に入りました！marker:\(marker)")
+        ///print("penWidth:\(penWidth)")
+        ///print("penColorNum:\(penColorNum)")
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
         drawableView.X_color = 0//ペンモード[黒色、赤色、青色?]
+        /*
         if !marker{//ペンモードの場合のみ黒色に戻す
          penColorNum = 1//黒色
          editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         }
+        */
         editButton3.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton3.layer.borderWidth = 1.0//★20180821:0.5
@@ -3488,21 +3510,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //ペンアイコンの画像を設定
         var penImg:UIImage!
         if marker {//-- marker-pen --{
-         switch lineWidth {
+         switch penWidth {
             case 0:penImg = UIImage(named: "markerS.pdf")
             case 1:penImg = UIImage(named: "markerM.pdf")
             case 2:penImg = UIImage(named: "markerL.pdf")
             default:penImg = UIImage(named: "markerM.pdf")
             }
         }else if callig {//-- graphic-pen --
-         switch lineWidth {
+         switch penWidth {
             case 0:penImg = UIImage(named: "gpen00.pdf")
             case 1:penImg = UIImage(named: "gpen01.pdf")
             case 2:penImg = UIImage(named: "gpen02.pdf")
             default:penImg = UIImage(named: "gpen01.pdf")
             }
          }else {//-- pencil --
-          switch lineWidth {
+          switch penWidth {
             case 0:penImg = UIImage(named: "pen0.pdf")
             case 1:penImg = UIImage(named: "pen3.pdf")
             case 2:penImg = UIImage(named: "pen1.pdf")
@@ -3511,6 +3533,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
          editButton3.setImage(penImg, for:UIControlState.normal)
         //_20181020に変更_カラーiconの再表示
+        ///print("penColorNum:\(penColorNum)")
         switch penColorNum {
         case 1: editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         case 2: editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
@@ -4251,6 +4274,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         penMode()
     }
     
+    //Sliderの値が変わった時に呼ばれるメソッド
+    func onsliderChange(_ sender:UISlider!)
+    {
+        print(sender.value)
+        let s = sender.value
+        gpenlabel.text = String(Int(round(s*100)))
+        tempSlrN = CGFloat(sender.value)
+        
+    }
+    //リセットボタンを押した時に実行される
+    func rButtonTapped(sender: UIButton){
+        print("rButtonTapped!!")
+        // アニメーション付きで値を変更する
+        gpenSlider.setValue(0.5, animated: true)
+        gpenlabel.text = String(50)
+        tempSlrN = 0.5
+    }
   //----------------------------------------------------------------
   //                  旧ボタン関数(未使用）                             |
   //----------------------------------------------------------------

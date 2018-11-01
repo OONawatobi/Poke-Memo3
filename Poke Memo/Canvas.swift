@@ -13,8 +13,8 @@ class DrawableView: UIView {
  //-----
     var lastPenW:CGFloat = 1//直前のペン幅
     var kando_k:CGFloat = 1 //sliderNに掛かる係数
-    var sliderN:CGFloat = 0.5//スライダー番号
-    var k_dt:CGFloat = 0//
+    //var sliderN:CGFloat = 0.5//スライダー値
+    var k_dt:CGFloat = 0//速度ベクトルの絶対値
     var k_z:CGFloat = 1.0//象限別のペン幅係数
     var lastMidPoint:CGPoint!//★20180818
     var lastDrawImage: UIImage!
@@ -248,7 +248,7 @@ class DrawableView: UIView {
         if lastDrawImage != nil {//タッチEnd時に画面を背景にコピーするつもりだった？
             lastDrawImage.draw(at:CGPoint.zero)
         }
-        lastPenW = 3.0//★
+        lastPenW = 3.0////★
     }
     
     // タッチが動いた-----------------------------------------------
@@ -288,7 +288,7 @@ class DrawableView: UIView {
             let deltX = currentPoint.x - lastPoint.x
             let deltY = currentPoint.y - lastPoint.y
           
-            k_dt = sqrt(pow(deltX,2) + pow(deltY,2))//変化量の長さがの２乗
+            k_dt = sqrt(pow(deltX,2) + pow(deltY,2))//変化量の長さがの２乗の平方根
             print(" ▶︎▶︎▶︎▶︎▶︎ k_dt: \(k_dt)")
             // 座標軸を左に45度回転させる
             let dtx = (deltX - deltY)*0.7
@@ -471,7 +471,7 @@ class DrawableView: UIView {
         var op:CGFloat = 1.0//マークペンの透明度
         if X_color == 0 { //ペンモード
             //ペン巾の変更
-            switch lineWidth {
+            switch penWidth {
                case 0:penW = 5*kpw;op = 0.05
                case 1:penW = 7*kpw;op = 0.04
                case 2:penW = 10*kpw;op = 0.02
@@ -522,23 +522,21 @@ class DrawableView: UIView {
     func drawLine2(path:UIBezierPath) {
         
         //_if lastDrawImage != nil { lastDrawImage.draw(at:CGPoint.zero)}
-        sliderN = (penW - 7) / 12  + 1.2//★1.2
+        //★修正ペンモード時はベジェモードとする？？モード切替時に行う？ここには来ない！
+        //ペン色の設定
         let penColor = selFlg ? gblColor : penC//色選択パネルの色を優先する
         penColor?.setStroke()
-        //  path.lineWidth = penW//ペン幅を指定する
         path.lineCapStyle =   .round//.butt//.square//
-        //★修正ペンモード時はベジェモードとする？？モード切替時に行う？ここには来ない！
-        //ペン幅を指定する
-        let penw = penW*1.2
-        /* ★★★
-        var v_z = k_dt*sliderN * (0.25 + (penW - 7)/25)     //k_dt：△l
-        v_z = v_z >= penw ? penw : v_z      //0.5--1.0
-        print("▲  penw: \(penW) ◾️v_z: \(v_z) k_dt: \(k_dt) sliderN: \(sliderN) ")
-        var w = k_dt >= 5 ? penw * k_z - v_z : penw * k_z       //今回の線幅計算値
-        w = w < 1 ? 1 : w
-        */ //★★★
-        let v_z = penw*k_dt*sliderN*0.02*kando_k
-        let w = penw * k_z  - v_z
+        //ペン幅を指定する（このモードでは線が細くなるので全体を太くする)
+        let penw = penW*1.2//penWはブローバル変数
+        //線幅の変更-----------------------------------//
+        var k_penW:CGFloat = 1.0//ペン巾係数
+        //k_z:象限別のペン幅係数(0-1),kando_k:
+        k_penW = (penW - 7) / 12  + 1.2//★1.2
+        k_penW = k_penW * (sliderN*2)
+        //速度依存係数(k_dt:速度ベクトル長さ)
+        let k_v = penw * k_dt * k_penW * (0.02*kando_k)
+        let w = penw * k_z  - k_v
         
         //---------------------------------------------------
         let w2 = (lastPenW + w)/2 //1つ前の線幅との平均をとる

@@ -215,12 +215,12 @@
 		30F18FE521834C7B00ACFAC2 /* pencil2.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FE421834C7B00ACFAC2 /* pencil2.png */; };
 		30F18FE92183508C00ACFAC2 /* Gペン.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FE82183508C00ACFAC2 /* Gペン.png */; };
 		30F18FEB2183509F00ACFAC2 /* 鉛筆.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FEA2183509E00ACFAC2 /* 鉛筆.png */; };
-		30F18FFB21860C3900ACFAC2 /* orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FFA21860C3900ACFAC2 /* orange.png */; };
-		30F18FFD2186D37400ACFAC2 /* purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FFC2186D37300ACFAC2 /* purple.png */; };
 		30F18FFF2186D91F00ACFAC2 /* マーカー.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F18FFE2186D91E00ACFAC2 /* マーカー.png */; };
 		30F190012186DD5500ACFAC2 /* marker2.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F190002186DD5500ACFAC2 /* marker2.png */; };
 		30F1900B2187216300ACFAC2 /* selectVBg2.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F1900A2187216300ACFAC2 /* selectVBg2.png */; };
 		30F1901121875DCA00ACFAC2 /* selectVBg.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F1901021875DCA00ACFAC2 /* selectVBg.png */; };
+		30F190152188980600ACFAC2 /* purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F190142188980600ACFAC2 /* purple.png */; };
+		30F1901721889EBE00ACFAC2 /* orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F1901621889EBE00ACFAC2 /* orange.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -456,12 +456,12 @@
 		30F18FE421834C7B00ACFAC2 /* pencil2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pencil2.png; path = "../../../../My Creative Cloud Files/pencil2.png"; sourceTree = "<group>"; };
 		30F18FE82183508C00ACFAC2 /* Gペン.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Gペン.png"; sourceTree = "<group>"; };
 		30F18FEA2183509E00ACFAC2 /* 鉛筆.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "鉛筆.png"; sourceTree = "<group>"; };
-		30F18FFA21860C3900ACFAC2 /* orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orange.png; sourceTree = "<group>"; };
-		30F18FFC2186D37300ACFAC2 /* purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = purple.png; sourceTree = "<group>"; };
 		30F18FFE2186D91E00ACFAC2 /* マーカー.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "マーカー.png"; sourceTree = "<group>"; };
 		30F190002186DD5500ACFAC2 /* marker2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = marker2.png; sourceTree = "<group>"; };
 		30F1900A2187216300ACFAC2 /* selectVBg2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selectVBg2.png; sourceTree = "<group>"; };
 		30F1901021875DCA00ACFAC2 /* selectVBg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selectVBg.png; sourceTree = "<group>"; };
+		30F190142188980600ACFAC2 /* purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = purple.png; sourceTree = "<group>"; };
+		30F1901621889EBE00ACFAC2 /* orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orange.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -497,12 +497,12 @@
 				30F18FFE2186D91E00ACFAC2 /* マーカー.png */,
 				30F18FEA2183509E00ACFAC2 /* 鉛筆.png */,
 				30F18FE82183508C00ACFAC2 /* Gペン.png */,
+				30F190142188980600ACFAC2 /* purple.png */,
+				30F1901621889EBE00ACFAC2 /* orange.png */,
 				30F18FE421834C7B00ACFAC2 /* pencil2.png */,
 				307B5A1E2182131700DECF3A /* gpen2.png */,
 				30F190002186DD5500ACFAC2 /* marker2.png */,
 				307B5A0E217DA59800DECF3A /* marker.png */,
-				30F18FFA21860C3900ACFAC2 /* orange.png */,
-				30F18FFC2186D37300ACFAC2 /* purple.png */,
 				307B5A0A217D8A2F00DECF3A /* gpen.png */,
 				307B5A08217D72A400DECF3A /* pencil.png */,
 				309A14E82178ECB1007349E7 /* green.png */,
@@ -954,7 +954,6 @@
 				30A1A53A1E810AAC00938BCA /* m4xp13.png in Resources */,
 				304E6A7F1E7C0A87004E27A6 /* m6x2.png in Resources */,
 				30A1A5331E810A9700938BCA /* m4xp07.png in Resources */,
-				30F18FFB21860C3900ACFAC2 /* orange.png in Resources */,
 				30F18FE92183508C00ACFAC2 /* Gペン.png in Resources */,
 				30A1A5371E810A9700938BCA /* m4xp11.png in Resources */,
 				30750B7A1E85474700809D15 /* gesI02.png in Resources */,
@@ -1001,6 +1000,7 @@
 				30D72ABC1E781F3500B8C48F /* m71.png in Resources */,
 				30750B831E8554AF00809D15 /* m2x3.png in Resources */,
 				308ECC2D1E82AB7200576BA8 /* editOk.png in Resources */,
+				30F190152188980600ACFAC2 /* purple.png in Resources */,
 				30750B881E85562300809D15 /* m4xp05.png in Resources */,
 				301B5D5F1E8F7B85005B1B99 /* edit01.png in Resources */,
 				301B5D7A1E8F7BC5005B1B99 /* edit15.png in Resources */,
@@ -1037,6 +1037,7 @@
 				301B5D721E8F7BC5005B1B99 /* undo06.png in Resources */,
 				30F18FEB2183509F00ACFAC2 /* 鉛筆.png in Resources */,
 				30750B761E85474700809D15 /* ges7.png in Resources */,
+				30F1901721889EBE00ACFAC2 /* orange.png in Resources */,
 				301B5D2F1E8F7AC3005B1B99 /* editPanel.png in Resources */,
 				307EA73220D011CD0087B044 /* childEng.png in Resources */,
 				307B5A0B217D8A2F00DECF3A /* gpen.png in Resources */,
@@ -1074,7 +1075,6 @@
 				3035AB791E928AE000D9D899 /* ind_ico2.png in Resources */,
 				30750B7F1E85475600809D15 /* ges6.png in Resources */,
 				3048005B1E81292500B0F441 /* 3_ico.png in Resources */,
-				30F18FFD2186D37400ACFAC2 /* purple.png in Resources */,
 				3066720A1E4F495700A9CFAC /* greenDown.png in Resources */,
 				30C2B1921DEB259D0069A5DF /* blankP.png in Resources */,
 				3039F7A3214CE3C500FF121A /* all_v18J.png in Resources */,
