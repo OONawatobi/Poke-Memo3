@@ -1491,7 +1491,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //長押しボタンの処理(色選択)
     func pushStartBtn2(sender: UILongPressGestureRecognizer){
         print("pushStartBtn:2")
-        if selFlg{ return }
+        //色選択パネルが開いている場合は閉じる
+        if selFlg{
+            select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
+            select_pcView.removeFromSuperview()
+            ///select_pcView_bg.removeFromSuperview()
+            selFlg = false
+            //return
+        }
         print("★！！！！2")
         select_pcView.setMenu()//★★
         ///self.view.addSubview(select_pcView_bg)
@@ -1504,7 +1511,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if drawableView.X_color == 1{//消しゴムモードの時は鉛筆モードに戻す
             penMode()
             return}//ペンモード以外はパス
-        if selFlg{return}
+        //色選択パネルが開いている場合は閉じる
+        if selFlg{
+            select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
+            select_pcView.removeFromSuperview()
+            ///select_pcView_bg.removeFromSuperview()
+            selFlg = false
+            //return
+        }
         print("★！！！！3")
         select_pcView.setPenMenu()//★★
         ///self.view.addSubview(select_pcView_bg)
