@@ -11,6 +11,7 @@ import UIKit
 class DrawableView: UIView {
     var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
+    var swapFlag = false//drawVとsecondVの入れ替え(false:正規状態)
     var lastPenW:CGFloat = 1//直前のペン幅
     var kando_k:CGFloat = 1 //sliderNに掛かる係数
     //var sliderN:CGFloat = 0.5//スライダー値
@@ -34,23 +35,28 @@ class DrawableView: UIView {
     //["10"]は["1"]のUNDO画面：他も同様
     var undoMode:Int = 0 //[0,1,2,7,8]//1:7,2:8,3:9(編集パネル）がundo:redoのペア
     var editOK:Bool = false//編集確定時の[OK]ボタン実行フラグ
+
     //:Undo/REDO
     func undo() {
         print("undoMode = \(undoMode)")
         if undoMode == 2{//secondView上の処理
+            if swapMode && swapFlag {swapViewBgImage()}
           if bup["20"] == nil{return}
           print("@@ redo @@")
           let im0 = bup["20"]?.0
           mxTemp = bup["20"]?.1
           secondView.backgroundColor = UIColor(patternImage: im0!)
           lastDrawImage = im0
+            if swapMode && !swapFlag {swapViewBgImage()}///swap画面に戻す
           undoMode = 8
             
         }else if undoMode == 8{//undo処理直後
+            if swapMode && swapFlag {swapViewBgImage()}
           let im2 = bup["2"]?.0
           mxTemp = bup["2"]?.1
           secondView.backgroundColor = UIColor(patternImage: im2!)
           lastDrawImage = im2
+            if swapMode && !swapFlag {swapViewBgImage()}///swap画面に戻す
           undoMode = 2
             
         }else if undoMode == 1 {//okボタンが押された直後
@@ -189,6 +195,20 @@ class DrawableView: UIView {
     func reAddSubView(){//secondViewの追加
         self.addSubview(secondView)
     }
+    //secondView.bgとdrawableView.bgを入れ替える。　１⇄２
+    func swapViewBgImage(){
+        thirdView.removeFromSuperview()//3rdViewを取り出す
+        let buf2 = self.secondView.GetImage()
+        self.secondView.backgroundColor = UIColor.clear
+        //drawableViewの画面をbuf1にコピーする
+        let buf1 = self.GetImage()
+        //drawableViewのb.g.にbuf2をコピーする
+        self.backgroundColor = UIColor(patternImage: buf2)
+        //secondViewのb.gにbuf1をコピーする
+        self.secondView.backgroundColor = UIColor(patternImage: buf1)
+        self.addSubview(thirdView)
+        swapFlag = !swapFlag
+    }
     //=====================　描画プログラム　======================//
     
     var rightFlag:Bool = false
@@ -202,10 +222,14 @@ class DrawableView: UIView {
     var timer:Timer!
     var myMx:CGFloat = 0 //今回タッチした最大X座標(タイマースクロール用）
     var timerFlag:Bool = false//タイマー起動中:true
+    ///テスト用(k_dtの値を確認するため）
+    var kdtMax:CGFloat = 0
+    var kdtMin:CGFloat = 100
     
     
     // タッチされた------------------------------------------
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
+        if !marker{swapMode = false}
         UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く ▼▼
         let currentPoint = touches.first!.location(in: self)
         print("currentPoint.x: \(currentPoint.x)")
@@ -217,6 +241,7 @@ class DrawableView: UIView {
         lastPoint = currentPoint
         lastMidPoint = currentPoint//20180702:カリグラフィ用
         okEnable = true//メイン画面のokボタンの受付を許可する
+        if swapMode && swapFlag{swapViewBgImage()}//正規の関係に戻す
         //右側エリアに入っているか判定
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
@@ -227,9 +252,7 @@ class DrawableView: UIView {
         if lastDrawImage != nil{
           bup["20"] = (lastDrawImage,mxTemp)//)bup["2"]
         }
-        if marker {
-          //getVImage4Marker()//self画面を一時的に保存する：マーカ対応
-        }
+
         //lastXm = mx[String(nowGyouNo)]!//◆◆◆◆
         setPen()//線巾、線色の設定
         //sCount = 0//?
@@ -245,10 +268,14 @@ class DrawableView: UIView {
         if timer != nil{timer.invalidate()}
         myMx = 0//タッチ位置の初期化
         //+++++++++2:新タッチシステム検証用
-        if lastDrawImage != nil {//タッチEnd時に画面を背景にコピーするつもりだった？
-            lastDrawImage.draw(at:CGPoint.zero)
-        }
+        
+         if lastDrawImage != nil {//タッチEnd時に画面を背景にコピーするつもりだった？
+                lastDrawImage.draw(at:CGPoint.zero)
+         }
         lastPenW = 3.0////★
+        ///テスト用(k_dtの値を確認するため）
+        kdtMax = 0
+        kdtMin = 100
     }
     
     // タッチが動いた-----------------------------------------------
@@ -289,7 +316,10 @@ class DrawableView: UIView {
             let deltY = currentPoint.y - lastPoint.y
           
             k_dt = sqrt(pow(deltX,2) + pow(deltY,2))//変化量の長さがの２乗の平方根
-            print(" ▶︎▶︎▶︎▶︎▶︎ k_dt: \(k_dt)")
+            ///k_dtの最大値と最小値を記録する
+            kdtMax = k_dt >= kdtMax ? k_dt : kdtMax
+            kdtMin = k_dt < kdtMin ? k_dt : kdtMin
+            ///print(" ▶︎▶︎▶︎▶︎▶︎ k_dt: \(k_dt)")
             // 座標軸を左に45度回転させる
             let dtx = (deltX - deltY)*0.7
             let dty = (deltX + deltY)*0.7
@@ -360,22 +390,17 @@ class DrawableView: UIView {
     // タッチが終わった---------------------------------------------
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //________マーカペンのタッチEnd時の処理
-        if marker{
-            //lastDrawImage = bup["m"]?.0//描画前の画像をCanvasに書き戻す
-            //let blankImge = UIImage.colorImage(color: UIColor.clear, size: self.frame.size)
-            //lastDrawImage = blankImge
-            //lastDrawImage.draw(at:CGPoint.zero)
-            //secondView.backgroundColor = UIColor.green
-            //bup["20"] = bup["1"]
-            //drawLine(path:bezierPath)//strokeをcanvasに描画する
-            //lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
-           // bezierPath = nil//これがないと前のストロークが再描画されてしまった
-        }//________
+       
         //moveFlag == false//タッチ状態終了
         if bezierPath == nil { return }
-        //------- 右端エリア以外にタッチされた場合 -------
+        //------- 右端エリアより左にタッチされた場合 -------
         if rightFlag == false{
           get2VImage()//second画像をbup[2]に保存：UNDO用
+         print("------swapMode:\(swapMode),swapFlag=\(swapFlag)----------------------")
+        if swapMode && !swapFlag{
+            swapViewBgImage()
+           
+        }
           //左方向への自動スクロール
             print("autoFlag:\(autoFlag):mxTemp=\(String(describing: mxTemp))")
           if autoScrollFlag == true{//設定フラグ(判定フラグ:autoFlagでは無い）
@@ -406,6 +431,7 @@ class DrawableView: UIView {
         
         UIGraphicsEndImageContext()  //Canvasを閉じる　▼▼
         ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
+        print(" ▶︎▶︎▶︎▶︎▶︎ k_dt: Max = \(kdtMax), Min = \(kdtMin)")
 }
     
     // タイマー開始
@@ -530,12 +556,13 @@ class DrawableView: UIView {
         //ペン幅を指定する（このモードでは線が細くなるので全体を太くする)
         let penw = penW*1.2//penWはブローバル変数
         //線幅の変更-----------------------------------//
-        var k_penW:CGFloat = 1.0//ペン巾係数
+        var k_penW:CGFloat = 1.0//ペン巾係数??
         //k_z:象限別のペン幅係数(0-1),kando_k:
         k_penW = (penW - 7) / 12  + 1.2//★1.2
-        k_penW = k_penW * (sliderN*2)
+        k_penW = k_penW * (sliderN*2)//sliderNの初期値：0.5
         //速度依存係数(k_dt:速度ベクトル長さ)
-        let k_v = penw * k_dt * k_penW * (0.02*kando_k)
+        //kando_k:
+        let k_v = penw * k_dt * k_penW * (0.02*1)  //kando_k)
         let w = penw * k_z  - k_v
         
         //---------------------------------------------------

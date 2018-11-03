@@ -477,6 +477,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var swapMode = false//マーカのスワップモード時：true
 var sliderN:CGFloat = 0.5//スライダー値
 //var testView = UIView(frame: CGRect(x:0,y:0,width:10,height:vHeight))
 var langFlag:Int = 0//ヘルプ言語　0:日本語、1：英語
@@ -605,6 +606,8 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
 }
 protocol SelectViewDelegate{//パレットビューの操作(機能）
     func penMode()
+    func ok2()
+    func modalChanged(TouchNumber: Int)
 }
 
 //    =======  ViewController    ========
@@ -1833,8 +1836,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //_左端を表示⬇️使っていないみたい？？modaoChange()で再設定している
              drawableView.layer.position = leftEndPoint
              drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
-            //パレットの底に黒線を追加する
-            //drawableView.addBottomBorderWithColor(color: UIColor.black, width:2)
             //secondView,thirdViewの初期化(追加）
             drawableView.setSecondView()
             //編集ツールの追加(toolbar)
@@ -2048,6 +2049,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.editOK = false//編集パネル非表示の場合
         if !ok2Flg{
             upToMemo()//パレット画面をメモ行にコピーする
+            drawableView.swapFlag = false///swapフラするグをリセットする
             drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
         }
         //メモカーソル位置の更新
@@ -3866,7 +3868,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //Indexページでもmx[]を使用する
            mxTemp = mx[String(nowGyouNo)]
   
-        //パレット表示中
+        //パレット表示中,または表示開始中
         if isPalleteMode == true{
             if myEditFlag == true{ closeEditView()}//編集パネルを閉じる
            //_★★メモのスクロール位置を設定(変更）する
@@ -3890,6 +3892,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             let reMemo = myMemo//上記を省略した為追加した。
             drawableView.backgroundColor = UIColor(patternImage: reMemo)
+            drawableView.swapFlag = false///swapフラするグをリセットする
         print("######5")
             //◆◆◆◆
             //セカンドViewの初期画面をブランク画像として保存
@@ -4304,6 +4307,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         gpenlabel.text = String(50)
         tempSlrN = 0.5
     }
+
+    
   //----------------------------------------------------------------
   //                  旧ボタン関数(未使用）                             |
   //----------------------------------------------------------------

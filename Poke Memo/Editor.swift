@@ -374,7 +374,7 @@ class SelectView:UIView{
     let GpenE = UIImage(named: "gpen2.png")!
     let markJ = UIImage(named: "マーカー.png")!
     let markE = UIImage(named: "marker2.png")!
-
+    let swapBtn:UIButton = UIButton(frame: CGRect(x:10,y:5,width:35,height:35))
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
 
@@ -387,18 +387,17 @@ class SelectView:UIView{
         //selectViewを空にする
         self.deleteSubviews()
         //ボタン画像の作成
-        //var xColor = marker ? mColor : bColor
-        //角丸にする
-        //self.imageView.layer.cornerRadius = 30
-        //self.imageView.layer.masksToBounds = true
+        //角丸/丸ボタンを作成する
         btnImgs = []//一旦、空にする
         for i in 0...5 {
-           if marker{
-            btnImgs.append(UIImage.colorImage(color: mColor[i], size: CGSize(width: 20, height: 20)).maskCorner(radius: 4)! )//角丸の色画像を作成する
-           }else{
-            btnImgs.append(UIImage.colorImage2(color: bColor[i], size: CGSize(width: 20, height: 20)))//円形の色画像を作成する
+           if marker{  //角丸の色画像を作成する
+            btnImgs.append(UIImage.colorImage(color: mColor[i], size: CGSize(width: 20, height: 20)).maskCorner(radius: 4)! )
+           }else{      //円形の色画像を作成する
+            btnImgs.append(UIImage.colorImage2(color: bColor[i], size: CGSize(width: 20, height: 20)))
            }
         }
+
+        //6個のボタンを作成する
         for i in 0...5 {//print("\(i)")
             //btnImgs.append( UIImage.colorImage2(color: xColor[i], size: CGSize(width: 20, height: 20)))//円形の色画像を作成する
             let xx:CGFloat = i == 1 ? (marker ? 0 : 10) : 0//第２ボタンだけ位置をづらす
@@ -410,11 +409,22 @@ class SelectView:UIView{
             selBtn.setImage(btnImgs[i], for:UIControlState.normal)
             self.addSubview(selBtn)
         }
+        if marker{
+        //swapボタンを追加する（マーカモード時):黒ボタンの上に被せる
+        swapBtn.addTarget(self, action: #selector(swap_click(sender:)), for:.touchDown)
+        swapBtn.setImage(UIImage(named: "swap0"), for:UIControlState.normal)
+        self.addSubview(swapBtn)
+        }
+        //パネルの背景を設定する
         select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectVBg.png")!)
         //区切り線
         if !marker{
-            sectView = UIView(frame:CGRect(x:107,y:5,width:2,height:34))
+            sectView = UIView(frame:CGRect(x:107,y:2,width:2,height:34))
             sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.2)//brown.withAlphaComponent(0.7)
+            self.addSubview(sectView)
+        }else{
+            sectView = UIView(frame:CGRect(x:62,y:5,width:1,height:42))
+            sectView.backgroundColor = UIColor.gray.withAlphaComponent(0.8)//brown.withAlphaComponent(0.7)
             self.addSubview(sectView)
         }
         //penColorNum(1:黒色、２：赤色、３：選択色)
@@ -469,10 +479,18 @@ class SelectView:UIView{
         //パレット（0:黒色,1:赤色,2:青色,3:緑色,4:橙色,5:紫色)
         let tag = penColorNum == 3 ? lineColor + 2 : penColorNum - 1
         print("★★tag: \(tag)")
-        //btnB_click(tag:tag)
-        //btnBclick_S(tag:tag)
-        //_self.Delegate?.penMode()
-        
+    }
+    func swap_click(sender:UIButton){//
+        let imS = UIImage(named: "swap1")
+        let imN = UIImage(named: "swap0")
+        if swapMode{
+            swapMode = false
+            swapBtn.setImage(imN, for:UIControlState.normal)
+        }else{
+            swapMode = true;
+            swapBtn.setImage(imS, for:UIControlState.normal)
+            print("swap_ON")
+        }
     }
     func btnA_click_S(sender:UIButton){//タッチDOWN 時の処理(start)
         print("btnA_clicked!: \(sender.tag)")
@@ -544,6 +562,8 @@ class SelectView:UIView{
             marker = true
             penColorNum = 3
             lineColor2 = 2//「lineColor"2"」は「lineColor」のマーカ専用版
+            self.Delegate?.ok2()//パレットをメモ行に書き出し
+            self.Delegate?.modalChanged(TouchNumber: nowGyouNo)//メモ行読み込み
         }
         default:break
         }
