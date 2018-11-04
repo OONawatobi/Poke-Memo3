@@ -498,11 +498,13 @@ class SelectView:UIView{
         btnA_click_S2(tag:st)
     }
     func btnA_click_S2(tag:Int){//btnA_click_Sの本体プログラム
+        if marker && (tag == 0){return}//黒ボタンのタッチ反応をしないようにする
         //bigボタンを全て消す
         bigBtm.removeFromSuperview()
         print("---------")
         //bigボタンの色と位置を再設定する
         if marker{
+            
             bigBtm.image = UIImage.colorImage2(color: bColor[tag], size: CGSize(width: 28, height: 28))
             bigBtm.image = UIImage.colorImage(color: mColor[tag], size: CGSize(width: 28, height: 28)).maskCorner(radius: 3)!//角丸の色画像
             let bX = CGFloat(tag) * 50 + 15 + 20
@@ -547,18 +549,23 @@ class SelectView:UIView{
     func btnB_click(sender:UIButton){//ペンボタンを離す
         print("ペンボタンを離す")
         switch sender.tag {
-        case 0:callig = false;
+        case 0:callig = false;   // Gペン　→えんぴつ
         if marker{
-            marker = false;penColorNum = 1//マーカからペンに移った時は"黒色"にする
+            self.Delegate?.ok2()//パレットをメモ行に書き出し
+            //メモ行読み込み
+            if swapMode{self.Delegate?.modalChanged(TouchNumber: nowGyouNo)}
+            marker = false;penColorNum = 1//マーカ →えんぴつ："黒色"にする
         }
-            
-        case 1: callig = true;
+        case 1: callig = true;  // →Gpenn
         if marker{
-            marker = false;penColorNum = 1
+            self.Delegate?.ok2()//パレットをメモ行に書き出し
+            //メモ行読み込み
+            if swapMode{self.Delegate?.modalChanged(TouchNumber: nowGyouNo)}
+            marker = false;penColorNum = 1//マーカ →Gpenn
             }
             
-        case 2:
-        if !marker{//penからマーカに移った時は"黄色"にする
+        case 2:                 // →マーカペン
+        if !marker{             //＊ペン →マーカに移った時は"黄色"にする
             marker = true
             penColorNum = 3
             lineColor2 = 2//「lineColor"2"」は「lineColor」のマーカ専用版
