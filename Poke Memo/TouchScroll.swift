@@ -51,7 +51,7 @@ class TouchScrollView: UIScrollView ,UIScrollViewDelegate{//スクロールビ�
         for touch: UITouch in touches{
             let tag = touch.view!.tag
             if tag != 0{
-                self.Delegate2?.modalChanged(TouchNumber: tag)
+                self.Delegate2?.modalChanged(TouchNumber: tag,top:1)
                 //selectedTag = tag
             }
         }

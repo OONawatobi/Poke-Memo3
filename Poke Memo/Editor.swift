@@ -372,8 +372,8 @@ class SelectView:UIView{
     let penE = UIImage(named: "pencil2.png")!
     let GpenJ = UIImage(named: "Gペン.png")!
     let GpenE = UIImage(named: "gpen2.png")!
-    let markJ = UIImage(named: "マーカー.png")!
-    let markE = UIImage(named: "marker2.png")!
+    let markJ = UIImage(named: "マーカーJ.png")!
+    let markE = UIImage(named: "markerE.png")!
     let swapBtn:UIButton = UIButton(frame: CGRect(x:10,y:5,width:35,height:35))
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
@@ -416,7 +416,7 @@ class SelectView:UIView{
         self.addSubview(swapBtn)
         }
         //パネルの背景を設定する
-        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectVBg.png")!)
+        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd.png")!)//(named:"selectVBg.png")!)
         //区切り線
         if !marker{
             sectView = UIView(frame:CGRect(x:107,y:2,width:2,height:34))
@@ -466,7 +466,7 @@ class SelectView:UIView{
             self.addSubview(selBtn)
         }
         ///select_pcView_bg.backgroundColor = UIColor.rgb(r:51,g:204, b:204, alpha: 1)
-        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectVBg2.png")!)
+        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"penBgd.png")!)//(named:"selectVBg2.png")!)
         //区切り線
         sectView = UIView(frame:CGRect(x:107,y:4,width:1,height:36))
         sectView2 = UIView(frame:CGRect(x:200,y:4,width:1,height:36))
@@ -553,14 +553,14 @@ class SelectView:UIView{
         if marker{
             self.Delegate?.ok2()//パレットをメモ行に書き出し
             //メモ行読み込み
-            if swapMode{self.Delegate?.modalChanged(TouchNumber: nowGyouNo)}
+            if swapMode{self.Delegate?.modalChanged(TouchNumber: nowGyouNo,top:0)}
             marker = false;penColorNum = 1//マーカ →えんぴつ："黒色"にする
         }
         case 1: callig = true;  // →Gpenn
         if marker{
             self.Delegate?.ok2()//パレットをメモ行に書き出し
             //メモ行読み込み
-            if swapMode{self.Delegate?.modalChanged(TouchNumber: nowGyouNo)}
+            if swapMode{self.Delegate?.modalChanged(TouchNumber: nowGyouNo,top:0)}
             marker = false;penColorNum = 1//マーカ →Gpenn
             }
             
@@ -570,7 +570,7 @@ class SelectView:UIView{
             penColorNum = 3
             lineColor2 = 2//「lineColor"2"」は「lineColor」のマーカ専用版
             self.Delegate?.ok2()//パレットをメモ行に書き出し
-            self.Delegate?.modalChanged(TouchNumber: nowGyouNo)//メモ行読み込み
+            self.Delegate?.modalChanged(TouchNumber: nowGyouNo,top:0)//メモ行読み込み
         }
         default:break
         }

@@ -587,7 +587,7 @@ var okEnable:Bool = true//OKボタンを受け付けるフラグ
 //------------------------------------------------------------------------
 
 protocol ScrollView2Delegate{//スクロールビューの操作(機能）
-    func modalChanged(TouchNumber: Int)
+    func modalChanged(TouchNumber: Int,top:Int)
     //func show_4thFrame()
     //func scrollViewWillBeginDragging(scrollView: UIScrollView)
 }
@@ -607,7 +607,7 @@ protocol DrawableViewDelegate{//パレットビューの操作(機能）
 protocol SelectViewDelegate{//パレットビューの操作(機能）
     func penMode()
     func ok2()
-    func modalChanged(TouchNumber: Int)
+    func modalChanged(TouchNumber: Int,top:Int)
 }
 
 //    =======  ViewController    ========
@@ -1375,7 +1375,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let selHeight:CGFloat = 44
         let sel_y:CGFloat = boundHeight - th - vHeight - 40 - selHeight
         //let sely2:CGFloat = myEdity2 - selHeight
-        let selRect = CGRect(x:0,y:sel_y,width:50*6 + 15,height: selHeight)
+        let selRect = CGRect(x:0,y:sel_y,width:50*6 + 15 + 5,height: selHeight)
         select_pcView = SelectView(frame: selRect)
         //デリゲート登録
         select_pcView.Delegate = self
@@ -1872,9 +1872,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //????myEditFlag = false
             //+-+- １行目をパレットに呼び込む$
             if childFlag != true{//子メモが開いていない場合
-                modalChanged(TouchNumber: pageNum*100 + 1)
+                modalChanged(TouchNumber: pageNum*100 + 1,top:1)
             }else{//子メモが開いている場合
-                modalChanged(TouchNumber: nowGyouNo)
+                modalChanged(TouchNumber: nowGyouNo,top:1)
             }
             penColorNum = 1//黒色
             penMode()//黒ペンモードにする
@@ -2416,7 +2416,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
               let nextNum = nowGyouNo
               self.Pallete(self.pallete2)//パレットを開く
                 print("isEdit: \(String(describing: isPalleteMode))")
-              self.modalChanged(TouchNumber:nextNum!)//セルを選択
+              self.modalChanged(TouchNumber:nextNum!,top:1)//セルを選択
               memo[fNum].togglleCursol()
             }
         }
@@ -3851,7 +3851,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
   
    /* -------------------　プロトコル関数　-----------------------------*/
     
-    func modalChanged(TouchNumber: Int) {// protocol ScrollViewDelegate
+    func modalChanged(TouchNumber: Int,top:Int) {// protocol ScrollViewDelegate
+        print("====== modalChanged ======")
         print("TouchNumber:@\(TouchNumber)")
         print("fNum:\(fNum)")
         if myEditFlag{return}//★20180820
@@ -3880,9 +3881,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             memo[fNum].selectedNo(tagN: nowGyouNo)
 
    print("######4")
+            if top == 1{     //==0の場合は左にスクロールしない
            //_パレットの表示位置をリセット(左端を表示）する
             drawableView.layer.position = leftEndPoint// CGPoint(x:vWidth/2, y:boundHeight - th - vHeight/2)
-
+            }
            //パレット表示用にリサイズする(extension)？読み込む画像はどこから？myMemo
            //上のreadMemo(tag: nowGyouNo)の中ですでにリサイズしている為以下省略する
             /* ====================================================
@@ -3990,12 +3992,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("nowGyouNo2:\(String(describing: nowGyouNo))")
         if nowGyouNo<10000 && nowGyouNo%100 < pageGyou{
     print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-           modalChanged(TouchNumber:nowGyouNo + 1)
+           modalChanged(TouchNumber:nowGyouNo + 1,top:1)
         }
         //+-+- 子メモ行の場合$
         if nowGyouNo>10000 && nowGyouNo%10 < pageGyou2{
     print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
-            modalChanged(TouchNumber:nowGyouNo + 1)
+            modalChanged(TouchNumber:nowGyouNo + 1,top:1)
         }
         
     }
@@ -4324,12 +4326,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          memoView.frame = CGRectMake(0, 0,leafWidth, (leafHeight + leafMargin) * CGFloat(pageGyou) + topOffset)
          */
         
-        modalChanged(TouchNumber: nowGyouNo)
+        modalChanged(TouchNumber: nowGyouNo,top:1)
     }
 
     func x_delMemo(sender: AnyObject) {//xxxx,◾◾◾◾：メニュー
         memo[fNum].delSelectedMemo(gyou: nowGyouNo,maxGyou: pageGyou)
-        modalChanged(TouchNumber:  nowGyouNo)
+        modalChanged(TouchNumber:  nowGyouNo,top:1)
         // 保存データを全削除
         //
         //let userDefault = UserDefaults.standard
