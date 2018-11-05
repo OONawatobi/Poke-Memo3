@@ -416,7 +416,7 @@ class SelectView:UIView{
         self.addSubview(swapBtn)
         }
         //パネルの背景を設定する
-        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd.png")!)//(named:"selectVBg.png")!)
+        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd4.png")!)//(named:"selectVBg.png")!)
         //区切り線
         if !marker{
             sectView = UIView(frame:CGRect(x:107,y:2,width:2,height:34))
@@ -486,15 +486,18 @@ class SelectView:UIView{
         if swapMode{
             swapMode = false
             swapBtn.setImage(imN, for:UIControlState.normal)
+            
         }else{
             swapMode = true;
             swapBtn.setImage(imS, for:UIControlState.normal)
             print("swap_ON")
         }
+    drawableView.swapViewBgImage()
     }
     func btnA_click_S(sender:UIButton){//タッチDOWN 時の処理(start)
         print("btnA_clicked!: \(sender.tag)")
         let st:Int = sender.tag
+        if st == 0{return}//黒色ボタンの場合は反応しないようにする
         btnA_click_S2(tag:st)
     }
     func btnA_click_S2(tag:Int){//btnA_click_Sの本体プログラム
@@ -523,6 +526,7 @@ class SelectView:UIView{
     func btnA_click(sender:UIButton){//色アイコンタッチUP 時の処理
         print("btnA_clicked!: \(sender.tag)")
         let st:Int = sender.tag
+        if st == 0{return}//黒色ボタンの場合は反応しないようにする
         btnA_click2(tag:st)
     }
     func btnA_click2(tag:Int){//btnA_click()の本体プログラム

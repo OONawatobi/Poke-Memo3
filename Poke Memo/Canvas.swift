@@ -230,7 +230,7 @@ class DrawableView: UIView {
     // タッチされた------------------------------------------
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
         if !marker{swapMode = false}
-        //swapモードからnormalモードに切り替えた場合の処理
+        //swapモードからpenモードに切り替えた場合の処理? マーカ(swap →normal)は下記はtrue？
         if !swapMode && swapFlag {swapViewBgImage()}
         UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く ▼▼
         let currentPoint = touches.first!.location(in: self)

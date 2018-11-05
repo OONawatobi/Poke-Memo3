@@ -1409,7 +1409,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             name: NSNotification.Name.UIApplicationDidBecomeActive,
             object: nil
         )
-    
+
     }
     //  =======         End of viewDi dLoad         =======
     // アプリバックグラウンド移行開始時に行う処理

@@ -159,6 +159,9 @@
 		309616D6218EDAAC00C5F6FA /* markerE.png in Resources */ = {isa = PBXBuildFile; fileRef = 309616D5218EDAAC00C5F6FA /* markerE.png */; };
 		309616E2218EF40A00C5F6FA /* penBgd.png in Resources */ = {isa = PBXBuildFile; fileRef = 309616E1218EF40A00C5F6FA /* penBgd.png */; };
 		309616E8218EFDA800C5F6FA /* colorBgd.png in Resources */ = {isa = PBXBuildFile; fileRef = 309616E7218EFDA800C5F6FA /* colorBgd.png */; };
+		309616EA2190269F00C5F6FA /* colorBgd2.png in Resources */ = {isa = PBXBuildFile; fileRef = 309616E92190269F00C5F6FA /* colorBgd2.png */; };
+		309616EC2190279300C5F6FA /* colorBgd3.png in Resources */ = {isa = PBXBuildFile; fileRef = 309616EB2190279300C5F6FA /* colorBgd3.png */; };
+		309616EE21902A3D00C5F6FA /* colorBgd4.png in Resources */ = {isa = PBXBuildFile; fileRef = 309616ED21902A3D00C5F6FA /* colorBgd4.png */; };
 		3099BC9D1E6F08B6004C11C0 /* happy_icon3z.png in Resources */ = {isa = PBXBuildFile; fileRef = 3099BC9C1E6F08B6004C11C0 /* happy_icon3z.png */; };
 		309A14E92178ECB1007349E7 /* green.png in Resources */ = {isa = PBXBuildFile; fileRef = 309A14E82178ECB1007349E7 /* green.png */; };
 		30A1A5331E810A9700938BCA /* m4xp07.png in Resources */ = {isa = PBXBuildFile; fileRef = 30A1A52E1E810A9700938BCA /* m4xp07.png */; };
@@ -398,6 +401,9 @@
 		309616D5218EDAAC00C5F6FA /* markerE.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = markerE.png; sourceTree = "<group>"; };
 		309616E1218EF40A00C5F6FA /* penBgd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = penBgd.png; sourceTree = "<group>"; };
 		309616E7218EFDA800C5F6FA /* colorBgd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = colorBgd.png; path = "../../../../My Creative Cloud Files/colorBgd.png"; sourceTree = "<group>"; };
+		309616E92190269F00C5F6FA /* colorBgd2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = colorBgd2.png; sourceTree = "<group>"; };
+		309616EB2190279300C5F6FA /* colorBgd3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = colorBgd3.png; sourceTree = "<group>"; };
+		309616ED21902A3D00C5F6FA /* colorBgd4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = colorBgd4.png; sourceTree = "<group>"; };
 		3099BC9C1E6F08B6004C11C0 /* happy_icon3z.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = happy_icon3z.png; sourceTree = "<group>"; };
 		309A14E82178ECB1007349E7 /* green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green.png; sourceTree = "<group>"; };
 		30A1A52E1E810A9700938BCA /* m4xp07.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = m4xp07.png; sourceTree = "<group>"; };
@@ -503,6 +509,9 @@
 			isa = PBXGroup;
 			children = (
 				309616E1218EF40A00C5F6FA /* penBgd.png */,
+				309616ED21902A3D00C5F6FA /* colorBgd4.png */,
+				309616E92190269F00C5F6FA /* colorBgd2.png */,
+				309616EB2190279300C5F6FA /* colorBgd3.png */,
 				309616E7218EFDA800C5F6FA /* colorBgd.png */,
 				309616CD218ECA6300C5F6FA /* マーカー.png */,
 				309616D5218EDAAC00C5F6FA /* markerE.png */,
@@ -930,6 +939,7 @@
 				30E326A61E474E5B00DD6686 /* lines.png in Resources */,
 				308ECC301E82AD0900576BA8 /* all.png in Resources */,
 				301B5D7B1E8F7BC5005B1B99 /* undo_ico.png in Resources */,
+				309616EA2190269F00C5F6FA /* colorBgd2.png in Resources */,
 				301B5D3E1E8F7B05005B1B99 /* editSample.png in Resources */,
 				301B5D631E8F7B85005B1B99 /* edit07.png in Resources */,
 				301B5D661E8F7B85005B1B99 /* edit04.png in Resources */,
@@ -1015,6 +1025,7 @@
 				30F1900B2187216300ACFAC2 /* selectVBg2.png in Resources */,
 				303238211E90A8E000E443A4 /* 3Up.png in Resources */,
 				30D72ABC1E781F3500B8C48F /* m71.png in Resources */,
+				309616EC2190279300C5F6FA /* colorBgd3.png in Resources */,
 				30750B831E8554AF00809D15 /* m2x3.png in Resources */,
 				308ECC2D1E82AB7200576BA8 /* editOk.png in Resources */,
 				30F190152188980600ACFAC2 /* purple.png in Resources */,
@@ -1075,6 +1086,7 @@
 				304E6A7D1E7C09F8004E27A6 /* m6x4.png in Resources */,
 				301B5D651E8F7B85005B1B99 /* edit05.png in Resources */,
 				30CBD5D1212690D7000E31AC /* 2Right2.png in Resources */,
+				309616EE21902A3D00C5F6FA /* colorBgd4.png in Resources */,
 				30BE70A81E14009D00B9F52E /* 2lines.png in Resources */,
 				30D9F3331E13B82B00142144 /* keshi.png in Resources */,
 				306671F01E4F26CE00A9CFAC /* black2.png in Resources */,
