@@ -229,6 +229,7 @@ class DrawableView: UIView {
     
     // タッチされた------------------------------------------
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
+        print("== swapMode: \(swapMode):swapFlag: \(swapFlag) ==")
         if !marker{swapMode = false}
         //swapモードからpenモードに切り替えた場合の処理? マーカ(swap →normal)は下記はtrue？
         if !swapMode && swapFlag {swapViewBgImage()}

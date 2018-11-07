@@ -367,6 +367,7 @@ class SelectView:UIView{
     var penColor = UIColor.black
     var btnImgs:[UIImage] = []//★★色セレクトボタン画像：丸
     var btnImgs2:[UIImage] = []//★★ペンセレクトボタン画像：四角
+    var bacBtn:UIImageView! = UIImageView(frame: CGRect(x:15,y:7,width:30,height:30))
     //ボタン画像の作成
     let penJ = UIImage(named: "鉛筆.png")!
     let penE = UIImage(named: "pencil2.png")!
@@ -374,18 +375,37 @@ class SelectView:UIView{
     let GpenE = UIImage(named: "gpen2.png")!
     let markJ = UIImage(named: "マーカーJ.png")!
     let markE = UIImage(named: "markerE.png")!
-    let swapBtn:UIButton = UIButton(frame: CGRect(x:10,y:5,width:35,height:35))
+    let swapBtn:UIButton = UIButton(frame: CGRect(x:15,y:7,width:30,height:30))
+    let imS = UIImage(named: "swap1h")
+    let imN = UIImage(named: "swap0h")
+    //セレクトパネルの背景色:角丸表示にするために必要
+    let sRect = CGRect(x:0,y:0,width:50*6 + 15 + 5,height: 44)
+    var select_bg = UIView(frame: CGRect(x:0,y:0,width:320,height: 44))
+    var selct_pnl = UIView(frame: CGRect(x:3,y:3,width:310,height: 42))
+    
+    
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
 
     func setMenu(){ //UIButtonはここで作成する
         print("select2btn is selected!!")
+        //selectViewを空にする
+        self.deleteSubviews()
+        self.backgroundColor = UIColor.clear
+        select_bg.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
+        selct_pnl.backgroundColor = UIColor.rgb(r: 254, g: 243, b: 242, alpha: 1.0)//white.withAlphaComponent(1.0)
+        
+        selct_pnl.layer.borderColor = UIColor.black.cgColor
+        selct_pnl.layer.borderWidth = 0.3
+        select_bg.roundCorners([.topLeft, .topRight], radius: 8.0)
+        selct_pnl.roundCorners([.topLeft, .topRight], radius: 8.0)
+        select_bg.addSubview(selct_pnl)
+        self.addSubview(select_bg)
         //ツールバーの高さを取得した後の再設定
         if boundWidthX == boundWidth{//縦場面の場合
          select_pcView.layer.position.y = boundHeight - vHeight - 40 - 44/2 - th
         }
-        //selectViewを空にする
-        self.deleteSubviews()
+        
         //ボタン画像の作成
         //角丸/丸ボタンを作成する
         btnImgs = []//一旦、空にする
@@ -412,14 +432,20 @@ class SelectView:UIView{
         if marker{
         //swapボタンを追加する（マーカモード時):黒ボタンの上に被せる
         swapBtn.addTarget(self, action: #selector(swap_click(sender:)), for:.touchDown)
-        swapBtn.setImage(UIImage(named: "swap0"), for:UIControlState.normal)
-        self.addSubview(swapBtn)
+        if swapMode{
+            swapBtn.setImage(imS, for:UIControlState.normal)
+        }else{
+            swapBtn.setImage(imN, for:UIControlState.normal)
+        }
+            bacBtn.backgroundColor = UIColor.yellow
+            self.addSubview(bacBtn)//下記の背景色を作成する
+            self.addSubview(swapBtn)
         }
         //パネルの背景を設定する
-        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd4.png")!)//(named:"selectVBg.png")!)
+        ///select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd4.png")!)//(named:"selectVBg.png")!)
         //区切り線
         if !marker{
-            sectView = UIView(frame:CGRect(x:107,y:2,width:2,height:34))
+            sectView = UIView(frame:CGRect(x:107,y:2,width:2,height:42))
             sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.2)//brown.withAlphaComponent(0.7)
             self.addSubview(sectView)
         }else{
@@ -481,8 +507,7 @@ class SelectView:UIView{
         print("★★tag: \(tag)")
     }
     func swap_click(sender:UIButton){//
-        let imS = UIImage(named: "swap1")
-        let imN = UIImage(named: "swap0")
+
         if swapMode{
             swapMode = false
             swapBtn.setImage(imN, for:UIControlState.normal)
@@ -497,7 +522,7 @@ class SelectView:UIView{
     func btnA_click_S(sender:UIButton){//タッチDOWN 時の処理(start)
         print("btnA_clicked!: \(sender.tag)")
         let st:Int = sender.tag
-        if st == 0{return}//黒色ボタンの場合は反応しないようにする
+        if st == 0 && marker{return}//マーカ黒色ボタンの場合は反応しないようにする
         btnA_click_S2(tag:st)
     }
     func btnA_click_S2(tag:Int){//btnA_click_Sの本体プログラム
@@ -512,6 +537,7 @@ class SelectView:UIView{
             bigBtm.image = UIImage.colorImage(color: mColor[tag], size: CGSize(width: 28, height: 28)).maskCorner(radius: 3)!//角丸の色画像
             let bX = CGFloat(tag) * 50 + 15 + 20
             bigBtm.layer.position.x = bX
+            bacBtn.backgroundColor =  mColor[tag]
         }else{
             bigBtm.image = UIImage.colorImage2(color: bColor[tag], size: CGSize(width: 28, height: 28))
             let bX = CGFloat(tag) * 50 + 15 + 20

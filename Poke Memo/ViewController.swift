@@ -656,7 +656,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var hl:UILabel!//ヘルプ画面のタイトル
     var numBar:UIView!//INDEXページの左端ライン
-    //var trf:Bool = false//WC：タイマーフラグ（ペンボタンのdouble-click対応）
     //var bView:UIView!//ブランクビュー
     //var setFlag:Bool = false
     //var isIndexMode:Bool! = false//Indexの表示フラグ：
@@ -667,8 +666,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var buttonRedo:UIButton!//_shortToolBarのボタン
     var reloads:[UIImage]!//ファイルから読み込んだイメージ配列
     var editButton1:UIButton!
-    //var editButton2:UIButton!
-    //var editButton3:UIButton!
     var editButton4:UIButton!
     var editButton5:UIButton!
     var editButton6:UIButton!
@@ -884,7 +881,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let mBlue = UIColor.cyan//UIColor.rgb(r: 153, g: 255, b: 255, alpha: 1.0)
         let mGrass = UIColor.rgb(r: 55, g: 234, b: 71, alpha: 1.0)
         let mRed =  UIColor.rgb(r: 221, g: 19, b: 121, alpha: 1.0)
-        let mGray =  UIColor.lightGray//UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
+        let mGray =  UIColor.white//lightGray//UIColor.rgb(r: 0, g: 0, b: 0, alpha: 1.0)
         let mYellow =  UIColor.rgb(r: 254, g: 217, b: 0, alpha: 1.0)
         mColor = [mGray,mRed,mBlue,mGrass,mYellow,mPink]
         //[UIColor.lightGray,UIColor.magenta.withAlphaComponent(0.05),UIColor.cyan,UIColor.green,UIColor.yellow,UIColor.purple]
@@ -1371,6 +1368,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let myLongPressGesture3 = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.pushStartBtn3))
         myLongPressGesture3.minimumPressDuration = 0.6
         editButton3.addGestureRecognizer(myLongPressGesture3)//★★複数ボタンで共通
+    /*
+        pallete2.action = #selector(rightBarBtnClicked(sender:))
+    //  palleteボタン長押しジェスチャーの登録
+        let myLongPressGesture4 = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.pushStartBtn4))
+        myLongPressGesture4.minimumPressDuration = 0.6
+        pallete2.addGestureRecognizer(myLongPressGesture4)//★★複数ボタンで共通
+    */
         //*** 色パネルViewの作成 ***//★★★★
         let selHeight:CGFloat = 44
         let sel_y:CGFloat = boundHeight - th - vHeight - 40 - selHeight
@@ -1528,7 +1532,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.addSubview(select_pcView)
         selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
     }
-
+/*
+    func rightBarBtnClicked(sender: UIButton){
+        print("rightBarBtnClicked")
+    }
+    func pushStartBtn4(sender: UILongPressGestureRecognizer){
+        print("pushStartBtn:4")
+    }
+*/
     @IBOutlet weak var naviBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var menu2: UIBarButtonItem!
@@ -1603,11 +1614,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 //self.tl.font = "Cooper Std"//"HiraKakuProN-W3"//"Chalkboard SE"//"Optima-ExtraBlack"//AmericanTypewriter-Bold//"Optima-ExtraBlack"//"Chalkduster"//Euphemia UCAS
                 self.naviBar.topItem?.titleView = self.tl
                 //↑はこれでもOK:naviBar.topItem?.title = "--  INDEX  --"
-                    //ステータスバーの色を変える
-                    self.statusBarBackground.backgroundColor = self.iColor
-                    self.underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.0)
-                    // ナビゲーションを変更する処理
-                    self.setNaviBar(color: self.iColor)
+                //ステータスバーの色を変える
+                self.statusBarBackground.backgroundColor = self.iColor
+                self.underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.0)
+                // ナビゲーションを変更する処理
+                self.setNaviBar(color: self.iColor)
                 //self.view.addSubview(self.mask)
                 self.myScrollView.frame = self.scrollRect_I
                 self.myScrollView.contentOffset.y = 0//スクロール位置：TOP
@@ -2018,7 +2029,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 closeEditView()//編集画面を閉じる
             }
 
-          }else{ return }//モードが選択されていない場合(editFlag == false)
+          }else{ return }//編集モードが選択されていない場合(editFlag == false)
             //編集画面表示中で編集モードが選択されていない場合はパス
             //if myEditFlag == true{return}
         //===== 編集パネルが非表示の場合 =====
@@ -2026,7 +2037,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         /**      通常の文字入力時      **/
             //if okEnable == false{return}
             //+- okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
-            ok2()
+            ok2()//処理の本体メソッド
            
         }
             
@@ -2049,13 +2060,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.editOK = false//編集パネル非表示の場合
         if !ok2Flg{
             upToMemo()//パレット画面をメモ行にコピーする
-            drawableView.swapFlag = false///swapフラするグをリセットする
+            ///drawableView.swapFlag = false///swapフラするグをリセットする
             drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
         }
         //メモカーソル位置の更新
         memoCursol(disp: 1)
         ok2Flg = true//??ok2()重複実行防止用(メモ行更新不可となる)
         //↑これを有効にするとメモ行に正しく書き込めないバグが発生した。
+        print("====  swapFlag = \(drawableView.swapFlag) ====")
     }
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
@@ -3495,7 +3507,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func penWclicked(){
         print("penWidth-clickされました！！")
-        //trf = false
+
         switch penWidth {
             case 0:penWidth = 1
             case 1:penWidth = 2
@@ -3583,13 +3595,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }else{
           print("既にペンモードですよ！！")//ペンモードの場合はpen幅選択モードにする
           penWclicked()//ペン幅変更メソッド
-/*          //Wクリック操作を取りやめる
-          if trf == true{penWclicked()}
-          else{
-            trf = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){self.trf = false}//0.5秒後にtrfをfalseに変更する
-            }
- */
             
         }
     }
