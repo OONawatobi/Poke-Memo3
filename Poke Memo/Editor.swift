@@ -376,14 +376,13 @@ class SelectView:UIView{
     let markJ = UIImage(named: "マーカーJ.png")!
     let markE = UIImage(named: "markerE.png")!
     let swapBtn:UIButton = UIButton(frame: CGRect(x:15,y:7,width:30,height:30))
-    let imS = UIImage(named: "swap1h")
-    let imN = UIImage(named: "swap0h")
+    let imS = UIImage(named: "swap1z")
+    let imN = UIImage(named: "swap0z")
     //セレクトパネルの背景色:角丸表示にするために必要
     let sRect = CGRect(x:0,y:0,width:50*6 + 15 + 5,height: 44)
     var select_bg = UIView(frame: CGRect(x:0,y:0,width:320,height: 44))
     var selct_pnl = UIView(frame: CGRect(x:3,y:3,width:310,height: 42))
-    
-    
+ 
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
 
@@ -391,6 +390,8 @@ class SelectView:UIView{
         print("select2btn is selected!!")
         //selectViewを空にする
         self.deleteSubviews()
+        self.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd5")!)
+  /*
         self.backgroundColor = UIColor.clear
         select_bg.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
         selct_pnl.backgroundColor = UIColor.rgb(r: 254, g: 243, b: 242, alpha: 1.0)//white.withAlphaComponent(1.0)
@@ -401,6 +402,7 @@ class SelectView:UIView{
         selct_pnl.roundCorners([.topLeft, .topRight], radius: 8.0)
         select_bg.addSubview(selct_pnl)
         self.addSubview(select_bg)
+ */
         //ツールバーの高さを取得した後の再設定
         if boundWidthX == boundWidth{//縦場面の場合
          select_pcView.layer.position.y = boundHeight - vHeight - 40 - 44/2 - th

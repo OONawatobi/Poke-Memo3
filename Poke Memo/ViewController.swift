@@ -810,7 +810,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5)
         jinesH = boundWidth - vHeight - 40 - statusBarHeight - naviBar.frame.height - 44
         jinesView = UIView(frame: CGRect(x: leftOffset + boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH))
-        jinesView.backgroundColor = UIColor.orange.withAlphaComponent(0.1) //(patternImage: UIImage(named:"jines.png")!)
+        jinesView.backgroundColor = UIColor(patternImage: UIImage(named:"jines2")!)//UIColor.orange.withAlphaComponent(0.1) 
         self.view.addSubview(jinesView)
         self.view.addSubview(shortToolBar)
         shadow = UIView(frame: CGRect(x:leftOffset + boundWidth,y:0,width:7,height:boundWidth - vHeight - 40))//メモの右側の影
@@ -2061,7 +2061,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if !ok2Flg{
             upToMemo()//パレット画面をメモ行にコピーする
             ///drawableView.swapFlag = false///swapフラするグをリセットする
-            drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する
+            drawableView.get1VImage()//◆◆◆◆:drawableView画面を取得する → [1]
         }
         //メモカーソル位置の更新
         memoCursol(disp: 1)

@@ -40,27 +40,28 @@ class DrawableView: UIView {
     func undo() {
         print("undoMode = \(undoMode)")
         if undoMode == 2{//secondView上の処理
-            if swapMode && swapFlag {swapViewBgImage()}
+            if swapMode && swapFlag {swapViewBgImage()}//⭕️swap状態→正規状態に戻す
           if bup["20"] == nil{return}
           print("@@ redo @@")
           let im0 = bup["20"]?.0
           mxTemp = bup["20"]?.1
           secondView.backgroundColor = UIColor(patternImage: im0!)
           lastDrawImage = im0
-            if swapMode && !swapFlag {swapViewBgImage()}///swap画面に戻す
+            if swapMode && !swapFlag {swapViewBgImage()}///⭕️swap画面に戻す
           undoMode = 8
             
         }else if undoMode == 8{//undo処理直後
-            if swapMode && swapFlag {swapViewBgImage()}
+            if swapMode && swapFlag {swapViewBgImage()}///⭕️
           let im2 = bup["2"]?.0
           mxTemp = bup["2"]?.1
           secondView.backgroundColor = UIColor(patternImage: im2!)
           lastDrawImage = im2
-            if swapMode && !swapFlag {swapViewBgImage()}///swap画面に戻す
+            if swapMode && !swapFlag {swapViewBgImage()}///⭕️swap画面に戻す
           undoMode = 2
             
         }else if undoMode == 1 {//okボタンが押された直後
-          if bup["10"] == nil{return}
+          if bup["10"] == nil{return}//ok2()の中で　[1]→[10]
+          if swapMode && swapFlag {swapViewBgImage()}///⭕️swapモード時は一時的に正規画面に戻す
           secondView.backgroundColor = UIColor.clear//(patternImage: blankView!)
           let im1 = bup["10"]?.0
           mxTemp = bup["10"]?.1
@@ -68,14 +69,14 @@ class DrawableView: UIView {
             bup["temp"] = bup["10"]
             bup["10"] = bup["1"]
             bup["1"] = bup["temp"]
-            
+          
           drawableView.backgroundColor = UIColor(patternImage: im1!)
           lastDrawImage = nil
-
           if editOK == false{//編集パネル非表示
             self.Delegate?.upToMemo()//パレット内容をメモに移す
           }
           print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
+        if swapMode && !swapFlag {swapViewBgImage()}///⭕️swap画面に戻す
           undoMode = 1
             
         }else if undoMode == 3{//編集パネル表示中にokボタンが押された直後のUndo
@@ -100,7 +101,8 @@ class DrawableView: UIView {
             undoMode = 3
             
         }
-        /*
+        print("==== swapFlag=\(swapFlag) ====")
+    /*
         else if undoMode == 7{//undo処理が行われた直後
             let im1 = bup["1"]?.0
             mxTemp = bup["1"]?.1
@@ -111,7 +113,7 @@ class DrawableView: UIView {
             }
             print("self.Delegate?.upToMemo()//パレット内容をメモに移す")
             undoMode = 1
-        */
+    */
     }
     //undo関係のリセット
     /*
@@ -229,9 +231,10 @@ class DrawableView: UIView {
     
     // タッチされた------------------------------------------
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
-        print("== swapMode: \(swapMode):swapFlag: \(swapFlag) ==")
+        //print("== 🔸touchesBegan:swapMode: \(swapMode):swapFlag: \(swapFlag) ==")
+        //print("----- undoMode = \(undoMode) -----")
         if !marker{swapMode = false}
-        //swapモードからpenモードに切り替えた場合の処理? マーカ(swap →normal)は下記はtrue？
+        //⭕️swapモードからpenモードに切り替え時の処理? マーカ(swap →normal)は下記はtrue？
         if !swapMode && swapFlag {swapViewBgImage()}
         UIGraphicsBeginImageContext(self.frame.size)//Canvasを開く ▼▼
         let currentPoint = touches.first!.location(in: self)
@@ -244,7 +247,7 @@ class DrawableView: UIView {
         lastPoint = currentPoint
         lastMidPoint = currentPoint//20180702:カリグラフィ用
         okEnable = true//メイン画面のokボタンの受付を許可する
-        if swapMode && swapFlag{swapViewBgImage()}//正規の関係に戻す
+        if swapMode && swapFlag{swapViewBgImage()}//⭕️正規の関係に戻す
         //右側エリアに入っているか判定
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
@@ -289,6 +292,8 @@ class DrawableView: UIView {
           print("◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️")
          return }//タッチされていない場合(Pathが初期化前)はパス　？これって必要？
         */
+        ///print("== 🔵touchesBegan:swapMode: \(swapMode):swapFlag: \(swapFlag) ==")
+        
         //末尾の緑色帯より右には描画不可とする:（子メモマーク表示エリア）
         if rightFlag == false && (currentPoint.x + penW/2) >= (vWidth - 34){
             return
@@ -399,9 +404,9 @@ class DrawableView: UIView {
         //------- 右端エリアより左にタッチされた場合 -------
         if rightFlag == false{
           get2VImage()//second画像をbup[2]に保存：UNDO用
-         print("------swapMode:\(swapMode),swapFlag=\(swapFlag)----------------------")
+        ///print("-🔸---toutchEnd:swapMode:\(swapMode),swapFlag=\(swapFlag)---------------")
         if swapMode && !swapFlag{
-            swapViewBgImage()
+            swapViewBgImage()///⭕️
            
         }
           //左方向への自動スクロール
@@ -545,6 +550,7 @@ class DrawableView: UIView {
         //画面を背景にコピーする
         lastDrawImage = UIGraphicsGetImageFromCurrentImageContext()!
         secondView.backgroundColor = UIColor(patternImage:lastDrawImage!)
+
         //print(":::::func drawLine")
     }
     //非ベジエ描画プログラム
