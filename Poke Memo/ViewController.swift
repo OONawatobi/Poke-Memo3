@@ -514,8 +514,8 @@ var subMemo:MemoView! = nil//+-+-子メモ本体
 var posOffset:CGFloat = 50//+-+-　上記エリアの縦位置
 var childFlag = false//+-+- 子メモが開いている時はtrue
 var oyaGyou:Int = 101//メモページの親行番号
-//let childColor = UIColor.rgb(r: 250, g: 230, b: 240, alpha: 1)
-let childColor = UIColor.rgb(r: 253, g: 250, b: 228, alpha: 1)//255,252,244:薄薄黄色
+//let childColor = UIColor.rgb(r: 253, g: 250, b: 228, alpha: 1)//r:250
+let childColor = UIColor.rgb(r: 254, g: 250, b: 240, alpha: 1)//255,252,244:薄薄黄色
 //252,249,227:薄黄色//255,242,244:薄赤紫//255,247,217:indexカーソルの色
 var testV:UIView!//デバグ用：mx[]位置を表示する。、赤色
 var debug1:Bool = false//デバグ用：ページタグ表示
@@ -695,11 +695,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var titleV:UIImageView!//indexページのタイトル
     var tl: UILabel!//ナビゲーションバータイトルの表示文字
     var underNav:UIView!//ナビゲーションバー下の半透明バー
+    var underNav2:UIView!//ナビゲーションバー下の半透明バー(横画面専用)
     //var mask:UIView!
     //_viewレイアウトの変更
     func setView1(){
         rotMode = 1
         print("------ setView1 --------")
+        //navバーの半透明下線を入れ替える(位置と重なり順序が変わるため）
+        underNav2.removeFromSuperview()
+        underNav2 = nil
+        self.view.addSubview(underNav)
         self.pallete2.isEnabled = true//パレットボタンを表示
         self.menu2.isEnabled = true//メニューボタンを表示
         //パレットのアンカー座標を変更する（センターに戻す）
@@ -799,7 +804,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         scrollRect_P = CGRect(x:leftOffset + (boundWidth - leafWidth)/2,y: 5 ,width:leafWidth, height:boundWidth - vHeight - 50)//最後の50は目で見て調整した
         self.myScrollView.frame = self.scrollRect_P// メモframeの値を設定する
        
-        underNav.removeFromSuperview()
+        ///underNav.removeFromSuperview()
         
         statusBarBackground.frame.size = CGSize(width:boundWidth,height:boundWidth - vHeight - 40)
         statusBarBackground.layer.position = CGPoint(x:leftOffset + (boundWidth)/2,y:(boundWidth - vHeight - 40)/2)
@@ -812,6 +817,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         jinesView = UIView(frame: CGRect(x: leftOffset + boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH))
         jinesView.backgroundColor = UIColor(patternImage: UIImage(named:"jines2")!)//UIColor.orange.withAlphaComponent(0.1) 
         self.view.addSubview(jinesView)
+        ///ナビゲーションバー下の半透明バーを追加する
+        let navB2h = statusBarHeight + naviBar.frame.height
+        let navB2w = shortToolBar.frame.width
+        let navB2x = shortToolBar.layer.position.x - navB2w/2
+        underNav2 = UIView(frame: CGRect(x:navB2x,y:navB2h - 1 ,width:navB2w,height:5))
+        underNav2.backgroundColor = UIColor.init(white: 0.5, alpha:0.3)
+        //navバーの半透明下線を入れ替える(位置と重なり順序が変わるため）
+        underNav.removeFromSuperview()
+        self.view.addSubview(underNav2)
         self.view.addSubview(shortToolBar)
         shadow = UIView(frame: CGRect(x:leftOffset + boundWidth,y:0,width:7,height:boundWidth - vHeight - 40))//メモの右側の影
         shadow.backgroundColor = UIColor.black.withAlphaComponent(0.25)
@@ -1463,6 +1477,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let navB = statusBarHeight + naviBar.frame.height
         underNav = UIView(frame: CGRect(x:0,y:navB - 1 ,width:boundWidth,height:5))
         underNav.backgroundColor = UIColor.init(white: 0.6, alpha:0.3)
+        underNav.removeFromSuperview()
         self.view.addSubview(underNav)//ナビゲーション下線を追加
     }
     //_★★ 端末の向きがかわったら呼び出されるメソッド　-------------------★★
@@ -1506,6 +1521,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             selFlg = false
             //return
         }
+        if drawableView.X_color == 1{return}//消しゴムモード時はパス
         print("★！！！！2")
         select_pcView.setMenu()//★★
         ///self.view.addSubview(select_pcView_bg)
@@ -3599,11 +3615,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
-    func btn4_click(sender:UIButton){
+    func btn4_click(sender:UIButton){//消しゴムモードに変更
         print("btn4_clicked!:消しゴム")
         //if myEditFlag == true{return}//編集画面が表示の場合はパス
         closeEditView()//パレット編集画面を閉じる
         colseSelectView()//選択パネルを閉じる
+        ///swapモード時への対応処理
+        //①パレット画面をメモ行に書き出す
+            ok2()
+        //②swapモードを解除する
+            if swapMode{swapMode = false}//swapモードをnormalモードに戻す
+        //③メモ行をの内容をパレットに読み込む
+            modalChanged(TouchNumber: nowGyouNo, top: 0)//topにスクロールしない
+        ///
+        ///ここまで
         drawableView.X_color = 1//消しゴムモード
         editButton2.setImage(UIImage(named: "white.png"), for:UIControlState.normal)
         editButton4.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
