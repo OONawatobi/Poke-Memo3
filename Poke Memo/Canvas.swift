@@ -532,7 +532,7 @@ class DrawableView: UIView {
             }else{
             //+-+-子メモの場合はchildColorにする
             penC = (nowGyouNo>10000) ? childColor : UIColor.white
-            penW = 15//消しゴムの巾
+            penW = !marker ? 15 : 30//消しゴムの巾(マーカモードでは倍にする)
         }
         penC = marker ? penC.withAlphaComponent(op) : penC//マーカペンの色
         print("@@@@@@@@:::::\(String(describing: penC))")

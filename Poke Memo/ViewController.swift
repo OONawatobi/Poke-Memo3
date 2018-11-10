@@ -258,14 +258,29 @@ extension UIView {
         
         
     }
-    public func addHorizonBorderWithColor(color: UIColor, width: CGFloat) {
+    public func addHorizonBorderWithColor(color: UIColor, width: CGFloat,sel:Int) {
+        let ww = (sel == 1) ? vWidth : self.frame.size.width
+        let border0 = CALayer()
+        //上部に影をつける
+        let sColor = UIColor.black//rgb(r: 51,g: 102, b: 204, alpha: 1)
+        
+        border0.backgroundColor = sColor.withAlphaComponent(0.10
+            ).cgColor
+        border0.frame = CGRect(x:0, y:-6,width:ww!,height:6)
+        self.layer.addSublayer(border0)
+        let border01 = CALayer()
+        border01.backgroundColor = sColor.withAlphaComponent(0.20
+            ).cgColor
+        border01.frame = CGRect(x:0, y:-3,width:ww!,height:3)
+        self.layer.addSublayer(border01)
+        
         let border = CALayer()
         border.backgroundColor = color.cgColor
-        border.frame = CGRect(x:0, y:0,width:self.frame.size.width,height:width)
+        border.frame = CGRect(x:0, y:0,width:ww!,height:width)
         self.layer.addSublayer(border)
         let border2 = CALayer()
         border2.backgroundColor = color.cgColor
-        border2.frame = CGRect(x:0,y:self.frame.size.height - width,width:self.frame.size.width,height:width)
+        border2.frame = CGRect(x:0,y:self.frame.size.height - width,width:ww!,height:width)
         self.layer.addSublayer(border2)
     }
     public func addBottomBorderWithColor(color: UIColor, width: CGFloat) {
@@ -422,6 +437,7 @@ extension UIImage {
         let textRect2  = CGRect(x:self.size.width - 45, y:self.size.height/4, width:75, height:self.size.height/2)
         //+-+-let textRect2  = CGRect(x:self.size.width - 60 - 15, y:self.size.height/4, width:75, height:self.size.height/2)
         //メモ画面のサイズに応じて文字サイズを切り替える//?何をしてるの、必要？★
+        //iPadでとiPhoneではシステムフォントのサイズが異なるためか？
         if self.size.height > vHeight/2{
             font = font2
             textRect = textRect2
@@ -719,7 +735,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         leftEndPoint = CGPoint(x:vWidth/2,y:boundHeight - vHeight/2 - th)
         myToolView.frame.size = CGSize(width: boundWidth,height:40)
         myToolView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40/2 - th)
-        myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
+        ////myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.frame.size = CGSize(width:boundWidth,height:60)
         myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
         select_pcView.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
@@ -793,7 +809,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let mtPosx = iphoneX ? boundHeight + 34 : boundHeight
         myToolView.frame.size = CGSize(width: mtvWidth,height:40)
         myToolView.layer.position = CGPoint(x:mtPosx/2, y: boundWidth - vHeight - 40/2)
-        myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
+        ////myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.layer.position = CGPoint(x:leftOffset + boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
         select_pcView.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
         ///select_pcView_bg.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
@@ -923,7 +939,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         shortToolBar = UIView(frame:CGRect(x:leftOffset + boundWidth, y: 44, width: boundHeight - boundWidth - leftOffset - bS, height: 46))
 
         shortToolBar.backgroundColor = UIColor.lightGray
-        shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5)
+        shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5,sel: 0)
         // buttonOKの追加
         buttonOK = UIButton(frame: CGRect(x:-2*leftOffset + boundHeight - boundWidth - 40,y: 15, width:30, height:20))
         buttonOK.backgroundColor = UIColor.clear
@@ -994,7 +1010,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.backgroundColor = UIColor(patternImage: UIImage(named:"lines.png")!)
         myToolView.alpha = 1//0.7// 透明度を設定
         
-        myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
+        myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1,sel:1)
         
         //ツールViewのボタンの生成　[2][3][4]   [1]
         // button1の追加
@@ -1021,7 +1037,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton3 = UIButton(frame: CGRect(x:75, y:5, width:30, height:30))
         editButton3.layer.cornerRadius = 5
         //editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 1)
-        editButton3.layer.borderColor = UIColor.darkGray.cgColor
+        editButton3.layer.borderColor = UIColor.orange.cgColor// darkGray.cgColor
         editButton3.layer.borderWidth = 0
         editButton3.addTarget(self, action: #selector(ViewController.btn3_click(sender:)), for:.touchUpInside)
         //editButton3.setTitle("3", for: UIControlState.normal)
@@ -1031,7 +1047,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton4 = UIButton(frame: CGRect(x:125, y:5, width:30, height:30))
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
         editButton4.layer.cornerRadius = 5
-        editButton4.layer.borderColor = UIColor.darkGray.cgColor
+        editButton4.layer.borderColor = UIColor.orange.cgColor//darkGray.cgColor
         editButton4.layer.borderWidth = 0
         editButton4.addTarget(self, action: #selector(ViewController.btn4_click(sender:)), for:.touchUpInside)
         //editButton4.setTitle("4", for: UIControlState.normal)
@@ -3548,7 +3564,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         */
         editButton3.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton4.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
-        editButton3.layer.borderWidth = 1.0//★20180821:0.5
+        editButton3.layer.borderWidth = 2.0//★20180821:0.5
         editButton4.layer.borderWidth = 0
         //ペンアイコンの画像を設定
         var penImg:UIImage!
@@ -3633,7 +3649,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         editButton2.setImage(UIImage(named: "white.png"), for:UIControlState.normal)
         editButton4.backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         editButton3.backgroundColor = UIColor.init(white: 0.75, alpha: 0)
-        editButton4.layer.borderWidth = 1.0//★20180821:0.5
+        editButton4.layer.borderWidth = 2.0//★20180821:0.5
         editButton3.layer.borderWidth = 0
     }
     
