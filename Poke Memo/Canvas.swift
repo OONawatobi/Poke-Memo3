@@ -217,6 +217,7 @@ class DrawableView: UIView {
     let rightArea:CGFloat = 20//10//右側エリア境界位置
     var shiftLeftFlag:Bool = false
     var shiftDownFlag:Bool = false
+    var shiftUpFlag:Bool = false
     var X_color = 0//0:ペンモード、:消しゴムモード
     var autoFlag:Bool = false//自動スクロールフラグ
     var moveFlag:Bool = false// タッチしている時にtrue
@@ -389,6 +390,7 @@ class DrawableView: UIView {
        //下側へのシフト判定
         if dY < -50 && dX < 6{ shiftDownFlag = true }
         print("dx = \(dX), dY = \(dY)")
+        if dY > 50 && dX < 6{ shiftUpFlag = true }
         
        }
         //print("shiftLeftFlag = \(shiftLeftFlag):Timer\(timerFlag)")
@@ -422,8 +424,10 @@ class DrawableView: UIView {
         }else if shiftDownFlag == true && bigFlag == false{//拡大モードではパス
             print("downFlag: \(shiftDownFlag)")
             self.Delegate?.selectNextGyou()//改行する
+        }else if shiftUpFlag == true && bigFlag == false{//拡大モードではパス
+        print("🔺🔺🔺🔺🔺🔺🔺")
+            self.Delegate?.selectUpGyou()//Up改行する
         }
-        
         //---- 右側エリアフラグのリセット ----
         shiftLeftFlag = false
         shiftDownFlag = false

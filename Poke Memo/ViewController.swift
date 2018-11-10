@@ -266,7 +266,7 @@ extension UIView {
         
         border0.backgroundColor = sColor.withAlphaComponent(0.10
             ).cgColor
-        border0.frame = CGRect(x:0, y:-6,width:ww!,height:6)
+        border0.frame = CGRect(x:0, y:-7,width:ww!,height:7)
         self.layer.addSublayer(border0)
         let border01 = CALayer()
         border01.backgroundColor = sColor.withAlphaComponent(0.20
@@ -615,7 +615,8 @@ protocol UpperToolViewDelegate{//upperビューの操作(機能）
 
 protocol DrawableViewDelegate{//パレットビューの操作(機能）
     func selectNextGyou()
-    func shiftMX()
+    func selectUpGyou()
+    func shiftMX()///使っていないよう？
     func upToMemo()
     func ok2()
     func memoCursol(disp: Int)
@@ -4031,23 +4032,33 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func selectNextGyou() {//$$$$
         print("★selectNextGyou")
-        
         //lastGyouNo = nowGyouNo//★20180812追加
         memoCursol(disp: 0)//★20180812追加
         done(done2)// okボタンを押す
         print("nowGyouNo2:\(String(describing: nowGyouNo))")
-        if nowGyouNo<10000 && nowGyouNo%100 < pageGyou{
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        if (nowGyouNo<10000) && (nowGyouNo%100 < pageGyou){
            modalChanged(TouchNumber:nowGyouNo + 1,top:1)
         }
         //+-+- 子メモ行の場合$
-        if nowGyouNo>10000 && nowGyouNo%10 < pageGyou2{
-    print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+        if (nowGyouNo>10000) && (nowGyouNo%10 < pageGyou2){
             modalChanged(TouchNumber:nowGyouNo + 1,top:1)
         }
-        
     }
-    func shiftMX(){
+    func selectUpGyou() {//$$$$
+        print("★selectUpGyou")
+        memoCursol(disp: 0)//★20180812追加
+        done(done2)// okボタンを押す
+        print("nowGyouNo2:\(String(describing: nowGyouNo))")
+        if (nowGyouNo<10000) && (nowGyouNo%100 > 1){
+            modalChanged(TouchNumber:nowGyouNo - 1,top:1)
+        }
+        //+-+- 子メモ行の場合$
+        if (nowGyouNo>10000) && (nowGyouNo%10 > 1){
+            modalChanged(TouchNumber:nowGyouNo - 1,top:1)
+        }
+    }
+    
+    func shiftMX(){///使っていないよう？
         done(done2)// okボタンを押す
     }
     //--------------------------------------------------------------------
