@@ -213,6 +213,7 @@ class DrawableView: UIView {
     }
     //=====================　描画プログラム　======================//
     
+    var lastY:CGFloat = 0//１つ前のy座標？右側エリア処理だけで使用する
     var rightFlag:Bool = false
     let rightArea:CGFloat = 20//10//右側エリア境界位置
     var shiftLeftFlag:Bool = false
@@ -246,6 +247,7 @@ class DrawableView: UIView {
         bezierPath.lineWidth = 1.0
         bezierPath.move(to:currentPoint)
         lastPoint = currentPoint
+        lastY = currentPoint.y
         lastMidPoint = currentPoint//20180702:カリグラフィ用
         okEnable = true//メイン画面のokボタンの受付を許可する
         if swapMode && swapFlag{swapViewBgImage()}//⭕️正規の関係に戻す
@@ -283,6 +285,8 @@ class DrawableView: UIView {
         ///テスト用(k_dtの値を確認するため）
         kdtMax = 0
         kdtMin = 100
+        shiftUpFlag = false
+        shiftDownFlag = false
     }
     
     // タッチが動いた-----------------------------------------------
@@ -293,15 +297,13 @@ class DrawableView: UIView {
           print("◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️")
          return }//タッチされていない場合(Pathが初期化前)はパス　？これって必要？
         */
-        ///print("== 🔵touchesBegan:swapMode: \(swapMode):swapFlag: \(swapFlag) ==")
-        
         //末尾の緑色帯より右には描画不可とする:（子メモマーク表示エリア）
         if rightFlag == false && (currentPoint.x + penW/2) >= (vWidth - 34){
             return
         }
- //
- if bezierPath == nil {return}//★20180819
-    //---- 通常モード ----
+        if bezierPath == nil {return}//★20180819
+        
+//①---- 通常モード (右側エリアでない場合)-----------------------------------------
        if rightFlag == false{
         //mx最大値を取得
         mxTemp = max(mxTemp,currentPoint.x)
@@ -376,23 +378,31 @@ class DrawableView: UIView {
           if timerFlag == true{autoFlag = true}//タイマー稼働中は自動スクロールする
         }
         
-    //---- 右端エリアモード ----
-       }else{
+//②---- 右端エリアモード ----------------------------------------------------------
+}else{
         print(" ●●●●is rightArea!!●●●●")
         
        //左シフトの判定（手動）
         let dX = lastPoint.x - currentPoint.x
         print(" is rightArea!!")
-        let dY = lastPoint.y - currentPoint.y
+        //let dY = lastPoint.y - currentPoint.y//ここでのlastPointはタッチ開始時の値
+        let dY = lastY - currentPoint.y//lastYは１つ前のy値
         let dY2 = abs(dY)
         print(" is rightArea!!")
         if dX>20 && dY2<10{ shiftLeftFlag = true }//y軸方向の変化量が少ない時だけ実行する
-       //下側へのシフト判定
-        if dY < -50 && dX < 6{ shiftDownFlag = true }
-        print("dx = \(dX), dY = \(dY)")
-        if dY > 50 && dX < 6{ shiftUpFlag = true }
-        
-       }
+        print("-------  dx = \(dX), dY = \(dY)  -------")
+        print("")
+        print("lastPoint = \(String(describing: lastPoint))")
+        if (dY2 > 10) && (dX < 6){
+            if (dY < 0){//下側へのシフト判定
+                shiftDownFlag = true
+            }else if (dY > 0){//上側へのシフト判定
+                shiftUpFlag = true
+            }
+        }
+        lastY = currentPoint.y
+}//③（右側エリア処理の終わり）-------------------------------------------------
+
         //print("shiftLeftFlag = \(shiftLeftFlag):Timer\(timerFlag)")
 
     }

@@ -261,7 +261,7 @@ extension UIView {
     public func addHorizonBorderWithColor(color: UIColor, width: CGFloat,sel:Int) {
         let ww = (sel == 1) ? vWidth : self.frame.size.width
         let border0 = CALayer()
-        //上部に影をつける
+        //上部に影をつける20181110
         let sColor = UIColor.black//rgb(r: 51,g: 102, b: 204, alpha: 1)
         
         border0.backgroundColor = sColor.withAlphaComponent(0.10
@@ -269,7 +269,7 @@ extension UIView {
         border0.frame = CGRect(x:0, y:-7,width:ww!,height:7)
         self.layer.addSublayer(border0)
         let border01 = CALayer()
-        border01.backgroundColor = sColor.withAlphaComponent(0.20
+        border01.backgroundColor = sColor.withAlphaComponent(0.15
             ).cgColor
         border01.frame = CGRect(x:0, y:-3,width:ww!,height:3)
         self.layer.addSublayer(border01)
