@@ -2009,7 +2009,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             ok2()//通常処理の本体メソッド
         
         }else{
-        //================= 編集パネルが表示中の場合 ========================⏬
+        //================= 編集パネルが表示中の場合 ====================⏬
            ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
           drawableView.editOK = true//編集パネル表示の場合
@@ -2033,48 +2033,38 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             //------ OVW,INS,DEL --//
             if myInt != "CLR"{ //編集パネル”CLR”以外の処理
+             //🔻マークが付いているかを調べる
+              if nowGyouNo < 10000{
+               let xx0 = checkUsedLine(tag:oyaGyou)//子メモの非空白行の数を返す
+                if xx0 != 0{//🔻マーク有り
+                    print("🔻🔻🔻🔻🔻🔻🔻🔻")
+                }
+              }
               editedView = drawableView.secondView.editPallete(sel: myInt)
                 
             //------- CLR --------//
-            }else{//編集パネル”CLR”の処理はココで行う---------------------------▽
+            }else{//編集パネル”CLR”の処理はココで行う---------------------▽
             print("----CLR---")
-//____
-            if nowGyouNo < 10000{  //親行の場合は追加処理する-----------▼
-                    // (1) 子メモが全空白かどうかをチェックする
-                    let xx = checkUsedLine(tag:oyaGyou)//子メモの全行空白行の場合は0を返す
-                    print("⭕️checkUsedLine(tag:oyaGyou):\(xx)")
-                    var ret = true
-                
-                    // (2) --- 子メモが使われている場合 --🔻(子メモが空の場合は何もしない)
-                    if xx != 0{
-                        ////ret = alert_1()
-                    //キャンセルの場合の処理はここで行う
-                    
-                    if !ret{
-                        //print("⭕️ret= \(ret)")
-                        closeEditView()//editパネルを閉じる
-                        return
-                    }
-                    
-                    ///showAlert()の戻り値が"true"の場合は、以下を実行する。
-                    //子メモを閉じる
-                    if childFlag == true{ childMemoClose(ngn: oyaGyou)}
-                    //子メモの削除（開いている時は削除しない：▽マークだけ残る）
-                      if childFlag == false{
-                        delChild(baseGyou: nowGyouNo)
-                      }
-                    }//-- 子メモが使われている場合の処理の終わり --------🔺
-//____
-                }//------------ 親行の場合の終わり　---------------------▲
+
+              if nowGyouNo < 10000{  //親行の場合は追加処理する-----------▼
+             // (1)子メモが全空白かどうかをチェックする
+                let xx = checkUsedLine(tag:oyaGyou)//子メモの全行空白行の場合は0を返す
+                print("⭕️checkUsedLine(tag:oyaGyou):\(xx)")
+
+                if xx != 0{//子メモが使われている場合
+                    alert_1()//⭕️⭕️⭕️⭕️⭕️⭕️
+                    return
+                }
+              }//---------------- 親行の場合の終わり　---------------------▲
                 editedView = clrFinalProc()//CLR 終わりの処理
-            }//----------- CLR 処理の終わり　----------------------------△
-            
-            // ------- 編集結果画面をパレットに反映させる:共通 ---------
+            }//----------------- CLR 処理の終わり　-----------------------△
+            // 編集結果画面をパレットに反映させる:共通
             result2Pallet(im: editedView)//editedView:編集処理結果の画像(UIImage)
-        } //======== 編集パネルが表示の場合 END ==============================⏫
+        } //======== 編集パネルが表示の場合 END ============================⏫
+        debug_2()//デバッグメソッド
     }
     
-    func clrFinalProc() -> UIImage{//CLR 終わりの処理
+    func clrFinalProc() -> UIImage{//CLR 終わりの処理(done()内で使用)
         //------ 以下は親メモ行、子メモ行共通 ------
         //編集結果画面を空白にする
         let editedView = bImage//UIImage(named:"blankW.png")
@@ -2093,7 +2083,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return editedView!
     }
     
-    func result2Pallet(im:UIImage){
+    func result2Pallet(im:UIImage){//(done()内で使用)
         // ------- 編集結果画面をパレットに反映させる:共通 ---------
         //カーソルを削除する
         drawableView.secondView.cursolView.removeFromSuperview()
@@ -2118,7 +2108,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ok2()//★20180819
     }
     
-    func debug_2(){
+    func debug_2(){//(done()内で使用?)
         // == debug2 ============================
         if debug2 == true{//@@ DEBUG2 @@
             testV.removeFromSuperview()
@@ -2126,7 +2116,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
         }
         // =======================================
-        print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
+        print("*mx[\(pageNum)]= \(String(describing: mx["Sring(pageNum)!"]))")//@@@@  @@@@@
     }
    
     func ok2(){//★2018081314
@@ -4389,9 +4379,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return ret
     }
  */
-    func alert_1() -> Bool{
+    func alert_1(){
         print("===alert_1()=== ")
-        var ret = false
+        //let ret = false
         //バイリンガル処理
         let title = (langFlag == 0) ? "** 行内容の削除 **":"** Clear a Line **"
         let cancel = (langFlag == 0) ? "キャンセル":"Cancel"
@@ -4404,18 +4394,26 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         alert.addAction(UIAlertAction(title:cancel,style:.cancel,handler: {
             (action: UIAlertAction!) in
             print("キャンセル時の処理")
+            self.closeEditView()//editパネルを閉じる
             //ret = false
         }))
         alert.addAction(UIAlertAction(title:"OK",style:.default,handler: {
             (action: UIAlertAction!) in
             print("OK時の処理")
-            ret = true
+            //子メモを閉じる
+            if childFlag == true{ self.childMemoClose(ngn: oyaGyou)}
+            //子メモの削除
+            self.delChild(baseGyou: nowGyouNo)
+        //---------------- 親行の場合の終わり　---------------------▲
+            let editedV = self.clrFinalProc()//CLR 終わりの処理
+        // ------- 編集結果画面をパレットに反映させる:共通 ---------
+            self.result2Pallet(im: editedV)//editedView:編集処理結果の画像(UIImage)
+            //ret = true
         }))
         self.present(alert,animated: true,completion: nil)
-        print("return ret: \(ret)")
-        return ret
+        //print("return ret: \(ret)")
     }
-//   //★20180821:アラート追加
+    //★20180821:アラート追加
     func showAlert(){
         print("===showAlert()=== \(langFlag)")
         //バイリンガル処理
