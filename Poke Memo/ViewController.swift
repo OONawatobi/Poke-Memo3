@@ -2009,41 +2009,49 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             ok2()//通常処理の本体メソッド
         
         }else{
-        //================= 編集パネルが表示の場合 =====================⏬
+        //================= 編集パネルが表示中の場合 ========================⏬
            ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
           drawableView.editOK = true//編集パネル表示の場合
         //編集画面表示中で編集モードが選択されていない場合はパス
           if editFlag == false{ return }//カーソルモードが選択されている場合
           ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
-          if cursolWFlag == false{ //カーソル幅が狭い場合では🐞
+          if cursolWFlag == false{ //カーソル幅が狭い場合では-----------🐞
             print("カーソル巾がゼロです")
             //カーソルを削除する
             drawableView.secondView.cursolView.removeFromSuperview()
             closeEditView()//編集画面を閉じる
             return
           }
-         //  -- カーソル幅が有効の場合 --
+        //----------------------------------------------------------🐞-
+         //  -- 以下はカーソル幅が有効の場合 --
             //カーソル画面を撤去する
             drawableView.secondView.cursolView.removeFromSuperview()
             drawableView.thirdView.removeFromSuperview()
-            //編集結果画面を取得する
+            //編集結果画面を取得する場所
             var editedView:UIImage!//編集結果画面View
-        //------------------- CLR -----------------------//
-            if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
+            
+            //------ OVW,INS,DEL --//
+            if myInt != "CLR"{ //編集パネル”CLR”以外の処理
+              editedView = drawableView.secondView.editPallete(sel: myInt)
+                
+            //------- CLR --------//
+            }else{//編集パネル”CLR”の処理はココで行う---------------------------▽
             print("----CLR---")
 //____
-                  if nowGyouNo < 10000{  //子メモ行でない場合は追加処理する-----------▼
-                    //子メモが全空白かどうかをチェックする
+            if nowGyouNo < 10000{  //親行の場合は追加処理する-----------▼
+                    // (1) 子メモが全空白かどうかをチェックする
                     let xx = checkUsedLine(tag:oyaGyou)//子メモの全行空白行の場合は0を返す
                     print("⭕️checkUsedLine(tag:oyaGyou):\(xx)")
                     var ret = true
-                    if xx != 0{ //--- 子メモが使われている場合の処理 --🔻
-                        ret = alert_1()
+                
+                    // (2) --- 子メモが使われている場合 --🔻(子メモが空の場合は何もしない)
+                    if xx != 0{
+                        ////ret = alert_1()
                     //キャンセルの場合の処理はここで行う
                     
                     if !ret{
-                        print("⭕️ret= \(ret)")
+                        //print("⭕️ret= \(ret)")
                         closeEditView()//editパネルを閉じる
                         return
                     }
@@ -2057,51 +2065,57 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                       }
                     }//-- 子メモが使われている場合の処理の終わり --------🔺
 //____
-                }//子メモ行でない場合は追加処理-END----------------------------▲
-                //------ 以下は親メモ行、子メモ行共通 ------
-                    //編集結果画面を空白にする
-                    editedView = bImage//UIImage(named:"blankW.png")
-                    //パレットの位置を先頭にする
-                    drawableView.layer.position = leftEndPoint
-                    //mx[]を更新する(0にリセット)
-                    mx[String(nowGyouNo)] = 0
-
-                //+-+- その他の処理　------
-                    mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
-                    //+-+ resn[]を更新する(0にリセット)
-                    resn[String(nowGyouNo)] = 0
-                    m2pFlag = true//+-+ リサイズ回数追加を可能とする（リセット）
-                    //ok2()//★20180819
-                //--- CLR 処理の終わり ------------------------------
-                }else{ //編集パネル”CLR”以外の処理はココで行う
-                    editedView = drawableView.secondView.editPallete(sel: myInt)
-                    
-                }
-                
+                }//------------ 親行の場合の終わり　---------------------▲
+                editedView = clrFinalProc()//CLR 終わりの処理
+            }//----------- CLR 処理の終わり　----------------------------△
+            
             // ------- 編集結果画面をパレットに反映させる:共通 ---------
-                //カーソルを削除する
-                drawableView.secondView.cursolView.removeFromSuperview()
-                //画面をグリーン色にする
-                drawableView.addSubview(drawableView.thirdView)
-                //secondViewの背景を透明にする
-                drawableView.secondView.backgroundColor = UIColor.clear
-                //編集結果をパレットviewの背景に入れ替える
-                drawableView.backgroundColor = UIColor(patternImage: editedView)
-                //編集結果確定[OK]ボタンが押された場合を区別するフラグ
-                drawableView.editOK = true//??編集パネル表示中
-                //??◆◆◆◆drawableView.get3VImage(im: editedView)//??
-                //パレット入力状態のリセット
-                editFlag = false;myInt = "NON"
-                drawableView.lastDrawImage = nil
-                
-                //編集画面を閉じる
-                closeEditView()
-                drawableView.get3VImage(open:0)//編集結果画面を保存する
-                //+- メイン画面のokボタンの受付を許可する
-                okEnable = true//+-
-                ok2()//★20180819
-
-        } //======== 編集パネルが表示の場合 END ==========⏫
+            result2Pallet(im: editedView)//editedView:編集処理結果の画像(UIImage)
+        } //======== 編集パネルが表示の場合 END ==============================⏫
+    }
+    
+    func clrFinalProc() -> UIImage{//CLR 終わりの処理
+        //------ 以下は親メモ行、子メモ行共通 ------
+        //編集結果画面を空白にする
+        let editedView = bImage//UIImage(named:"blankW.png")
+        //パレットの位置を先頭にする
+        drawableView.layer.position = leftEndPoint
+        //mx[]を更新する(0にリセット)
+        mx[String(nowGyouNo)] = 0
+        
+        //+-+- その他の処理　------
+        mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
+        //+-+ resn[]を更新する(0にリセット)
+        resn[String(nowGyouNo)] = 0
+        m2pFlag = true//+-+ リサイズ回数追加を可能とする（リセット）
+        //ok2()//★20180819
+        //    --- CLR 処理の終わり ---
+        return editedView!
+    }
+    
+    func result2Pallet(im:UIImage){
+        // ------- 編集結果画面をパレットに反映させる:共通 ---------
+        //カーソルを削除する
+        drawableView.secondView.cursolView.removeFromSuperview()
+        //画面をグリーン色にする
+        drawableView.addSubview(drawableView.thirdView)
+        //secondViewの背景を透明にする
+        drawableView.secondView.backgroundColor = UIColor.clear
+        //編集結果をパレットviewの背景に入れ替える
+        drawableView.backgroundColor = UIColor(patternImage: im)
+        //編集結果確定[OK]ボタンが押された場合を区別するフラグ
+        drawableView.editOK = true//??編集パネル表示中
+        //??◆◆◆◆drawableView.get3VImage(im: editedView)//??
+        //パレット入力状態のリセット
+        editFlag = false;myInt = "NON"
+        drawableView.lastDrawImage = nil
+        
+        //編集画面を閉じる
+        closeEditView()
+        drawableView.get3VImage(open:0)//編集結果画面を保存する
+        //+- メイン画面のokボタンの受付を許可する
+        okEnable = true//+-
+        ok2()//★20180819
     }
     
     func debug_2(){
