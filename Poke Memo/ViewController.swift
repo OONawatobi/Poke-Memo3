@@ -1796,9 +1796,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         if isIndexMode == true { return }//index表示中は実行しない
         animeFlag = true//アニメ開始(開始ボタンのチャタリング防止用）
-        //----------------------------------------------①
-        if drawableView != nil {
-        // ◆◆ パレットが表示されている時パレットを消す
+        
+        // ◆◆ === パレットが表示されている時パレットを消す ===
+        if drawableView != nil {//---- パレットを閉じる処理　----①
+        
         //色選択パネルが開いている場合は閉じる
             if selFlg{
                 select_pcView.removeFromSuperview()
@@ -1809,7 +1810,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             didLoadFlg = false
            //メモカーソルを消す
             memoCursol(disp: 0)
-           //編集中のページ内容を更新する
+  /*  ---- アニメーションの後に移動（閉じ始めがおくれる為）----
+            //編集中のページ内容を更新する-------------------⭕️
             //myScrollView.upToImgs()//編集中のページ内容を更新する
             let im = memo[fNum].memoToImgs(pn: pageNum)//im:
             //メモ内容を外部に保存
@@ -1821,6 +1823,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             upResn(my: resn)//+-+
             //設定値を永久保存する
             settingWite()
+            //-------------------------------------------⭕️
+ */
            //++ パレットを閉じるアニメーション
             self.etcBarDisp(disp: 0)//underView等を削除する
             UIView.animate(withDuration:0.2, animations: {
@@ -1854,15 +1858,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
 
             //ページ登録フラグを更新する
-            /*
-                for n in 1...pageGyou{
-                print("mx[\(n)]= \(mx[String(n)])")
-                }
-            */
+            //編集中のページ内容を更新する-------------------⭕️
+            //myScrollView.upToImgs()//編集中のページ内容を更新する
+            let im = memo[fNum].memoToImgs(pn: pageNum)//im:
+            //メモ内容を外部に保存
+            writePage(pn: pageNum, imgs: im)
+            //INDEX内容を外部に保存
+            writePage(pn:0, imgs:indexImgs)
+            //mx[]の内容を外部に保存する
+            updataMx(my:mx)
+            upResn(my: resn)//+-+
+            //設定値を永久保存する
+            settingWite()
+            //-------------------------------------------⭕️
             isPalleteMode = false
             bigFlag = false
-        }else{
-        // パレットが表示されていない時パレットを表示する--------②
+        }else{//----------- パレットを閉じる処理　--------------②
+        // ◆◆ === パレットが表示されていない時パレットを表示する===
             //_パレットビューを作成・初期化する
              drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
              drawableView.Delegate = self
@@ -1928,7 +1940,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
             //  ==============================================================
             
-        }
+        }//---------------- パレットを閉じる処理　END --------------③
     }
     
     ///  ** パレット入力時における[OK]ボタン処理 **
@@ -1989,51 +2001,84 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             return
         }
        
-        //---------- パレット編集時 ---------------------------
+        //---------- 入力パレット表示時 ---------------------------
         if isPalleteMode == false{return}//パレットが表示されて無い場合は🐞
-        //done2.tintColor = UIColor.red
-        //===== 編集パネルが表示の場合 =====
-        if myEditFlag == true{
+        
+        if myEditFlag != true{ //編集パネルが非表示
+            /**      通常の文字入力時      **/
+            ok2()//通常処理の本体メソッド
+        
+        }else{
+        //================= 編集パネルが表示の場合 =====================⏬
            ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
         //編集結果確定[OK]ボタンが押された場合を区別するフラグを設定する：UNDO処理の為
           drawableView.editOK = true//編集パネル表示の場合
-          if editFlag == true{//カーソルモードが選択されている場合
-            ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
-            if cursolWFlag == true{ //カーソル幅が有る場合(狭い場合では🐞）
-               //カーソル画面を撤去する
-                drawableView.secondView.cursolView.removeFromSuperview()
-                drawableView.thirdView.removeFromSuperview()
-                
-                //編集結果画面を取得する
-                var editedView:UIImage!//編集結果画面View
-                if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
-                    print("----CLR---")
+        //編集画面表示中で編集モードが選択されていない場合はパス
+          if editFlag == false{ return }//カーソルモードが選択されている場合
+          ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
+          if cursolWFlag == false{ //カーソル幅が狭い場合では🐞
+            print("カーソル巾がゼロです")
+            //カーソルを削除する
+            drawableView.secondView.cursolView.removeFromSuperview()
+            closeEditView()//編集画面を閉じる
+            return
+          }
+         //  -- カーソル幅が有効の場合 --
+            //カーソル画面を撤去する
+            drawableView.secondView.cursolView.removeFromSuperview()
+            drawableView.thirdView.removeFromSuperview()
+            //編集結果画面を取得する
+            var editedView:UIImage!//編集結果画面View
+        //------------------- CLR -----------------------//
+            if myInt == "CLR"{ //編集パネル”CLR”の処理はココで行う
+            print("----CLR---")
+//____
+                  if nowGyouNo < 10000{  //子メモ行でない場合は追加処理する-----------▼
+                    //子メモが全空白かどうかをチェックする
+                    let xx = checkUsedLine(tag:oyaGyou)//子メモの全行空白行の場合は0を返す
+                    print("⭕️checkUsedLine(tag:oyaGyou):\(xx)")
+                    var ret = true
+                    if xx != 0{ //--- 子メモが使われている場合の処理 --🔻
+                        ret = alert_1()
+                    //キャンセルの場合の処理はここで行う
+                    
+                    if !ret{
+                        print("⭕️ret= \(ret)")
+                        closeEditView()//editパネルを閉じる
+                        return
+                    }
+                    
+                    ///showAlert()の戻り値が"true"の場合は、以下を実行する。
+                    //子メモを閉じる
+                    if childFlag == true{ childMemoClose(ngn: oyaGyou)}
+                    //子メモの削除（開いている時は削除しない：▽マークだけ残る）
+                      if childFlag == false{
+                        delChild(baseGyou: nowGyouNo)
+                      }
+                    }//-- 子メモが使われている場合の処理の終わり --------🔺
+//____
+                }//子メモ行でない場合は追加処理-END----------------------------▲
+                //------ 以下は親メモ行、子メモ行共通 ------
+                    //編集結果画面を空白にする
                     editedView = bImage//UIImage(named:"blankW.png")
                     //パレットの位置を先頭にする
-                    //_グローバル変数：回転の度に設定されている
-                    //_leftEndPoint = CGPoint(x: vWidth/2, y:boundHeight - vHeight/2 - th)
                     drawableView.layer.position = leftEndPoint
                     //mx[]を更新する(0にリセット)
                     mx[String(nowGyouNo)] = 0
-                    
-                    //+-+- 子メモの内容を削除する$
-                    //子メモページが開いている時は削除しない（▽マークだけ残る）
-                    if childFlag == false{
-                        delChild(baseGyou: nowGyouNo)
-                    }
-                    //+-+- ------------------------------------
-                    
+
+                //+-+- その他の処理　------
                     mxTemp = 0//ペンタッチ時に上書きしています為これもリセット
                     //+-+ resn[]を更新する(0にリセット)
                     resn[String(nowGyouNo)] = 0
                     m2pFlag = true//+-+ リサイズ回数追加を可能とする（リセット）
                     //ok2()//★20180819
+                //--- CLR 処理の終わり ------------------------------
                 }else{ //編集パネル”CLR”以外の処理はココで行う
                     editedView = drawableView.secondView.editPallete(sel: myInt)
                     
                 }
                 
-                // -- 編集結果画面をパレットに反映させる --
+            // ------- 編集結果画面をパレットに反映させる:共通 ---------
                 //カーソルを削除する
                 drawableView.secondView.cursolView.removeFromSuperview()
                 //画面をグリーン色にする
@@ -2054,26 +2099,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 drawableView.get3VImage(open:0)//編集結果画面を保存する
                 //+- メイン画面のokボタンの受付を許可する
                 okEnable = true//+-
-               ok2()//★20180819
-            }else{ //カーソル幅が狭い場合）
-                print("カーソル巾がゼロです")
-                //カーソルを削除する
-                drawableView.secondView.cursolView.removeFromSuperview()
-                closeEditView()//編集画面を閉じる
-            }
+                ok2()//★20180819
 
-          }else{ return }//編集モードが選択されていない場合(editFlag == false)
-            //編集画面表示中で編集モードが選択されていない場合はパス
-            //if myEditFlag == true{return}
-        //===== 編集パネルが非表示の場合 =====
-        }else{
-        /**      通常の文字入力時      **/
-            //if okEnable == false{return}
-            //+- okEnable = false//okボタンのチャタリング防止の為：パレットタッチ時にリセット
-            ok2()//処理の本体メソッド
-           
-        }
-            
+        } //======== 編集パネルが表示の場合 END ==========⏫
+    }
+    
+    func debug_2(){
         // == debug2 ============================
         if debug2 == true{//@@ DEBUG2 @@
             testV.removeFromSuperview()
@@ -2081,8 +2112,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
         }
         // =======================================
- 
-        //print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
+        print("*mx[\(pageNum)]= \(mx["Sring(pageNum)!"])")//@@@@  @@@@@
     }
    
     func ok2(){//★2018081314
@@ -3708,6 +3738,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func btn8_click(sender:UIButton){
         print("btn8_clicked!")
         myInt = "CLR"
+        //showAlert()//子メモの内容も削除される事への確認ダイアログ
         clearSelect()
         editButton8.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         drawableView.secondView.cursolView.removeFromSuperview()
@@ -4326,7 +4357,51 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
         }
     }
-    //★20180821:アラート追加
+    /*
+    func showAlert(sel:Int) -> Bool {
+        var ret:Bool = false
+        switch sel {
+        case 0:
+            print("⭕️sel:\(sel)")
+            ret = false
+        case 1:
+            print("sel:\(sel)")
+            ret = alert_1()
+        case 2:print("sel:\(sel)")
+        case 3:print("sel:\(sel)")
+        case 4:print("sel:\(sel)")
+        default: break
+        }
+        return ret
+    }
+ */
+    func alert_1() -> Bool{
+        print("===alert_1()=== ")
+        var ret = false
+        //バイリンガル処理
+        let title = (langFlag == 0) ? "** 行内容の削除 **":"** Clear a Line **"
+        let cancel = (langFlag == 0) ? "キャンセル":"Cancel"
+        let msg_F = (langFlag == 0) ? "鉛筆モードに変更します！":"Change to pencil- mode!"
+        let msg_G = (langFlag == 0) ? "Gペンモードに変更します！":"Change to Gpen- mode!"
+        let msg:String = callig ? msg_F : msg_G
+        //--------------------------------------------------
+        let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title:cancel,style:.cancel,handler: {
+            (action: UIAlertAction!) in
+            print("キャンセル時の処理")
+            //ret = false
+        }))
+        alert.addAction(UIAlertAction(title:"OK",style:.default,handler: {
+            (action: UIAlertAction!) in
+            print("OK時の処理")
+            ret = true
+        }))
+        self.present(alert,animated: true,completion: nil)
+        print("return ret: \(ret)")
+        return ret
+    }
+//   //★20180821:アラート追加
     func showAlert(){
         print("===showAlert()=== \(langFlag)")
         //バイリンガル処理
@@ -4348,6 +4423,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         callig = callig ? false : true
         penMode()
     }
+//
     
     //Sliderの値が変わった時に呼ばれるメソッド
     func onsliderChange(_ sender:UISlider!)

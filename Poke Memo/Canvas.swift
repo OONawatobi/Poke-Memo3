@@ -419,11 +419,11 @@ class DrawableView: UIView {
         ///print("-🔸---toutchEnd:swapMode:\(swapMode),swapFlag=\(swapFlag)---------------")
         if swapMode && !swapFlag{
             swapViewBgImage()///⭕️
-           
         }
           //左方向への自動スクロール
             print("autoFlag:\(autoFlag):mxTemp=\(String(describing: mxTemp))")
-          if autoScrollFlag == true{//設定フラグ(判定フラグ:autoFlagでは無い）
+          if (autoScrollFlag == true) && !marker{//設定フラグ(判定フラグ:autoFlagでは無い）
+            //マーカーモードでは動作しない
              if bigFlag == false{ startTimer()}//遅延してスクロール(autoFlagを判定）
           }
             
