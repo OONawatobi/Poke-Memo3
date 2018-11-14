@@ -37,7 +37,7 @@ class MemoView:UIView{
        //日付を追加する2+2+2+1+2:
        let tag = pn*100 +  1
        let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
-       targetMemo.image = targetMemo.image?.addText_Date(text: st)
+        targetMemo.image = targetMemo.image?.addText_Date(text: st, del: false)
         
     }
     /* 子メモが空白でない場合に、ベース行に三角マークを追加する */

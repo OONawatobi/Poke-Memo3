@@ -59,6 +59,7 @@ class EditorView: UIView {
       2017 var secondView: UIView!
       2017 var myImageView:UIImageView!
 */
+    var Delegate: EditorViewDelegate!//🔻マークの操作などを外部で処理（委託）する。
     // UIView(cursolView)を作成する
     var cursolView: UIView!
 
@@ -159,7 +160,22 @@ class EditorView: UIView {
         let clip04 = CGRect(x:0,y:0,width:pixRightX,height:pixHeight)
         let clip05 = CGRect(x:pixLeftX,y:0,width:pixWidth - pixLeftX,height:pixHeight)
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        let pImage = drawableView.GetImage()//パレット全画面の切り取り
+        var pImage = drawableView.GetImage()//パレット全画面をコピー
+        //🔻マークを削除する(空白でない子メモを有する親メモの場合だけ)
+        if nowGyouNo < 10000{
+            //子メモの非空白行の数を取得
+            let xx0 = self.Delegate?.checkUsedLine(tag:oyaGyou)
+            if xx0 != 0{//🔻マーク有り
+                print("🔻🔻🔻🔻\(String(describing: xx0))🔻🔻🔻🔻")
+                pImage = pImage.addText_Mark(text: "∇", del: true)//削除する
+            }
+        }
+        //日付を削除する(１行目だけ)
+        if nowGyouNo%100 == 1{
+            pImage = pImage.addText_Date(text: "", del: true)//削除する
+        }
+               
+//
         let clipImage01 =  pImage.cgImage!.cropping(to: clip01)
         //let clipImage02 =  pImage.cgImage!.cropping(to: clip02)
         let clipImage03 =  pImage.cgImage!.cropping(to: clip03)

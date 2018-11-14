@@ -392,7 +392,7 @@ extension UIImage {
         return newImage!
     }
     //メモ行の末尾に日付を追加する関数
-    func addText_Date(text:String)-> UIImage{
+    func addText_Date(text:String,del:Bool)-> UIImage{
         let text = text
         var font = UIFont.boldSystemFont(ofSize: 24)
         let font2 = UIFont.boldSystemFont(ofSize: 72)
@@ -418,8 +418,10 @@ extension UIImage {
         //くり抜き?日付エリアを透明にする
         let context: CGContext = UIGraphicsGetCurrentContext()!
         context.clear(textRect)
+        if !del{
         //日付を追加する
-        text.draw(in: textRect, withAttributes: textFontAttributes)
+          text.draw(in: textRect, withAttributes: textFontAttributes)
+        }
         let newImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext()
         return newImage!
@@ -626,10 +628,13 @@ protocol SelectViewDelegate{//パレットビューの操作(機能）
     func ok2()
     func modalChanged(TouchNumber: Int,top:Int)
 }
+protocol EditorViewDelegate{//パレットビューの操作(機能）
+    func checkUsedLine(tag:Int)->Int
+}
 
 //    =======  ViewController    ========
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate, UIWebViewDelegate,SelectViewDelegate{
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate, UIWebViewDelegate,SelectViewDelegate,EditorViewDelegate{
     
     //ステータスバーを非表示にする
     //override var prefersStatusBarHidden: Bool { return true }
@@ -1859,7 +1864,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
             //ページ登録フラグを更新する
             //編集中のページ内容を更新する-------------------⭕️
-            //myScrollView.upToImgs()//編集中のページ内容を更新する
             let im = memo[fNum].memoToImgs(pn: pageNum)//im:
             //メモ内容を外部に保存
             writePage(pn: pageNum, imgs: im)
@@ -1873,7 +1877,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //-------------------------------------------⭕️
             isPalleteMode = false
             bigFlag = false
-        }else{//----------- パレットを閉じる処理　--------------②
+            
+        }else{//----------- パレットを開く処理　--------------②
         // ◆◆ === パレットが表示されていない時パレットを表示する===
             //_パレットビューを作成・初期化する
              drawableView = DrawableView(frame: CGRect(x:0, y:0,width:vWidth, height:vHeight))//2→3
@@ -1894,6 +1899,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
              drawableView.backgroundColor = UIColor.clear//(patternImage: myImage)
             //secondView,thirdViewの初期化(追加）
             drawableView.setSecondView()
+            //(editorView)デリゲート登録
+            drawableView.secondView.Delegate = self
             //編集ツールの追加(toolbar)
             self.view.addSubview(myToolView)
             myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight - th - 40/2)// 位置を中心に設定：画面の外に位置する
@@ -1940,7 +1947,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             testV.layer.position = CGPoint(x: mxTemp, y:vHeight/2 )
             //  ==============================================================
             
-        }//---------------- パレットを閉じる処理　END --------------③
+        }//---------------- パレットを開く処理　END --------------③
     }
     
     ///  ** パレット入力時における[OK]ボタン処理 **
@@ -2033,14 +2040,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             //------ OVW,INS,DEL --//
             if myInt != "CLR"{ //編集パネル”CLR”以外の処理
-             //🔻マークが付いているかを調べる
-              if nowGyouNo < 10000{
-               let xx0 = checkUsedLine(tag:oyaGyou)//子メモの非空白行の数を返す
-                if xx0 != 0{//🔻マーク有り
-                    print("🔻🔻🔻🔻🔻🔻🔻🔻")
-                }
-              }
               editedView = drawableView.secondView.editPallete(sel: myInt)
+            //🔻マークが必要かを調べる
+            if nowGyouNo < 10000{
+               let xx0 = checkUsedLine(tag:oyaGyou)//子メモの非空白行の数を返す
+               if xx0 != 0{//🔻マーク有り
+                 print("🔻🔻🔻🔻🔻🔻🔻🔻")
+                 editedView = editedView.addText_Mark(text: "∇", del:false)
+               }
+            }
                 
             //------- CLR --------//
             }else{//編集パネル”CLR”の処理はココで行う---------------------▽
