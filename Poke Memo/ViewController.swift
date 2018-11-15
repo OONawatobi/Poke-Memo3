@@ -1449,33 +1449,38 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             name: NSNotification.Name.UIApplicationDidBecomeActive,
             object: nil
         )
+ /*
         // アプリ終了時の通知を設定する
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(self.temp),//ViewController.onWillTerminate(_:)),
+            selector: #selector(ViewController.onWillTerminate(_:)),
             name: NSNotification.Name.UIApplicationWillTerminate,
             object: nil
         )
-
+*/
     }
     //  =======         End of viewDi dLoad         =======
     func temp(){
         //データを外部に保存する
-        print("temp()()()()()()()()()()")
+        //print("temp()()()()()()()()()()⭕️テスト用⭕️")
         if isPalleteMode == true{//パレット内容を保存して閉じる
+            //memo[fNum].addDate(pn:pageNum)//日付追加　⭕️テスト用⭕️
             done(done2)
             //子メモが開いている場合は子メモを閉じる
         
             Pallete(pallete2)
             if childFlag == true{ childMemoClose(ngn: oyaGyou)}
         }
-        memo[fNum].addDate(pn:pageNum)//日付追加
+        
     }
-    // アプリ終了時に行う処理
+/*
+     アプリを終了するには一旦、バックグランドに移動するためonWillResignActive()で処理する
+    //上記のもう一つの理由としては、pplicationWillTerminateでは正しく動作しなかった事もあります。
+    // アプリ終了時に行う処理円
     @objc func onWillTerminate(_ notification: Notification?) {
-  
         temp()
     }
+*/
     // アプリバックグラウンド移行開始時に行う処理
     @objc func onWillResignActive(_ notification: Notification?) {
         print("アプリバックグラウンド移行時に行う処理")
@@ -2059,7 +2064,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             var editedView:UIImage!//編集結果画面View
             
             //------ OVW,INS,DEL --//
-            if myInt != "CLR"{ //編集パネル”CLR”以外の処理
+            if myInt != "CLR"{ //編集パネル”CLR”以外の処理(OVW,INS,DEL)
               editedView = drawableView.secondView.editPallete(sel: myInt)
             //🔻マークが必要かを調べる
             if nowGyouNo < 10000{
@@ -3808,7 +3813,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if editFlag == true && cursolWFlag == true{
             //カーソル表示変更
             let cStart:CGFloat = drawableView.secondView.cursolStartX
-            let cEnd:CGFloat = mx[String(nowGyouNo)]! + 5//線幅があるのて少し余分に
+            let cEnd:CGFloat = (vWidth - 40) //mx[String(nowGyouNo)]! + 5//線幅があるのて少し余分に 20181115に変更
             drawableView.secondView.cursolEndX = cEnd
             drawableView.secondView.changeMyCursolView2(curX: cEnd, startX:cStart)
             if mx[String(nowGyouNo)]! >= (vWidth - 10){//現行のmaxXが右いっぱいの場合
@@ -3983,8 +3988,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if isPalleteMode == true{
             if myEditFlag == true{ closeEditView()}//編集パネルを閉じる
            //_★★メモのスクロール位置を設定(変更）する
-            scrollPos()
-                
+            
+            // 遅延動作 to run something in 0.1 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                // your code here
+                self.scrollPos()
+            }
+
            //メモに書き出した内容をパレットに読み込む//20161024追加
             let myMemo:UIImage = memo[fNum].readMemo(tag: nowGyouNo)
            //選択されたセルに色を付ける
@@ -4307,9 +4317,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("----childMemoClose-----\(String(describing: nowGyouNo))")
         print("childMemoClose()  = oyaGyou: \(oyaGyou) =")
         if childFlag == false{return}
-        //if ngn<10000{return}//子メモ内をWクリックした時だけ処理する//1000
+        if ngn>10000{return}//子メモ内をWクリックした時は無視する//1000
+      /* 子メモ以外の任意行をWクリックした場合にも閉じるようにする-20181115変更
         //親行をクリックしたときだけ
         if ngn != oyaGyou{return}
+      */
         let baseTag:Int = oyaGyou
         //子メモが全空白かどうかをチェックする
         let x = checkUsedLine(tag:baseTag)
@@ -4413,9 +4425,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //バイリンガル処理
         let title = (langFlag == 0) ? "** 行内容の削除 **":"** Clear a Line **"
         let cancel = (langFlag == 0) ? "キャンセル":"Cancel"
-        let msg_F = (langFlag == 0) ? "鉛筆モードに変更します！":"Change to pencil- mode!"
+        let msg_F = (langFlag == 0) ? "実行すると子メモのな内容も全て削除されます？":"When you execute it will delete all contents of the child memo?"
         let msg_G = (langFlag == 0) ? "Gペンモードに変更します！":"Change to Gpen- mode!"
-        let msg:String = callig ? msg_F : msg_G
+        let msg:String = msg_F
         //--------------------------------------------------
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
         

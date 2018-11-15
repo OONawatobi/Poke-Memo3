@@ -205,7 +205,7 @@ class MemoView:UIView{
         print("newGyouNo:tag\(tagN)")
         let targetMemo:UIImageView = self.viewWithTag(tagN) as! UIImageView
         let gColor = UIColor.green.withAlphaComponent(0.01)   //(0.06)
-        let gColor2 = UIColor.green.withAlphaComponent(0.4)
+        let gColor2 = UIColor.green.withAlphaComponent(0.5)
         let gColor3 = UIColor.green.withAlphaComponent(0.3)
         //let wColor = UIColor.white
         let cColor = UIColor.rgb(r: 234, g: 204, b: 99, alpha: 0.4)//orange.withAlphaComponent(0.2) 234,204,99//インデックス画面
