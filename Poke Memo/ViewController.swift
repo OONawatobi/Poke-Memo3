@@ -1449,17 +1449,43 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             name: NSNotification.Name.UIApplicationDidBecomeActive,
             object: nil
         )
+        // アプリ終了時の通知を設定する
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.temp),//ViewController.onWillTerminate(_:)),
+            name: NSNotification.Name.UIApplicationWillTerminate,
+            object: nil
+        )
 
     }
     //  =======         End of viewDi dLoad         =======
+    func temp(){
+        //データを外部に保存する
+        print("temp()()()()()()()()()()")
+        if isPalleteMode == true{//パレット内容を保存して閉じる
+            done(done2)
+            //子メモが開いている場合は子メモを閉じる
+        
+            Pallete(pallete2)
+            if childFlag == true{ childMemoClose(ngn: oyaGyou)}
+        }
+        memo[fNum].addDate(pn:pageNum)//日付追加
+    }
+    // アプリ終了時に行う処理
+    @objc func onWillTerminate(_ notification: Notification?) {
+  
+        temp()
+    }
     // アプリバックグラウンド移行開始時に行う処理
     @objc func onWillResignActive(_ notification: Notification?) {
         print("アプリバックグラウンド移行時に行う処理")
+        temp()
+        // 横画面時（回転ロックSWはOFF)は無視する。
         if boundWidthX != boundWidth{
             return
-        }// 横画面時（回転ロックSWはOFF)は無視する。
-        else{
-            didLoadFlg = false//回転禁止にする
+        }
+        else{//回転禁止にする
+            didLoadFlg = false
         }
     /*
        回転ロックSWがON(横向き画面)の状態でアプリを起動した場合でも、アプリは縦画面で立ち上がる。
@@ -1471,6 +1497,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
       以上だけだと回転ロックSWoFFの横画面の時には、前はパレットが再立ち上げしするま回転できないので
      縦方向だと変な画面になってしまう。横画面時のバックグランド移行時は回転ロックをしないよう変更する。
     */
+        
     }
     @objc func onDidBecomeActive(_ notification: Notification?) {
         print("アプリバックグラウンドから復帰時に行う処理")
@@ -1599,6 +1626,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if bigFlag == true{ return}
         //パレットが開いている時は
         if isPalleteMode == true{//パレット内容を保存して閉じる
+            print("●⭕️⭕️●")
+            temp()
+            print("●⭕️⭕️●")
             return
         }
         if isMenuMode == true{
@@ -1815,21 +1845,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             didLoadFlg = false
            //メモカーソルを消す
             memoCursol(disp: 0)
-  /*  ---- アニメーションの後に移動（閉じ始めがおくれる為）----
-            //編集中のページ内容を更新する-------------------⭕️
-            //myScrollView.upToImgs()//編集中のページ内容を更新する
-            let im = memo[fNum].memoToImgs(pn: pageNum)//im:
-            //メモ内容を外部に保存
-            writePage(pn: pageNum, imgs: im)
-            //INDEX内容を外部に保存
-            writePage(pn:0, imgs:indexImgs)
-            //mx[]の内容を外部に保存する
-            updataMx(my:mx)
-            upResn(my: resn)//+-+
-            //設定値を永久保存する
-            settingWite()
-            //-------------------------------------------⭕️
- */
+           //-- アニメーションの後⭕️に移動（閉じ始めがおくれる為）--
+
            //++ パレットを閉じるアニメーション
             self.etcBarDisp(disp: 0)//underView等を削除する
             UIView.animate(withDuration:0.2, animations: {
@@ -1863,21 +1880,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
 
             //ページ登録フラグを更新する
-            //編集中のページ内容を更新する-------------------⭕️
-            let im = memo[fNum].memoToImgs(pn: pageNum)//im:
-            //メモ内容を外部に保存
-            writePage(pn: pageNum, imgs: im)
-            //INDEX内容を外部に保存
-            writePage(pn:0, imgs:indexImgs)
-            //mx[]の内容を外部に保存する
-            updataMx(my:mx)
-            upResn(my: resn)//+-+
-            //設定値を永久保存する
-            settingWite()
-            //-------------------------------------------⭕️
             isPalleteMode = false
             bigFlag = false
-            
+            //編集中のページ内容を更新する-------------------⭕️
+            allDataSave()
+
         }else{//----------- パレットを開く処理　--------------②
         // ◆◆ === パレットが表示されていない時パレットを表示する===
             //_パレットビューを作成・初期化する
@@ -1949,7 +1956,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
         }//---------------- パレットを開く処理　END --------------③
     }
-    
+    func allDataSave(){
+        //編集中のページ内容を更新する-------------------⭕️
+        let im = memo[fNum].memoToImgs(pn: pageNum)//im:
+        //メモ内容を外部に保存
+        writePage(pn: pageNum, imgs: im)
+        //INDEX内容を外部に保存
+        writePage(pn:0, imgs:indexImgs)
+        //mx[]の内容を外部に保存する
+        updataMx(my:mx)
+        upResn(my: resn)//+-+
+        //設定値を永久保存する
+        settingWite()
+        //-------------------------------------------⭕️
+    }
     ///  ** パレット入力時における[OK]ボタン処理 **
     func upToMemo(){  //パレット内容をメモに反映させる
         print("okEnble:\(okEnable)")//+-
