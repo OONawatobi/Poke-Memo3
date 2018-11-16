@@ -85,6 +85,7 @@
 		3048005E1E81292500B0F441 /* men_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 304800591E81292500B0F441 /* men_ico.png */; };
 		3048005F1E81292500B0F441 /* pal_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 3048005A1E81292500B0F441 /* pal_ico.png */; };
 		304800631E814EB300B0F441 /* pen.png in Resources */ = {isa = PBXBuildFile; fileRef = 304800621E814EB300B0F441 /* pen.png */; };
+		3048910A219EC8260079EE7E /* jines3.png in Resources */ = {isa = PBXBuildFile; fileRef = 30489109219EC8260079EE7E /* jines3.png */; };
 		304E6A7C1E7C09F8004E27A6 /* m6x3.png in Resources */ = {isa = PBXBuildFile; fileRef = 304E6A7A1E7C09F8004E27A6 /* m6x3.png */; };
 		304E6A7D1E7C09F8004E27A6 /* m6x4.png in Resources */ = {isa = PBXBuildFile; fileRef = 304E6A7B1E7C09F8004E27A6 /* m6x4.png */; };
 		304E6A7F1E7C0A87004E27A6 /* m6x2.png in Resources */ = {isa = PBXBuildFile; fileRef = 304E6A7E1E7C0A87004E27A6 /* m6x2.png */; };
@@ -342,6 +343,7 @@
 		304800591E81292500B0F441 /* men_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = men_ico.png; sourceTree = "<group>"; };
 		3048005A1E81292500B0F441 /* pal_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pal_ico.png; sourceTree = "<group>"; };
 		304800621E814EB300B0F441 /* pen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen.png; sourceTree = "<group>"; };
+		30489109219EC8260079EE7E /* jines3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = jines3.png; sourceTree = "<group>"; };
 		304E6A7A1E7C09F8004E27A6 /* m6x3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = m6x3.png; sourceTree = "<group>"; };
 		304E6A7B1E7C09F8004E27A6 /* m6x4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = m6x4.png; sourceTree = "<group>"; };
 		304E6A7E1E7C0A87004E27A6 /* m6x2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = m6x2.png; sourceTree = "<group>"; };
@@ -539,6 +541,7 @@
 			isa = PBXGroup;
 			children = (
 				30961713219481E500C5F6FA /* jines2.png */,
+				30489109219EC8260079EE7E /* jines3.png */,
 				309616E1218EF40A00C5F6FA /* penBgd.png */,
 				3096170521930DC100C5F6FA /* colorBgd5.png */,
 				309616ED21902A3D00C5F6FA /* colorBgd4.png */,
@@ -961,6 +964,7 @@
 				30D72AAE1E77F08700B8C48F /* m3x1.png in Resources */,
 				301B5D5E1E8F7B85005B1B99 /* edit02.png in Resources */,
 				30CBD5CF212690B6000E31AC /* 2Left2.png in Resources */,
+				3048910A219EC8260079EE7E /* jines3.png in Resources */,
 				301B5D671E8F7B85005B1B99 /* edit03.png in Resources */,
 				3039F7A1214CE3AD00FF121A /* all_v18E.png in Resources */,
 				30DAD8921DE5C3040068FF45 /* LaunchScreen.storyboard in Resources */,

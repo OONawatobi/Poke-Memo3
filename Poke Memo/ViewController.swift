@@ -837,7 +837,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5)
         jinesH = boundWidth - vHeight - 40 - statusBarHeight - naviBar.frame.height - 44
         jinesView = UIView(frame: CGRect(x: leftOffset + boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH))
-        jinesView.backgroundColor = UIColor(patternImage: UIImage(named:"jines2")!)//UIColor.orange.withAlphaComponent(0.1) 
+        jinesView.backgroundColor = UIColor(patternImage: UIImage(named:"jines3")!)//UIColor.orange.withAlphaComponent(0.1)
         self.view.addSubview(jinesView)
         ///ナビゲーションバー下の半透明バーを追加する
         let navB2h = statusBarHeight + naviBar.frame.height
@@ -1458,6 +1458,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             object: nil
         )
 */
+        
+       /*
+        //既存のエッジスワイプを無効にする
+        if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+            self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+        }
+        */
     }
     //  =======         End of viewDi dLoad         =======
     func temp(){
@@ -1563,44 +1570,68 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
  
         }
     }
-
+    var isColorPnel:Bool!//カラーパレット表示中はtrue
     //長押しボタンの処理(色選択)
     func pushStartBtn2(sender: UILongPressGestureRecognizer){
         print("pushStartBtn:2")
+        //呼び出されたタイミングを確認する。
+        if(sender.state == UIGestureRecognizerState.ended) {
+            return
+        }
         //色選択パネルが開いている場合は閉じる
-        if selFlg{
+        if selFlg && !isColorPnel{
             select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
             select_pcView.removeFromSuperview()
             ///select_pcView_bg.removeFromSuperview()
             selFlg = false
+            
             //return
-        }
+        }else if selFlg && isColorPnel{return}
         if drawableView.X_color == 1{return}//消しゴムモード時はパス
         print("★！！！！2")
         select_pcView.setMenu()//★★
+        isColorPnel = true
         ///self.view.addSubview(select_pcView_bg)
-        self.view.addSubview(select_pcView)
-        selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
+        
+        //遅延動作 to run something in 0.1 seconds
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            // your code here
+            self.view.addSubview(select_pcView)
+            selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
+        
+        }
+
+
     }
     //長押しボタンの処理(ペン選択)
     func pushStartBtn3(sender: UILongPressGestureRecognizer){
         print("pushStartBtn:3")
+        if(sender.state == UIGestureRecognizerState.ended) {
+            return
+        }
         if drawableView.X_color == 1{//消しゴムモードの時は鉛筆モードに戻す
             penMode()
             return}//ペンモード以外はパス
         //色選択パネルが開いている場合は閉じる
-        if selFlg{
+        if selFlg && isColorPnel{
             select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
             select_pcView.removeFromSuperview()
             ///select_pcView_bg.removeFromSuperview()
             selFlg = false
             //return
-        }
+        }else if selFlg && !isColorPnel{return}
         print("★！！！！3")
         select_pcView.setPenMenu()//★★
+        isColorPnel = false
         ///self.view.addSubview(select_pcView_bg)
-        self.view.addSubview(select_pcView)
-        selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
+        //遅延動作 to run something in 0.1 seconds
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.view.addSubview(select_pcView)
+            selFlg = true
+        }
+            
     }
 /*
     func rightBarBtnClicked(sender: UIButton){
@@ -1630,10 +1661,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //拡大表示の時はパス
         if bigFlag == true{ return}
         //パレットが開いている時は
-        if isPalleteMode == true{//パレット内容を保存して閉じる
-            print("●⭕️⭕️●")
-            temp()
-            print("●⭕️⭕️●")
+        if isPalleteMode == true{
             return
         }
         if isMenuMode == true{
@@ -3603,6 +3631,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             penColorNum = 1
             editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         }
+        
     }
     
     func penWclicked(){
@@ -4425,8 +4454,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //バイリンガル処理
         let title = (langFlag == 0) ? "** 行内容の削除 **":"** Clear a Line **"
         let cancel = (langFlag == 0) ? "キャンセル":"Cancel"
-        let msg_F = (langFlag == 0) ? "実行すると子メモのな内容も全て削除されます？":"When you execute it will delete all contents of the child memo?"
-        let msg_G = (langFlag == 0) ? "Gペンモードに変更します！":"Change to Gpen- mode!"
+        let msg_F = (langFlag == 0) ? "実行すると子メモの内容も全て削除されます？":"When you execute it will delete all contents of the child memo?"
+        //let msg_G = (langFlag == 0) ? "Gペンモードに変更します！":"Change to Gpen- mode!"
         let msg:String = msg_F
         //--------------------------------------------------
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
