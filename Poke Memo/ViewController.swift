@@ -506,8 +506,9 @@ var bColor:[UIColor] = []//色パネル表示色
 var mColor:[UIColor] = []//マーカの色
 var colorIcon:[UIImage] = []//カラーボタンアイコン
 var gblColor = UIColor.black
-var bigBtm:UIImageView! = UIImageView(frame: CGRect(x:0,y:0,width:30,height:30))//★★ボタンを押した時の大きい丸
+var bigBtm:UIImageView!//★★ボタンを押した時の大きい丸
 var select_pcView:SelectView!//色選択パネル
+var selHeight:CGFloat!//色選択パネルの高さ
 ///var select_pcView_bg:UIView!//色選択パネルの背景
 var sectView:UIView!//色選択パネルの区切り線
 var sectView2:UIView!//色選択パネルの区切り線
@@ -743,8 +744,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40/2 - th)
         ////myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.frame.size = CGSize(width:boundWidth,height:60)
-        myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - 60/2 - th)
-        select_pcView.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
+        myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - selHeight/2 - th)
+        select_pcView.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - selHeight/2 - th)
         ///select_pcView_bg.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
         spaceView1.frame.size = CGSize(width: boundWidth, height: 10)
         spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
@@ -817,7 +818,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.layer.position = CGPoint(x:mtPosx/2, y: boundWidth - vHeight - 40/2)
         ////myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.layer.position = CGPoint(x:leftOffset + boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
-        select_pcView.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
+        select_pcView.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - selHeight/2 )
         ///select_pcView_bg.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
         spaceView1.frame.size = CGSize(width: boundHeight, height: 10)
         spaceView1.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - vHeight + 10/2)
@@ -1412,17 +1413,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         pallete2.addGestureRecognizer(myLongPressGesture4)//★★複数ボタンで共通
     */
         //*** 色パネルViewの作成 ***//★★★★
-        let selHeight:CGFloat = 44
+        selHeight = 60//44//select_pc_viewの高さ
         let sel_y:CGFloat = boundHeight - th - vHeight - 40 - selHeight
         //let sely2:CGFloat = myEdity2 - selHeight
-        let selRect = CGRect(x:0,y:sel_y,width:50*6 + 15 + 5,height: selHeight)
+        let selRect = CGRect(x:-3,y:sel_y,width:50*6 + 15 + 10,height: selHeight)
         select_pcView = SelectView(frame: selRect)
         //デリゲート登録
         select_pcView.Delegate = self
         select_pcView.backgroundColor = UIColor.clear//white.withAlphaComponent(1.0)
         ///select_pcView_bg = UIView(frame: selRect)
         //セレクトパネルの横方向の位置を少し右にずらす
-        select_pcView.layer.position.x = selRect.width/2 + 2
+        //select_pcView.layer.position.x = selRect.width/2 + 2
         ///select_pcView_bg.layer.position.x = selRect.width/2 + 2
         //セレクトパネルの背景色:角丸表示にするために必要
         //__select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
@@ -2288,7 +2289,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //select_pcViewのY位置を変更する
             let bigHX = (boundWidthX == boundWidth) ? boundHeight : boundWidth
             let th2 = (boundWidthX == boundWidth) ? th : 0
-            select_pcView.layer.position.y = bigHX - vHeight*1.5 - 40 - 44/2 - th2
+            select_pcView.layer.position.y = bigHX - vHeight*1.5 - 40 - selHeight/2 - th2
             ///select_pcView_bg.layer.position.y = bigHX - vHeight*1.5 - 40 - 44/2 - th2
 
             }else{
@@ -2318,7 +2319,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //select_pcViewのY位置を変更する
                 let bigHX = (boundWidthX == boundWidth) ? boundHeight : boundWidth
                 let th2 = (boundWidthX == boundWidth) ? th : 0
-            select_pcView.layer.position.y = bigHX - vHeight - 40 - 44/2 - th2
+            select_pcView.layer.position.y = bigHX - vHeight - 40 - selHeight/2 - th2
             ///select_pcView_bg.layer.position.y = bigHX - vHeight - 40 - 44/2 - th2
             }//@@@@END
         // iphoneXモード時の(横向き画面だけ)拡大時に右にずらす量を再設定する

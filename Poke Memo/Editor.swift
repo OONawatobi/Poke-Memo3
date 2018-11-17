@@ -382,8 +382,8 @@ class SelectView:UIView{
     //ボタンを作成する
     var penColor = UIColor.black
     var btnImgs:[UIImage] = []//★★色セレクトボタン画像：丸
-    var btnImgs2:[UIImage] = []//★★ペンセレクトボタン画像：四角
-    var bacBtn:UIImageView! = UIImageView(frame: CGRect(x:15,y:7,width:30,height:30))
+    //var btnImgs2:[UIImage] = []//★★ペンセレクトボタン画像：四角
+    var bacBtn:UIImageView!//swapボタンの背景色を作るためのView
     //ボタン画像の作成
     let penJ = UIImage(named: "鉛筆.png")!
     let penE = UIImage(named: "pencil2.png")!
@@ -391,22 +391,25 @@ class SelectView:UIView{
     let GpenE = UIImage(named: "gpen2.png")!
     let markJ = UIImage(named: "マーカーJ.png")!
     let markE = UIImage(named: "markerE.png")!
-    let swapBtn:UIButton = UIButton(frame: CGRect(x:15,y:7,width:30,height:30))
+    var swapBtn:UIButton!
     let imS = UIImage(named: "swap1z")
     let imN = UIImage(named: "swap0z")
     //セレクトパネルの背景色:角丸表示にするために必要
-    let sRect = CGRect(x:0,y:0,width:50*6 + 15 + 5,height: 44)
-    var select_bg = UIView(frame: CGRect(x:0,y:0,width:320,height: 44))
-    var selct_pnl = UIView(frame: CGRect(x:3,y:3,width:310,height: 42))
+    //let sRect = CGRect(x:0,y:0,width:50*6 + 15 + 5,height: 44)
+    //var select_bg = UIView(frame: CGRect(x:0,y:0,width:320,height: 44))
+    //var selct_pnl = UIView(frame: CGRect(x:3,y:3,width:310,height: 42))
  
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
-
+    //セレクトパネルの高さselHeightからボタンの位置を決める
+    var selHeight2:CGFloat = selHeight - 40 - 2//ボタンの位置
+    //----------------------------------------------------//
+    
     func setMenu(){ //UIButtonはここで作成する
         print("select2btn is selected!!")
         //selectViewを空にする
         self.deleteSubviews()
-        self.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd5")!)
+        self.backgroundColor = UIColor(patternImage: UIImage(named:"colorVBg2b")!)
   /*
         self.backgroundColor = UIColor.clear
         select_bg.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
@@ -421,9 +424,12 @@ class SelectView:UIView{
  */
         //ツールバーの高さを取得した後の再設定
         if boundWidthX == boundWidth{//縦場面の場合
-         select_pcView.layer.position.y = boundHeight - vHeight - 40 - 44/2 - th
+         select_pcView.layer.position.y = boundHeight - vHeight - 40 - selHeight/2 - th
         }
-        
+        bacBtn = UIImageView(frame: CGRect(x:15,y:
+            selHeight2 + 5,width:30,height:30))
+        swapBtn = UIButton(frame: CGRect(x:15,y:selHeight2 + 5,width:30,height:30))
+        bigBtm = UIImageView(frame: CGRect(x:0,y:selHeight2 + 5,width:30,height:30))//★★ボタンを押した時の大きい丸
         //ボタン画像の作成
         //角丸/丸ボタンを作成する
         btnImgs = []//一旦、空にする
@@ -439,7 +445,7 @@ class SelectView:UIView{
         for i in 0...5 {//print("\(i)")
             //btnImgs.append( UIImage.colorImage2(color: xColor[i], size: CGSize(width: 20, height: 20)))//円形の色画像を作成する
             let xx:CGFloat = i == 1 ? (marker ? 0 : 10) : 0//第２ボタンだけ位置をづらす
-            let selBtn:UIButton = UIButton(frame: CGRect(x:CGFloat(15 + i*50) - xx,y:4,width:40,height:40))
+            let selBtn:UIButton = UIButton(frame: CGRect(x:CGFloat(15 + i*50) - xx,y:selHeight2,width:40,height:40))
             selBtn.tag = i
             selBtn.addTarget(self, action: #selector(btnA_click(sender:)), for:.touchUpInside)
             selBtn.addTarget(self, action: #selector(btnA_click(sender:)), for:.touchUpOutside)
@@ -463,11 +469,11 @@ class SelectView:UIView{
         ///select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd4.png")!)//(named:"selectVBg.png")!)
         //区切り線
         if !marker{
-            sectView = UIView(frame:CGRect(x:107,y:2,width:2,height:42))
+            sectView = UIView(frame:CGRect(x:107,y:selHeight2 - 5,width:2,height:42))
             sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.2)//brown.withAlphaComponent(0.7)
             self.addSubview(sectView)
         }else{
-            sectView = UIView(frame:CGRect(x:62,y:5,width:1,height:42))
+            sectView = UIView(frame:CGRect(x:62,y:selHeight2 - 5,width:1,height:42))
             sectView.backgroundColor = UIColor.gray.withAlphaComponent(0.8)//brown.withAlphaComponent(0.7)
             self.addSubview(sectView)
         }
@@ -488,7 +494,7 @@ class SelectView:UIView{
         print("select3btn is selected!!:lang = \(langFlag)")
         //ツールバーの高さを取得した後の再設定
         if boundWidthX == boundWidth{//縦場面の場合
-         select_pcView.layer.position.y = boundHeight - vHeight - 40 - 44/2 - th
+         select_pcView.layer.position.y = boundHeight - vHeight - 40 - selHeight/2 - th
         }
         //ボタンの画像
         let pcl:UIImage = langFlag == 0 ? penJ : penE
@@ -497,9 +503,10 @@ class SelectView:UIView{
         var tImg:[UIImage] = [pcl,gpn,mkr]
         //selectViewを空にする
         self.deleteSubviews()
+        selHeight2 = selHeight - 40 - 2
         for i in 0...2 {// Pencil | G-pen | Highlight-pen
             
-            let selBtn:UIButton = UIButton(frame: CGRect(x:5 + i*100,y:4,width:100,height:40))
+            let selBtn:UIButton = UIButton(frame: CGRect(x:5 + CGFloat(i*100),y:selHeight2,width:100.0,height:40.0))
             selBtn.backgroundColor = UIColor.clear
             selBtn.tag = i
             selBtn.addTarget(self, action: #selector(btnB_click(sender:)), for:.touchUpInside)
@@ -510,10 +517,10 @@ class SelectView:UIView{
             self.addSubview(selBtn)
         }
         ///select_pcView_bg.backgroundColor = UIColor.rgb(r:51,g:204, b:204, alpha: 1)
-        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"penBgd.png")!)//(named:"selectVBg2.png")!)
+        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectVBg2b.png")!)//(named:"penBgd.png")!)//(named:"selectVBg2.png")!)
         //区切り線
-        sectView = UIView(frame:CGRect(x:107,y:4,width:1,height:36))
-        sectView2 = UIView(frame:CGRect(x:200,y:4,width:1,height:36))
+        sectView = UIView(frame:CGRect(x:107,y:selHeight2,width:1,height:36))
+        sectView2 = UIView(frame:CGRect(x:200,y:selHeight2,width:1,height:36))
         sectView.backgroundColor = UIColor.white//.withAlphaComponent(0.15)//brown.withAlphaComponent(0.7)
         sectView2.backgroundColor = UIColor.white//.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
         self.addSubview(sectView)
@@ -561,7 +568,7 @@ class SelectView:UIView{
             let bX = CGFloat(tag) * 50 + 15 + 20
             bigBtm.layer.position.x = tag == 1 ? bX - 10 : bX
         }
-        bigBtm.layer.position.y = self.frame.height/2 + 2
+        bigBtm.layer.position.y = selHeight2 + 20//self.frame.height/2 + 2
         
         self.addSubview(bigBtm)
         print("---------self.addSubview(bigBtm)-------------")
