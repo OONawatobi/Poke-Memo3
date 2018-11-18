@@ -509,6 +509,8 @@ var gblColor = UIColor.black
 var bigBtm:UIImageView!//★★ボタンを押した時の大きい丸
 var select_pcView:SelectView!//色選択パネル
 var selHeight:CGFloat!//色選択パネルの高さ
+//セレクトパネルの高さselHeightからボタンの位置を決める
+var selHeight2:CGFloat!//ボタンの位置
 ///var select_pcView_bg:UIView!//色選択パネルの背景
 var sectView:UIView!//色選択パネルの区切り線
 var sectView2:UIView!//色選択パネルの区切り線
@@ -1412,11 +1414,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myLongPressGesture4.minimumPressDuration = 0.6
         pallete2.addGestureRecognizer(myLongPressGesture4)//★★複数ボタンで共通
     */
+ /*--------------------------------------------------------------------------//
+        let edgeGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(ViewController.edgeSwipe))
+            edgeGesture.edges = .top//左端をスワイプするのを検知する
+        // viewにエッジを登録
+        self.view.addGestureRecognizer(edgeGesture)
+ //--------------------------------------------------------------------------*/
         //*** 色パネルViewの作成 ***//★★★★
         selHeight = 60//44//select_pc_viewの高さ
+        //セレクトパネルの高さselHeightからボタンの位置を決める
+        selHeight2 = selHeight - 40 - 2//ボタンの位置
         let sel_y:CGFloat = boundHeight - th - vHeight - 40 - selHeight
         //let sely2:CGFloat = myEdity2 - selHeight
-        let selRect = CGRect(x:-3,y:sel_y,width:50*6 + 15 + 10,height: selHeight)
+        let selRect = CGRect(x:-3,y:sel_y,width:50*6 + 15 + 8,height: selHeight)
         select_pcView = SelectView(frame: selRect)
         //デリゲート登録
         select_pcView.Delegate = self
@@ -1466,8 +1476,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             self.navigationController.interactivePopGestureRecognizer.enabled = NO;
         }
         */
+        
+        
+        
     }
     //  =======         End of viewDi dLoad         =======
+
+    func edgeSwipe(){
+        print("edgeSwipe!!")
+    }
+    
     func temp(){
         //データを外部に保存する
         //print("temp()()()()()()()()()()⭕️テスト用⭕️")
@@ -1586,8 +1604,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             ///select_pcView_bg.removeFromSuperview()
             selFlg = false
             
-            //return
-        }else if selFlg && isColorPnel{return}
+        }else if selFlg && isColorPnel{
+            select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
+            select_pcView.removeFromSuperview()
+            selFlg = false
+            return
+            
+        }
         if drawableView.X_color == 1{return}//消しゴムモード時はパス
         print("★！！！！2")
         select_pcView.setMenu()//★★
@@ -1620,8 +1643,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             select_pcView.removeFromSuperview()
             ///select_pcView_bg.removeFromSuperview()
             selFlg = false
-            //return
-        }else if selFlg && !isColorPnel{return}
+        }else if selFlg && !isColorPnel{
+            select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
+            select_pcView.removeFromSuperview()
+            selFlg = false
+            return
+            
+        }
         print("★！！！！3")
         select_pcView.setPenMenu()//★★
         isColorPnel = false

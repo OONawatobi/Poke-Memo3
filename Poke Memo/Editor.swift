@@ -401,8 +401,7 @@ class SelectView:UIView{
  
     //ボタンダウン時の画像
     var tImg2:[UIImage] = [UIImage(named: "pen3.pdf")!,UIImage(named: "gpen01.pdf")!,UIImage(named: "markerM.png")!]
-    //セレクトパネルの高さselHeightからボタンの位置を決める
-    var selHeight2:CGFloat = selHeight - 40 - 2//ボタンの位置
+
     //----------------------------------------------------//
     
     func setMenu(){ //UIButtonはここで作成する
