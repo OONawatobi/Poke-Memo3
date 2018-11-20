@@ -11,6 +11,7 @@ import UIKit
 class DrawableView: UIView {
     var Delegate: DrawableViewDelegate!//アッパーツールビューの操作を外部で処理（委託）する。
  //-----
+    
     var swapFlag = false//drawVとsecondVの入れ替え(false:正規状態)
     var lastPenW:CGFloat = 1//直前のペン幅
     var kando_k:CGFloat = 1 //sliderNに掛かる係数

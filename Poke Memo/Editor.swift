@@ -408,7 +408,7 @@ class SelectView:UIView{
         print("select2btn is selected!!")
         //selectViewを空にする
         self.deleteSubviews()
-        self.backgroundColor = UIColor(patternImage: UIImage(named:"colorVBg2b")!)
+        self.backgroundColor = UIColor(patternImage: UIImage(named:"colorX2")!)//(named:"colorBgd6")!)
   /*
         self.backgroundColor = UIColor.clear
         select_bg.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
@@ -468,11 +468,11 @@ class SelectView:UIView{
         ///select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"colorBgd4.png")!)//(named:"selectVBg.png")!)
         //区切り線
         if !marker{
-            sectView = UIView(frame:CGRect(x:107,y:selHeight2 - 5,width:2,height:42))
+            sectView = UIView(frame:CGRect(x:107,y:selHeight2 - 0,width:2,height:40))
             sectView.backgroundColor = UIColor.brown.withAlphaComponent(0.2)//brown.withAlphaComponent(0.7)
             self.addSubview(sectView)
         }else{
-            sectView = UIView(frame:CGRect(x:62,y:selHeight2 - 5,width:1,height:42))
+            sectView = UIView(frame:CGRect(x:62,y:selHeight2 - 0,width:1,height:42))
             sectView.backgroundColor = UIColor.gray.withAlphaComponent(0.8)//brown.withAlphaComponent(0.7)
             self.addSubview(sectView)
         }
@@ -516,10 +516,10 @@ class SelectView:UIView{
             self.addSubview(selBtn)
         }
         ///select_pcView_bg.backgroundColor = UIColor.rgb(r:51,g:204, b:204, alpha: 1)
-        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectVBg2b.png")!)//(named:"penBgd.png")!)//(named:"selectVBg2.png")!)
+        select_pcView.backgroundColor = UIColor(patternImage: UIImage(named:"selectX.png")!)//(named:"selectX2.png")!)//(named:"penBgd.png")!)//(named:"selectVBg2.png")!)
         //区切り線
-        sectView = UIView(frame:CGRect(x:107,y:selHeight2,width:1,height:36))
-        sectView2 = UIView(frame:CGRect(x:200,y:selHeight2,width:1,height:36))
+        sectView = UIView(frame:CGRect(x:107,y:selHeight2 + 5,width:1,height:35))
+        sectView2 = UIView(frame:CGRect(x:200,y:selHeight2 + 5,width:1,height:35))
         sectView.backgroundColor = UIColor.white//.withAlphaComponent(0.15)//brown.withAlphaComponent(0.7)
         sectView2.backgroundColor = UIColor.white//.withAlphaComponent(0.5)//brown.withAlphaComponent(0.7)
         self.addSubview(sectView)
@@ -576,25 +576,25 @@ class SelectView:UIView{
     func btnA_click(sender:UIButton){//色アイコンタッチUP 時の処理
         print("btnA_clicked!: \(sender.tag)")
         let st:Int = sender.tag
-        if st == 0{return}//黒色ボタンの場合は反応しないようにする
+        if marker && st == 0{return}//マーカ時、黒色ボタンの場合は反応しないようにする?
         btnA_click2(tag:st)
     }
     func btnA_click2(tag:Int){//btnA_click()の本体プログラム
         gblColor = bColor[tag]
-        var lineColorX:Int = 0
+        //var lineColorXX:Int = 0
         if tag >= 2 {//選んだ色をlineColorに設定する
-         lineColorX = tag - 2
+         lineColorXX = tag - 2
          editButton2.setImage(colorIcon[tag - 2], for:UIControlState.normal)
-         penColorNum = 3
+         penColorNum = 3//指定色
         }else if tag == 0{//黒色
          editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
-         penColorNum = 1
-        }else{//赤色
+         penColorNum = 1//黒(固定色)
+        }else{
          editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
-         penColorNum = 2
+         penColorNum = 2//赤色（固定色）
         }
-        if marker{lineColor2 = lineColorX}
-        else{lineColor = lineColorX}
+        if marker{lineColor2 = lineColorXX}
+        else{lineColor = lineColorXX}
     }
     func btnB_click_S(sender:UIButton){//ペンボタンを押す
         editButton3.setImage(tImg2[sender.tag], for:UIControlState.normal)

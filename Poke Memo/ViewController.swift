@@ -495,6 +495,7 @@ extension UIImage {
 }
 
 //-----　grobal constance　--------
+var lineColorXX:Int = 0//selectクラスで使用
 var swapMode = false//マーカのスワップモード時：true
 var sliderN:CGFloat = 0.5//スライダー値
 //var testView = UIView(frame: CGRect(x:0,y:0,width:10,height:vHeight))
@@ -747,7 +748,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ////myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.frame.size = CGSize(width:boundWidth,height:60)
         myEditView.layer.position = CGPoint(x: boundWidth/2, y: boundHeight - vHeight - 40 - selHeight/2 - th)
-        select_pcView.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - selHeight/2 - th)
+        select_pcView.layer.position = CGPoint(x:select_pcView.frame.width/2 - 4, y: boundHeight - vHeight - 40 - selHeight/2 - th)
         ///select_pcView_bg.layer.position = CGPoint(x:select_pcView.frame.width/2 + 2, y: boundHeight - vHeight - 40 - 44/2 - th)
         spaceView1.frame.size = CGSize(width: boundWidth, height: 10)
         spaceView1.layer.position = CGPoint(x:boundWidth/2,y:boundHeight - th - vHeight + 10/2)
@@ -820,7 +821,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         myToolView.layer.position = CGPoint(x:mtPosx/2, y: boundWidth - vHeight - 40/2)
         ////myToolView.addHorizonBorderWithColor(color: UIColor.black, width:1)
         myEditView.layer.position = CGPoint(x:leftOffset + boundWidth/2, y: boundWidth - vHeight - 40 - 60/2)
-        select_pcView.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - selHeight/2 )
+        select_pcView.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 - 2, y: boundWidth - vHeight - 40 - selHeight/2 )
         ///select_pcView_bg.layer.position = CGPoint(x:leftOffset + select_pcView.frame.width/2 + 2, y: boundWidth - vHeight - 40 - 44/2 )
         spaceView1.frame.size = CGSize(width: boundHeight, height: 10)
         spaceView1.layer.position = CGPoint(x:leftOffset + boundHeight/2,y:boundWidth - vHeight + 10/2)
@@ -1421,19 +1422,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.view.addGestureRecognizer(edgeGesture)
  //--------------------------------------------------------------------------*/
         //*** 色パネルViewの作成 ***//★★★★
-        selHeight = 60//44//select_pc_viewの高さ
+        selHeight = 50//44//select_pc_viewの高さ
         //セレクトパネルの高さselHeightからボタンの位置を決める
         selHeight2 = selHeight - 40 - 2//ボタンの位置
         let sel_y:CGFloat = boundHeight - th - vHeight - 40 - selHeight
         //let sely2:CGFloat = myEdity2 - selHeight
-        let selRect = CGRect(x:-3,y:sel_y,width:50*6 + 15 + 8,height: selHeight)
+        let selRect = CGRect(x:0,y:sel_y,width:50*6 + 15 + 10,height: selHeight)
         select_pcView = SelectView(frame: selRect)
+        select_pcView.layer.position.x = select_pcView.frame.width/2 + 0
+        //セレクトパネルの横方向の位置を少し右にずらす
+        select_pcView.layer.position.x = selRect.width/2 - 4
         //デリゲート登録
         select_pcView.Delegate = self
         select_pcView.backgroundColor = UIColor.clear//white.withAlphaComponent(1.0)
         ///select_pcView_bg = UIView(frame: selRect)
-        //セレクトパネルの横方向の位置を少し右にずらす
-        //select_pcView.layer.position.x = selRect.width/2 + 2
+
         ///select_pcView_bg.layer.position.x = selRect.width/2 + 2
         //セレクトパネルの背景色:角丸表示にするために必要
         //__select_pcView_bg.backgroundColor = UIColor.rgb(r:219,g:214, b:162, alpha: 1)
@@ -1590,13 +1593,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     var isColorPnel:Bool!//カラーパレット表示中はtrue
+    var isLongPressing = false//★ロングプレス中はtrue
     //長押しボタンの処理(色選択)
     func pushStartBtn2(sender: UILongPressGestureRecognizer){
         print("pushStartBtn:2")
         //呼び出されたタイミングを確認する。
         if(sender.state == UIGestureRecognizerState.ended) {
+            isLongPressing = false//★手を離した時にリセットする。
             return
         }
+        if isLongPressing{return}//★ロングプレス中は無視する
         //色選択パネルが開いている場合は閉じる
         if selFlg && !isColorPnel{
             select_pcView.deleteSubviews()//全てのsubviewを削除(extention)
@@ -1625,15 +1631,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             selFlg = true//必要？長押し開始と終わりの両方でトリガーが掛かるため、設定で不要にできるかも！大きい！
         
         }
-
+        isLongPressing = true//★ロングプレス中フラグをセットする
 
     }
     //長押しボタンの処理(ペン選択)
     func pushStartBtn3(sender: UILongPressGestureRecognizer){
         print("pushStartBtn:3")
         if(sender.state == UIGestureRecognizerState.ended) {
+            isLongPressing = false//★手を離した時にリセットする。
             return
         }
+        if isLongPressing{return}//★ロングプレス中は無視する
         if drawableView.X_color == 1{//消しゴムモードの時は鉛筆モードに戻す
             penMode()
             return}//ペンモード以外はパス
@@ -1660,7 +1668,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             self.view.addSubview(select_pcView)
             selFlg = true
         }
-            
+        isLongPressing = true//★ロングプレス中フラグをセットする
     }
 /*
     func rightBarBtnClicked(sender: UIButton){
@@ -1946,7 +1954,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             bigFlag = false
             //編集中のページ内容を更新する-------------------⭕️
             allDataSave()
-
+            self.index2.isEnabled = true//メニューボタンを表示
         }else{//----------- パレットを開く処理　--------------②
         // ◆◆ === パレットが表示されていない時パレットを表示する===
             //_パレットビューを作成・初期化する
@@ -2010,6 +2018,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
             penColorNum = 1//黒色
             penMode()//黒ペンモードにする
+            self.index2.isEnabled = false//メニューボタンを非表示
             //????closeEditView()//編集パレット画面を閉じる
             // == debug2 =====================================================
             if debug2 == true{drawableView.addSubview(testV)}  //@@ DEBUG2 @@
@@ -3642,10 +3651,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if marker{return}//マーカペンの場合はパス
     
         if penColorNum == 1 {
-            penColorNum = 2
+            penColorNum = 2//赤（固定色）
             editButton2.setImage(UIImage(named: "red.png"), for:UIControlState.normal)
         }else if penColorNum == 2{
-            penColorNum = 3
+            penColorNum = 3//指定色
             var thirdColor:UIImage!
             
             switch lineColor {
@@ -3657,7 +3666,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
             editButton2.setImage(thirdColor, for:UIControlState.normal)
         }else{
-            penColorNum = 1
+            penColorNum = 1//黒（固定色）
             editButton2.setImage(UIImage(named: "black2.png"), for:UIControlState.normal)
         }
         
@@ -4380,6 +4389,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //親行をクリックしたときだけ
         if ngn != oyaGyou{return}
       */
+        subMemoView.removeFromSuperview()//一旦、子メモを削除する?必要？
+        
         let baseTag:Int = oyaGyou
         //子メモが全空白かどうかをチェックする
         let x = checkUsedLine(tag:baseTag)
@@ -4397,7 +4408,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let im2 = subMemo.memoToImgs2(pn: baseTag)
         writePage(pn: baseTag, imgs: im2)
         subMemo.removeFromSuperview()
-        subMemoView.removeFromSuperview()//一旦、子メモを削除する?必要？
+        //__subMemoView.removeFromSuperview()//一旦、子メモを削除する?必要？
         //子メモの分だけスクロール表示範囲を小さくする（元に戻す）
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
         
@@ -4448,11 +4459,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //１行目と３２行目の下線は実践、他は破線
             //let clr = UIColor.rgb(r: 0, g: 141, b: 183, alpha: 1)
             if nowGyouNo > 10000{
-                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 1.7, posX: pos, lenX: len,spaceX: 7)
+                targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 2.0, posX: pos, lenX: len,spaceX: 7)
             }else if
                 nowGyouNo < 10000 && (nowGyouNo%100 == 1 || nowGyouNo%100 == 32){
                 print("aaaaaaaaaa:\(zm)")
-                targetMemo.addCursolLine2(color: UIColor.blue, lineWidth: 2.2, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
+                targetMemo.addCursolLine2(color: UIColor.black, lineWidth: 2.5, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
             }else{
                 print("bbbbbbbbb:\(zm)")
                 targetMemo.addCursolLine(color: UIColor.blue, lineWidth: 1.8, lineSize: 2, spaceSize: 2, posX: pos, lenX: len)
