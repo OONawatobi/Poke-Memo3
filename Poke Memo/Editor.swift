@@ -531,6 +531,12 @@ class SelectView:UIView{
         print("★★tag: \(tag)")
     }
     func swap_click(sender:UIButton){//
+        //ok2Flg = false//ok2()再実行フラグをリセットする（メモ行更新可とする）
+        /*
+         マーカmodeでは、自動スクロール停止のためOKボタンだけでメモ行への書き込みを行うが
+         swapボタン切り替え時には、メモ行の再読み込みをするように追加変更した。
+         これにより、swap切り替えると、未確定のマーカ線は消える為、再度マーカ作業を続ける必要があります。
+        */
 
         if swapMode{
             swapMode = false
@@ -541,7 +547,9 @@ class SelectView:UIView{
             swapBtn.setImage(imS, for:UIControlState.normal)
             print("swap_ON")
         }
-    drawableView.swapViewBgImage()
+        drawableView.swapViewBgImage()
+        //メモ行をパレットに読み込む
+        self.Delegate?.modalChanged(TouchNumber: nowGyouNo, top: 0)
     }
     func btnA_click_S(sender:UIButton){//タッチDOWN 時の処理(start)
         print("btnA_clicked!: \(sender.tag)")

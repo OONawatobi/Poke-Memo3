@@ -1473,32 +1473,38 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         )
 */
         
-       /*
+/*
         //既存のエッジスワイプを無効にする
         if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
             self.navigationController.interactivePopGestureRecognizer.enabled = NO;
         }
-        */
+    */
         
         
         
     }
-    //  =======         End of viewDi dLoad         =======
-
+    //  =======         End of viewDidLoad         =======
+    
+    //スクリーン上下のエッジスワイプ動作を停止する
+    override func preferredScreenEdgesDeferringSystemGestures() -> UIRectEdge {
+        return [.top,.bottom]
+    }
+    
     func edgeSwipe(){
         print("edgeSwipe!!")
     }
-    
+    //_background移動時に処理する
     func temp(){
         //データを外部に保存する
         //print("temp()()()()()()()()()()⭕️テスト用⭕️")
         if isPalleteMode == true{//パレット内容を保存して閉じる
             //memo[fNum].addDate(pn:pageNum)//日付追加　⭕️テスト用⭕️
+            //1 OKボタンを押す
             done(done2)
-            //子メモが開いている場合は子メモを閉じる
-        
-            Pallete(pallete2)
+            //3 子メモが開いている場合は子メモを閉じる
             if childFlag == true{ childMemoClose(ngn: oyaGyou)}
+            //2 パレットを閉じる
+            Pallete(pallete2)
         }
         
     }
@@ -1513,7 +1519,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     // アプリバックグラウンド移行開始時に行う処理
     @objc func onWillResignActive(_ notification: Notification?) {
         print("アプリバックグラウンド移行時に行う処理")
-        temp()
+        temp()//確定前のデータを保存する
         // 横画面時（回転ロックSWはOFF)は無視する。
         if boundWidthX != boundWidth{
             return
@@ -1914,7 +1920,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
           //_portlaitで起動する為のフラグ:回転禁止に設定
             didLoadFlg = false
            //メモカーソルを消す
-            memoCursol(disp: 0)
+            if childFlag{
+                memoCursol(disp: 0)
+            }
            //-- アニメーションの後⭕️に移動（閉じ始めがおくれる為）--
 
            //++ パレットを閉じるアニメーション
@@ -2196,7 +2204,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         drawableView.editOK = true//??編集パネル表示中
         //??◆◆◆◆drawableView.get3VImage(im: editedView)//??
         //パレット入力状態のリセット
-        editFlag = false;myInt = "NON"
+        editFlag = false;
+        myInt = "NON"
         drawableView.lastDrawImage = nil
         
         //編集画面を閉じる
@@ -2234,6 +2243,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ok2Flg = true//??ok2()重複実行防止用(メモ行更新不可となる)
         //↑これを有効にするとメモ行に正しく書き込めないバグが発生した。
         print("====  swapFlag = \(drawableView.swapFlag) ====")
+
     }
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
@@ -2604,8 +2614,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
   /* --------------　外部データ入出力関係　----------------------- */
     
     //外部のページデータを読み込む: photos”pn”[] ->[UIImage]
-  
-    func XXreadPage(pn:Int)->[UIImage]{//親子メモともに共通
+/*
+    func XXreadPage(pn:Int)->[UIImage]{//親子メモともに共通　未使用
         //+-+- -- ブランク画像をを作成する --
         let blankView = UIView(frame: CGRect(x:0,y:0,width:10,height:10)).GetImage()
         let bImage2 = (pn == 0) ? bImage : blankView
@@ -2630,6 +2640,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             return blankImgs
         }
     }
+ */
     func readPage(pn:Int)->[UIImage]{//親子メモともに共通+-+- 32行対応版$
         //+-+- -- ブランク画像をを作成する --
         let blankView = UIView(frame: CGRect(x:0,y:0,width:10,height:10)).GetImage()
@@ -4318,7 +4329,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if mx[String(nowGyouNo)]!<10{return}
         //print("●◉●\(mx[String(nowGyouNo)])")
         //子メモを開く
-        oyaGyou = nowGyouNo//親行を記憶する
+        oyaGyou = nowGyouNo//✅親行を記憶する
         childFlag = true
         let im = readPage(pn:nowGyouNo)//im:１ページ目の外部データを読み込む
         subMemo.setMemoFromImgs2(bt:nowGyouNo,imgs:im)//bt:basetag
@@ -4326,7 +4337,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var addGyou = (nowGyouNo%100 + pageGyou2) - pageGyou//はみ出す分を計算
         addGyou = addGyou > 0 ? addGyou :0//はみ出す分だけ追加する
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + addGyou + memoLowerMargin) + topOffset)
-        
         //子メモviewの作成
         print("777777777")
         subMemoView.removeFromSuperview()//一旦、子メモを削除する
@@ -4454,10 +4464,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //let pos = (vWidth/2 - drawableView.layer.position.x)/4/zm + add
             //   print("palette pos: \(pos), allW: \(vWidth)")
         //選択されたセルを探す
+            print("✅______1_\(String(describing: nowGyouNo))________✅")
         let targetMemo:UIView = memo[fNum].viewWithTag(nowGyouNo)!
             if disp == 0{ len = 0}
         //１行目と３２行目の下線は実践、他は破線
             //let clr = UIColor.rgb(r: 0, g: 141, b: 183, alpha: 1)
+            print("✅______2_________✅")
             if nowGyouNo > 10000{
                 targetMemo.addLineForChild(color: UIColor.magenta, lineWidth: 2.0, posX: pos, lenX: len,spaceX: 7)
             }else if

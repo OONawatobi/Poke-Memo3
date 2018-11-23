@@ -216,7 +216,7 @@ class DrawableView: UIView {
     
     var lastY:CGFloat = 0//１つ前のy座標？右側エリア処理だけで使用する
     var rightFlag:Bool = false
-    let rightArea:CGFloat = 20//10//右側エリア境界位置
+    let rightArea:CGFloat = 15//10//右側エリア境界位置
     var shiftLeftFlag:Bool = false
     var shiftDownFlag:Bool = false
     var shiftUpFlag:Bool = false
@@ -544,10 +544,11 @@ class DrawableView: UIView {
                 }
             }
         //消しゴムモード
-            }else{
+        }else{//X_color != 0
             //+-+-子メモの場合はchildColorにする
             penC = (nowGyouNo>10000) ? childColor : UIColor.white
-            penW = !marker ? 15 : 30//消しゴムの巾(マーカモードでは倍にする)
+            let markW = penWidth == 0 ? 5 : (penWidth == 1 ? 10 : 30)
+            penW = CGFloat(!marker ? 15 : markW)//消しゴムの巾(マーカモードでは倍にする)
         }
         penC = marker ? penC.withAlphaComponent(op) : penC//マーカペンの色
         print("@@@@@@@@:::::\(String(describing: penC))")
@@ -577,19 +578,30 @@ class DrawableView: UIView {
         let penColor = selFlg ? gblColor : penC//色選択パネルの色を優先する
         penColor?.setStroke()
         path.lineCapStyle =   .round//.butt//.square//
-        //ペン幅を指定する（このモードでは線が細くなるので全体を太くする)
-        let penw = penW*1.2//penWはブローバル変数
-        //線幅の変更-----------------------------------//
+        //ペン幅を指定する（このモードでは線が細くなるので全体を太くする)為
+        //penW: 5 - 7- 10
+        let penw = penW*1.2//penWはブローバル変数//非べジュエでは全体的に細くなる為
+        //⭕️線幅の変更-----------------------------------//
         var k_penW:CGFloat = 1.0//ペン巾係数??
         //k_z:象限別のペン幅係数(0-1),kando_k:
-        k_penW = (penW - 7) / 12  + 1.2//★1.2
+        k_penW = (penW - 7) / 12  + 1.2
         k_penW = k_penW * (sliderN*2)//sliderNの初期値：0.5
         //速度依存係数(k_dt:速度ベクトル長さ)
         //kando_k:
         let k_v = penw * k_dt * k_penW * (0.02*1)  //kando_k)
         let w = penw * k_z  - k_v
+        //-----------------------------------------------⭕️
+        //①ペン幅設定値に対する補正係数
+        //var k_w:CGFloat = ((penW - 7)/12 + 1.0)
+        //②速度依存係数(k_dt:速度ベクトル長さ)
+        //var k_v = (k_dt * (0.02))
+        //k_z:象限別のペン幅係数(0-1),kando_k:
+        //sliderN: 0 - 0.5 - 1.0
+        //線幅自動調整係数
+        //let k_All = k_w * k_v * (sliderN*2)
+        //let w = penw * (k_z  - k_All)
         
-        //---------------------------------------------------
+        //-----------------------------------------------🔲
         let w2 = (lastPenW + w)/2 //1つ前の線幅との平均をとる
         path.lineWidth = w2
         lastPenW  = w2
