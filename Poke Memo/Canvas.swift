@@ -214,6 +214,7 @@ class DrawableView: UIView {
     }
     //=====================　描画プログラム　======================//
     
+    var isUnderArea:Bool = false// ⭕️下端エリア境界線より下でtrue
     var lastY:CGFloat = 0//１つ前のy座標？右側エリア処理だけで使用する
     var rightFlag:Bool = false
     let rightArea:CGFloat = 15//10//右側エリア境界位置
@@ -257,6 +258,8 @@ class DrawableView: UIView {
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
         let screenX = b*(currentPoint.x) + (midX - b*vWidth/2)// 画面座標に変換
         rightFlag =  screenX > (boundWidthX - rightArea) ? true:false
+        //下端エリア以下であるかをチェックする
+        isUnderArea = (currentPoint.y >= vHeight - 21.0) ? true : false
         //print("screenX:\(screenX)")
         //print("◆◆◆◆")//
         if lastDrawImage != nil{
@@ -303,9 +306,9 @@ class DrawableView: UIView {
             return
         }
         if bezierPath == nil {return}//★20180819
-        
-//①---- 通常モード (右側エリアでない場合)-----------------------------------------
-       if rightFlag == false{
+        //print("⭕️⭕️⭕️⭕️ isUnderArea: \(isUnderArea)")
+//①---- 通常モード (⭕️右側エリアでない場合)-----------------------------------------
+       if (rightFlag == false) && isUnderArea == false{
         //mx最大値を取得
         mxTemp = max(mxTemp,currentPoint.x)
     
@@ -379,10 +382,11 @@ class DrawableView: UIView {
           if timerFlag == true{autoFlag = true}//タイマー稼働中は自動スクロールする
         }
         
-//②---- 右端エリアモード ----------------------------------------------------------
+//②---- 右端エリアモード (または下端エリア)-----------------------------
 }else{
         print(" ●●●●is rightArea!!●●●●")
-        
+        //⭕️下端エリアモードの場合はパスする
+        if isUnderArea{ return }
        //左シフトの判定（手動）
         let dX = lastPoint.x - currentPoint.x
         print(" is rightArea!!")
@@ -410,8 +414,8 @@ class DrawableView: UIView {
     
     // タッチが終わった---------------------------------------------
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //________マーカペンのタッチEnd時の処理
-       
+        //⭕️下端エリアモード時はパス
+        if isUnderArea{return}
         //moveFlag == false//タッチ状態終了
         if bezierPath == nil { return }
         //------- 右端エリアより左にタッチされた場合 -------

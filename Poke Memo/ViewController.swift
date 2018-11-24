@@ -1501,13 +1501,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             //memo[fNum].addDate(pn:pageNum)//日付追加　⭕️テスト用⭕️
             //1 OKボタンを押す
             done(done2)
-            //3 子メモが開いている場合は子メモを閉じる
-            if childFlag == true{ childMemoClose(ngn: oyaGyou)}
             //2 パレットを閉じる
             Pallete(pallete2)
+            //3 子メモが開いている場合は親行にカーソルを移動する
+            if childFlag{
+                modalChanged(TouchNumber: oyaGyou, top: 0)
+            }
         }
-        
-    }
+        //3 子メモが開いている場合は子メモを閉じる
+            if childFlag{
+                childMemoClose(ngn: oyaGyou)
+            }
+        }
 /*
      アプリを終了するには一旦、バックグランドに移動するためonWillResignActive()で処理する
     //上記のもう一つの理由としては、pplicationWillTerminateでは正しく動作しなかった事もあります。
@@ -4414,15 +4419,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //現行のページ内容を外部に保存
         let im = memo[fNum].memoToImgs(pn: pageNum)//im:
         writePage(pn: pageNum, imgs: im)
-        //子メモ内容を外部に保存
+        //子メモ内容を外部に保存?この為閉じる際の時間がかかる？
         let im2 = subMemo.memoToImgs2(pn: baseTag)
-        writePage(pn: baseTag, imgs: im2)
         subMemo.removeFromSuperview()
+        writePage(pn: baseTag, imgs: im2)//外部に保存
+        //↑↓を切り替えた。：subMemo.removeFromSuperview()
+
         //__subMemoView.removeFromSuperview()//一旦、子メモを削除する?必要？
         //子メモの分だけスクロール表示範囲を小さくする（元に戻す）
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
         
         childFlag = false
+        print("nowGyouNo = \(String(describing: nowGyouNo))")
     }
     
     //+-+- 子メモの内容を削除する$
