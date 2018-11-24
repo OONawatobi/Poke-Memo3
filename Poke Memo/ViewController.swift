@@ -393,6 +393,7 @@ extension UIImage {
     }
     //メモ行の末尾に日付を追加する関数
     func addText_Date(text:String,del:Bool)-> UIImage{
+        print("⭕️text： \(text)")
         let text = text
         var font = UIFont.boldSystemFont(ofSize: 24)
         let font2 = UIFont.boldSystemFont(ofSize: 72)
@@ -841,7 +842,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //shortToolBar.addHorizonBorderWithColor(color: UIColor.black, width: 1.5)
         jinesH = boundWidth - vHeight - 40 - statusBarHeight - naviBar.frame.height - 44
         jinesView = UIView(frame: CGRect(x: leftOffset + boundWidth,y:statusBarHeight + naviBar.frame.height,width:shortToolBar.frame.width,height:jinesH))
-        jinesView.backgroundColor = UIColor(patternImage: UIImage(named:"jines3")!)//UIColor.orange.withAlphaComponent(0.1)
+        jinesView.backgroundColor = UIColor(patternImage: UIImage(named:"jines4")!)//UIColor.orange.withAlphaComponent(0.1)
         self.view.addSubview(jinesView)
         ///ナビゲーションバー下の半透明バーを追加する
         let navB2h = statusBarHeight + naviBar.frame.height

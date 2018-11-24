@@ -33,7 +33,7 @@ class MemoView:UIView{
        let d = NSCalendar.current.component(compD, from: Date() as Date)
        //デバグ用　let m2 = 12 ;let d2 = 15//デバグ用
        //let st = String(format: "%4d-%2d-%2d",y,m2,d2)
-       let st = String(format: "%2d/%2d  '%2d",m,d,y2)
+       let st = String(format: "%2d/%2d '%2d",m,d,y2)
        //日付を追加する2+2+2+1+2:
        let tag = pn*100 +  1
        let targetMemo:UIImageView = self.viewWithTag(tag) as! UIImageView
