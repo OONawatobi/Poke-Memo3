@@ -7,6 +7,7 @@
 // 20161213
 
 import UIKit
+import MessageUI//⭕️Mail⭕️
 
 enum DashedLineType {
     case All,Top,Down,Right,Left
@@ -639,7 +640,7 @@ protocol EditorViewDelegate{//パレットビューの操作(機能）
 
 //    =======  ViewController    ========
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate, UIWebViewDelegate,SelectViewDelegate,EditorViewDelegate{
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,ScrollView2Delegate,UpperToolViewDelegate,DrawableViewDelegate, UIWebViewDelegate,SelectViewDelegate,EditorViewDelegate, MFMailComposeViewControllerDelegate{//⭕️Mail⭕️
     
     //ステータスバーを非表示にする
     //override var prefersStatusBarHidden: Bool { return true }
@@ -647,6 +648,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //override var preferredStatusBarStyle:UIStatusBarStyle {return UIStatusBarStyle.lightContent}
     
     //var indexFView:UIView!//インデックスメニュー作成評価用
+    var sendImage:UIImage!//メール送信画像
     var tempSlrN:CGFloat = 1.0//sliderNのtemp変数
     var gpenlabel:UILabel!//スライダー値の表示用
     var gpenSlider:UISlider!//設定画面のGpen感度調整スライダー
@@ -1486,6 +1488,39 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     //  =======         End of viewDidLoad         =======
     
+    //⭕️----------------------------------
+    func sendMail() {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients(["xxx@xxx.xxx"]) // 宛先アドレス
+            mail.setSubject("手書きメール") // 件名
+            mail.setMessageBody("ここに本文が入ります。", isHTML: false) // 本文
+            //-------------------------
+            sendImage = UIImage(named: "childEng.png")
+            let image = sendImage
+            let imageData = UIImageJPEGRepresentation(image!, 1.0)
+            mail.addAttachmentData(imageData!, mimeType: "image/png", fileName: "image")
+            //-------------------------
+            present(mail, animated: true, completion: nil)
+        } else {
+            print("送信できません")
+        }
+    }
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {//⭕️
+        switch result {
+        case .cancelled:
+            print("キャンセル")
+        case .saved:
+            print("下書き保存")
+        case .sent:
+            print("送信成功")
+        default:
+            print("送信失敗")
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    //---------------------------------------------⭕️
     //スクリーン上下のエッジスワイプ動作を停止する
     override func preferredScreenEdgesDeferringSystemGestures() -> UIRectEdge {
         return [.top,.bottom]
@@ -1706,7 +1741,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func index(_ sender: UIBarButtonItem) {
         //子メモが表示されている時は
-        //★20180815 if childFlag == true{ return}
+        if childFlag == true{sendMail(); return}//★20180815 ⭕️Mail⭕️
         //拡大表示の時はパス
         if bigFlag == true{ return}
         //パレットが開いている時は
@@ -3200,7 +3235,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func fc5(){ // [ = 設定 = ]
         print("test5!!!!!")
         //設定項目名の定義
-        let sT_Ja:[String] = ["決定","戻る","-- 筆記速度感度(Gペン) --","-- 画面の回転 --","-- 自動スクロール --","-- 全ページを削除 --","削除する","実行しない","*筆記速度に応じて調整","   早く\n    書く","ゆっくり書く","初期値"]
+        let sT_Ja:[String] = ["決定","戻る","-- 筆記速度感度(Gペン) --","-- 画面の回転 --","-- 自動スクロール --","-- 全ページを削除 --","削除する","実行しない","*筆記速度に応じて調整","   早く\n   書く","ゆっくり書く","初期値"]
         let sT_En:[String] = ["Set","Cancel","-- SPEED SENSITIVITY(G-pen) --","-- SCREEN-ROTATION --","-- AUTO SCROLL --","-- DELETE ALL --","DLETE-ALL","NO ACTION","* Adjust to writing-speed","writing\n  fast","writing\n  slow","Reset"]
         var sT = (langFlag == 0) ? sT_Ja:sT_En//言語による切り替え
         

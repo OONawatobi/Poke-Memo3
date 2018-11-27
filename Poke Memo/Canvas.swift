@@ -217,7 +217,7 @@ class DrawableView: UIView {
     var isUnderArea:Bool = false// ⭕️下端エリア境界線より下でtrue
     var lastY:CGFloat = 0//１つ前のy座標？右側エリア処理だけで使用する
     var rightFlag:Bool = false
-    let rightArea:CGFloat = 15//10//右側エリア境界位置
+    var rightArea:CGFloat = 18//15//10//右側エリア境界位置
     var shiftLeftFlag:Bool = false
     var shiftDownFlag:Bool = false
     var shiftUpFlag:Bool = false
@@ -231,7 +231,7 @@ class DrawableView: UIView {
     ///テスト用(k_dtの値を確認するため）
     var kdtMax:CGFloat = 0
     var kdtMin:CGFloat = 100
-    
+    var rightView:UIView!//⭕️⭕️テスト用です
     
     // タッチされた------------------------------------------
     override func touchesBegan(_ touches:Set<UITouch>, with event: UIEvent?) {
@@ -256,8 +256,12 @@ class DrawableView: UIView {
         //右側エリアに入っているか判定
         let midX = self.frame.midX //ControllViewからみたdrawableVの中心X座標
         let b = (bigFlag == true) ? big :1//拡大時に位置を補正する
+        
+        let ix:CGFloat = iphoneX && (boundWidthX != boundWidth) ? 44 - 34 : 0
         let screenX = b*(currentPoint.x) + (midX - b*vWidth/2)// 画面座標に変換
-        rightFlag =  screenX > (boundWidthX - rightArea) ? true:false
+        //print("⭕️⭕️screenX= \(screenX) ⭕️⭕️")
+        //print("\(screenX - (boundWidthX - rightArea - ix))")
+        rightFlag =  screenX > (boundWidthX - rightArea - ix) ? true:false
         //下端エリア以下であるかをチェックする
         isUnderArea = (currentPoint.y >= vHeight - 21.0) ? true : false
         //print("screenX:\(screenX)")
