@@ -1307,7 +1307,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             mx = loadMx()
             resn = loadResn()//+-+ リサイズ回数を初期化
         }
-        //---------- リストメニュ−　---------
+        //============ ★メニューリストメニュ−★　==============
         //テーブルビュー初期化、関連付け
         mh = ch * CGFloat(cn)//メニューの高さ＝セルの高さ☓セル数
         let w = boundWidth
@@ -1320,10 +1320,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tV.layer.cornerRadius = 8.0//角丸にする
         tV.layer.borderColor = UIColor.gray.cgColor
         tV.layer.borderWidth = 1
-        //区切り線
-        let sen = UIView(frame: CGRect(x:10,y:ch*4.5,width:mw*0.9,height:1))
+        //⭕️区切り線-----------------------------------------------------
+        /*let sen = UIView(frame: CGRect(x:10,y:ch*4.5,width:mw*0.9,height:1))
         sen.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
-        tV.addSubview(sen)
+        if childFlag == false{ tV.addSubview(sen) }//⭕️
+        */
         // シャドウカラー
         tV.layer.masksToBounds = false
         tV.layer.shadowColor = UIColor.gray.cgColor/* 影の色 */
@@ -1339,7 +1340,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tV.dataSource    =   self
         tV.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        //設定画面
+        //------------ ★設定画面 ----------------------------
         setV = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:view.bounds.height))
         setV.backgroundColor = UIColor.black.withAlphaComponent(0.40)
         //self.view.addSubview(underNav)//ナビゲーション下線を追加
@@ -1358,7 +1359,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             langFlag = 1
             items = items_En
         }
-        /**  -- ヘルプ画面の作成  --  **/
+        /**  --------- ★ヘルプ画面の作成  ---------------  **/
         //----TOPエリアの作成-----
         helpTop = UIView(frame: CGRect(x:0,y:0,width:view.bounds.width,height:64))
         helpTop.backgroundColor = UIColor.black
@@ -1396,6 +1397,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         helpTop.addSubview(jButton)
         helpTop.addSubview(eButton)
         helpTop.addSubview(rButton)
+        //------------ ☆ヘルプ画面作成の終わり　---------------
         didLoadFlg = false//_portlaitで起動する為のフラグ
         toolBar.addTopBorderWithColor(color: UIColor.black, width: 1.5)//パレットとツールバーの境界線
         print("toolBar.frame.size.width:\(toolBar.frame.size.width)")
@@ -1476,14 +1478,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         )
 */
         
-/*
-        //既存のエッジスワイプを無効にする
-        if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-            self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-        }
-    */
-        
-        
         
     }
     //  =======         End of viewDidLoad         =======
@@ -1491,16 +1485,36 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //⭕️----------------------------------
     func sendMail() {
         if MFMailComposeViewController.canSendMail() {
+            // --- 送信時刻の取得 ---
+            let now = NSDate()
+            let formatter = DateFormatter()
+            formatter.dateFormat = " 《 MM/dd 》 HH:mm "//"yyyy/MM/dd HH:mm:ss"
+            let sendTime = formatter.string(from: now as Date)
+            // --- 基本設定 ---
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
-            mail.setToRecipients(["xxx@xxx.xxx"]) // 宛先アドレス
-            mail.setSubject("手書きメール") // 件名
-            mail.setMessageBody("ここに本文が入ります。", isHTML: false) // 本文
+            mail.setToRecipients([""]) // 宛先アドレス
+            mail.setSubject("手書きメール" + sendTime) // 件名
+            mail.setMessageBody("", isHTML: false) // 本文
             //-------------------------
-            sendImage = UIImage(named: "childEng.png")
-            let image = sendImage
-            let imageData = UIImageJPEGRepresentation(image!, 1.0)
-            mail.addAttachmentData(imageData!, mimeType: "image/png", fileName: "image")
+            let sVHeight:CGFloat = (leafHeight + leafMargin) + subMemoView.frame.height
+            //メール画像の全体view
+            let mailView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:sVHeight))
+            // --- 表題view ---
+            //親行の画像を取得
+            let sendTitleV:UIImageView = UIImageView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight - 2 ))
+            let t = memo[fNum].viewWithTag(oyaGyou) as! UIImageView
+            //🔻マークを削除する
+            sendTitleV.image = t.image?.addText_Mark(text: "", del: true)
+            // --- 本文view ---
+            let mainView = UIImageView(frame: CGRect(x:0,y:leafHeight + leafMargin,width:leafWidth,height:subMemoView.frame.height))
+            mainView.image = subMemo.GetImage()
+            // --- 2つの画像を合成する ---
+            mailView.addSubview(sendTitleV)
+            mailView.addSubview(mainView)
+            let sendImg = mailView.GetImage()
+            let imageData = UIImageJPEGRepresentation(sendImg, 1.0)
+            mail.addAttachmentData(imageData!, mimeType: "image/png", fileName: "sendView")
             //-------------------------
             present(mail, animated: true, completion: nil)
         } else {
@@ -1717,14 +1731,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         isLongPressing = true//★ロングプレス中フラグをセットする
     }
-/*
-    func rightBarBtnClicked(sender: UIButton){
-        print("rightBarBtnClicked")
-    }
-    func pushStartBtn4(sender: UILongPressGestureRecognizer){
-        print("pushStartBtn:4")
-    }
-*/
+
     @IBOutlet weak var naviBar: UINavigationBar!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var menu2: UIBarButtonItem!
@@ -1741,7 +1748,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBAction func index(_ sender: UIBarButtonItem) {
         //子メモが表示されている時は
-        if childFlag == true{sendMail(); return}//★20180815 ⭕️Mail⭕️
+        if childFlag == true{//retur
+        }//★20180815 ⭕️Mail⭕️
         //拡大表示の時はパス
         if bigFlag == true{ return}
         //パレットが開いている時は
@@ -1874,6 +1882,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
         }
     }
+    func addMailMenu(){
+        let m1:String = langFlag == 0 ? "メールを送信する" : "Send mail"
+        let m4:String = childFlag ? m1 : "･･･"//"......................................"
+        items[4] = m4
+        tV.reloadData()
+        //print("childFlag:\(m4)")
+    }
     
     @IBAction func menu(_ sender: UIBarButtonItem) {
         if myEditFlag{ return }//★20180821
@@ -1906,6 +1921,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         print("langFlag:\(langFlag)")
         
         if isMenuMode == false{//リストが非表示の場合
+            addMailMenu()//⭕️
             view.addSubview(smv)
             smv.contentOffset = CGPoint(x:-10,y:self.mh )
             UIScrollView.animate(withDuration: 0.3, animations: {
@@ -1926,6 +1942,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }){ (Bool) -> Void in  // アニメーション完了時の処理
                 self.smv.removeFromSuperview()
                 self.changing = false//開く(閉じる)ジェスチャーを終了する
+                
             }
             isMenuMode = false
             
@@ -3013,7 +3030,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return img
     }
 
-    
     /* resn[] リサイズ回数 */
     func loadResn()->[String:Int]{//+-+ imageのprogramから流用したため変数名が変？
         var img:[String:Int] = resn
@@ -3060,7 +3076,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
 
     
-   /* ---------------　リストメニューtableView関連　------------------　*/
+   /* ---------------　♪リストメニューtableView関連　------------------　*/
     
     func tableView(_ tV: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -3071,8 +3087,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         let cell:UITableViewCell = tV.dequeueReusableCell(withIdentifier: "cell")! as UITableViewCell
         cell.textLabel?.text = self.items[indexPath.row]
+        print("⭕️items[: \(items[indexPath.row])")
         cell.contentView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.08)
         cell.textLabel!.font = UIFont(name: "Arial", size: 18)
+    
         return cell
     }
     
@@ -3084,8 +3102,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //--------------------------
         if num == 5{
             fc5()//設定画面を開く
-        }else if num != 7 && num != 4{
-
+        }else if num != 7 && !(num == 4 && !childFlag){
+        // ↑ 子メモが開いている場合だけ第４セルの選択を有効にする
         let alert: UIAlertController = UIAlertController(title: itm, message: msg, preferredStyle:  UIAlertControllerStyle.alert)
 
         // OKボタン
@@ -3097,6 +3115,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             case 1:self.fc1()
             case 2:self.fc2()
             case 3:self.fc3()
+            case 4:self.fc4()//⭕️
             case 5:self.fc5()
             case 6:self.fc6()
                    break
@@ -3117,7 +3136,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }//----------↖
        
         tV.deselectRow(at: indexPath as IndexPath, animated: true)//カーソルを消す
-        if num == 4{return}
+        if (num == 4 && !childFlag){return}//メニューリストを閉じない
         self.menu(self.menu2)//メニューボタンを押す
     }
     
@@ -3230,6 +3249,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         im = printImage(image:im)
         savePageImage(img: im)
 
+    }
+    
+    func fc4(){
+        print("test4!!!!!")
+        //menu(menu2)//メニューを閉じる
+        sendMail()
     }
     
     func fc5(){ // [ = 設定 = ]
