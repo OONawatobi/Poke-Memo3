@@ -71,7 +71,7 @@ extension UIView {
         self.layer.addSublayer(dashedLineLayer)
         return self
     }
-    //20180812作成
+    //カーソルバー：20180812作成
     @discardableResult
     func addCursolLine(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber,posX:CGFloat,lenX:CGFloat) -> UIView {
         self.layer.sublayers = nil//既存の下線を削除する
@@ -109,13 +109,12 @@ extension UIView {
             }
             //@@@@@
 
-
         self.layer.addSublayer(cursolLayer)
         }
         return self
     }
 
-    //20180813作成:下線が実践の場合
+    //カーソルバー：20180813作成:下線が実践の場合
     @discardableResult
     func addCursolLine2(color: UIColor, lineWidth: CGFloat, lineSize: NSNumber, spaceSize: NSNumber,posX:CGFloat,lenX:CGFloat) -> UIView {
         self.layer.sublayers = nil//既存の下線を削除する
@@ -153,7 +152,7 @@ extension UIView {
         }
         return self
     }
-    //20180815作成:下線が実践の場合(子メモ用）
+    //カーソルバー：20180815作成:下線が実践の場合(子メモ用）
     @discardableResult
     func addLineForChild(color: UIColor, lineWidth: CGFloat,posX:CGFloat,lenX:CGFloat,spaceX:CGFloat) -> UIView {
         self.layer.sublayers = nil//既存の下線を削除する
@@ -1487,34 +1486,41 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if MFMailComposeViewController.canSendMail() {
             // --- 送信時刻の取得 ---
             let now = NSDate()
-            let formatter = DateFormatter()
+            let formatter = DateFormatter()//タイトル用
+            let formatter2 = DateFormatter()//ファイル名用
             formatter.dateFormat = " 《 MM/dd 》 HH:mm "//"yyyy/MM/dd HH:mm:ss"
             let sendTime = formatter.string(from: now as Date)
+            
+            formatter2.dateFormat = "yy-MMdd-HHMM"
+            let sendTime2 = formatter2.string(from: now as Date)
             // --- 基本設定 ---
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
             mail.setToRecipients([""]) // 宛先アドレス
-            mail.setSubject("手書きメール" + sendTime) // 件名
+            let sj = langFlag == 0 ? "手書きメール" : "handwritten Mail"
+            mail.setSubject(sj + sendTime) // 件名
             mail.setMessageBody("", isHTML: false) // 本文
             //-------------------------
-            let sVHeight:CGFloat = (leafHeight + leafMargin) + subMemoView.frame.height
+            
+            let sVHeight:CGFloat = (leafHeight + leafMargin) + subMemoView.frame.height//メール画像の高さ(450)
+            let sp:CGFloat = 3//隙間
             //メール画像の全体view
-            let mailView = UIView(frame: CGRect(x:0,y:0,width:leafWidth,height:sVHeight))
+            let mailView = UIView(frame: CGRect(x:0,y:0,width:leafWidth/2 + 2*sp,height:sVHeight/2 + sp))//(385x228)
             // --- 表題view ---
             //親行の画像を取得
-            let sendTitleV:UIImageView = UIImageView(frame: CGRect(x:0,y:0,width:leafWidth,height:leafHeight - 2 ))
+            let sendTitleV:UIImageView = UIImageView(frame: CGRect(x:0,y:0,width:leafWidth/2,height:leafHeight/2 - 2 ))//(379x20.5)
             let t = memo[fNum].viewWithTag(oyaGyou) as! UIImageView
             //🔻マークを削除する
             sendTitleV.image = t.image?.addText_Mark(text: "", del: true)
             // --- 本文view ---
-            let mainView = UIImageView(frame: CGRect(x:0,y:leafHeight + leafMargin,width:leafWidth,height:subMemoView.frame.height))
-            mainView.image = subMemo.GetImage()
+            let mainView = UIImageView(frame: CGRect(x:sp,y:(leafHeight + leafMargin)/2,width:leafWidth/2,height:subMemoView.frame.height/2))//(758x401)
+            mainView.image = subMemo.GetImage().resize2(size: CGSize(width:leafWidth/2,height:sVHeight/2))
             // --- 2つの画像を合成する ---
             mailView.addSubview(sendTitleV)
             mailView.addSubview(mainView)
             let sendImg = mailView.GetImage()
-            let imageData = UIImageJPEGRepresentation(sendImg, 1.0)
-            mail.addAttachmentData(imageData!, mimeType: "image/png", fileName: "sendView")
+            let imageData = UIImageJPEGRepresentation(sendImg, 0.2)
+            mail.addAttachmentData(imageData!, mimeType: "image/png", fileName: "HM" + sendTime2)
             //-------------------------
             present(mail, animated: true, completion: nil)
         } else {
@@ -1978,9 +1984,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
           //_portlaitで起動する為のフラグ:回転禁止に設定
             didLoadFlg = false
            //メモカーソルを消す
-            if childFlag{
+            //_⭕️_20181129 if childFlag{
                 memoCursol(disp: 0)
-            }
+            //}
            //-- アニメーションの後⭕️に移動（閉じ始めがおくれる為）--
 
            //++ パレットを閉じるアニメーション

@@ -412,7 +412,7 @@ class MemoView:UIView{
     
     var cursolMode:Bool! = false
     func delCursol(){
-        //表示ページの全てのリーフの背景を透明にする
+        //表示ページの全てのリーフの 緑色の"背景" を透明にする
         for subview in self.subviews {
             subview.backgroundColor = UIColor.clear
             subview.alpha = 1// 透明度を設定
