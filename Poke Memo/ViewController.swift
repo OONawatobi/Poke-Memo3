@@ -1493,13 +1493,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             formatter2.dateFormat = "yy-MMdd-HHMM"
             let sendTime2 = formatter2.string(from: now as Date)
+            let mj = "・本メールは画像メールです。メール内容は添付ファイルをご覧ください。"
+            let me = "· This mail is image mail. Please see attached file for contents of mail."
+            let mb:String = langFlag == 0 ? mj : me
             // --- 基本設定 ---
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
             mail.setToRecipients([""]) // 宛先アドレス
             let sj = langFlag == 0 ? "手書きメール" : "handwritten Mail"
             mail.setSubject(sj + sendTime) // 件名
-            mail.setMessageBody("", isHTML: false) // 本文
+            mail.setMessageBody(mb, isHTML: false) // 本文
             //-------------------------
             
             let sVHeight:CGFloat = (leafHeight + leafMargin) + subMemoView.frame.height//メール画像の高さ(450)
@@ -1991,7 +1994,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
            //++ パレットを閉じるアニメーション
             self.etcBarDisp(disp: 0)//underView等を削除する
-            UIView.animate(withDuration:0.2, animations: {
+            UIView.animate(withDuration:0.3, animations: {
                 () -> Void in
                 self.myToolView.layer.position = CGPoint(x: self.view.frame.width/2, y:boundHeight + th - 40/2)
                 let nowPosx = drawableView.layer.position.x//表示中の位置
@@ -2007,16 +2010,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 self.myToolView.removeFromSuperview()
                 //ツールバーを隠す
                 self.myScrollView.frame = self.scrollRect//最大表示
-                self.toolBar.isHidden  = true
+                //self.toolBar.isHidden  = true
                 self.animeFlag = false
+                self.allDataSave()//編集中のページ内容を更新する---------⭕️
             } // アニメーションの終わり
-            //self.toolBar.isHidden  = true
+            self.toolBar.isHidden  = true
             
             //メモページのカーソルを削除する
             memo[fNum].delCursol()
             //+-+- 子メモページのカーソルを削除する
             subMemo.delCursol()
-            //+-+-子メモに背景色をつける
+            //+-+-子メモに背景色をつける??必要？
             if childFlag == true{//+-+-
                 subMemoView.backgroundColor = childColor
             }
@@ -2025,7 +2029,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             isPalleteMode = false
             bigFlag = false
             //編集中のページ内容を更新する-------------------⭕️
-            allDataSave()
+            //allDataSave()
             self.index2.isEnabled = true//メニューボタンを表示
         }else{//----------- パレットを開く処理　--------------②
         // ◆◆ === パレットが表示されていない時パレットを表示する===
@@ -4400,16 +4404,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         //空白行の場合は子メモは開かない
         if mx[String(nowGyouNo)]!<10{return}
         //print("●◉●\(mx[String(nowGyouNo)])")
-        //子メモを開く
-        oyaGyou = nowGyouNo//✅親行を記憶する
         childFlag = true
-        let im = readPage(pn:nowGyouNo)//im:１ページ目の外部データを読み込む
+        
+        //_1:子メモのデータを取得する
+        oyaGyou = nowGyouNo//✅親行を記憶する
+        let im = readPage(pn:nowGyouNo)//子メモの外部データを読み込む
         subMemo.setMemoFromImgs2(bt:nowGyouNo,imgs:im)//bt:basetag
-        //子メモの分だけスクロール表示範囲を大きくする
+        
+        //_2:子メモの分だけスクロール表示範囲を大きくする(ページの末尾が問題となる)
         var addGyou = (nowGyouNo%100 + pageGyou2) - pageGyou//はみ出す分を計算
         addGyou = addGyou > 0 ? addGyou :0//はみ出す分だけ追加する
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + addGyou + memoLowerMargin) + topOffset)
-        //子メモviewの作成
+        
+        //_3:子メモviewの作成
         print("777777777")
         subMemoView.removeFromSuperview()//一旦、子メモを削除する
         //let rect1:CGRect = CGRect(x:0, y:0, width:leafWidth, height:5)//$$
@@ -4427,6 +4434,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
          subMemoView.layer.shadowOpacity = 0.5 // 透明度
          subMemoView.layer.shadowRadius = 15 //←8 角度(距離）
          //
+        
         subMemoView.addSubview(subMemo)//$$ アニメーション時は削除
         memo[fNum].addSubview(subMemoView)
         print("nowGyouNo:\(String(describing: nowGyouNo))")
@@ -4463,39 +4471,36 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     func childMemoClose(ngn:Int){//+-+- 子メモを閉じる$
-        print("----childMemoClose-----\(String(describing: nowGyouNo))")
+        print("⭕️----childMemoClose-----⭕️\(String(describing: nowGyouNo))")
         print("childMemoClose()  = oyaGyou: \(oyaGyou) =")
         if childFlag == false{return}
         if ngn>10000{return}//子メモ内をWクリックした時は無視する//1000
-      /* 子メモ以外の任意行をWクリックした場合にも閉じるようにする-20181115変更
-        //親行をクリックしたときだけ
-        if ngn != oyaGyou{return}
-      */
-        subMemoView.removeFromSuperview()//一旦、子メモを削除する?必要？
-        
+        //_2:子メモが全空白かどうかをチェックする
         let baseTag:Int = oyaGyou
-        //子メモが全空白かどうかをチェックする
         let x = checkUsedLine(tag:baseTag)
-        print("空白？：\(x)")
+        print("🔶----- 空白？：\(x) -------🔶")
         if x == 0{//空白の場合はマークを削除する
             memo[fNum].add3Mark(baseTag:baseTag,del:true)
         }else{//空白でない場合はマークを追加する
             memo[fNum].add3Mark(baseTag:baseTag,del:false)
         }
-        //編集中のページ内容を更新する
-        //現行のページ内容を外部に保存
-        let im = memo[fNum].memoToImgs(pn: pageNum)//im:
-        writePage(pn: pageNum, imgs: im)
-        //子メモ内容を外部に保存?この為閉じる際の時間がかかる？
-        let im2 = subMemo.memoToImgs2(pn: baseTag)
-        subMemo.removeFromSuperview()
-        writePage(pn: baseTag, imgs: im2)//外部に保存
-        //↑↓を切り替えた。：subMemo.removeFromSuperview()
-
-        //__subMemoView.removeFromSuperview()//一旦、子メモを削除する?必要？
-        //子メモの分だけスクロール表示範囲を小さくする（元に戻す）
+        //アニメーション:閉じる動作を最優先にするために使用する、アニメは無し
+        UIView.animate(withDuration:0.1, animations: { _ in
+            subMemoView.removeFromSuperview() //_1:子メモを削除する
+            //print("⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂⁂")
+        }, completion: { _ in     //子メモが閉じた後に実施される
+            //_3:編集中のページ内容を更新する
+            //現行のページ内容を外部に保存
+            let im = memo[fNum].memoToImgs(pn: pageNum)//im:
+            self.writePage(pn: pageNum, imgs: im)
+            //子メモ内容を外部に保存?この為閉じる際の時間がかかる？
+            let im2 = subMemo.memoToImgs2(pn: baseTag)
+            subMemo.removeFromSuperview()
+            self.writePage(pn: baseTag, imgs: im2)//外部に保存
+            
+        })
+        //_4:(後処理)子メモの分だけスクロール表示範囲を小さくする（元に戻す）
         myScrollView.contentSize = CGSize(width:leafWidth,height:(leafHeight + leafMargin) * CGFloat(pageGyou + memoLowerMargin) + topOffset)
-        
         childFlag = false
         print("nowGyouNo = \(String(describing: nowGyouNo))")
     }
